@@ -146,7 +146,7 @@ class PuzzleListItem extends StatelessWidget {
     Key? key,
     required this.puzzle,
     required this.onDelete,
-    required this.onPressed, // onContinue 대신 onPressed로 변경
+    required this.onPressed,
   }) : super(key: key);
 
   @override
