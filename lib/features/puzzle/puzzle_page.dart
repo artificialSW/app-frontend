@@ -8,35 +8,10 @@ class PuzzleRoot extends StatelessWidget {
       appBar: AppBar(title: const Text('Puzzle')),
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const DetailPage(title: 'Puzzle detail')),
-            );
-          },
-          child: const Text('Go detail'),
-        ),
+            onPressed: () => Navigator.of(context).pushNamed('/puzzle/in-progress'),
+            child: const Text("진행중인 퍼즐 리스트")
+        )
       ),
-    );
-  }
-}
-
-class DetailPage extends StatelessWidget {
-  const DetailPage({super.key, required this.title});
-  final String title;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Column(
-        children: [
-          const Center(child: Text('detail')),
-          SizedBox(),
-          ElevatedButton(
-              onPressed: () => Navigator.of(context).pushNamed('/editor'),
-              child: const Text("퍼즐 편집하기")
-          )
-        ],
-      )
     );
   }
 }

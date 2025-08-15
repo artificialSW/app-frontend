@@ -1,4 +1,5 @@
-import 'package:artificialsw_frontend/features/puzzle/puzzle_edit.dart';
+import 'package:artificialsw_frontend/features/puzzle/ongoing_puzzles_page.dart';
+import 'package:artificialsw_frontend/features/puzzle/play_puzzle_page.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_page.dart';
 import 'package:flutter/material.dart';
 
@@ -6,8 +7,10 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
   switch (s.name) {
     case '/':
       return MaterialPageRoute(builder: (_) => const PuzzleRoot());
-    case '/editor':
-      return MaterialPageRoute(builder: (_) => const PuzzleEditPage());
+    case '/puzzle/in-progress':  
+      return MaterialPageRoute(builder: (_) => const OngoingPuzzlesPage());
+    case '/puzzle/play':
+      return MaterialPageRoute(builder: (_) => PlayPuzzle());
     default:
       return MaterialPageRoute(builder: (_) => const PuzzleRoot());
   }
