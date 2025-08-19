@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 import
+import 'package:artificialsw_frontend/features/puzzle/puzzlepiece.dart';
 
 class PlayPuzzle extends StatefulWidget {
   const PlayPuzzle({Key? key}) : super(key: key);
@@ -67,7 +68,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     for (int x = 0; x < rows; x++) {
       for (int y = 0; y < cols; y++) {
         setState(() {
-          pieces.add(_PuzzlePiece(
+          pieces.add(PuzzlePiece(
             key: GlobalKey(),
             image: image,
             imageSize: imageSize,
@@ -86,14 +87,14 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   void _bringToTop(Widget widget) {
     setState(() {
       pieces.remove(widget);
-      pieces.add(widget);
+      pieces.add(widget); //list에 add했으므로 맨 끝으로 감
     });
   }
 
   void _sendToBack(Widget widget) {
     setState(() {
       pieces.remove(widget);
-      pieces.insert(0, widget);
+      pieces.insert(0, widget); //맨 앞으로 감
     });
   }
 
@@ -115,211 +116,4 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       // 이미지가 고정되었으므로 FloatingActionButton은 제거
     );
   }
-}
-
-// ------------------- 퍼즐 조각 관련 클래스들 (이전과 동일) -------------------
-
-class _PuzzlePiece extends StatefulWidget {
-  final Image image;
-  final Size imageSize;
-  final int row;
-  final int col;
-  final int maxRow;
-  final int maxCol;
-  final Function bringToTop;
-  final Function sendToBack;
-
-  const _PuzzlePiece({
-    Key? key,
-    required this.image,
-    required this.imageSize,
-    required this.row,
-    required this.col,
-    required this.maxRow,
-    required this.maxCol,
-    required this.bringToTop,
-    required this.sendToBack,
-  }) : super(key: key);
-
-  @override
-  _PuzzlePieceState createState() => _PuzzlePieceState();
-}
-
-class _PuzzlePieceState extends State<_PuzzlePiece> {
-  double? top;
-  double? left;
-  bool isMovable = true;
-
-  @override
-  Widget build(BuildContext context) {
-    final imageWidth = MediaQuery.of(context).size.width;
-    final imageHeight = MediaQuery.of(context).size.height *
-        MediaQuery.of(context).size.width /
-        widget.imageSize.width;
-    final pieceWidth = imageWidth / widget.maxCol;
-    final pieceHeight = imageHeight / widget.maxRow;
-
-    if (top == null) {
-      top = Random().nextInt((imageHeight - pieceHeight).ceil()).toDouble();
-      top = top! - widget.row * pieceHeight;
-    }
-    if (left == null) {
-      left = Random().nextInt((imageWidth - pieceWidth).ceil()).toDouble();
-      left = left! - widget.col * pieceWidth;
-    }
-
-    return Positioned(
-      top: top,
-      left: left,
-      width: imageWidth,
-      child: GestureDetector(
-        onTap: () {
-          if (isMovable) {
-            widget.bringToTop(widget);
-          }
-        },
-        onPanStart: (_) {
-          if (isMovable) {
-            widget.bringToTop(widget);
-          }
-        },
-        onPanUpdate: (dragUpdateDetails) {
-          if (isMovable) {
-            setState(() {
-              top = (top ?? 0) + dragUpdateDetails.delta.dy;
-              left = (left ?? 0) + dragUpdateDetails.delta.dx;
-
-              final targetTop = widget.row * pieceHeight;
-              final targetLeft = widget.col * pieceWidth;
-
-              if ((top! - targetTop).abs() < 10 && (left! - targetLeft).abs() < 10) {
-                top = targetTop;
-                left = targetLeft;
-                isMovable = false;
-                widget.sendToBack(widget);
-              }
-            });
-          }
-        },
-        child: ClipPath(
-          child: CustomPaint(
-              foregroundPainter: _PuzzlePiecePainter(
-                  widget.row, widget.col, widget.maxRow, widget.maxCol),
-              child: widget.image),
-          clipper: _PuzzlePieceClipper(
-              widget.row, widget.col, widget.maxRow, widget.maxCol),
-        ),
-      ),
-    );
-  }
-}
-
-class _PuzzlePieceClipper extends CustomClipper<Path> {
-  final int row;
-  final int col;
-  final int maxRow;
-  final int maxCol;
-
-  _PuzzlePieceClipper(this.row, this.col, this.maxRow, this.maxCol);
-
-  @override
-  Path getClip(Size size) {
-    return _getPiecePath(size, row, col, maxRow, maxCol);
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-
-class _PuzzlePiecePainter extends CustomPainter {
-  final int row;
-  final int col;
-  final int maxRow;
-  final int maxCol;
-
-  _PuzzlePiecePainter(this.row, this.col, this.maxRow, this.maxCol);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
-      ..color = const Color(0x80FFFFFF)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    canvas.drawPath(_getPiecePath(size, row, col, maxRow, maxCol), paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-Path _getPiecePath(Size size, int row, int col, int maxRow, int maxCol) {
-  final width = size.width / maxCol;
-  final height = size.height / maxRow;
-  final offsetX = col * width;
-  final offsetY = row * height;
-  final bumpSize = height / 4;
-
-  var path = Path();
-  path.moveTo(offsetX, offsetY);
-
-  if (row == 0) {
-    path.lineTo(offsetX + width, offsetY);
-  } else {
-    path.lineTo(offsetX + width / 3, offsetY);
-    path.cubicTo(
-        offsetX + width / 6,
-        offsetY - bumpSize,
-        offsetX + width / 6 * 5,
-        offsetY - bumpSize,
-        offsetX + width / 3 * 2,
-        offsetY);
-    path.lineTo(offsetX + width, offsetY);
-  }
-
-  if (col == maxCol - 1) {
-    path.lineTo(offsetX + width, offsetY + height);
-  } else {
-    path.lineTo(offsetX + width, offsetY + height / 3);
-    path.cubicTo(
-        offsetX + width - bumpSize,
-        offsetY + height / 6,
-        offsetX + width - bumpSize,
-        offsetY + height / 6 * 5,
-        offsetX + width,
-        offsetY + height / 3 * 2);
-    path.lineTo(offsetX + width, offsetY + height);
-  }
-
-  if (row == maxRow - 1) {
-    path.lineTo(offsetX, offsetY + height);
-  } else {
-    path.lineTo(offsetX + width / 3 * 2, offsetY + height);
-    path.cubicTo(
-        offsetX + width / 6 * 5,
-        offsetY + height - bumpSize,
-        offsetX + width / 6,
-        offsetY + height - bumpSize,
-        offsetX + width / 3,
-        offsetY + height);
-    path.lineTo(offsetX, offsetY + height);
-  }
-
-  if (col == 0) {
-    path.close();
-  } else {
-    path.lineTo(offsetX, offsetY + height / 3 * 2);
-    path.cubicTo(
-        offsetX - bumpSize,
-        offsetY + height / 6 * 5,
-        offsetX - bumpSize,
-        offsetY + height / 6,
-        offsetX,
-        offsetY + height / 3);
-    path.close();
-  }
-
-  return path;
 }

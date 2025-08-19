@@ -12,8 +12,8 @@ class PuzzlePiece extends StatefulWidget {
   final Function bringToTop;
   final Function sendToBack;
 
-  PuzzlePiece({
-    Key? key, // Key is now nullable
+  const PuzzlePiece({
+    super.key, // Key is now nullable
     required this.image,
     required this.imageSize,
     required this.row,
@@ -22,7 +22,7 @@ class PuzzlePiece extends StatefulWidget {
     required this.maxCol,
     required this.bringToTop,
     required this.sendToBack,
-  }) : super(key: key);
+  });
 
   @override
   PuzzlePieceState createState() {
@@ -31,8 +31,8 @@ class PuzzlePiece extends StatefulWidget {
 }
 
 class PuzzlePieceState extends State<PuzzlePiece> {
-  double? top; // Declared as nullable double
-  double? left; // Declared as nullable double
+  double? top; // Declared as nullable double (퍼즐 조각의 현재 화면상의 위치)
+  double? left; // Declared as nullable double (퍼즐 조각의 현재 화면상의 위치)
   bool isMovable = true;
 
   @override
@@ -44,7 +44,7 @@ class PuzzlePieceState extends State<PuzzlePiece> {
     final pieceWidth = imageWidth / widget.maxCol;
     final pieceHeight = imageHeight / widget.maxRow;
 
-    // Initialize top and left if they are null
+    // Initialize top and left if they are null (퍼즐 시작하면 조각들을 랜덤 위치에 흩뿌리기)
     if (top == null) {
       // 1. 먼저 top에 무작위 값을 할당합니다.
       top = Random().nextInt((imageHeight - pieceHeight).ceil()).toDouble();
@@ -63,12 +63,12 @@ class PuzzlePieceState extends State<PuzzlePiece> {
       left: left,
       width: imageWidth,
       child: GestureDetector(
-        onTap: () {
+        onTap: () { // 퍼즐 tap하기
           if (isMovable) {
             widget.bringToTop(widget);
           }
         },
-        onPanStart: (_) {
+        onPanStart: (_) { // 퍼즐 드래그(?)
           if (isMovable) {
             widget.bringToTop(widget);
           }
@@ -76,13 +76,12 @@ class PuzzlePieceState extends State<PuzzlePiece> {
         onPanUpdate: (dragUpdateDetails) {
           if (isMovable) {
             setState(() {
-              // Use null-aware operators or null checks before arithmetic
-              // Since top and left are guaranteed to be non-null after the initial check,
-              // we can use the `!` operator for non-null assertion.
-              top = (top ?? 0) + dragUpdateDetails.delta.dy; // Safe way to update nullable double
-              left = (left ?? 0) + dragUpdateDetails.delta.dx; // Safe way to update nullable double
+              // 드래그 방향에 따라 top과 left 값을 업데이트합니다.
+              top = (top ?? 0) + dragUpdateDetails.delta.dy;
+              left = (left ?? 0) + dragUpdateDetails.delta.dx;
 
-              if (-10 < (top ?? 0) && (top ?? 0) < 10 && -10 < (left ?? 0) && (left ?? 0) < 10) {
+              // 현재 위치가 정답 위치에 충분히 가까워지면 스냅합니다.
+              if ((top!).abs() < 10 && (left!).abs() < 10) {
                 top = 0;
                 left = 0;
                 isMovable = false;
