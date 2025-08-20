@@ -1,7 +1,7 @@
-import 'package:artificialsw_frontend/features/puzzle/ongoing_puzzles_page.dart';
-import 'package:artificialsw_frontend/features/puzzle/play_puzzle_page.dart';
+import 'package:artificialsw_frontend/features/puzzle/puzzlelist_ongoing.dart';
+import 'package:artificialsw_frontend/features/puzzle/puzzle_playing.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_completed.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzle_page.dart';
+import 'package:artificialsw_frontend/features/puzzle/puzzle_mainpage.dart';
 import 'package:flutter/material.dart';
 
 Route<dynamic> puzzleRoutes(RouteSettings s) {

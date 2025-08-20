@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'package:artificialsw_frontend/features/puzzle/play_puzzle_page.dart';
+import 'package:artificialsw_frontend/features/puzzle/puzzle_playing.dart';
 
 class PuzzlePiece extends StatefulWidget {
   final Image image;
