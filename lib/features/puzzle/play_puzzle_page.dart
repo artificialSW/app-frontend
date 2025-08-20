@@ -18,6 +18,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   final int cols = 3;
   Image? _image; // Image 위젯 자체를 저장하도록 변경
   List<Widget> pieces = [];
+  int completedPieces = 0;
 
   @override
   void initState() {
@@ -78,6 +79,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
             maxCol: cols,
             bringToTop: _bringToTop,
             sendToBack: _sendToBack,
+            onCompleted: _onCompleted,
           ));
         });
       }
@@ -96,6 +98,26 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       pieces.remove(widget);
       pieces.insert(0, widget); //맨 앞으로 감
     });
+  }
+
+  void _onCompleted() {
+    setState(() {
+      completedPieces++;
+      print("$completedPieces개 완성!");
+      if (completedPieces == rows * cols) {
+        _navigateToNextPage();
+      }
+    });
+  }
+
+  void _navigateToNextPage() async {
+    print("퍼즐 완성! 다음 페이지로 이동합니다.");
+
+    // 1초 기다리기
+    await Future.delayed(const Duration(seconds: 1));
+
+    // '/puzzle/in-progress' 대신 이동할 페이지의 라우트 이름을 사용
+    Navigator.of(context).pushReplacementNamed('/puzzle/completed');
   }
 
   @override

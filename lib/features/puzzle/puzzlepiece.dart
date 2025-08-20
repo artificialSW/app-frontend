@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'package:artificialsw_frontend/features/puzzle/play_puzzle_page.dart';
+
 class PuzzlePiece extends StatefulWidget {
   final Image image;
   final Size imageSize;
@@ -11,6 +13,7 @@ class PuzzlePiece extends StatefulWidget {
   final int maxCol;
   final Function bringToTop;
   final Function sendToBack;
+  final Function onCompleted;
 
   const PuzzlePiece({
     super.key, // Key is now nullable
@@ -22,6 +25,7 @@ class PuzzlePiece extends StatefulWidget {
     required this.maxCol,
     required this.bringToTop,
     required this.sendToBack,
+    required this.onCompleted,
   });
 
   @override
@@ -45,14 +49,8 @@ class PuzzlePieceState extends State<PuzzlePiece> {
     final pieceHeight = imageHeight / widget.maxRow;
 
     // Initialize top and left if they are null (퍼즐 시작하면 조각들을 랜덤 위치에 흩뿌리기)
-    if (top == null) {
-      // 1. 먼저 top에 무작위 값을 할당합니다.
-      top = Random().nextInt((imageHeight - pieceHeight).ceil()).toDouble();
+    top ??= (imageHeight / 2) + Random().nextInt((imageHeight / 2 - pieceHeight).ceil()).toDouble();
 
-      // 2. 그 다음, top이 null이 아니라고 명시한 후(top!),
-      //    결과값을 다시 top에 할당합니다.
-      top = top! - widget.row * pieceHeight;
-    }
     if (left == null) {
       left = Random().nextInt((imageWidth - pieceWidth).ceil()).toDouble();
       left = left! - widget.col * pieceWidth;
@@ -86,6 +84,7 @@ class PuzzlePieceState extends State<PuzzlePiece> {
                 left = 0;
                 isMovable = false;
                 widget.sendToBack(widget);
+                widget.onCompleted();
               }
             });
           }
@@ -161,7 +160,7 @@ Path getPiecePath(Size size, int row, int col, int maxRow, int maxCol) {
     // top side piece
     path.lineTo(offsetX + width, offsetY);
   } else {
-    // top bump
+    // top bump (위쪽 방향 돌출부)
     path.lineTo(offsetX + width / 3, offsetY);
     path.cubicTo(
         offsetX + width / 6,
@@ -177,7 +176,7 @@ Path getPiecePath(Size size, int row, int col, int maxRow, int maxCol) {
     // right side piece
     path.lineTo(offsetX + width, offsetY + height);
   } else {
-    // right bump
+    // right bump (우측 방향 돌출부)
     path.lineTo(offsetX + width, offsetY + height / 3);
     path.cubicTo(
         offsetX + width - bumpSize,
@@ -189,7 +188,7 @@ Path getPiecePath(Size size, int row, int col, int maxRow, int maxCol) {
     path.lineTo(offsetX + width, offsetY + height);
   }
 
-  if (row == maxRow - 1) {
+  if (row != maxRow - 1) {
     // bottom side piece
     path.lineTo(offsetX + width / 3 * 2, offsetY + height);
     path.cubicTo(
