@@ -1,4 +1,3 @@
-// lib/models/puzzle_piece_model.dart
 import 'package:flutter/material.dart';
 
 class PuzzlePieceModel {
