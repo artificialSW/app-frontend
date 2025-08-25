@@ -15,11 +15,13 @@ class PuzzlePieceView extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<PuzzleViewModel>(context);
 
+    final bumpSize = piece.pieceHeight / 4;
+
     return Positioned(
       left: piece.currentPosition.dx,
       top: piece.currentPosition.dy,
-      width: piece.pieceWidth, // 모델의 pieceWidth에다가 maxRow를 곱해야함(왠진 모르겠음)
-      height: piece.pieceHeight, // 모델의 pieceHeight 에다가 마찬가지
+      width: piece.pieceWidth,
+      height: piece.pieceHeight,
       child: GestureDetector(
         onPanUpdate: (details) {
           viewModel.onPiecePanUpdate(piece, details);

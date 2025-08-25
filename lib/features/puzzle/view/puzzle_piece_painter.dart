@@ -131,6 +131,7 @@ class PuzzleImagePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final pieceWidth = image.width / maxCol;
     final pieceHeight = image.height / maxRow;
+
     final sourceRect = Rect.fromLTWH(
       col * pieceWidth,
       row * pieceHeight,
@@ -138,27 +139,12 @@ class PuzzleImagePainter extends CustomPainter {
       pieceHeight,
     );
 
-    // 돌출부 크기를 고려하여 destinationRect를 확장하고 위치를 조정합니다.
-    final bumpSize = size.height / 4;
-    final destinationRect = Rect.fromLTWH(
-      -bumpSize, // 왼쪽 돌출부를 위해 왼쪽으로 이동
-      -bumpSize, // 위쪽 돌출부를 위해 위로 이동
-      size.width + bumpSize * 2, // 너비를 돌출부만큼 확장
-      size.height + bumpSize * 2, // 높이를 돌출부만큼 확장
-    );
+    // ✅ 조각 위젯의 실제 크기 전체를 쓰도록 destination 설정
+    final destinationRect = Rect.fromLTWH(0, 0, size.width, size.height);
 
-    // 퍼즐 조각 모양의 패스를 얻습니다.
-    final path = getPiecePath(size, row, col, maxRow, maxCol);
-
-    // 해당 패스로 캔버스를 클리핑합니다. 이제 그리는 내용은 이 영역 안에서만 표시됩니다.
-    canvas.clipPath(path);
-
-    // 클리핑된 영역에 이미지를 그립니다.
     canvas.drawImageRect(image, sourceRect, destinationRect, Paint());
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
