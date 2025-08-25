@@ -10,39 +10,42 @@ class PuzzleBoardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<PuzzleViewModel>(context);
 
+    // 뷰모델을 초기화하는 로직은 그대로 둡니다.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (viewModel.fullUiImage == null) {
+        viewModel.initializePuzzle(MediaQuery.of(context).size.width);
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(title: const Text('퍼즐 플레이')),
       body: Consumer<PuzzleViewModel>(
         builder: (context, viewModel, child) {
-          // LayoutBuilder를 사용하여 부모 위젯이 허용하는 크기를 얻습니다.
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              if (viewModel.isLoading) {
-                // 초기화가 되지 않았다면, constraints를 전달하여 초기화 시작
-                viewModel.initializePuzzle(constraints);
-                return const Center(child: CircularProgressIndicator());
-              }
+          if (viewModel.isLoading || viewModel.fullUiImage == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-              final double puzzleWidth = constraints.maxWidth;
-              final double puzzleHeight = puzzleWidth * viewModel.fullUiImage!.height / viewModel.fullUiImage!.width;
+          final double puzzleWidth = viewModel.fullUiImage!.width.toDouble();
+          final double puzzleHeight = viewModel.fullUiImage!.height.toDouble();
 
-              return Container(
-                width: puzzleWidth,
-                height: puzzleHeight,
-                decoration: BoxDecoration(
-                  color: Colors.lightGreen[100], // 연한 연두색 배경
-                  border: Border.all(
-                    color: Colors.green, // 초록색 테두리
-                    width: 4.0, // 테두리 두께
-                  ),
+          return FittedBox(
+            fit: BoxFit.contain, // 퍼즐을 화면에 맞게 확대/축소
+            child: Container(
+              width: puzzleWidth, // 원본 이미지의 픽셀 크기
+              height: puzzleHeight, // 원본 이미지의 픽셀 크기
+              decoration: BoxDecoration(
+                color: Colors.lightGreen[100],
+                border: Border.all(
+                  color: Colors.green,
+                  width: 4.0,
                 ),
-                child: Stack(
-                  children: viewModel.puzzlePieces
-                      .map((piece) => PuzzlePieceView(piece: piece))
-                      .toList(),
-                ),
-              );
-            },
+              ),
+              child: Stack(
+                children: viewModel.puzzlePieces
+                    .map((piece) => PuzzlePieceView(piece: piece))
+                    .toList(),
+              ),
+            ),
           );
         },
       ),

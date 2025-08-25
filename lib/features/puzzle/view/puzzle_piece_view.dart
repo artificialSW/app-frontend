@@ -15,15 +15,11 @@ class PuzzlePieceView extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<PuzzleViewModel>(context);
 
-    // PuzzlePieceModel에서 크기 정보를 가져와 사용
-    final double pieceWidth = viewModel.fullUiImage!.width / piece.maxCol;
-    final double pieceHeight = viewModel.fullUiImage!.height / piece.maxRow;
-
     return Positioned(
       left: piece.currentPosition.dx,
       top: piece.currentPosition.dy,
-      width: piece.pieceWidth, // 모델의 pieceWidth 사용
-      height: piece.pieceHeight, // 모델의 pieceHeight 사용
+      width: piece.pieceWidth, // 모델의 pieceWidth에다가 maxRow를 곱해야함(왠진 모르겠음)
+      height: piece.pieceHeight, // 모델의 pieceHeight 에다가 마찬가지
       child: GestureDetector(
         onPanUpdate: (details) {
           viewModel.onPiecePanUpdate(piece, details);

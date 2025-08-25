@@ -21,39 +21,45 @@ class PuzzleViewModel with ChangeNotifier {
     required this.onGameComplete,
   });
 
-  Future<void> initializePuzzle(BoxConstraints constraints) async {
+  Future<void> initializePuzzle(double screenWidth) async {
     isLoading = true;
     notifyListeners();
 
     fullUiImage = await _loadImage(fullImage);
     final imageSize = Size(fullUiImage!.width.toDouble(), fullUiImage!.height.toDouble());
 
-    // 퍼즐 보드의 최종 크기를 계산합니다.
-    final puzzleWidth = constraints.maxWidth;
-    final puzzleHeight = puzzleWidth * (imageSize.height / imageSize.width);
+    // 여기를 수정합니다. 화면 너비 대신 이미지의 원본 픽셀 너비를 사용합니다.
+    final double puzzleWidth = imageSize.width;
+    final double puzzleHeight = imageSize.height;
 
-    // 조각 하나의 크기를 퍼즐 보드 전체 크기에 맞춰 계산
     final pieceWidth = puzzleWidth / maxCol;
     final pieceHeight = puzzleHeight / maxRow;
 
     puzzlePieces = [];
 
-    // 퍼즐이 흩어지는 범위도 최종 퍼즐 크기를 기준으로 계산
     final double randomSpreadFactor = 0.5;
     final double randomSpreadWidth = puzzleWidth * randomSpreadFactor;
     final double randomSpreadHeight = puzzleHeight * randomSpreadFactor;
 
     final double startX = (puzzleWidth - randomSpreadWidth) / 2;
     final double startY = (puzzleHeight - randomSpreadHeight) / 2;
+    print("imageSize is $imageSize");
+    print("puzzleWidth is $puzzleWidth");
+    print("puzzleHeight is $puzzleHeight");
+    print("pieceWidth is $pieceWidth");
+    print("maxRow is $maxRow");
+    print("maxCol is $maxCol");
 
     for (int i = 0; i < maxRow; i++) {
       for (int j = 0; j < maxCol; j++) {
         final id = i * maxCol + j;
         final correctPosition = Offset(j * pieceWidth, i * pieceHeight);
-        final randomPosition = Offset(
-          startX + Random().nextDouble() * randomSpreadWidth,
-          startY + Random().nextDouble() * randomSpreadHeight,
-        );
+        print("$j * $pieceWidth is ${j * pieceWidth}");
+        final randomPosition = correctPosition;
+        //Offset(
+          //startX + Random().nextDouble() * randomSpreadWidth,
+          //startY + Random().nextDouble() * randomSpreadHeight,
+        //);
         puzzlePieces.add(PuzzlePieceModel(
           id: id,
           imageSize: imageSize,

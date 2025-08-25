@@ -17,9 +17,9 @@ class PuzzleRoot extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // 새 게임 이미지와 난이도 설정
-                const Image image = Image(image: AssetImage('assets/images/mert34.jpeg'));
-                const int maxRow = 3;
-                const int maxCol = 3;
+                const Image image = Image(image: AssetImage('assets/images/triangle.png'));
+                const int maxRow = 7;
+                const int maxCol = 7;
 
                 // Navigator.push 대신 pushNamed를 사용하고 인자를 전달합니다.
                 Navigator.of(context).pushNamed(
