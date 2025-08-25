@@ -22,8 +22,8 @@ class PuzzlePieceView extends StatelessWidget {
     return Positioned(
       left: piece.currentPosition.dx,
       top: piece.currentPosition.dy,
-      width: pieceWidth,
-      height: pieceHeight,
+      width: piece.pieceWidth, // 모델의 pieceWidth 사용
+      height: piece.pieceHeight, // 모델의 pieceHeight 사용
       child: GestureDetector(
         onPanUpdate: (details) {
           viewModel.onPiecePanUpdate(piece, details);

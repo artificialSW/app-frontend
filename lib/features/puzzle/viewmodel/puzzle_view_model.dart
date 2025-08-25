@@ -19,32 +19,32 @@ class PuzzleViewModel with ChangeNotifier {
     required this.maxRow,
     required this.maxCol,
     required this.onGameComplete,
-  }) {
-    _initializePuzzlePieces();
-  }
+  });
 
-  Future<void> _initializePuzzlePieces() async {
+  Future<void> initializePuzzle(BoxConstraints constraints) async {
     isLoading = true;
     notifyListeners();
 
-    // 원본 이미지를 ui.Image로 로드
     fullUiImage = await _loadImage(fullImage);
     final imageSize = Size(fullUiImage!.width.toDouble(), fullUiImage!.height.toDouble());
 
+    // 퍼즐 보드의 최종 크기를 계산합니다.
+    final puzzleWidth = constraints.maxWidth;
+    final puzzleHeight = puzzleWidth * (imageSize.height / imageSize.width);
 
-    final screenWidth = MediaQueryData.fromView(ui.window).size.width;
-    final pieceWidth = screenWidth / maxCol;
-    final pieceHeight = pieceWidth * (imageSize.height / imageSize.width);
+    // 조각 하나의 크기를 퍼즐 보드 전체 크기에 맞춰 계산
+    final pieceWidth = puzzleWidth / maxCol;
+    final pieceHeight = puzzleHeight / maxRow;
+
     puzzlePieces = [];
 
-    // 퍼즐 조각이 흩어질 범위를 지정합니다. 0.5는 화면 너비의 50%를 의미합니다.
+    // 퍼즐이 흩어지는 범위도 최종 퍼즐 크기를 기준으로 계산
     final double randomSpreadFactor = 0.5;
-    final double randomSpreadWidth = screenWidth * randomSpreadFactor;
-    final double randomSpreadHeight = pieceHeight * randomSpreadFactor;
+    final double randomSpreadWidth = puzzleWidth * randomSpreadFactor;
+    final double randomSpreadHeight = puzzleHeight * randomSpreadFactor;
 
-    // 무작위 위치의 기준점을 화면 중앙으로 설정합니다.
-    final double startX = (screenWidth - randomSpreadWidth) / 2;
-    final double startY = (pieceHeight - randomSpreadHeight) / 2;
+    final double startX = (puzzleWidth - randomSpreadWidth) / 2;
+    final double startY = (puzzleHeight - randomSpreadHeight) / 2;
 
     for (int i = 0; i < maxRow; i++) {
       for (int j = 0; j < maxCol; j++) {
@@ -61,6 +61,8 @@ class PuzzleViewModel with ChangeNotifier {
           col: j,
           maxRow: maxRow,
           maxCol: maxCol,
+          pieceWidth: pieceWidth,
+          pieceHeight: pieceHeight,
           currentPosition: randomPosition,
           correctPosition: correctPosition,
         ));
@@ -97,7 +99,6 @@ class PuzzleViewModel with ChangeNotifier {
         piece.currentPosition = piece.correctPosition;
         piece.isPlaced = true;
 
-        // **이전의 문제성 로직을 제거했습니다.**
         // checkGameCompletion()만 호출합니다.
         checkGameCompletion();
       }
