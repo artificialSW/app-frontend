@@ -10,7 +10,7 @@ class PuzzleRoot extends StatelessWidget {
         children: [
           ElevatedButton(
               onPressed: () => Navigator.of(context).pushNamed('/puzzle/play'),
-              child: const Text("이번주 퍼즐 풀기")
+              child: const Text("이번 주 퍼즐 풀기")
           ),
           ElevatedButton(
               onPressed: () => Navigator.of(context).pushNamed('/puzzle/in-progress'),
