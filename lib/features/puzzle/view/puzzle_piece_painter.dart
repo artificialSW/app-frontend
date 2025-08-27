@@ -45,11 +45,11 @@ class PuzzlePiecePainter extends CustomPainter {
   }
 }
 Path getPiecePath(Size size, int row, int col, int maxRow, int maxCol) {
-  final width = size.width / maxCol;
-  final height = size.height / maxRow;
-  final offsetX = col * width;
-  final offsetY = row * height;
+  final width = size.width; //여기 수정
+  final height = size.height; //여기 수정
   final bumpSize = height / 4;
+  final offsetX = 0.0;
+  final offsetY = 0.0;
 
   var path = Path();
   path.moveTo(offsetX, offsetY);
@@ -132,6 +132,8 @@ class PuzzleImagePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final pieceWidth = image.width / maxCol;
     final pieceHeight = image.height / maxRow;
+    //final bump = pieceHeight / 4;
+    //canvas.translate(bump, bump);
     final sourceRect = Rect.fromLTWH(
       col * pieceWidth,
       row * pieceHeight,
