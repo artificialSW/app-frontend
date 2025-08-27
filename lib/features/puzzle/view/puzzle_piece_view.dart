@@ -19,6 +19,8 @@ class PuzzlePieceView extends StatelessWidget {
     final double pieceWidth = viewModel.fullUiImage!.width / piece.maxCol;
     final double pieceHeight = viewModel.fullUiImage!.height / piece.maxRow;
 
+    final bump = pieceHeight / 4;
+
     return Positioned(
       left: piece.currentPosition.dx,
       top: piece.currentPosition.dy,
@@ -30,17 +32,22 @@ class PuzzlePieceView extends StatelessWidget {
         },
         child: ClipPath(
           clipper: PuzzlePieceClipper(piece.row, piece.col, piece.maxRow, piece.maxCol),
-          child: CustomPaint(
-            // 이제 이미지와 테두리를 한 번에 그립니다.
-            painter: PuzzleImagePainter(
-              image: viewModel.fullUiImage!,
-              row: piece.row,
-              col: piece.col,
-              maxRow: piece.maxRow,
-              maxCol: piece.maxCol,
-            ),
-            foregroundPainter: PuzzlePiecePainter(
-              piece.row, piece.col, piece.maxRow, piece.maxCol,
+          child: OverflowBox(
+            maxWidth: piece.pieceWidth,
+            maxHeight: piece.pieceHeight,
+            child: CustomPaint(
+              //size: Size(pieceWidth + bump*2, pieceHeight + bump*2),
+              // 이제 이미지와 테두리를 한 번에 그립니다.
+              painter: PuzzleImagePainter(
+                image: viewModel.fullUiImage!,
+                row: piece.row,
+                col: piece.col,
+                maxRow: piece.maxRow,
+                maxCol: piece.maxCol,
+              ),
+              foregroundPainter: PuzzlePiecePainter(
+                piece.row, piece.col, piece.maxRow, piece.maxCol,
+              ),
             ),
           ),
         ),

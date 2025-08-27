@@ -37,6 +37,7 @@ class PuzzleBoardView extends StatelessWidget {
                   ),
                 ),
                 child: Stack(
+                  clipBehavior: Clip.none,
                   children: viewModel.puzzlePieces
                       .map((piece) => PuzzlePieceView(piece: piece))
                       .toList(),

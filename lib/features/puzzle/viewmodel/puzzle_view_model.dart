@@ -50,7 +50,8 @@ class PuzzleViewModel with ChangeNotifier {
       for (int j = 0; j < maxCol; j++) {
         final id = i * maxCol + j;
         final correctPosition = Offset(j * pieceWidth, i * pieceHeight);
-        final randomPosition = Offset(
+        final randomPosition =
+        Offset(
           startX + Random().nextDouble() * randomSpreadWidth,
           startY + Random().nextDouble() * randomSpreadHeight,
         );
