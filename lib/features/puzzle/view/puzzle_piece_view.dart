@@ -15,13 +15,13 @@ class PuzzlePieceView extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<PuzzleViewModel>(context);
 
-    final bumpSize = piece.pieceHeight / 4;
+    //final bumpSize = piece.pieceHeight / 4;
 
     return Positioned(
       left: piece.currentPosition.dx,
       top: piece.currentPosition.dy,
-      width: piece.pieceWidth,
-      height: piece.pieceHeight,
+      width: piece.imageSize.width / piece.maxCol.toDouble(),
+      height: piece.imageSize.height / piece.maxRow.toDouble(),
       child: GestureDetector(
         onPanUpdate: (details) {
           viewModel.onPiecePanUpdate(piece, details);

@@ -65,8 +65,6 @@ class PuzzleViewModel with ChangeNotifier { // 클래스기 때문에 한 퍼즐
           col: j,
           maxRow: maxRow,
           maxCol: maxCol,
-          pieceWidth: pieceWidth,
-          pieceHeight: pieceHeight,
           currentPosition: randomPosition,
           correctPosition: correctPosition,
         ));
