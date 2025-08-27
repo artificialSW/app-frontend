@@ -26,7 +26,7 @@ class PuzzlePieceView extends StatelessWidget {
         onPanUpdate: (details) {
           viewModel.onPiecePanUpdate(piece, details);
         },
-        child: ClipPath(
+        child: ClipPath( //이 ClipPath()를 통해 얻은 결과물이 🧩모양 퍼즐이어야 함.(튀어나온 부분 있는)
           clipper: PuzzlePieceClipper(piece.row, piece.col, piece.maxRow, piece.maxCol),
           child: CustomPaint(
             // 이제 이미지와 테두리를 한 번에 그립니다.

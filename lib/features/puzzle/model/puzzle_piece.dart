@@ -5,13 +5,13 @@ class PuzzlePieceModel {
   final Size imageSize;
   final int row;
   final int col;
-  final int maxRow;
-  final int maxCol;
-  final double pieceWidth; // 추가
-  final double pieceHeight; // 추가
+  final int maxRow; //piece 요소는 아니지만 계산을 위해 필요
+  final int maxCol; //piece 요소는 아니지만 계산을 위해 필요
+  final double pieceWidth; // 근데 이것도 조각마다 다 똑같지 않나? 그냥 따로 빼도 되지않나 리팩토링할때
+  final double pieceHeight; // 근데 이것도 조각마다 다 똑같지 않나? 그냥 따로 빼도 되지않나 리팩토링할때
 
-  Offset currentPosition;
-  final Offset correctPosition;
+  Offset currentPosition; //(dx, dy)
+  final Offset correctPosition; //(dx, dy)
   bool isPlaced = false;
 
   PuzzlePieceModel({

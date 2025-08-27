@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:artificialsw_frontend/features/puzzle/viewmodel/puzzle_view_model.dart';
-import 'package:artificialsw_frontend/features/puzzle/view/puzzle_board_view.dart';
 
 class PuzzleRoot extends StatelessWidget {
   const PuzzleRoot({super.key});
@@ -17,9 +14,9 @@ class PuzzleRoot extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // 새 게임 이미지와 난이도 설정
-                const Image image = Image(image: AssetImage('assets/images/mert34.jpeg'));
-                const int maxRow = 3;
-                const int maxCol = 3;
+                const Image image = Image(image: AssetImage('assets/images/4x4_grid_image_numbered.png'));
+                const int maxRow = 2;
+                const int maxCol = 2;
 
                 // Navigator.push 대신 pushNamed를 사용하고 인자를 전달합니다.
                 Navigator.of(context).pushNamed(

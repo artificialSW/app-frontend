@@ -10,7 +10,6 @@ class PuzzleBoardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<PuzzleViewModel>(context);
 
-    // 뷰모델을 초기화하는 로직은 그대로 둡니다.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (viewModel.fullUiImage == null) {
         viewModel.initializePuzzle(MediaQuery.of(context).size.width);

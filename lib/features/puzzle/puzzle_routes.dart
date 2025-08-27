@@ -24,7 +24,7 @@ Route<dynamic> puzzleRoutes(RouteSettings settings) {
             maxRow: maxRow,
             maxCol: maxCol,
             onGameComplete: (completedGame) {
-              print('게임이 완료되었습니다!');
+              print('게임이 완료되었습니다!'); //퍼즐 종료 페이지 여기서 관리
             },
           ),
           child: const PuzzleBoardView(),

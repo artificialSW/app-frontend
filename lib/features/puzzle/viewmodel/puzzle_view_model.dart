@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzle_piece.dart';
 
-class PuzzleViewModel with ChangeNotifier {
+class PuzzleViewModel with ChangeNotifier { // 클래스기 때문에 한 퍼즐 게임당 뷰모델이 하나씩 배정됨
   late List<PuzzlePieceModel> puzzlePieces;
-  ui.Image? fullUiImage; // 원본 이미지를 ui.Image로 저장
+  ui.Image? fullUiImage; // 원본 이미지를 ui.Image로 저장??
   bool isLoading = true;
   final Image fullImage;
   final int maxRow;
@@ -28,7 +27,6 @@ class PuzzleViewModel with ChangeNotifier {
     fullUiImage = await _loadImage(fullImage);
     final imageSize = Size(fullUiImage!.width.toDouble(), fullUiImage!.height.toDouble());
 
-    // 여기를 수정합니다. 화면 너비 대신 이미지의 원본 픽셀 너비를 사용합니다.
     final double puzzleWidth = imageSize.width;
     final double puzzleHeight = imageSize.height;
 
@@ -41,8 +39,8 @@ class PuzzleViewModel with ChangeNotifier {
     final double randomSpreadWidth = puzzleWidth * randomSpreadFactor;
     final double randomSpreadHeight = puzzleHeight * randomSpreadFactor;
 
-    final double startX = (puzzleWidth - randomSpreadWidth) / 2;
-    final double startY = (puzzleHeight - randomSpreadHeight) / 2;
+    final double startX = (puzzleWidth - randomSpreadWidth) / 2; //랜덤 x시작점
+    final double startY = (puzzleHeight - randomSpreadHeight) / 2; //랜덤 y시작점
     print("imageSize is $imageSize");
     print("puzzleWidth is $puzzleWidth");
     print("puzzleHeight is $puzzleHeight");
@@ -95,6 +93,7 @@ class PuzzleViewModel with ChangeNotifier {
   }
 
   void onPiecePanUpdate(PuzzlePieceModel piece, DragUpdateDetails dragDetails) {
+    //이 함수를 puzzle_piece_view 안의 gesturedetector에 담아서 사용
     if (!piece.isPlaced) {
       piece.currentPosition += dragDetails.delta;
 
@@ -105,14 +104,14 @@ class PuzzleViewModel with ChangeNotifier {
         piece.currentPosition = piece.correctPosition;
         piece.isPlaced = true;
 
-        // checkGameCompletion()만 호출합니다.
+        // checkGameCompletion()만 호출
         checkGameCompletion();
       }
       notifyListeners();
     }
   }
 
-  void checkGameCompletion() {
+  void checkGameCompletion() { //이것도 크게 보면 puzzle_piece_view 안의 gesturedetector에 있으므로 -> 터치 시마다 호출됨
     bool allPiecesPlaced = puzzlePieces.every((piece) => piece.isPlaced);
     if (allPiecesPlaced) {
       onGameComplete(this);
