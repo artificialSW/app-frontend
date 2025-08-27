@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:artificialsw_frontend/features/puzzle/puzzlelist_ongoing.dart';
 
 class PuzzleRoot extends StatelessWidget {
   const PuzzleRoot({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold( // 이 Scaffold를 추가합니다.
       appBar: AppBar(title: const Text('Puzzle')),
       body: Column(
         children: [

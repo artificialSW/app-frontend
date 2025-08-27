@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 import
-import 'package:artificialsw_frontend/features/puzzle/puzzlepiece.dart';
+import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
 
 class PlayPuzzle extends StatefulWidget {
   const PlayPuzzle({Key? key}) : super(key: key);
