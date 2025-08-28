@@ -1,7 +1,7 @@
 import 'package:artificialsw_frontend/shell.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzlelist_ongoing.dart';
+import 'package:artificialsw_frontend/features/puzzle/puzzle_ongoinglist.dart';
 
 void main() {
   runApp(
