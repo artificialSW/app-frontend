@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/viewmodel/puzzle_view_model.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_main.dart';
 import 'package:artificialsw_frontend/features/puzzle/view/puzzle_board_view.dart';
-
+//
 Route<dynamic> puzzleRoutes(RouteSettings settings) {
   switch (settings.name) {
     case '/':
