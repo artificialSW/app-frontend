@@ -5,17 +5,23 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 import
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
+import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 
 class PlayPuzzle extends StatefulWidget {
-  const PlayPuzzle({Key? key}) : super(key: key);
+  final PuzzleGame puzzle;
+
+  const PlayPuzzle({
+    Key? key,
+    required this.puzzle,
+  }) : super(key: key);
 
   @override
   _PlayPuzzleState createState() => _PlayPuzzleState();
 }
 
 class _PlayPuzzleState extends State<PlayPuzzle> {
-  final int rows = 2;
-  final int cols = 2;
+  int get rows => widget.puzzle.size;
+  int get cols => widget.puzzle.size;
   Image? _image; // Image 위젯 자체를 저장하도록 변경
   List<Widget> pieces = [];
   int completedPieces = 0;
@@ -23,13 +29,13 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   @override
   void initState() {
     super.initState();
-    _loadAssetImage();
+    const imagePath = 'assets/images/mert34.jpeg';
+    _loadAssetImage(imagePath);
   }
 
   // 에셋 이미지를 로드하고 퍼즐 조각을 생성하는 함수
-  Future<void> _loadAssetImage() async {
-    const String assetPath = 'assets/images/mert34.jpeg';
-
+  Future<void> _loadAssetImage(String imagePath) async {
+    String assetPath = imagePath;
     // 에셋 파일이 실제로 존재하는지 확인 (선택 사항)
     try {
       await rootBundle.load(assetPath);

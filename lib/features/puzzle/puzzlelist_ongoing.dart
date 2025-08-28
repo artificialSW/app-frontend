@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
+import 'package:artificialsw_frontend/features/puzzle/model/mockdata.dart';
 
 /// 퍼즐 리스트 상태 관리
 class PuzzleProvider with ChangeNotifier {
@@ -119,7 +120,11 @@ class OngoingPuzzlesPage extends StatelessWidget {
                   onDelete:
                       () => _showDeleteConfirmationDialog(context, puzzle.puzzleId),
                   onPressed: () {
-                    Navigator.of(context).pushNamed('/puzzle/play');
+                    //이렇게 버튼 누를때마다 다시 생성하는 식으로 하자. 지금은 굳이긴 한데 나중에 앱을 껐다켜도 유지되려면 이렇게 해야하는거 아님?
+                    Navigator.of(context).pushNamed(
+                        '/puzzle/play',
+                        arguments: {'gameInstance': puzzle},
+                    );
                   },
                 );
               },

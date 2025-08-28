@@ -2,6 +2,7 @@ import 'package:artificialsw_frontend/features/puzzle/puzzlelist_ongoing.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_playing.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_completed.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_mainpage.dart';
+import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:flutter/material.dart';
 
 Route<dynamic> puzzleRoutes(RouteSettings s) {
@@ -11,7 +12,9 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
     case '/puzzle/in-progress':  
       return MaterialPageRoute(builder: (_) => const OngoingPuzzlesPage());
     case '/puzzle/play':
-      return MaterialPageRoute(builder: (_) => PlayPuzzle());
+      final args = s.arguments as Map<String, dynamic>;
+      final puzzleGame = args['gameInstance'] as PuzzleGame;
+      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleGame));
     case '/puzzle/completed':
       return MaterialPageRoute(builder: (_) => PuzzleCompleted());
     default:
