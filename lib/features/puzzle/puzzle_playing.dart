@@ -5,6 +5,7 @@ import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 imp
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_completedlist.dart';
+import 'package:provider/provider.dart';
 class PlayPuzzle extends StatefulWidget {
   final PuzzleGame puzzle;
 
@@ -115,7 +116,10 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       }
       if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때
         widget.puzzle.isCompleted = true;
-        PuzzleProvider().completePuzzle(widget.puzzle);
+        Provider.of<PuzzleProvider>(
+          context,
+          listen: false,
+        ).completePuzzle(widget.puzzle);
         _navigateToNextPage();
       }
     });
@@ -128,7 +132,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     await Future.delayed(const Duration(seconds: 1));
 
     // '/puzzle/in-progress' 대신 이동할 페이지의 라우트 이름을 사용
-    Navigator.of(context).pushReplacementNamed('/puzzle/completed');
+    Navigator.of(context).pushReplacementNamed('/puzzle/completed-list');
   }
 
   @override

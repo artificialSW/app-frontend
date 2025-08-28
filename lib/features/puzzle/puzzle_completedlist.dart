@@ -13,9 +13,9 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position
 /// 진행중인 퍼즐과 완료된 퍼즐을 모두 관리
 class PuzzleProvider with ChangeNotifier {
   // 진행중인 퍼즐 목록
-  List<PuzzleGame> puzzles = [
+  List<PuzzleGame> _puzzles = [
     PuzzleGame(
-      puzzleId: '1',
+      puzzleId: 1,
       imagePath: 'assets/images/mert34.jpeg',
       size: 3,
       piecesPosition: [
@@ -33,7 +33,7 @@ class PuzzleProvider with ChangeNotifier {
       contributors: [User(name: 'Jaewook', id: 1), User(name: 'JungHwan', id: 2)],
     ),
     PuzzleGame(
-      puzzleId: '2',
+      puzzleId: 2,
       imagePath: 'imagePath_2',
       size: 3,
       piecesPosition: [
@@ -55,7 +55,7 @@ class PuzzleProvider with ChangeNotifier {
   // 완료된 퍼즐 목록을 추가합니다.
   List<PuzzleGame> _completedPuzzles = [
     PuzzleGame(
-      puzzleId: '3',
+      puzzleId: 3,
       imagePath: 'imagePath_3',
       size: 3,
       piecesPosition: [
@@ -73,7 +73,7 @@ class PuzzleProvider with ChangeNotifier {
       contributors: [User(name: 'Jaewook', id: 1)],
     ),
     PuzzleGame(
-      puzzleId: '4',
+      puzzleId: 4,
       imagePath: 'imagePath_4',
       size: 3,
       piecesPosition: [
@@ -92,19 +92,20 @@ class PuzzleProvider with ChangeNotifier {
     ),
   ];
 
-  List<PuzzleGame> get ongoingPuzzles => puzzles;
+  List<PuzzleGame> get ongoingPuzzles => _puzzles;
   List<PuzzleGame> get completedPuzzles => _completedPuzzles;
 
   // 퍼즐 삭제
-  void deletePuzzle(String id) {
-    puzzles.removeWhere((puzzle) => puzzle.puzzleId == id);
+  void deletePuzzle(int id) {
+    _puzzles.removeWhere((p) => p.puzzleId == id);
+    _completedPuzzles.removeWhere((puzzle) => puzzle.puzzleId == 3); //이 코드로는 정상적으로 잘 지워지고 화면에도 지워진 화면 잘 나오는거 확인함.
     notifyListeners();
   }
 
   // 퍼즐 완료
   void completePuzzle(PuzzleGame puzzle) {
     // 진행중인 목록에서 퍼즐을 제거
-    puzzles.removeWhere((p) => p.puzzleId == puzzle.puzzleId);
+    _puzzles.removeWhere((p) => p.puzzleId == puzzle.puzzleId);
     // 완료된 목록에 퍼즐을 추가
     _completedPuzzles.add(puzzle);
     notifyListeners();
@@ -174,7 +175,7 @@ class PuzzleListItem extends StatelessWidget {
     required this.puzzle,
     required this.onDelete,
     required this.onPressed,
-    this.isCompleted = false,
+    required this.isCompleted,
   }) : super(key: key);
 
   @override

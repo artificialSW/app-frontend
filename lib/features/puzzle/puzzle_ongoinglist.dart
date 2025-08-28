@@ -96,7 +96,7 @@ import 'package:artificialsw_frontend/features/puzzle/puzzle_completedlist.dart'
 class OngoingPuzzlesPage extends StatelessWidget {
   const OngoingPuzzlesPage({Key? key}) : super(key: key);
 
-  void _showDeleteConfirmationDialog(BuildContext context, String puzzleId) {
+  void _showDeleteConfirmationDialog(BuildContext context, int puzzleId) {
     showDialog(
       context: context,
       builder: (context) {
@@ -142,7 +142,7 @@ class OngoingPuzzlesPage extends StatelessWidget {
       ),
       body: Consumer<PuzzleProvider>(
         builder: (context, puzzleProvider, child) {
-          if (puzzleProvider.puzzles.isEmpty) {
+          if (puzzleProvider.ongoingPuzzles.isEmpty) {
             return const Center(
               child: Text(
                 '진행중인 퍼즐이 없습니다.',
@@ -153,9 +153,9 @@ class OngoingPuzzlesPage extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ListView.builder(
-              itemCount: puzzleProvider.puzzles.length,
+              itemCount: puzzleProvider.ongoingPuzzles.length,
               itemBuilder: (context, index) {
-                final puzzle = puzzleProvider.puzzles[index];
+                final puzzle = puzzleProvider.ongoingPuzzles[index];
                 return PuzzleListItem(
                   puzzle: puzzle,
                   onDelete:
@@ -167,6 +167,7 @@ class OngoingPuzzlesPage extends StatelessWidget {
                         arguments: {'gameInstance': puzzle},
                     );
                   },
+                  isCompleted: false,
                 );
               },
             ),
@@ -177,116 +178,116 @@ class OngoingPuzzlesPage extends StatelessWidget {
   }
 }
 
-class PuzzleListItem extends StatelessWidget {
-  final PuzzleGame puzzle;
-  final VoidCallback onDelete;
-  final VoidCallback onPressed; // onContinue 대신 onPressed로 변경
-
-  const PuzzleListItem({
-    Key? key,
-    required this.puzzle,
-    required this.onDelete,
-    required this.onPressed,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 퍼즐 이미지 영역 (와이어프레임 참고)
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: const Color(0xFFC0D6E6), // 연한 파란색
-              borderRadius: BorderRadius.circular(8),
-            ),
-
-            // 퍼즐 그림은 무시했으므로 단순한 색상 박스로 대체
-          ),
-
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '주제(퍼즐id): ${puzzle.puzzleId}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '크기: ${puzzle.size}',
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '퍼즐 생성자: ${puzzle.contributors[0].name}',
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    // 삭제 버튼
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: onDelete,
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.grey,
-                          side: const BorderSide(color: Colors.grey),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                        ),
-                        child: const Text('삭제', style: TextStyle(fontSize: 12)),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    // 진행하기 버튼
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: onPressed,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                        ),
-                        child: const Text(
-                          '진행하기',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// class PuzzleListItem extends StatelessWidget {
+//   final PuzzleGame puzzle;
+//   final VoidCallback onDelete;
+//   final VoidCallback onPressed; // onContinue 대신 onPressed로 변경
+//
+//   const PuzzleListItem({
+//     Key? key,
+//     required this.puzzle,
+//     required this.onDelete,
+//     required this.onPressed,
+//   }) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: const EdgeInsets.symmetric(vertical: 8.0),
+//       padding: const EdgeInsets.all(12.0),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(10),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.grey.withOpacity(0.1),
+//             spreadRadius: 1,
+//             blurRadius: 5,
+//             offset: const Offset(0, 3),
+//           ),
+//         ],
+//       ),
+//
+//       child: Row(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           // 퍼즐 이미지 영역 (와이어프레임 참고)
+//           Container(
+//             width: 80,
+//             height: 80,
+//             decoration: BoxDecoration(
+//               color: const Color(0xFFC0D6E6), // 연한 파란색
+//               borderRadius: BorderRadius.circular(8),
+//             ),
+//
+//             // 퍼즐 그림은 무시했으므로 단순한 색상 박스로 대체
+//           ),
+//
+//           const SizedBox(width: 16),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   '주제(퍼즐id): ${puzzle.puzzleId}',
+//                   style: const TextStyle(
+//                     fontWeight: FontWeight.bold,
+//                     fontSize: 14,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 4),
+//                 Text(
+//                   '크기: ${puzzle.size}',
+//                   style: const TextStyle(color: Colors.grey, fontSize: 12),
+//                 ),
+//                 const SizedBox(height: 8),
+//                 Text(
+//                   '퍼즐 생성자: ${puzzle.contributors[0].name}',
+//                   style: const TextStyle(color: Colors.grey, fontSize: 12),
+//                 ),
+//                 const SizedBox(height: 12),
+//                 Row(
+//                   children: [
+//                     // 삭제 버튼
+//                     Expanded(
+//                       child: OutlinedButton(
+//                         onPressed: onDelete,
+//                         style: OutlinedButton.styleFrom(
+//                           foregroundColor: Colors.grey,
+//                           side: const BorderSide(color: Colors.grey),
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(20),
+//                           ),
+//                           padding: const EdgeInsets.symmetric(vertical: 8),
+//                         ),
+//                         child: const Text('삭제', style: TextStyle(fontSize: 12)),
+//                       ),
+//                     ),
+//                     const SizedBox(width: 8),
+//                     // 진행하기 버튼
+//                     Expanded(
+//                       child: ElevatedButton(
+//                         onPressed: onPressed,
+//                         style: ElevatedButton.styleFrom(
+//                           backgroundColor: Colors.blue,
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(20),
+//                           ),
+//                           padding: const EdgeInsets.symmetric(vertical: 8),
+//                         ),
+//                         child: const Text(
+//                           '진행하기',
+//                           style: TextStyle(color: Colors.white, fontSize: 12),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

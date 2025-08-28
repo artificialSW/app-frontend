@@ -3,7 +3,7 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position
 
 /// 퍼즐 데이터 모델
 class PuzzleGame {
-  final String puzzleId;
+  final int puzzleId;
   final String imagePath;
   final int size;
   List<PiecePosition> piecesPosition;
