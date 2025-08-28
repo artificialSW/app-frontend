@@ -14,8 +14,8 @@ class PlayPuzzle extends StatefulWidget {
 }
 
 class _PlayPuzzleState extends State<PlayPuzzle> {
-  final int rows = 3;
-  final int cols = 3;
+  final int rows = 2;
+  final int cols = 2;
   Image? _image; // Image 위젯 자체를 저장하도록 변경
   List<Widget> pieces = [];
   int completedPieces = 0;

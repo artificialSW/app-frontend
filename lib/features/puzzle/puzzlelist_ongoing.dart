@@ -1,4 +1,4 @@
-// puzzle_provider.dart (기존과 동일)
+import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -6,41 +6,46 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 
 /// 퍼즐 리스트 상태 관리
 class PuzzleProvider with ChangeNotifier {
+
   List<PuzzleGame> _puzzles = [
     PuzzleGame(
-      id: '1',
-      title: '우리 가족의 행복한 추억',
-      keyword: '겨울',
-      progress: 5,
-      totalPieces: 25,
+      puzzleId: '1',
+      imagePath: 'imagePath_1',
+      size: 3,
+      completedPiecesId: [1,2,3],
+      isCompleted: false,
+      contributors: [User(name: 'Jaewook', id: 1), User(name: 'JungHwan', id: 2)],
     ),
     PuzzleGame(
-      id: '2',
-      title: '우리 가족의 행복한 추억',
-      keyword: '여름',
-      progress: 4,
-      totalPieces: 16,
+      puzzleId: '2',
+      imagePath: 'imagePath_2',
+      size: 3,
+      completedPiecesId: [1,2,3],
+      isCompleted: false,
+      contributors: [User(name: 'Jaewook', id: 1)],
     ),
     PuzzleGame(
-      id: '3',
-      title: '우리 가족의 행복한 추억',
-      keyword: '일상',
-      progress: 5,
-      totalPieces: 25,
+      puzzleId: '3',
+      imagePath: 'imagePath_3',
+      size: 3,
+      completedPiecesId: [1,2,3],
+      isCompleted: false,
+      contributors: [],
     ),
     PuzzleGame(
-      id: '4',
-      title: '우리 가족의 행복한 추억',
-      keyword: '여름',
-      progress: 1,
-      totalPieces: 25,
+      puzzleId: '4',
+      imagePath: 'imagePath_4',
+      size: 3,
+      completedPiecesId: [1,2,3],
+      isCompleted: false,
+      contributors: [User(name: 'JungHwan', id: 2)],
     ),
   ];
 
   List<PuzzleGame> get puzzles => _puzzles;
 
   void deletePuzzle(String id) {
-    _puzzles.removeWhere((puzzle) => puzzle.id == id);
+    _puzzles.removeWhere((puzzle) => puzzle.puzzleId == id);
     notifyListeners();
   }
 }
@@ -112,7 +117,7 @@ class OngoingPuzzlesPage extends StatelessWidget {
                 return PuzzleListItem(
                   puzzle: puzzle,
                   onDelete:
-                      () => _showDeleteConfirmationDialog(context, puzzle.id),
+                      () => _showDeleteConfirmationDialog(context, puzzle.puzzleId),
                   onPressed: () {
                     Navigator.of(context).pushNamed('/puzzle/play');
                   },
@@ -177,7 +182,7 @@ class PuzzleListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '주제: ${puzzle.title}',
+                  '주제(퍼즐id): ${puzzle.puzzleId}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -185,12 +190,12 @@ class PuzzleListItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'AI 선정 키워드: ${puzzle.keyword}',
+                  'AI 선정 키워드(이미지path): ${puzzle.imagePath}',
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '진행도: ${puzzle.progress} / ${puzzle.totalPieces}',
+                  '진행도: ${puzzle.completedPiecesId} / ${puzzle.size*puzzle.size}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
