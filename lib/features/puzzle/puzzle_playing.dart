@@ -29,7 +29,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   @override
   void initState() {
     super.initState();
-    const imagePath = 'assets/images/mert34.jpeg';
+    final imagePath = widget.puzzle.imagePath;
     _loadAssetImage(imagePath);
   }
 

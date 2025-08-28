@@ -11,7 +11,7 @@ class PuzzleProvider with ChangeNotifier {
   List<PuzzleGame> _puzzles = [
     PuzzleGame(
       puzzleId: '1',
-      imagePath: 'imagePath_1',
+      imagePath: 'assets/images/mert34.jpeg',
       size: 3,
       completedPiecesId: [1,2,3],
       isCompleted: false,
