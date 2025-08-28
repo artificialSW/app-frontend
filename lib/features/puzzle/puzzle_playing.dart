@@ -113,6 +113,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       if(!completedPiecesId.contains(id)){
         completedPiecesId.add(id);
       }
+      widget.puzzle.isCompleted = true;
       if (completedPiecesId.length == rows * cols) {
         _navigateToNextPage();
       }
