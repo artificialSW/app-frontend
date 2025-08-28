@@ -13,9 +13,13 @@ class PuzzleRoot extends StatelessWidget {
               child: const Text("이번 주 퍼즐 풀기")
           ),
           ElevatedButton(
-              onPressed: () => Navigator.of(context).pushNamed('/puzzle/in-progress'),
+              onPressed: () => Navigator.of(context).pushNamed('/puzzle/ongoing-list'),
               child: const Text("진행중인 퍼즐 리스트")
-          )
+          ),
+          ElevatedButton(
+              onPressed: () => Navigator.of(context).pushNamed('/puzzle/completed-list'),
+              child: const Text("완료된 퍼즐 목록")
+          ),
         ],
       ),
     );

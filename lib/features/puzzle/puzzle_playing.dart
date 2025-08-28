@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 import
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
-
+import 'package:artificialsw_frontend/features/puzzle/puzzle_completedlist.dart';
 class PlayPuzzle extends StatefulWidget {
   final PuzzleGame puzzle;
 
@@ -108,13 +108,14 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     });
   }
 
-  void _onCompleted(int id) {
+  void _onCompleted(int id) { //퍼즐 piece 하나가 맞춰졌을 떄
     setState(() {
       if(!completedPiecesId.contains(id)){
         completedPiecesId.add(id);
       }
-      widget.puzzle.isCompleted = true;
-      if (completedPiecesId.length == rows * cols) {
+      if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때
+        widget.puzzle.isCompleted = true;
+        PuzzleProvider().completePuzzle(widget.puzzle);
         _navigateToNextPage();
       }
     });

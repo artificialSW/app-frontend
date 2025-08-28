@@ -4,90 +4,93 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
-
-/// 퍼즐 리스트 상태 관리
-class PuzzleProvider with ChangeNotifier {
-
-  List<PuzzleGame> _puzzles = [
-    PuzzleGame(
-      puzzleId: '1',
-      imagePath: 'assets/images/mert34.jpeg',
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],
-      isCompleted: false,
-      contributors: [User(name: 'Jaewook', id: 1), User(name: 'JungHwan', id: 2)],
-    ),
-    PuzzleGame(
-      puzzleId: '2',
-      imagePath: 'imagePath_2',
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],      isCompleted: false,
-      contributors: [User(name: 'JungHwan', id: 2)],
-    ),
-    PuzzleGame(
-      puzzleId: '3',
-      imagePath: 'imagePath_3',
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],      isCompleted: false,
-      contributors: [User(name: 'Jaewook', id: 1)],
-    ),
-    PuzzleGame(
-      puzzleId: '4',
-      imagePath: 'imagePath_4',
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],
-      isCompleted: false,
-      contributors: [User(name: 'JungHwan', id: 2)],
-    ),
-  ];
-
-  List<PuzzleGame> get puzzles => _puzzles;
-
-  void deletePuzzle(String id) {
-    _puzzles.removeWhere((puzzle) => puzzle.puzzleId == id);
-    notifyListeners();
-  }
-}
+import 'package:artificialsw_frontend/features/puzzle/puzzle_completedlist.dart';
+//
+// /// 퍼즐 리스트 상태 관리
+// class PuzzleProvider with ChangeNotifier {
+//
+//   List<PuzzleGame> _puzzles = [
+//     PuzzleGame(
+//       puzzleId: '1',
+//       imagePath: 'assets/images/mert34.jpeg',
+//       size: 3,
+//       piecesPosition: [
+//         PiecePosition(x: 10.0, y: 10.0),
+//         PiecePosition(x: 10.0, y: 50.0),
+//         PiecePosition(x: 10.0, y: 90.0),
+//         PiecePosition(x: 50.0, y: 10.0),
+//         PiecePosition(x: 50.0, y: 50.0),
+//         PiecePosition(x: 50.0, y: 90.0),
+//         PiecePosition(x: 90.0, y: 10.0),
+//         PiecePosition(x: 90.0, y: 50.0),
+//         PiecePosition(x: 90.0, y: 90.0),
+//       ],
+//       isCompleted: false,
+//       contributors: [User(name: 'Jaewook', id: 1), User(name: 'JungHwan', id: 2)],
+//     ),
+//     PuzzleGame(
+//       puzzleId: '2',
+//       imagePath: 'imagePath_2',
+//       size: 3,
+//       piecesPosition: [
+//         PiecePosition(x: 10.0, y: 10.0),
+//         PiecePosition(x: 10.0, y: 50.0),
+//         PiecePosition(x: 10.0, y: 90.0),
+//         PiecePosition(x: 50.0, y: 10.0),
+//         PiecePosition(x: 50.0, y: 50.0),
+//         PiecePosition(x: 50.0, y: 90.0),
+//         PiecePosition(x: 90.0, y: 10.0),
+//         PiecePosition(x: 90.0, y: 50.0),
+//         PiecePosition(x: 90.0, y: 90.0),
+//       ],
+//       isCompleted: false,
+//       contributors: [User(name: 'JungHwan', id: 2)],
+//     ),
+//     PuzzleGame(
+//       puzzleId: '3',
+//       imagePath: 'imagePath_3',
+//       size: 3,
+//       piecesPosition: [
+//         PiecePosition(x: 10.0, y: 10.0),
+//         PiecePosition(x: 10.0, y: 50.0),
+//         PiecePosition(x: 10.0, y: 90.0),
+//         PiecePosition(x: 50.0, y: 10.0),
+//         PiecePosition(x: 50.0, y: 50.0),
+//         PiecePosition(x: 50.0, y: 90.0),
+//         PiecePosition(x: 90.0, y: 10.0),
+//         PiecePosition(x: 90.0, y: 50.0),
+//         PiecePosition(x: 90.0, y: 90.0),
+//       ],
+//       isCompleted: false,
+//       contributors: [User(name: 'Jaewook', id: 1)],
+//     ),
+//     PuzzleGame(
+//       puzzleId: '4',
+//       imagePath: 'imagePath_4',
+//       size: 3,
+//       piecesPosition: [
+//         PiecePosition(x: 10.0, y: 10.0),
+//         PiecePosition(x: 10.0, y: 50.0),
+//         PiecePosition(x: 10.0, y: 90.0),
+//         PiecePosition(x: 50.0, y: 10.0),
+//         PiecePosition(x: 50.0, y: 50.0),
+//         PiecePosition(x: 50.0, y: 90.0),
+//         PiecePosition(x: 90.0, y: 10.0),
+//         PiecePosition(x: 90.0, y: 50.0),
+//         PiecePosition(x: 90.0, y: 90.0),
+//       ],
+//       isCompleted: false,
+//       contributors: [User(name: 'JungHwan', id: 2)],
+//     ),
+//   ];
+//
+//   List<PuzzleGame> get puzzles => _puzzles;
+//
+//   void deletePuzzle(String id) {
+//     _puzzles.removeWhere((puzzle) => puzzle.puzzleId == id);
+//     notifyListeners();
+//   }
+// }
 
 /// 진행중인 퍼즐 목록 페이지
 class OngoingPuzzlesPage extends StatelessWidget {
