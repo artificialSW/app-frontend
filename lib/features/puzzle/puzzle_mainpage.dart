@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzlelist_ongoing.dart';
 
 class PuzzleRoot extends StatelessWidget {
   const PuzzleRoot({super.key});

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
-import 'package:artificialsw_frontend/features/puzzle/model/mockdata.dart';
+import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 
 /// 퍼즐 리스트 상태 관리
 class PuzzleProvider with ChangeNotifier {
@@ -13,7 +13,17 @@ class PuzzleProvider with ChangeNotifier {
       puzzleId: '1',
       imagePath: 'assets/images/mert34.jpeg',
       size: 3,
-      completedPiecesId: [1,2,3],
+      piecesPosition: [
+        PiecePosition(x: 10.0, y: 10.0),
+        PiecePosition(x: 10.0, y: 50.0),
+        PiecePosition(x: 10.0, y: 90.0),
+        PiecePosition(x: 50.0, y: 10.0),
+        PiecePosition(x: 50.0, y: 50.0),
+        PiecePosition(x: 50.0, y: 90.0),
+        PiecePosition(x: 90.0, y: 10.0),
+        PiecePosition(x: 90.0, y: 50.0),
+        PiecePosition(x: 90.0, y: 90.0),
+      ],
       isCompleted: false,
       contributors: [User(name: 'Jaewook', id: 1), User(name: 'JungHwan', id: 2)],
     ),
@@ -21,23 +31,51 @@ class PuzzleProvider with ChangeNotifier {
       puzzleId: '2',
       imagePath: 'imagePath_2',
       size: 3,
-      completedPiecesId: [1,2,3],
-      isCompleted: false,
-      contributors: [User(name: 'Jaewook', id: 1)],
+      piecesPosition: [
+        PiecePosition(x: 10.0, y: 10.0),
+        PiecePosition(x: 10.0, y: 50.0),
+        PiecePosition(x: 10.0, y: 90.0),
+        PiecePosition(x: 50.0, y: 10.0),
+        PiecePosition(x: 50.0, y: 50.0),
+        PiecePosition(x: 50.0, y: 90.0),
+        PiecePosition(x: 90.0, y: 10.0),
+        PiecePosition(x: 90.0, y: 50.0),
+        PiecePosition(x: 90.0, y: 90.0),
+      ],      isCompleted: false,
+      contributors: [User(name: 'JungHwan', id: 2)],
     ),
     PuzzleGame(
       puzzleId: '3',
       imagePath: 'imagePath_3',
       size: 3,
-      completedPiecesId: [1,2,3],
-      isCompleted: false,
-      contributors: [],
+      piecesPosition: [
+        PiecePosition(x: 10.0, y: 10.0),
+        PiecePosition(x: 10.0, y: 50.0),
+        PiecePosition(x: 10.0, y: 90.0),
+        PiecePosition(x: 50.0, y: 10.0),
+        PiecePosition(x: 50.0, y: 50.0),
+        PiecePosition(x: 50.0, y: 90.0),
+        PiecePosition(x: 90.0, y: 10.0),
+        PiecePosition(x: 90.0, y: 50.0),
+        PiecePosition(x: 90.0, y: 90.0),
+      ],      isCompleted: false,
+      contributors: [User(name: 'Jaewook', id: 1)],
     ),
     PuzzleGame(
       puzzleId: '4',
       imagePath: 'imagePath_4',
       size: 3,
-      completedPiecesId: [1,2,3],
+      piecesPosition: [
+        PiecePosition(x: 10.0, y: 10.0),
+        PiecePosition(x: 10.0, y: 50.0),
+        PiecePosition(x: 10.0, y: 90.0),
+        PiecePosition(x: 50.0, y: 10.0),
+        PiecePosition(x: 50.0, y: 50.0),
+        PiecePosition(x: 50.0, y: 90.0),
+        PiecePosition(x: 90.0, y: 10.0),
+        PiecePosition(x: 90.0, y: 50.0),
+        PiecePosition(x: 90.0, y: 90.0),
+      ],
       isCompleted: false,
       contributors: [User(name: 'JungHwan', id: 2)],
     ),
@@ -195,16 +233,13 @@ class PuzzleListItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'AI 선정 키워드(이미지path): ${puzzle.imagePath}',
+                  '크기: ${puzzle.size}',
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '진행도: ${puzzle.completedPiecesId} / ${puzzle.size*puzzle.size}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
+                  '퍼즐 생성자: ${puzzle.contributors[0].name}',
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const SizedBox(height: 12),
                 Row(

@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_maker.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzle_playing.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 
 class PuzzlePiece extends StatefulWidget {
@@ -10,6 +9,7 @@ class PuzzlePiece extends StatefulWidget {
   final Size imageSize;
   final int row;
   final int col;
+  final int id; // 지금 당장은 팔요 없는 것 같긴 함
   final int maxRow;
   final int maxCol;
   PiecePosition? position;
@@ -23,6 +23,7 @@ class PuzzlePiece extends StatefulWidget {
     required this.imageSize,
     required this.row,
     required this.col,
+    required this.id,
     required this.maxRow,
     required this.maxCol,
     this.position,
@@ -56,16 +57,13 @@ class PuzzlePieceState extends State<PuzzlePiece> {
     final maxY = screenHeight - pieceHeight - pieceHeight/2;
 
     // Initialize top and left if they are null (퍼즐 시작하면 조각들을 랜덤 위치에 흩뿌리기)
-    widget.position ??= PiecePosition(
-      y: Random().nextDouble() * maxY,
-      x: Random().nextDouble() * maxX,
-    );
- //   top ??= (imageHeight / 2) + Random().nextInt((imageHeight / 2 - pieceHeight).ceil()).toDouble();
-
-    // if (left == null) {
-    //   left = Random().nextInt((imageWidth - pieceWidth).ceil()).toDouble();
-    //   left = left! - widget.col * pieceWidth;
-    // }
+    if(widget.position == null){
+      print("퍼즐 조각의 위치를 초기화합니다.");
+      widget.position = PiecePosition(
+        y: Random().nextDouble() * maxY,
+        x: Random().nextDouble() * maxX,
+      );
+    }
 
     return Positioned(
       top: widget.position?.y,
@@ -90,12 +88,12 @@ class PuzzlePieceState extends State<PuzzlePiece> {
               widget.position?.x = (widget.position?.x ?? 0) + dragUpdateDetails.delta.dx;
 
               // 현재 위치가 정답 위치에 충분히 가까워지면 스냅합니다.
-              if ((widget.position?.y!)!.abs() < 10 && (widget.position?.x!)!.abs() < 10) {
+              if ((widget.position?.y)!.abs() < 10 && (widget.position?.x)!.abs() < 10) {
                 widget.position?.y = 0;
                 widget.position?.x = 0;
                 isMovable = false;
                 widget.sendToBack(widget);
-                widget.onCompleted();
+                widget.onCompleted(widget.row * widget.maxCol + widget.col);
               }
             });
           }

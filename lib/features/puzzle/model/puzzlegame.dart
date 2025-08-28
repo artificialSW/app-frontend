@@ -1,12 +1,12 @@
-import 'dart:ui';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
+import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 
 /// 퍼즐 데이터 모델
 class PuzzleGame {
   final String puzzleId;
   final String imagePath;
   final int size;
-  List<int> completedPiecesId; // 기본값을 생성자에서 초기화합니다.
+  List<PiecePosition> piecesPosition;
   bool isCompleted; // 기본값을 생성자에서 초기화합니다.
   List<User> contributors; // 기본값을 생성자에서 초기화합니다.
 
@@ -15,10 +15,10 @@ class PuzzleGame {
     required this.puzzleId,
     required this.imagePath,
     required this.size,
-    List<int>? completedPiecesId, // completedPiecesId를 옵셔널로 선언합니다.
+    List<PiecePosition>? piecesPosition, // completedPiecesId를 옵셔널로 선언합니다.
     bool? isCompleted, // isCompleted를 옵셔널로 선언합니다.
     List<User>? contributors, // contributors를 옵셔널로 선언합니다.
-  })  : this.completedPiecesId = completedPiecesId ?? [],
+  })  : this.piecesPosition = piecesPosition ?? [],
         this.isCompleted = isCompleted ?? false,
         this.contributors = contributors ?? [];
 }

@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 import
@@ -24,7 +22,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   int get cols => widget.puzzle.size;
   Image? _image; // Image 위젯 자체를 저장하도록 변경
   List<Widget> pieces = [];
-  int completedPieces = 0;
+  List<int> completedPiecesId = [];
 
   @override
   void initState() {
@@ -81,11 +79,15 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
             imageSize: imageSize,
             row: x,
             col: y,
+            id: x * cols + y, // 지금 당장은 팔요 없는 것 같긴 함
             maxRow: rows,
             maxCol: cols,
+            position: widget.puzzle.piecesPosition[x * cols + y],
             bringToTop: _bringToTop,
             sendToBack: _sendToBack,
-            onCompleted: _onCompleted,
+            onCompleted: (id) {
+              _onCompleted(id);
+            },
           ));
         });
       }
@@ -106,11 +108,12 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     });
   }
 
-  void _onCompleted() {
+  void _onCompleted(int id) {
     setState(() {
-      completedPieces++;
-      print("$completedPieces개 완성!");
-      if (completedPieces == rows * cols) {
+      if(!completedPiecesId.contains(id)){
+        completedPiecesId.add(id);
+      }
+      if (completedPiecesId.length == rows * cols) {
         _navigateToNextPage();
       }
     });
