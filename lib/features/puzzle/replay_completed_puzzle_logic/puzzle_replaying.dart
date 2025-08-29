@@ -1,10 +1,9 @@
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
+import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 import
-import 'package:provider/provider.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 
 ///로직:
 ///1. 완료 목록에 있는 퍼즐 인스턴스를 바로가 아닌 복사해서 이 페이지로 들고 온다.
@@ -28,8 +27,8 @@ class ReplayPuzzle extends StatefulWidget {
 }
 
 class _ReplayPuzzleState extends State<ReplayPuzzle> {
-  int get rows => widget.puzzle.size;
-  int get cols => widget.puzzle.size;
+  int get rows => widget.puzzle.size!;
+  int get cols => widget.puzzle.size!;
   Image? _image; // Image 위젯 자체를 저장하도록 변경
   List<Widget> pieces = [];
   List<int> completedPiecesId = [];
@@ -92,11 +91,11 @@ class _ReplayPuzzleState extends State<ReplayPuzzle> {
             id: x * cols + y, // 지금 당장은 팔요 없는 것 같긴 함
             maxRow: rows,
             maxCol: cols,
-            position: null, //새로풀기 할때도 여기 수정(중요)
+            position: null, //얘는 위치가 있음에도 불구하고 다시 풀기 위해 null로 짱박아둔 느낌.
             bringToTop: _bringToTop,
             sendToBack: _sendToBack,
-            onCompleted: (id) {
-              _onCompleted(id);
+            onCompleted: (id, position) {
+              _onCompleted(id, position);
             },
           ));
         });
@@ -118,7 +117,7 @@ class _ReplayPuzzleState extends State<ReplayPuzzle> {
     });
   }
 
-  void _onCompleted(int id) { //퍼즐 piece 하나가 맞춰졌을 떄
+  void _onCompleted(int id, PiecePosition pos) { //퍼즐 piece 하나가 맞춰졌을 떄
     setState(() {
       if(!completedPiecesId.contains(id)){
         completedPiecesId.add(id);

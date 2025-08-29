@@ -7,20 +7,19 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
-
-class PlayPuzzle extends StatefulWidget {
+class NewlyPlayPuzzle extends StatefulWidget {
   final PuzzleGame puzzle;
 
-  const PlayPuzzle({
+  const NewlyPlayPuzzle({
     Key? key,
     required this.puzzle,
   }) : super(key: key);
 
   @override
-  _PlayPuzzleState createState() => _PlayPuzzleState();
+  _NewlyPlayPuzzleState createState() => _NewlyPlayPuzzleState();
 }
 
-class _PlayPuzzleState extends State<PlayPuzzle> {
+class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
   int get rows => widget.puzzle.size!;
   int get cols => widget.puzzle.size!;
   Image? _image; // Image 위젯 자체를 저장하도록 변경
@@ -85,7 +84,9 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
             id: x * cols + y, // 지금 당장은 팔요 없는 것 같긴 함
             maxRow: rows,
             maxCol: cols,
-            position: widget.puzzle.piecesPosition[x * cols + y],
+            position: widget.puzzle.gameState == GameState.Unplayed
+                ? null
+                : widget.puzzle.piecesPosition[x * cols + y],
             bringToTop: _bringToTop,
             sendToBack: _sendToBack,
             onCompleted: (id, position) {
@@ -95,6 +96,11 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
         });
       }
     }
+
+    Provider.of<PuzzleProvider>( //TODO: 나중에 에러 안뜨는 선에서 위치 변경하기
+      context,
+      listen: false, ///이건 Provider 내부 리스트를 변화시키므로 재빌드 true...라고할랬는데 에러떠서 false
+    ).startPuzzle(widget.puzzle);
   }
 
   void _bringToTop(Widget widget) {
@@ -114,8 +120,11 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   void _onCompleted(int id, PiecePosition pos) { //퍼즐 piece 하나가 맞춰졌을 떄
     setState(() {
       if(!completedPiecesId.contains(id)){
-        completedPiecesId.add(id);
+        completedPiecesId.add(id); //맞춰진 조각 목록에 추가
       }
+      widget.puzzle.piecesPosition[id] = pos; //게임 범위에서 조각의 위치를 업데이트(이건 이렇게 코드로 써 줘야 함)
+
+      print("num of completedPieces: ${completedPiecesId.length}");
       if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때
         widget.puzzle.gameState = GameState.Completed;
         Provider.of<PuzzleProvider>(

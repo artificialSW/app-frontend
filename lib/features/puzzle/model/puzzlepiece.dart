@@ -9,7 +9,7 @@ class PuzzlePiece extends StatefulWidget {
   final Size imageSize;
   final int row;
   final int col;
-  final int id; // 지금 당장은 팔요 없는 것 같긴 함
+  final int id;
   final int maxRow;
   final int maxCol;
   PiecePosition? position;
@@ -93,7 +93,7 @@ class PuzzlePieceState extends State<PuzzlePiece> {
                 widget.position?.x = 0;
                 isMovable = false;
                 widget.sendToBack(widget);
-                widget.onCompleted(widget.row * widget.maxCol + widget.col);
+                widget.onCompleted(widget.row * widget.maxCol + widget.col, widget.position);
               }
             });
           }

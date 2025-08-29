@@ -1,9 +1,9 @@
 //completed_puzzles_page.dart
 
+import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 
 /// 완료된 퍼즐 목록 페이지
@@ -51,7 +51,7 @@ class CompletedPuzzlesPage extends StatelessWidget {
                       arguments: {'gameInstance': puzzle},
                     );
                   },
-                  isCompleted: true, // 완료된 퍼즐임을 표시
+                  gameState: GameState.Completed, // 완료된 퍼즐임을 표시
                 );
               },
             ),

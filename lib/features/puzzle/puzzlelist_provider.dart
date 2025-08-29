@@ -7,8 +7,48 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position
 /// 퍼즐 리스트 상태 관리
 /// 진행중인 퍼즐과 완료된 퍼즐을 모두 관리
 class PuzzleProvider with ChangeNotifier {
+
+  List<PuzzleGame> _unplayedPuzzles = [
+    PuzzleGame(
+      puzzleId: 5,
+      imagePath: 'assets/images/mert34.jpeg',
+      size: 3, //TODO: 일단은 2로 해놨다가 작동 정상적으로 되면 사이즈도 사용자가 정한거 넘겨받아서 하는거로
+      piecesPosition: [
+        PiecePosition(x: 10.0, y: 10.0),
+        PiecePosition(x: 10.0, y: 50.0),
+        PiecePosition(x: 10.0, y: 90.0),
+        PiecePosition(x: 50.0, y: 10.0),
+        PiecePosition(x: 50.0, y: 50.0),
+        PiecePosition(x: 50.0, y: 90.0),
+        PiecePosition(x: 90.0, y: 10.0),
+        PiecePosition(x: 90.0, y: 50.0),
+        PiecePosition(x: 90.0, y: 90.0),
+      ],
+      gameState: GameState.Unplayed,
+      contributors: [User(name: 'Jaewook', id: 1)],
+    ),
+    PuzzleGame(
+      puzzleId: 6,
+      imagePath: 'assets/images/mert34.jpeg',
+      size: 3,
+      piecesPosition: [
+        PiecePosition(x: 10.0, y: 10.0),
+        PiecePosition(x: 10.0, y: 50.0),
+        PiecePosition(x: 10.0, y: 90.0),
+        PiecePosition(x: 50.0, y: 10.0),
+        PiecePosition(x: 50.0, y: 50.0),
+        PiecePosition(x: 50.0, y: 90.0),
+        PiecePosition(x: 90.0, y: 10.0),
+        PiecePosition(x: 90.0, y: 50.0),
+        PiecePosition(x: 90.0, y: 90.0),
+      ],
+      gameState: GameState.Unplayed,
+      contributors: [User(name: 'JungHwan', id: 2)],
+    ),
+  ];
+
   // 진행중인 퍼즐 목록
-  List<PuzzleGame> _puzzles = [
+  List<PuzzleGame> _ongoingPuzzles = [
     PuzzleGame(
       puzzleId: 1,
       imagePath: 'assets/images/mert34.jpeg',
@@ -24,7 +64,7 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 50.0),
         PiecePosition(x: 90.0, y: 90.0),
       ],
-      isCompleted: false,
+      gameState: GameState.Ongoing,
       contributors: [User(name: 'Jaewook', id: 1), User(name: 'JungHwan', id: 2)],
     ),
     PuzzleGame(
@@ -42,7 +82,7 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 50.0),
         PiecePosition(x: 90.0, y: 90.0),
       ],
-      isCompleted: false,
+      gameState: GameState.Ongoing,
       contributors: [User(name: 'JungHwan', id: 2)],
     ),
   ];
@@ -64,7 +104,7 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 50.0),
         PiecePosition(x: 90.0, y: 90.0),
       ],
-      isCompleted: false,
+      gameState: GameState.Completed,
       contributors: [User(name: 'Jaewook', id: 1)],
     ),
     PuzzleGame(
@@ -82,25 +122,31 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 50.0),
         PiecePosition(x: 90.0, y: 90.0),
       ],
-      isCompleted: false,
+      gameState: GameState.Completed,
       contributors: [User(name: 'JungHwan', id: 2)],
     ),
   ];
 
-  List<PuzzleGame> get ongoingPuzzles => _puzzles;
+  List<PuzzleGame> get ongoingPuzzles => _ongoingPuzzles;
   List<PuzzleGame> get completedPuzzles => _completedPuzzles;
+  List<PuzzleGame> get unplayedPuzzles => _unplayedPuzzles;
+
+  void startPuzzle(PuzzleGame puzzle) { //TODO: 나중에 이런식이 아니라 상태만 바꿔주는 식으로 수정하기
+    _unplayedPuzzles.removeWhere((p) => p.puzzleId == puzzle.puzzleId);///걍 _unplayedPuzzles.remove(puzzle); 하면 안되나?
+    _ongoingPuzzles.add(puzzle);
+    notifyListeners();
+  }
 
   // 퍼즐 삭제
   void deletePuzzle(int id) {
-    _puzzles.removeWhere((p) => p.puzzleId == id);
-    _completedPuzzles.removeWhere((puzzle) => puzzle.puzzleId == 3); //이 코드로는 정상적으로 잘 지워지고 화면에도 지워진 화면 잘 나오는거 확인함.
+    _ongoingPuzzles.removeWhere((p) => p.puzzleId == id);
     notifyListeners();
   }
 
   // 퍼즐 완료
-  void completePuzzle(PuzzleGame puzzle) {
+  void completePuzzle(PuzzleGame puzzle) { //TODO: 나중에 이런식이 아니라 상태만 바꿔주는 식으로 수정하기
     // 진행중인 목록에서 퍼즐을 제거
-    _puzzles.removeWhere((p) => p.puzzleId == puzzle.puzzleId);
+    _ongoingPuzzles.removeWhere((p) => p.puzzleId == puzzle.puzzleId);
     // 완료된 목록에 퍼즐을 추가
     _completedPuzzles.add(puzzle);
     notifyListeners();
@@ -112,14 +158,14 @@ class PuzzleListItem extends StatelessWidget {
   final PuzzleGame puzzle;
   final VoidCallback onDelete;
   final VoidCallback onPressed;
-  final bool isCompleted;
+  final GameState gameState;
 
   const PuzzleListItem({
     Key? key,
     required this.puzzle,
     required this.onDelete,
     required this.onPressed,
-    required this.isCompleted,
+    required this.gameState,
   }) : super(key: key);
 
   @override
@@ -173,7 +219,7 @@ class PuzzleListItem extends StatelessWidget {
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const SizedBox(height: 12),
-                if (!isCompleted) // 진행중인 퍼즐일 때만 버튼을 표시
+                if (gameState == GameState.Ongoing) // 진행중인 퍼즐일 때만 버튼을 표시
                   Row(
                     children: [
                       Expanded(
@@ -210,7 +256,7 @@ class PuzzleListItem extends StatelessWidget {
                       ),
                     ],
                   ),
-                if (isCompleted) // 완료된 퍼즐일 때만 완료 표시
+                if (gameState == GameState.Completed) // 완료된 퍼즐일 때만 완료 표시
                   Row(
                     children: [
                       const Text(
