@@ -21,5 +21,13 @@ class PuzzleGame {
   })  : this.piecesPosition = piecesPosition ?? [],
         this.isCompleted = isCompleted ?? false,
         this.contributors = contributors ?? [];
+
+  PuzzleGame copyForReplaying(){
+    return PuzzleGame(
+      puzzleId: puzzleId, //유지
+      imagePath: imagePath, //유지
+      size: size,           //유지
+    );
+  }
 }
 //다시 풀기 할때 DB에서 가져와서 퍼즐 다시 생성해야할수도 있으니까.

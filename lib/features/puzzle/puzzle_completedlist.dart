@@ -45,7 +45,12 @@ class CompletedPuzzlesPage extends StatelessWidget {
                 return PuzzleListItem(
                   puzzle: puzzle,
                   onDelete: () {}, // 완료된 퍼즐은 삭제 기능 없음
-                  onPressed: () {}, // 완료된 퍼즐은 진행하기 기능 없음
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(
+                      '/puzzle/re-play',
+                      arguments: {'gameInstance': puzzle},
+                    );
+                  },
                   isCompleted: true, // 완료된 퍼즐임을 표시
                 );
               },

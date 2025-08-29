@@ -29,7 +29,7 @@ class PuzzleProvider with ChangeNotifier {
     ),
     PuzzleGame(
       puzzleId: 2,
-      imagePath: 'imagePath_2',
+      imagePath: 'assets/images/mert34.jpeg',
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -51,7 +51,7 @@ class PuzzleProvider with ChangeNotifier {
   List<PuzzleGame> _completedPuzzles = [
     PuzzleGame(
       puzzleId: 3,
-      imagePath: 'imagePath_3',
+      imagePath: 'assets/images/mert34.jpeg',
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -69,7 +69,7 @@ class PuzzleProvider with ChangeNotifier {
     ),
     PuzzleGame(
       puzzleId: 4,
-      imagePath: 'imagePath_4',
+      imagePath: 'assets/images/mert34.jpeg',
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -211,14 +211,31 @@ class PuzzleListItem extends StatelessWidget {
                     ],
                   ),
                 if (isCompleted) // 완료된 퍼즐일 때만 완료 표시
-                  const Text(
-                    '🎉 완료된 퍼즐입니다!',
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
+                  Row(
+                    children: [
+                      const Text(
+                        '완료',
+                        style: TextStyle(color: Colors.green, fontSize: 12),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: onPressed,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                          ),
+                          child: const Text(
+                            '진행하기',
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                        ),
+                      ),
+                    ]
+                  )
               ],
             ),
           ),

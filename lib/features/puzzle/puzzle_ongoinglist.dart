@@ -71,13 +71,12 @@ class OngoingPuzzlesPage extends StatelessWidget {
                   onDelete:
                       () => _showDeleteConfirmationDialog(context, puzzle.puzzleId),
                   onPressed: () {
-                    //이렇게 버튼 누를때마다 다시 생성하는 식으로 하자. 지금은 굳이긴 한데 나중에 앱을 껐다켜도 유지되려면 이렇게 해야하는거 아님?
                     Navigator.of(context).pushNamed(
                         '/puzzle/play',
                         arguments: {'gameInstance': puzzle},
                     );
                   },
-                  isCompleted: false,
+                  isCompleted: false, //이거 나중에 false가 아니라 걍 puzzle.iscompleted로 하자 이건 너무 하드코딩 느낌 나중에 버그날듯
                 );
               },
             ),
