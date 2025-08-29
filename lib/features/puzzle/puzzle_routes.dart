@@ -1,13 +1,13 @@
-import 'package:artificialsw_frontend/features/puzzle/puzzle_completed.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzle_completedlist.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzle_ongoinglist.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzle_playing.dart';
+import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_completed.dart';
+import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_completedlist.dart';
+import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_ongoinglist.dart';
+import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_playing.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_mainpage.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzle_replaying.dart';
-import 'package:artificialsw_frontend/features/puzzle/write_puzzle_info_page.dart';
+import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_replaying.dart';
+import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/write_puzzle_info_page.dart';
 import 'package:flutter/material.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzle_recompleted.dart';
+import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_recompleted.dart';
 
 Route<dynamic> puzzleRoutes(RouteSettings s) {
   switch (s.name) {
