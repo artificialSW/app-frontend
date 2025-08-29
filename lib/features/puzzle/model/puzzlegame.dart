@@ -9,6 +9,7 @@ class PuzzleGame {
   final String imagePath;
   final int? size;
   List<PiecePosition?> piecesPosition; ///얘를 일단 nullable로 하지 않으면 에러가 떠..
+  List<int> completedPiecesId;
   GameState gameState;
   List<User> contributors; // 기본값을 생성자에서 초기화합니다.
 
@@ -21,6 +22,7 @@ class PuzzleGame {
     GameState? gameState, // gameState를 옵셔널로 선언합니다.
     List<User>? contributors, // contributors를 옵셔널로 선언합니다.
   })  : this.piecesPosition = piecesPosition ?? [],
+        this.completedPiecesId = [],
         this.gameState = gameState ?? GameState.Unplayed,
         this.contributors = contributors ?? [];
 

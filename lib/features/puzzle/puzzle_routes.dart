@@ -29,7 +29,7 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
     case '/puzzle/play':
       final args = s.arguments as Map<String, dynamic>;
       final puzzleGame = args['gameInstance'] as PuzzleGame;
-      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleGame));
+      return MaterialPageRoute(builder: (_) => NewlyPlayPuzzle(puzzle: puzzleGame));
     case '/puzzle/completed':
       return MaterialPageRoute(builder: (_) => PuzzleCompleted());
     case '/puzzle/re-play':

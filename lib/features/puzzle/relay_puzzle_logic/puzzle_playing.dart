@@ -116,6 +116,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       if(!completedPiecesId.contains(id)){
         completedPiecesId.add(id);
       }
+      print("num of completedPieces: ${completedPiecesId.length}");
       if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때
         widget.puzzle.gameState = GameState.Completed;
         Provider.of<PuzzleProvider>(

@@ -28,7 +28,6 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
       context,
       listen: false, //이건 그냥 복사해서 가져오기만 하므로 재빌드 할 필요 없어서 false
     ).unplayedPuzzles[0];
-
     return puzzle;
   }
 

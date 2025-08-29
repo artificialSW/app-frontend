@@ -24,13 +24,17 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
   int get cols => widget.puzzle.size!;
   Image? _image; // Image 위젯 자체를 저장하도록 변경
   List<PuzzlePiece> pieces = [];
-  List<int> completedPiecesId = [];
+  List<int> get completedPiecesId => widget.puzzle.completedPiecesId; ///게임 플레이 인스턴스에서도 다시 불러와야 쭉 하던게 이어짐.
 
   @override
   void initState() {
     super.initState();
     final imagePath = widget.puzzle.imagePath;
     _loadAssetImage(imagePath);
+    if(widget.puzzle.gameState == GameState.Unplayed){
+      print("내 그럴줄 알았다..");
+      widget.puzzle.gameState = GameState.Ongoing;
+    }
   }
 
   // 에셋 이미지를 로드하고 퍼즐 조각을 생성하는 함수
@@ -123,7 +127,7 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
   void _onCompleted(int id, PiecePosition pos) { //퍼즐 piece 하나가 맞춰졌을 떄
     setState(() {
       if(!completedPiecesId.contains(id)){
-        completedPiecesId.add(id); //맞춰진 조각 목록에 추가
+        widget.puzzle.completedPiecesId.add(id); //맞춰진 조각 목록에 추가
         print("num of completedPieces: ${completedPiecesId.length}");
       }
       //widget.puzzle.piecesPosition[id] = pos; //게임 범위에서 조각의 위치를 업데이트(이건 이렇게 코드로 써 줘야 함)
