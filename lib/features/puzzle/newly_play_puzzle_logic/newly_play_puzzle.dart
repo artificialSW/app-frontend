@@ -31,10 +31,6 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
     super.initState();
     final imagePath = widget.puzzle.imagePath;
     _loadAssetImage(imagePath);
-    if(widget.puzzle.gameState == GameState.Unplayed){
-      print("내 그럴줄 알았다..");
-      widget.puzzle.gameState = GameState.Ongoing;
-    }
   }
 
   // 에셋 이미지를 로드하고 퍼즐 조각을 생성하는 함수
@@ -103,11 +99,14 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
         widget.puzzle.piecesPosition[x * cols + y] = pieces[x * cols + y].position;
       }
     }
+    if(widget.puzzle.gameState == GameState.Unplayed){
+      widget.puzzle.gameState = GameState.Ongoing;
 
-    Provider.of<PuzzleProvider>( //TODO: 나중에 에러 안뜨는 선에서 위치 변경하기
-      context,
-      listen: false, ///이건 Provider 내부 리스트를 변화시키므로 재빌드 true...라고할랬는데 에러떠서 false
-    ).startPuzzle(widget.puzzle);
+      Provider.of<PuzzleProvider>( //TODO: 나중에 에러 안뜨는 선에서 위치 변경하기
+        context,
+        listen: false, ///이건 Provider 내부 리스트를 변화시키므로 재빌드 true...라고할랬는데 에러떠서 false
+      ).startPuzzle(widget.puzzle);
+    }
   }
 
   void _bringToTop(PuzzlePiece piece) {
