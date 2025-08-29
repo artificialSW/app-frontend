@@ -8,20 +8,21 @@ import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_lo
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/write_puzzle_info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_recompleted.dart';
+import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/write_puzzle_info_page.dart';
 
 Route<dynamic> puzzleRoutes(RouteSettings s) {
   switch (s.name) {
     case '/':
       return MaterialPageRoute(builder: (_) => const PuzzleRoot());
+    case '/puzzle/write-puzzle-info':
+      final args = s.arguments as Map<String, dynamic>;
+      final puzzleGame = args['gameInstance'] as PuzzleGame;
+      return MaterialPageRoute(builder: (_) => WritePuzzleInfoPage(puzzle: puzzleGame));
     case '/puzzle/ongoing-list':
       return MaterialPageRoute(builder: (_) => const OngoingPuzzlesPage());
     case '/puzzle/completed-list':
       return MaterialPageRoute(builder: (_) => CompletedPuzzlesPage());
 
-    case '/puzzle/write-puzzle-info':
-      final args = s.arguments as Map<String, dynamic>;
-      final puzzleGame = args['gameInstance'] as PuzzleGame;
-      return MaterialPageRoute(builder: (_) => WritePuzzleInfoPage(puzzle: puzzleGame));
     case '/puzzle/play':
       final args = s.arguments as Map<String, dynamic>;
       final puzzleGame = args['gameInstance'] as PuzzleGame;
