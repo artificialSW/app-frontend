@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 import
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzle_completedlist.dart';
 import 'package:provider/provider.dart';
+import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 class PlayPuzzle extends StatefulWidget {
   final PuzzleGame puzzle;
 

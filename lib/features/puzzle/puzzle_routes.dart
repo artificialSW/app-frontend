@@ -6,7 +6,7 @@ import 'package:artificialsw_frontend/features/puzzle/puzzle_mainpage.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/write_puzzle_info_page.dart';
 import 'package:flutter/material.dart';
-////
+
 Route<dynamic> puzzleRoutes(RouteSettings s) {
   switch (s.name) {
     case '/':
