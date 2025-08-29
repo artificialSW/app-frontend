@@ -24,7 +24,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   int get rows => widget.puzzle.size!;
   int get cols => widget.puzzle.size!;
   Image? _image; // Image 위젯 자체를 저장하도록 변경
-  List<Widget> pieces = [];
+  List<PuzzlePiece> pieces = [];
   List<int> completedPiecesId = [];
 
   @override
@@ -97,17 +97,17 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     }
   }
 
-  void _bringToTop(Widget widget) {
+  void _bringToTop(PuzzlePiece piece) {
     setState(() {
-      pieces.remove(widget);
-      pieces.add(widget); //list에 add했으므로 맨 끝으로 감
+      pieces.remove(piece);
+      pieces.add(piece); //list에 add했으므로 맨 끝으로 감
     });
   }
 
-  void _sendToBack(Widget widget) {
+  void _sendToBack(PuzzlePiece piece) {
     setState(() {
-      pieces.remove(widget);
-      pieces.insert(0, widget); //맨 앞으로 감
+      pieces.remove(piece);
+      pieces.insert(0, piece); //맨 앞으로 감
     });
   }
 

@@ -8,7 +8,7 @@ class PuzzleGame {
   final int puzzleId;
   final String imagePath;
   final int? size;
-  List<PiecePosition> piecesPosition;
+  List<PiecePosition?> piecesPosition; ///얘를 일단 nullable로 하지 않으면 에러가 떠..
   GameState gameState;
   List<User> contributors; // 기본값을 생성자에서 초기화합니다.
 
@@ -17,7 +17,7 @@ class PuzzleGame {
     required this.puzzleId,
     required this.imagePath,
     required this.size,
-    List<PiecePosition>? piecesPosition, // completedPiecesId를 옵셔널로 선언합니다.
+    List<PiecePosition?>? piecesPosition, // completedPiecesId를 옵셔널로 선언합니다.
     GameState? gameState, // gameState를 옵셔널로 선언합니다.
     List<User>? contributors, // contributors를 옵셔널로 선언합니다.
   })  : this.piecesPosition = piecesPosition ?? [],

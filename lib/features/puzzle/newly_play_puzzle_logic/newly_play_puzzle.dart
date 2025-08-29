@@ -23,7 +23,7 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
   int get rows => widget.puzzle.size!;
   int get cols => widget.puzzle.size!;
   Image? _image; // Image 위젯 자체를 저장하도록 변경
-  List<Widget> pieces = [];
+  List<PuzzlePiece> pieces = [];
   List<int> completedPiecesId = [];
 
   @override
@@ -94,6 +94,9 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
             },
           ));
         });
+        await Future.delayed(const Duration(milliseconds: 200));
+        if(pieces[x * cols + y].position == null) print("${x * cols + y}번째 조각의 위치를 불러오지 못해 초기화합니다.");
+        widget.puzzle.piecesPosition[x * cols + y] = pieces[x * cols + y].position;
       }
     }
 
@@ -103,17 +106,17 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
     ).startPuzzle(widget.puzzle);
   }
 
-  void _bringToTop(Widget widget) {
+  void _bringToTop(PuzzlePiece piece) {
     setState(() {
-      pieces.remove(widget);
-      pieces.add(widget); //list에 add했으므로 맨 끝으로 감
+      pieces.remove(piece);
+      pieces.add(piece); //list에 add했으므로 맨 끝으로 감
     });
   }
 
-  void _sendToBack(Widget widget) {
+  void _sendToBack(PuzzlePiece piece) {
     setState(() {
-      pieces.remove(widget);
-      pieces.insert(0, widget); //맨 앞으로 감
+      pieces.remove(piece);
+      pieces.insert(0, piece); //맨 앞으로 감
     });
   }
 
@@ -121,12 +124,16 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
     setState(() {
       if(!completedPiecesId.contains(id)){
         completedPiecesId.add(id); //맞춰진 조각 목록에 추가
+        print("num of completedPieces: ${completedPiecesId.length}");
       }
-      widget.puzzle.piecesPosition[id] = pos; //게임 범위에서 조각의 위치를 업데이트(이건 이렇게 코드로 써 줘야 함)
+      //widget.puzzle.piecesPosition[id] = pos; //게임 범위에서 조각의 위치를 업데이트(이건 이렇게 코드로 써 줘야 함)
+      for (final piece in pieces) {
+        widget.puzzle.piecesPosition[piece.id] = piece.position;
+      }
 
-      print("num of completedPieces: ${completedPiecesId.length}");
       if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때
         widget.puzzle.gameState = GameState.Completed;
+
         Provider.of<PuzzleProvider>(
           context,
           listen: false,
