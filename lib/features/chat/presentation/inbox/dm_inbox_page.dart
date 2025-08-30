@@ -1,41 +1,13 @@
+// lib/features/chat/inbox/dm_inbox_page.dart
+import 'package:artificialsw_frontend/features/chat/application/chat_store.dart';
+import 'package:artificialsw_frontend/features/chat/domain/models.dart';
 import 'package:flutter/material.dart';
 
 class DmInboxPage extends StatelessWidget {
   const DmInboxPage({super.key});
 
-  static const _green = Color(0xFF5CBD56);
-
   @override
   Widget build(BuildContext context) {
-    // 데모 데이터
-    final items = <Map<String, dynamic>>[
-      {
-        'sender': '아빠',
-        'preview': '아들 요즘 뭐하고 지내?',
-        'private': true,
-      },
-      {
-        'sender': '할아버지',
-        'preview': '오랜만에 둘이서 게임이나 할까?',
-        'private': false,
-      },
-      {
-        'sender': '엄마',
-        'preview': '오랜만에 둘이서 게임이나 할까?',
-        'private': false,
-      },
-      {
-        'sender': '엄마',
-        'preview': '오랜만에 둘이서 게임이나 할까?',
-        'private': false,
-      },
-      {
-        'sender': '할머니',
-        'preview': '오랜만에 둘이서 게임이나 할까?',
-        'private': false,
-      },
-    ];
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -48,8 +20,8 @@ class DmInboxPage extends StatelessWidget {
         backgroundColor: Colors.white,
         title: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Text(
+          children: [
+            const Text(
               '나에게 온 질문',
               style: TextStyle(
                 color: Colors.black,
@@ -60,27 +32,39 @@ class DmInboxPage extends StatelessWidget {
                 letterSpacing: -0.46,
               ),
             ),
-            SizedBox(width: 6),
-            _Badge(count: 5),
+            const SizedBox(width: 6),
+            ValueListenableBuilder<List<InboxItem>>(
+              valueListenable: ChatStore.I.inbox,
+              builder: (_, items, __) => _Badge(count: items.length),
+            ),
           ],
         ),
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-        itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
-        itemBuilder: (_, i) {
-          final it = items[i];
-          return _InboxCard(
-            sender: it['sender'],
-            preview: it['preview'],
-            isPrivate: it['private'] == true,
-            onReply: () => Navigator.of(context).pushNamed(
-              '/chat/inbox/reply',
-              arguments: {
-                'sender': it['sender'],
-                'preview': it['preview'],
-                'private': it['private'],
+      body: ValueListenableBuilder<List<InboxItem>>(
+        valueListenable: ChatStore.I.inbox,
+        builder: (context, items, __) {
+          if (items.isEmpty) {
+            return const _EmptyState();
+          }
+          return RefreshIndicator(
+            onRefresh: ChatStore.I.refreshInbox,
+            child: ListView.separated(
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              itemCount: items.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (_, i) {
+                final it = items[i];
+                return _InboxCard(
+                  key: ValueKey(it.id),
+                  item: it,
+                  onReply: () {
+                    Navigator.of(context).pushNamed(
+                      '/chat/inbox/reply',
+                      arguments: it, // 모델 그대로 전달
+                    );
+                  },
+                );
               },
             ),
           );
@@ -111,19 +95,9 @@ class _Badge extends StatelessWidget {
 }
 
 class _InboxCard extends StatelessWidget {
-  const _InboxCard({
-    required this.sender,
-    required this.preview,
-    required this.isPrivate,
-    required this.onReply,
-  });
-
-  final String sender;
-  final String preview;
-  final bool isPrivate;
+  const _InboxCard({super.key, required this.item, required this.onReply});
+  final InboxItem item;
   final VoidCallback onReply;
-
-  static const _green = Color(0xFF5CBD56);
 
   @override
   Widget build(BuildContext context) {
@@ -147,9 +121,8 @@ class _InboxCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // “‘OOO’가 보냈어요!”
                       Text(
-                        '‘$sender’가 보냈어요!',
+                        '‘${item.senderName}’가 보냈어요!', // ← 수정: sender → senderName
                         style: const TextStyle(
                           color: Color(0xFF282828),
                           fontSize: 17,
@@ -161,7 +134,9 @@ class _InboxCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        preview,
+                        item.preview,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Color(0xFF80818B),
                           fontSize: 14,
@@ -173,14 +148,14 @@ class _InboxCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                // 잠금 아이콘
-                if (isPrivate)
+                if (item.isPrivate)
                   const Padding(
                     padding: EdgeInsets.only(top: 6),
                     child: Icon(Icons.lock_outline, color: Color(0xFFB7B7B7), size: 20),
-                  ),
+                  )
+                else
+                  const SizedBox(width: 20),
                 const SizedBox(width: 10),
-                // 답변하기 버튼
                 _ReplyButton(onTap: onReply),
               ],
             ),
@@ -222,6 +197,26 @@ class _ReplyButton extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        '새 질문이 없어요',
+        style: TextStyle(
+          color: Color(0xFF5D5D5D),
+          fontSize: 13,
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w700,
+          height: 1.35,
         ),
       ),
     );

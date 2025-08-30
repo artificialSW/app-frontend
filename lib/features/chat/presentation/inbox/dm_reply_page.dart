@@ -1,8 +1,11 @@
+// lib/features/chat/inbox/dm_reply_page.dart
+import 'package:artificialsw_frontend/features/chat/application/chat_store.dart';
+import 'package:artificialsw_frontend/features/chat/domain/models.dart';
 import 'package:flutter/material.dart';
 
 class DmReplyPage extends StatefulWidget {
-  const DmReplyPage({super.key, required this.question});
-  final Map<String, dynamic> question;
+  const DmReplyPage({super.key, required this.item});
+  final InboxItem item;
 
   @override
   State<DmReplyPage> createState() => _DmReplyPageState();
@@ -24,20 +27,25 @@ class _DmReplyPageState extends State<DmReplyPage> {
     super.dispose();
   }
 
-  void _submit() {
-    final sender = (widget.question['sender'] as String?) ?? '가족';
-    Navigator.of(context).pushNamed('/chat/inbox/sent', arguments: {
-      'sender': sender,
-      'preview': widget.question['preview'],
-      'private': widget.question['private'] == true,
-      'reply': _c.text.trim(),
-    });
+  Future<void> _submit() async {
+    final reply = _c.text.trim();
+    if (reply.isEmpty) return;
+
+    // 1) 실제 답변 처리 (인박스 제거 + 개인질문 생성)
+    await ChatStore.I.answerDm(dmId: widget.item.id, answerText: reply);
+
+    // 2) 완료 화면으로 (초록 화면)
+    if (!mounted) return;
+    Navigator.of(context).pushReplacementNamed(
+      '/chat/inbox/sent',
+      arguments: {'sender': widget.item.senderName}, // ✅ 값은 senderName 사용
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final sender = (widget.question['sender'] as String?) ?? '가족';
-    final preview = (widget.question['preview'] as String?) ?? '';
+    final sender = widget.item.senderName; // ✅ sender → senderName
+    final preview = widget.item.preview;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -104,6 +112,7 @@ class _DmReplyPageState extends State<DmReplyPage> {
                 controller: _c,
                 maxLines: null,
                 expands: true,
+                textInputAction: TextInputAction.newline,
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(16, 14, 16, 14),
                   hintText: '답변을 작성해주세요',

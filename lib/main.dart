@@ -1,8 +1,14 @@
 import 'package:artificialsw_frontend/shell.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MyApp());
+import 'features/chat/application/chat_store.dart';
+import 'features/chat/data/mock_chat_repository.dart';
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await ChatStore.I.init(MockChatRepository());
+  runApp(const MyApp());
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
