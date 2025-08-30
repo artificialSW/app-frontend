@@ -16,21 +16,22 @@ class WritePuzzleInfoPage extends StatefulWidget {
 
 class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
 
-  String? selectedSize;
+  String selectedSize = "3 x 3";
   int unplayedPuzzleIndex = 0;
 
   final List<String> sizeOptions = [
-    "3 x 3 (9조각)",
-    "4 x 4 (16조각)",
-    "5 x 5 (25조각)",
+    "3 x 3",
+    "4 x 4",
+    "5 x 5",
   ];
 
-  PuzzleGame getPuzzle(int idx){
+  PuzzleGame getPuzzle(int idx, String size){
     final puzzle = Provider.of<PuzzleProvider>(
       context,
       listen: false, //이건 그냥 복사해서 가져오기만 하므로 재빌드 할 필요 없어서 false
     ).unplayedPuzzles[idx];
     unplayedPuzzleIndex++;
+    puzzle.size = int.parse(size.split(" ")[0]); //"3 x 3" 이면 size = 3 됨.
     return puzzle;
   }
 
@@ -57,7 +58,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
           }).toList(),
           onChanged: (value) {
             setState(() {
-              selectedSize = value;
+              selectedSize = value!;
             });
           },
         ),
@@ -66,7 +67,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
             onPressed: () {
               Navigator.of(context).pushNamed(
                 '/puzzle/newly-play', ///일단은 라우팅 경로 re-play로 해놓고 나중에 이름 리팩터링 ㄱㄱ
-                arguments: {'gameInstance': getPuzzle(unplayedPuzzleIndex)},
+                arguments: {'gameInstance': getPuzzle(unplayedPuzzleIndex, selectedSize)},
               );
             },
             child: const Text("입력한 정보대로 퍼즐 풀기")

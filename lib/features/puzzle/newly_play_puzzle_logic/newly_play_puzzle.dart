@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
 import 'package:flutter/material.dart';
@@ -87,9 +88,9 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
             },
           ));
         });
-        await Future.delayed(const Duration(milliseconds: 200));
-        if(pieces[x * cols + y].position == null) print("${x * cols + y}번째 조각의 위치를 불러오지 못해 초기화합니다.");
-        widget.puzzle.piecesPosition[x * cols + y] = pieces[x * cols + y].position;
+        if(pieces[x * cols + y].position == null) print("로직 문제 발생: ${x * cols + y}번째 조각의 위치가 null 입니다.");
+        widget.puzzle.piecesPosition.add(pieces[x * cols + y].position ?? PiecePosition(x: 0, y: 0)); ///bulid time에 랜덤 값을 어떻게든 부여받기에
+        ///null이 아닐 확률이 높지만 비동기 함수임을 감안해서 안전하게 로직을 짜기
       }
     }
     if(widget.puzzle.gameState == GameState.Unplayed){
@@ -124,7 +125,7 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
       }
       //widget.puzzle.piecesPosition[id] = pos; //게임 범위에서 조각의 위치를 업데이트(이건 이렇게 코드로 써 줘야 함)
       for (final piece in pieces) {
-        widget.puzzle.piecesPosition[piece.id] = piece.position;
+        widget.puzzle.piecesPosition[piece.id] = piece.position!; //위치로 판별해서 oncompleted가 실행되는데 null일수 없음
       }
 
       if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때

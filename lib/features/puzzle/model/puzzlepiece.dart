@@ -12,7 +12,8 @@ class PuzzlePiece extends StatefulWidget {
   final int id;
   final int maxRow;
   final int maxCol;
-  PiecePosition? position;
+  PiecePosition? position; ///얘는 PuzzleGame의 piecesPosition[idx] 와 다르게 nullable함.
+  ///그래야 null인 걸 알고(위치 안 부여된 걸 알고) 랜덤 값 지정해 주지. 안되면 뭐 어쩔수없이 구석탱이에 넣어야겠지만
   final Function bringToTop;
   final Function sendToBack;
   final Function onCompleted;

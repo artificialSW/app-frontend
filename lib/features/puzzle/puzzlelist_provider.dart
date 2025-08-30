@@ -17,36 +17,16 @@ class PuzzleProvider with ChangeNotifier {
     PuzzleGame(
       puzzleId: 5,
       imageWidget: ImageStore().imageWidgetList[0],
-      size: 3, //TODO: 일단은 2로 해놨다가 작동 정상적으로 되면 사이즈도 사용자가 정한거 넘겨받아서 하는거로
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],
+      size: null,
+      piecesPosition: [],
       gameState: GameState.Unplayed,
       contributors: [User(name: 'Jaewook', id: 1)],
     ),
     PuzzleGame(
       puzzleId: 6,
       imageWidget: ImageStore().imageWidgetList[1],
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],
+      size: null,
+      piecesPosition: [],
       gameState: GameState.Unplayed,
       contributors: [User(name: 'JungHwan', id: 2)],
     ),
@@ -97,7 +77,7 @@ class PuzzleProvider with ChangeNotifier {
     PuzzleGame(
       puzzleId: 3,
       imageWidget: ImageStore().imageWidgetList[2],
-      size: 3,
+      size: null,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
         PiecePosition(x: 10.0, y: 50.0),
@@ -115,7 +95,7 @@ class PuzzleProvider with ChangeNotifier {
     PuzzleGame(
       puzzleId: 4,
       imageWidget: ImageStore().imageWidgetList[2],
-      size: 3,
+      size: null,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
         PiecePosition(x: 10.0, y: 50.0),
