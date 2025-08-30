@@ -6,7 +6,7 @@ import 'package:artificialsw_frontend/shared/widgets/custom_bottom_bar.dart';
 // 각 탭(브랜치) 라우팅
 import 'package:artificialsw_frontend/features/home/home_routes.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_routes.dart';
-import 'package:artificialsw_frontend/features/chat/chat_routes.dart';
+import 'package:artificialsw_frontend/features/chat/presentation/chat_routes.dart';
 import 'package:artificialsw_frontend/features/profile/profile_routes.dart';
 
 class Shell extends StatefulWidget {
