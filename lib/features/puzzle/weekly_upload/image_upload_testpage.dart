@@ -29,10 +29,10 @@ class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
       );
 
       setState(() {
-        _imageFiles.add(file);                             // 미리보기용
+        _imageFiles.add(file);
         ImageStore().imageWidgetList.add(imageWidget);
         print(ImageStore().imageWidgetList.length);
-        ImageStore().imageFileList.add(file);              // 공유용 File
+        ImageStore().imageFileList.add(file);
       });
     }
   }
@@ -67,20 +67,20 @@ class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
               child: const Text("갤러리에서 이미지 선택"),
             ),
             SizedBox(height: 40,),
-            Center(
-              child: images.length >= 3
-                  ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  images[0],
-                  const SizedBox(width: 10),
-                  images[1],
-                  const SizedBox(width: 10),
-                  images[2],
-                ],
-              )
-                  : const Text("ui용 이미지 아직 없다"),
-            ),
+            // Center(
+            //   child: images.length >= 3
+            //       ? Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       images[0],
+            //       const SizedBox(width: 10),
+            //       images[1],
+            //       const SizedBox(width: 10),
+            //       images[2],
+            //     ],
+            //   )
+            //       : const Text("ui용 이미지 아직 없다"),
+            // ),
           ],
         ),
       ),

@@ -77,7 +77,7 @@ class OngoingPuzzlesPage extends StatelessWidget {
                         arguments: {'gameInstance': puzzle},
                     );
                   },
-                  gameState: GameState.Ongoing, //이거 나중에 false가 아니라 걍 puzzle.iscompleted로 하자 이건 너무 하드코딩 느낌 나중에 버그날듯
+                  gameState: GameState.Ongoing,
                 );
               },
             ),

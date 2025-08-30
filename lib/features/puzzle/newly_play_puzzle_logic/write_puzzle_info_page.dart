@@ -36,10 +36,6 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    final images = ImageStore().imageWidgetList;
-    print(ImageStore().imageWidgetList.length);
-
     return Column(
       children: [
         SizedBox(height: 300),

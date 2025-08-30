@@ -30,14 +30,14 @@ class ReplayPuzzle extends StatefulWidget {
 class _ReplayPuzzleState extends State<ReplayPuzzle> {
   int get rows => widget.puzzle.size!;
   int get cols => widget.puzzle.size!;
-  Image? _image; // Image 위젯 자체를 저장하도록 변경
+  Image? _image; // Image 위젯 자체를 저장
   List<Widget> pieces = [];
   List<int> completedPiecesId = [];
 
   @override
   void initState() {
     super.initState();
-    final imageWidget = widget.puzzle.imageWidget; // ✅ 위젯 리스트 기반으로
+    final imageWidget = widget.puzzle.imageWidget;
     // 처리용 함수 호출 (예: 퍼즐 생성 등)
     _loadImage(imageWidget);
   }
@@ -82,7 +82,7 @@ class _ReplayPuzzleState extends State<ReplayPuzzle> {
             id: x * cols + y, // 지금 당장은 팔요 없는 것 같긴 함
             maxRow: rows,
             maxCol: cols,
-            position: null, //얘는 위치가 있음에도 불구하고 다시 풀기 위해 null로 짱박아둔 느낌.
+            position: null, //얘는 위치가 있음에도 불구하고 다시 풀기 위해 null로 짱박아둠.
             bringToTop: _bringToTop,
             sendToBack: _sendToBack,
             onCompleted: (id, position) {
@@ -114,7 +114,7 @@ class _ReplayPuzzleState extends State<ReplayPuzzle> {
         completedPiecesId.add(id);
       }
       if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때
-        _navigateToNextPage();
+        _navigateToNextPage(); //별다른 로직 없이 이동만
       }
     });
   }

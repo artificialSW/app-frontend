@@ -39,8 +39,6 @@ class PuzzlePiece extends StatefulWidget {
 }
 
 class PuzzlePieceState extends State<PuzzlePiece> {
-  //double? top; // Declared as nullable double (퍼즐 조각의 현재 화면상의 위치)
-  //double? left; // Declared as nullable double (퍼즐 조각의 현재 화면상의 위치)
   bool isMovable = true;
 
   @override

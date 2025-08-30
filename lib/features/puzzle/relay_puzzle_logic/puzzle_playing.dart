@@ -22,9 +22,23 @@ class PlayPuzzle extends StatefulWidget {
 }
 
 class _PlayPuzzleState extends State<PlayPuzzle> {
-  int get rows => widget.puzzle.size!;
-  int get cols => widget.puzzle.size!;
-  Image? _image; // Image 위젯 자체를 저장하도록 변경
+
+  int get rows { //개발 단계 디버깅용 로직
+    final size = widget.puzzle.size;
+    if (size == null) {
+      throw Exception("Puzzle size cannot be null");
+    }
+    return size;
+  }
+  int get cols { //실제 앱일때 기본값을 주는 로직(배포 시 이걸로 rows도 수정하기)
+    if (widget.puzzle.size == null) {
+      debugPrint("Puzzle size is null, fallback to 2");
+      return 2;
+    }
+    return widget.puzzle.size!;
+  }
+
+  Image? _image; // Image 위젯 자체를 저장
   List<PuzzlePiece> pieces = [];
   List<int> completedPiecesId = [];
 
@@ -32,14 +46,13 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   void initState() {
     super.initState();
     final imageWidget = widget.puzzle.imageWidget;
-    // 처리용 함수 호출 (예: 퍼즐 생성 등)
     _loadImage(imageWidget);
   }
 
   // 에셋 이미지를 로드하고 퍼즐 조각을 생성하는 함수
   void _loadImage(Image image) {
     setState(() {
-      _image = image; // 또는 퍼즐 생성용 변수에 저장
+      _image = image; //PlayPuzzle 인스턴스에 저장
     });
 
     _splitImage(image); // 퍼즐 조각 생성 함수
