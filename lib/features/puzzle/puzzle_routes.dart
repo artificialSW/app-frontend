@@ -6,7 +6,8 @@ import 'package:artificialsw_frontend/features/puzzle/puzzle_mainpage.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_replaying.dart';
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/write_puzzle_info_page.dart';
-import 'package:artificialsw_frontend/features/puzzle/weekly_upload/image_upload_testpage.dart';
+import 'package:artificialsw_frontend/features/puzzle/weekly_upload/add_comment_page.dart';
+import 'package:artificialsw_frontend/features/puzzle/weekly_upload/image_upload_page.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_recompleted.dart';
 
@@ -15,7 +16,9 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
     case '/':
       return MaterialPageRoute(builder: (_) => const PuzzleRoot());
     case '/puzzle/image-upload-test':
-      return MaterialPageRoute(builder: (_) => const ImageUploadTestPage());
+      return MaterialPageRoute(builder: (_) => const ImageUploadPage());
+    case '/puzzle/add-comment':
+      return MaterialPageRoute(builder: (_) => const AddCommentPage());
 
     case '/puzzle/write-puzzle-info':
       return MaterialPageRoute(builder: (_) => const WritePuzzleInfoPage());

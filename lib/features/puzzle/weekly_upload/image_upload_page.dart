@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
 
-class ImageUploadTestPage extends StatefulWidget {
-  const ImageUploadTestPage({Key? key}) : super(key: key);
+class ImageUploadPage extends StatefulWidget {
+  const ImageUploadPage({Key? key}) : super(key: key);
 
   @override
-  State<ImageUploadTestPage> createState() => _ImageUploadTestPageState();
+  State<ImageUploadPage> createState() => _ImageUploadPageState();
 }
 
-class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
+class _ImageUploadPageState extends State<ImageUploadPage> {
   final ImagePicker _picker = ImagePicker();
   final List<File> _imageFiles = [];
   //final images = ImageStore().imageWidgetList;
@@ -43,10 +43,13 @@ class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
       appBar: AppBar(title: const Text("이미지 업로드 테스트")),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("3개의 이미지를 선택해주세요. 현재 ${_imageFiles.length}개의 이미지가 선택되어 있습니다."),
+            Text("사진 업로드하기"),
+            const SizedBox(height: 10),
+            Text("이번주의 주제별로 사진을 제출해주세요!"),
             const SizedBox(height: 20),
+            Text("주제1: 맛있었던 과일"),
+            const SizedBox(height: 10),
             _imageFiles.isNotEmpty
                 ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -66,23 +69,19 @@ class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _pickImage,
-              child: const Text("갤러리에서 이미지 선택"),
+              child: const Text("+"),
             ),
-            SizedBox(height: 40,),
-            // Center(
-            //   child: images.length >= 3
-            //       ? Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       images[0],
-            //       const SizedBox(width: 10),
-            //       images[1],
-            //       const SizedBox(width: 10),
-            //       images[2],
-            //     ],
-            //   )
-            //       : const Text("ui용 이미지 아직 없다"),
-            // ),
+            const SizedBox(height: 50),
+            Text("주제2: 좋았던 풍경"),
+            const SizedBox(height: 50),
+            Text("주제3: 행복했던 식사"),
+            const SizedBox(height: 100),
+            Text("일요일 밤 11시 59분까지 제출해주세요!"),
+            const SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: () => Navigator.of(context).pushNamed('/puzzle/add-comment'),
+                child: const Text("사진 제출하기")
+            ),
           ],
         ),
       ),

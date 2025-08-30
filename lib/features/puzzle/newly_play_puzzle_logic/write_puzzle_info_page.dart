@@ -66,7 +66,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
             });
           },
         ),
-        SizedBox(height: 300,),
+        SizedBox(height: 100,),
         ElevatedButton(
             onPressed: () {
               Navigator.of(context).pushNamed(

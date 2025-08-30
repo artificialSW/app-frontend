@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-class ImageStore extends ChangeNotifier {
+class ImageStore extends ChangeNotifier { ///지금은 이거 원격 DB 느낌으로 쓰고 있지만 실제로는 로컬에서 '너 3장 제출했어?' 이거 체크용으로 쓸듯 간단하게
   // 싱글턴 패턴 유지
   static final ImageStore _instance = ImageStore._internal();
   factory ImageStore() => _instance;
