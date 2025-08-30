@@ -31,7 +31,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   @override
   void initState() {
     super.initState();
-    final imageWidget = ImageStore().imageWidgetList[0]; // ✅ 위젯 리스트 기반으로
+    final imageWidget = widget.puzzle.imageWidget;
     // 처리용 함수 호출 (예: 퍼즐 생성 등)
     _loadImage(imageWidget);
   }

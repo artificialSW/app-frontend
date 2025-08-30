@@ -29,7 +29,7 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
   @override
   void initState() {
     super.initState();
-    final imageWidget = ImageStore().imageWidgetList[0]; // ✅ 위젯 리스트 기반으로
+    final imageWidget = widget.puzzle.imageWidget;
     // 처리용 함수 호출 (예: 퍼즐 생성 등)
     _loadImage(imageWidget);
   }
@@ -66,6 +66,7 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
 
     for (int x = 0; x < rows; x++) {
       for (int y = 0; y < cols; y++) {
+        //if (!mounted) return; // ✅ 추가
         setState(() {
           pieces.add(PuzzlePiece(
             key: GlobalKey(),

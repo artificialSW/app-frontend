@@ -13,6 +13,7 @@ class ImageUploadTestPage extends StatefulWidget {
 class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
   final ImagePicker _picker = ImagePicker();
   final List<File> _imageFiles = [];
+  final images = ImageStore().imageWidgetList;
 
   Future<void> _pickImage() async {
     if (_imageFiles.length >= 3) return;
@@ -21,12 +22,17 @@ class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
 
     if (pickedFile != null) {
       final file = File(pickedFile.path);
-      final imageWidget = Image.file(file, fit: BoxFit.cover); // 위젯으로 생성
+
+      final imageWidget = Image.file(
+        file,
+        fit: BoxFit.cover,
+      );
 
       setState(() {
         _imageFiles.add(file);                             // 미리보기용
+        ImageStore().imageWidgetList.add(imageWidget);
+        print(ImageStore().imageWidgetList.length);
         ImageStore().imageFileList.add(file);              // 공유용 File
-        ImageStore().imageWidgetList.add(imageWidget);     // 공유용 위젯
       });
     }
   }
@@ -59,6 +65,21 @@ class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
             ElevatedButton(
               onPressed: _pickImage,
               child: const Text("갤러리에서 이미지 선택"),
+            ),
+            SizedBox(height: 40,),
+            Center(
+              child: images.length >= 3
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  images[0],
+                  const SizedBox(width: 10),
+                  images[1],
+                  const SizedBox(width: 10),
+                  images[2],
+                ],
+              )
+                  : const Text("ui용 이미지 아직 없다"),
             ),
           ],
         ),

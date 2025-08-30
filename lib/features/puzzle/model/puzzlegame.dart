@@ -7,7 +7,7 @@ enum GameState {Unplayed, Ongoing, Completed}
 /// 퍼즐 데이터 모델
 class PuzzleGame {
   final int puzzleId;
-  final ImageProvider imageProvider; // FileImage도, AssetImage도 OK
+  final Image imageWidget;
   final int? size;
   List<PiecePosition?> piecesPosition; ///얘를 일단 nullable로 하지 않으면 에러가 떠..
   List<int> completedPiecesId;
@@ -17,7 +17,7 @@ class PuzzleGame {
   //선언 시점은 꼭 사용자가 '퍼즐 풀기' 버튼을 눌렀을 때로!! 왜냐면 size도 선언할때 같이 적어야한다고 선언했기 때문
   PuzzleGame({
     required this.puzzleId,
-    required this.imageProvider,
+    required this.imageWidget,
     required this.size,
     List<PiecePosition?>? piecesPosition, // completedPiecesId를 옵셔널로 선언합니다.
     GameState? gameState, // gameState를 옵셔널로 선언합니다.
@@ -30,7 +30,7 @@ class PuzzleGame {
   PuzzleGame copyForReplaying(){
     return PuzzleGame(
       puzzleId: puzzleId, //유지
-      imageProvider: imageProvider, //유지
+      imageWidget: imageWidget, //유지
       size: size,           //유지
     );
   }

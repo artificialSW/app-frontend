@@ -12,10 +12,11 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position
 /// 진행중인 퍼즐과 완료된 퍼즐을 모두 관리
 class PuzzleProvider with ChangeNotifier {
 
+
   List<PuzzleGame> _unplayedPuzzles = [
     PuzzleGame(
       puzzleId: 5,
-      imageProvider: FileImage(ImageStore().imageFileList[0]), //asset 말고도 File 가능
+      imageWidget: ImageStore().imageWidgetList[0],
       size: 3, //TODO: 일단은 2로 해놨다가 작동 정상적으로 되면 사이즈도 사용자가 정한거 넘겨받아서 하는거로
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -33,7 +34,7 @@ class PuzzleProvider with ChangeNotifier {
     ),
     PuzzleGame(
       puzzleId: 6,
-      imageProvider: FileImage(ImageStore().imageFileList[1]), //asset 말고도 File 가능
+      imageWidget: ImageStore().imageWidgetList[1],
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -55,7 +56,7 @@ class PuzzleProvider with ChangeNotifier {
   List<PuzzleGame> _ongoingPuzzles = [
     PuzzleGame(
       puzzleId: 1,
-      imageProvider: FileImage(ImageStore().imageFileList[2]), //asset 말고도 File 가능
+      imageWidget: ImageStore().imageWidgetList[2],
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -73,7 +74,7 @@ class PuzzleProvider with ChangeNotifier {
     ),
     PuzzleGame(
       puzzleId: 2,
-      imageProvider: FileImage(ImageStore().imageFileList[2]),
+      imageWidget: ImageStore().imageWidgetList[2],
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -95,7 +96,7 @@ class PuzzleProvider with ChangeNotifier {
   List<PuzzleGame> _completedPuzzles = [
     PuzzleGame(
       puzzleId: 3,
-      imageProvider: FileImage(ImageStore().imageFileList[2]),
+      imageWidget: ImageStore().imageWidgetList[2],
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -113,7 +114,7 @@ class PuzzleProvider with ChangeNotifier {
     ),
     PuzzleGame(
       puzzleId: 4,
-      imageProvider: FileImage(ImageStore().imageFileList[2]),
+      imageWidget: ImageStore().imageWidgetList[2],
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
