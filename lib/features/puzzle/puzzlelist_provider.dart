@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:ui';
+
+import 'package:artificialsw_frontend/services/image_store.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,7 +15,7 @@ class PuzzleProvider with ChangeNotifier {
   List<PuzzleGame> _unplayedPuzzles = [
     PuzzleGame(
       puzzleId: 5,
-      imagePath: 'assets/images/mert34.jpeg',
+      imageProvider: FileImage(ImageStore().imageFileList[0]), //asset 말고도 File 가능
       size: 3, //TODO: 일단은 2로 해놨다가 작동 정상적으로 되면 사이즈도 사용자가 정한거 넘겨받아서 하는거로
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -29,7 +33,7 @@ class PuzzleProvider with ChangeNotifier {
     ),
     PuzzleGame(
       puzzleId: 6,
-      imagePath: 'assets/images/mert34.jpeg',
+      imageProvider: FileImage(ImageStore().imageFileList[1]), //asset 말고도 File 가능
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -51,7 +55,7 @@ class PuzzleProvider with ChangeNotifier {
   List<PuzzleGame> _ongoingPuzzles = [
     PuzzleGame(
       puzzleId: 1,
-      imagePath: 'assets/images/mert34.jpeg',
+      imageProvider: FileImage(ImageStore().imageFileList[2]), //asset 말고도 File 가능
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -69,7 +73,7 @@ class PuzzleProvider with ChangeNotifier {
     ),
     PuzzleGame(
       puzzleId: 2,
-      imagePath: 'assets/images/mert34.jpeg',
+      imageProvider: FileImage(ImageStore().imageFileList[2]),
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -91,7 +95,7 @@ class PuzzleProvider with ChangeNotifier {
   List<PuzzleGame> _completedPuzzles = [
     PuzzleGame(
       puzzleId: 3,
-      imagePath: 'assets/images/mert34.jpeg',
+      imageProvider: FileImage(ImageStore().imageFileList[2]),
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -109,7 +113,7 @@ class PuzzleProvider with ChangeNotifier {
     ),
     PuzzleGame(
       puzzleId: 4,
-      imagePath: 'assets/images/mert34.jpeg',
+      imageProvider: FileImage(ImageStore().imageFileList[2]),
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),

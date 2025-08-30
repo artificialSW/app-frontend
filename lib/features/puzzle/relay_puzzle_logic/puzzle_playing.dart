@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
+import 'package:artificialsw_frontend/services/image_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 import
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
@@ -30,28 +31,18 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   @override
   void initState() {
     super.initState();
-    final imagePath = widget.puzzle.imagePath;
-    _loadAssetImage(imagePath);
+    final imageWidget = ImageStore().imageWidgetList[0]; // ✅ 위젯 리스트 기반으로
+    // 처리용 함수 호출 (예: 퍼즐 생성 등)
+    _loadImage(imageWidget);
   }
 
   // 에셋 이미지를 로드하고 퍼즐 조각을 생성하는 함수
-  Future<void> _loadAssetImage(String imagePath) async {
-    String assetPath = imagePath;
-    // 에셋 파일이 실제로 존재하는지 확인 (선택 사항)
-    try {
-      await rootBundle.load(assetPath);
-    } catch (e) {
-      // 에셋 파일이 없으면 오류 메시지를 출력하고 함수를 종료합니다.
-      print('Error: Asset image not found at $assetPath');
-      return;
-    }
-
-    final imageWidget = Image.asset(assetPath);
+  void _loadImage(Image image) {
     setState(() {
-      _image = imageWidget;
+      _image = image; // 또는 퍼즐 생성용 변수에 저장
     });
 
-    _splitImage(imageWidget);
+    _splitImage(image); // 퍼즐 조각 생성 함수
   }
 
   Future<Size> _getImageSize(Image image) async {

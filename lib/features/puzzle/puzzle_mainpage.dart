@@ -20,6 +20,10 @@ class PuzzleRoot extends StatelessWidget {
               onPressed: () => Navigator.of(context).pushNamed('/puzzle/completed-list'),
               child: const Text("완료된 퍼즐 목록")
           ),
+          ElevatedButton(
+              onPressed: () => Navigator.of(context).pushNamed('/puzzle/image-upload-test'),
+              child: const Text("이미지 업로드 테스팅")
+          ),
         ],
       ),
     );

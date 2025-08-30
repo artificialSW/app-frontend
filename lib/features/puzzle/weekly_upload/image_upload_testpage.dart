@@ -1,0 +1,68 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:artificialsw_frontend/services/image_store.dart';
+
+class ImageUploadTestPage extends StatefulWidget {
+  const ImageUploadTestPage({Key? key}) : super(key: key);
+
+  @override
+  State<ImageUploadTestPage> createState() => _ImageUploadTestPageState();
+}
+
+class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
+  final ImagePicker _picker = ImagePicker();
+  final List<File> _imageFiles = [];
+
+  Future<void> _pickImage() async {
+    if (_imageFiles.length >= 3) return;
+
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final file = File(pickedFile.path);
+      final imageWidget = Image.file(file, fit: BoxFit.cover); // 위젯으로 생성
+
+      setState(() {
+        _imageFiles.add(file);                             // 미리보기용
+        ImageStore().imageFileList.add(file);              // 공유용 File
+        ImageStore().imageWidgetList.add(imageWidget);     // 공유용 위젯
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("이미지 업로드 테스트")),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _imageFiles.isNotEmpty
+                ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _imageFiles.map((file) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Image.file(
+                    file,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
+                );
+              }).toList(),
+            )
+                : const Text("선택된 이미지가 없습니다"),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _pickImage,
+              child: const Text("갤러리에서 이미지 선택"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
