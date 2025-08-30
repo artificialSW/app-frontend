@@ -16,7 +16,7 @@ class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
   final images = ImageStore().imageWidgetList;
 
   Future<void> _pickImage() async {
-    if (_imageFiles.length >= 3) return;
+    if (_imageFiles.length >= 3) return; //무조건 3개 넣어야 한다고 강제
 
     final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
@@ -30,7 +30,7 @@ class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
 
       setState(() {
         _imageFiles.add(file);
-        ImageStore().imageWidgetList.add(imageWidget);
+        ImageStore().imageWidgetList.add(imageWidget); //새로운 인스턴스 생성하긴 하지만, 싱글톤이라 배열 객체는 하나로 관리됨.
         print(ImageStore().imageWidgetList.length);
         ImageStore().imageFileList.add(file);
       });
@@ -45,6 +45,8 @@ class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text("3개의 이미지를 선택해주세요. 현재 ${_imageFiles.length}개의 이미지가 선택되어 있습니다."),
+            const SizedBox(height: 20),
             _imageFiles.isNotEmpty
                 ? Row(
               mainAxisAlignment: MainAxisAlignment.center,

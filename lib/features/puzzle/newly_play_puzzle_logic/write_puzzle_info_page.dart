@@ -25,13 +25,17 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
     "5 x 5",
   ];
 
-  PuzzleGame getPuzzle(int idx, String size){
+  PuzzleGame getPuzzle(int idx, String size){ ///여기선 '퍼즐 풀겠다!'선언했을때 일어나야 할 로직들이 담김.
     final puzzle = Provider.of<PuzzleProvider>(
       context,
       listen: false, //이건 그냥 복사해서 가져오기만 하므로 재빌드 할 필요 없어서 false
     ).unplayedPuzzles[idx];
     unplayedPuzzleIndex++;
+
     puzzle.size = int.parse(size.split(" ")[0]); //"3 x 3" 이면 size = 3 됨.
+
+    ImageStore().imageWidgetList.removeAt(0); //이미지 저장 리스트의 첫 번째 이미지를 지움(지금 쓸거니까)
+
     return puzzle;
   }
 
