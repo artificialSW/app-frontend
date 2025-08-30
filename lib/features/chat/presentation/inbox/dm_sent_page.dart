@@ -1,5 +1,5 @@
+// lib/features/chat/presentation/inbox/dm_sent_page.dart
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 class DmSentPage extends StatefulWidget {
@@ -33,19 +33,28 @@ class _DmSentPageState extends State<DmSentPage> {
     _t?.cancel();
     if (!mounted) return;
 
-    final navigator = Navigator.of(context);
+    // 1) 현재 네비게이터 스택에서 첫 라우트까지 pop
+    final nav = Navigator.of(context);
     var popped = false;
+    nav.popUntil((route) {
+      final isFirst = route.isFirst;
+      if (isFirst) popped = true;
+      return isFirst;
+    });
+    if (popped) return;
 
-    navigator.popUntil((r) {
-      final isRoot = r.settings.name == '/';
-      if (isRoot) popped = true;
+    // 2) (중첩 네비게이터 대비) 루트 네비게이터 기준으로 pop
+    final rootNav = Navigator.of(context, rootNavigator: true);
+    var rootPopped = false;
+    rootNav.popUntil((route) {
+      final isRoot = route.isFirst || route.settings.name == '/';
+      if (isRoot) rootPopped = true;
       return isRoot;
     });
+    if (rootPopped) return;
 
-    if (!popped) {
-      // 만약 이름이 없는 루트만 남았거나, 중첩 네비게이터인 경우 대비
-      navigator.maybePop();
-    }
+    // 3) 마지막 안전장치: 루트로 재진입 (앱에서 '/' 라우트가 등록되어 있어야 함)
+    rootNav.pushNamedAndRemoveUntil('/', (route) => false);
   }
 
   @override
