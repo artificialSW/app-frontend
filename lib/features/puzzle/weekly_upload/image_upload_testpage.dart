@@ -13,7 +13,7 @@ class ImageUploadTestPage extends StatefulWidget {
 class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
   final ImagePicker _picker = ImagePicker();
   final List<File> _imageFiles = [];
-  final images = ImageStore().imageWidgetList;
+  //final images = ImageStore().imageWidgetList;
 
   Future<void> _pickImage() async {
     if (_imageFiles.length >= 3) return; //무조건 3개 넣어야 한다고 강제
@@ -30,8 +30,8 @@ class _ImageUploadTestPageState extends State<ImageUploadTestPage> {
 
       setState(() {
         _imageFiles.add(file);
-        ImageStore().imageWidgetList.add(imageWidget); //새로운 인스턴스 생성하긴 하지만, 싱글톤이라 배열 객체는 하나로 관리됨.
-        print(ImageStore().imageWidgetList.length);
+        ImageStore().addImageWidget(imageWidget); //새로운 인스턴스 생성하긴 하지만, 싱글톤이라 배열 객체는 하나로 관리됨.
+        print(ImageStore().widgetCount);
         ImageStore().imageFileList.add(file);
       });
     }

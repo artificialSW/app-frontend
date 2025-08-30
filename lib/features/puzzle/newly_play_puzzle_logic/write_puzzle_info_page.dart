@@ -34,7 +34,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
 
     puzzle.size = int.parse(size.split(" ")[0]); //"3 x 3" 이면 size = 3 됨.
 
-    ImageStore().imageWidgetList.removeAt(0); //이미지 저장 리스트의 첫 번째 이미지를 지움(지금 쓸거니까)
+    ImageStore().removeImageWidgetAt(0); //이미지 저장 리스트의 첫 번째 이미지를 지움(지금 쓸거니까)
 
     return puzzle;
   }
