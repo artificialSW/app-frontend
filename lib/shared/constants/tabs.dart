@@ -2,7 +2,7 @@ import 'package:artificialsw_frontend/features/chat/presentation/pages/chat_page
 import 'package:artificialsw_frontend/features/home/home_page.dart';
 import 'package:artificialsw_frontend/features/Profile/profile_page.dart';
 import 'package:flutter/material.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzle_page.dart';
+import 'package:artificialsw_frontend/features/puzzle/puzzle_mainpage.dart';
 
 class TabItem {
   final IconData icon;

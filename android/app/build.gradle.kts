@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.example.artificialsw_frontend"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973" //image_picker 패키지에서 이 버전 이상을 요구
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
