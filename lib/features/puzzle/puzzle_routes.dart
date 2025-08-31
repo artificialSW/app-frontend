@@ -1,4 +1,5 @@
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/play_puzzle.dart';
+import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/puzzle_archive.dart';
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/puzzle_completed.dart';
 import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_completedlist.dart';
 import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_ongoinglist.dart';
@@ -40,6 +41,8 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
       return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleInstance));
     case '/puzzle/re-completed':
       return MaterialPageRoute(builder: (_) => PuzzleRecompleted());
+    case '/puzzle/archive':
+      return MaterialPageRoute(builder: (_) => PuzzleArchive());
 
     default:
       return MaterialPageRoute(builder: (_) => const PuzzleRoot());

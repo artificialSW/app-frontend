@@ -73,7 +73,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   child: const Text("사진 업로드")
               ),
               ElevatedButton(
-                  onPressed: () => Navigator.of(context).pushNamed('/puzzle/image-upload-test'),
+                  onPressed: () => Navigator.of(context).pushNamed('/puzzle/archive'),
                   child: const Text("퍼즐 아카이브")
               ),
 

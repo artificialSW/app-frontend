@@ -21,6 +21,7 @@ class PuzzleProvider with ChangeNotifier {
       piecesPosition: [],
       gameState: GameState.Unplayed,
       contributors: [User(name: 'Jaewook', id: 1)],
+      isArchived: false,
     ),
     PuzzleGame(
       puzzleId: 2,
@@ -29,6 +30,7 @@ class PuzzleProvider with ChangeNotifier {
       piecesPosition: [],
       gameState: GameState.Unplayed,
       contributors: [User(name: 'JungHwan', id: 2)],
+      isArchived: false,
     ),
   ];
 
@@ -51,6 +53,7 @@ class PuzzleProvider with ChangeNotifier {
       ],
       gameState: GameState.Ongoing,
       contributors: [User(name: 'Jaewook', id: 1), User(name: 'JungHwan', id: 2)],
+      isArchived: false,
     ),
     PuzzleGame(
       puzzleId: 4,
@@ -69,6 +72,7 @@ class PuzzleProvider with ChangeNotifier {
       ],
       gameState: GameState.Ongoing,
       contributors: [User(name: 'JungHwan', id: 2)],
+      isArchived: false,
     ),
   ];
 
@@ -91,6 +95,7 @@ class PuzzleProvider with ChangeNotifier {
       ],
       gameState: GameState.Completed,
       contributors: [User(name: 'Jaewook', id: 1)],
+      isArchived: false,
     ),
     PuzzleGame(
       puzzleId: 6,
@@ -109,12 +114,55 @@ class PuzzleProvider with ChangeNotifier {
       ],
       gameState: GameState.Completed,
       contributors: [User(name: 'JungHwan', id: 2)],
+      isArchived: false,
+    ),
+  ];
+
+  List<PuzzleGame> _archivedPuzzles = [
+    PuzzleGame(
+      puzzleId: 5,
+      imageWidget: ImageStore().imageWidgetList[2],
+      size: 3,
+      piecesPosition: [
+        PiecePosition(x: 10.0, y: 10.0),
+        PiecePosition(x: 10.0, y: 50.0),
+        PiecePosition(x: 10.0, y: 90.0),
+        PiecePosition(x: 50.0, y: 10.0),
+        PiecePosition(x: 50.0, y: 50.0),
+        PiecePosition(x: 50.0, y: 90.0),
+        PiecePosition(x: 90.0, y: 10.0),
+        PiecePosition(x: 90.0, y: 50.0),
+        PiecePosition(x: 90.0, y: 90.0),
+      ],
+      gameState: GameState.Completed,
+      contributors: [User(name: 'Jaewook', id: 1)],
+      isArchived: true,
+    ),
+    PuzzleGame(
+      puzzleId: 6,
+      imageWidget: ImageStore().imageWidgetList[2],
+      size: 3,
+      piecesPosition: [
+        PiecePosition(x: 10.0, y: 10.0),
+        PiecePosition(x: 10.0, y: 50.0),
+        PiecePosition(x: 10.0, y: 90.0),
+        PiecePosition(x: 50.0, y: 10.0),
+        PiecePosition(x: 50.0, y: 50.0),
+        PiecePosition(x: 50.0, y: 90.0),
+        PiecePosition(x: 90.0, y: 10.0),
+        PiecePosition(x: 90.0, y: 50.0),
+        PiecePosition(x: 90.0, y: 90.0),
+      ],
+      gameState: GameState.Completed,
+      contributors: [User(name: 'JungHwan', id: 2)],
+      isArchived: true,
     ),
   ];
 
   List<PuzzleGame> get ongoingPuzzles => _ongoingPuzzles;
   List<PuzzleGame> get completedPuzzles => _completedPuzzles;
   List<PuzzleGame> get unplayedPuzzles => _unplayedPuzzles;
+  List<PuzzleGame> get archivedPuzzles => _archivedPuzzles;
 
   void startPuzzle(PuzzleGame puzzle) { //TODO: 나중에 이런식이 아니라 상태만 바꿔주는 식으로 수정하기
     _unplayedPuzzles.removeWhere((p) => p.puzzleId == puzzle.puzzleId);///걍 _unplayedPuzzles.remove(puzzle); 하면 안되나?
@@ -187,7 +235,7 @@ class PuzzleListItem extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
-                child: const Text('삭제', style: TextStyle(fontSize: 12)),
+                child: const Text('삭제하기', style: TextStyle(fontSize: 12)),
               ),
             ),
             const SizedBox(width: 8),
@@ -243,7 +291,7 @@ class PuzzleListItem extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
-                child: const Text('저장하기', style: TextStyle(fontSize: 12)),
+                child: const Text('아카이빙', style: TextStyle(fontSize: 12)),
               ),
             ),
             const SizedBox(width: 8),
@@ -258,6 +306,61 @@ class PuzzleListItem extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
                 child: const Text('다시풀기',
+                    style: TextStyle(color: Colors.white, fontSize: 12)),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget ArchivedPuzzleCard({
+    required VoidCallback onDelete,
+    required VoidCallback onSave,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '주제',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
+        const SizedBox(height: 4),
+        const Text('퍼즐 푼 사람: ~~',
+            style: TextStyle(color: Colors.grey, fontSize: 12)),
+        const SizedBox(height: 8),
+        const Text('메세지: ~~',
+            style: TextStyle(color: Colors.grey, fontSize: 12)),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: onDelete,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.grey,
+                  side: const BorderSide(color: Colors.grey),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                ),
+                child: const Text('삭제하기', style: TextStyle(fontSize: 12)),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: onPressed,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                ),
+                child: const Text('갤러리에 저장',
                     style: TextStyle(color: Colors.white, fontSize: 12)),
               ),
             ),
@@ -306,8 +409,10 @@ class PuzzleListItem extends StatelessWidget {
                 children: [
                   if (gameState == GameState.Ongoing)
                     OngoingPuzzleCard(onDelete: onDelete, onPressed: onPressed),
-                  if (gameState == GameState.Completed)
+                  if (gameState == GameState.Completed && puzzle.isArchived == false)
                     CompletedPuzzleCard(onDelete: onDelete, onPressed: onPressed),
+                  if (gameState == GameState.Completed && puzzle.isArchived == true)
+                    ArchivedPuzzleCard(onDelete: onDelete, onSave: onSave),
                 ]
             ),
           ),
