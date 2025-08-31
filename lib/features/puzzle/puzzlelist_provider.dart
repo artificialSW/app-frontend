@@ -173,12 +173,15 @@ class PuzzleListItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: const Color(0xFFC0D6E6),
-              borderRadius: BorderRadius.circular(8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: SizedBox(
+              width: 130,
+              height: 130,
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: puzzle.imageWidget,
+              ),
             ),
           ),
           const SizedBox(width: 16),
