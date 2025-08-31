@@ -1,10 +1,9 @@
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/play_puzzle.dart';
-import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_completed.dart';
+import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/puzzle_completed.dart';
 import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_completedlist.dart';
 import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_ongoinglist.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_mainpage.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
-import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_replaying.dart';
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/write_puzzle_info_page.dart';
 import 'package:artificialsw_frontend/features/puzzle/weekly_upload/add_comment_page.dart';
 import 'package:artificialsw_frontend/features/puzzle/weekly_upload/image_upload_page.dart';

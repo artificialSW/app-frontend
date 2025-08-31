@@ -79,7 +79,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
             id: x * cols + y, // 지금 당장은 팔요 없는 것 같긴 함
             maxRow: rows,
             maxCol: cols,
-            position: widget.puzzle.gameState == GameState.Unplayed
+            position: widget.puzzle.gameState != GameState.Ongoing
                 ? null
                 : widget.puzzle.piecesPosition[x * cols + y],
             bringToTop: _bringToTop,
@@ -130,6 +130,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       }
 
       if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때
+        print("now state is ${widget.puzzle.gameState}");
         if (widget.puzzle.gameState != GameState.Completed){
           widget.puzzle.gameState = GameState.Completed;
 
@@ -137,20 +138,33 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
             context,
             listen: false,
           ).completePuzzle(widget.puzzle);
+          _navigateToAwardPage();
         }
-        _navigateToNextPage();
+        else {
+          _navigateToHomePage();
+        }
       }
     });
   }
 
-  void _navigateToNextPage() async {
+  void _navigateToAwardPage() async {
     print("퍼즐 완성! 다음 페이지로 이동합니다.");
 
     // 1초 기다리기
     await Future.delayed(const Duration(seconds: 1));
 
+
     // '/puzzle/in-progress' 대신 이동할 페이지의 라우트 이름을 사용
-    Navigator.of(context).pushReplacementNamed('/puzzle/completed-list');
+    Navigator.of(context).pushReplacementNamed('/puzzle/completed');
+  }
+
+  void _navigateToHomePage() async {
+    print("퍼즐 완성! 다음 페이지로 이동합니다.");
+
+    // 1초 기다리기
+    await Future.delayed(const Duration(seconds: 1));
+
+    Navigator.of(context).pushReplacementNamed('/');
   }
 
   @override
