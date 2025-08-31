@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:artificialsw_frontend/features/puzzle/model/puzzle_board_scope.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +89,7 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
             },
           ));
         });
-        if(pieces[x * cols + y].position == null) print("로직 문제 발생: ${x * cols + y}번째 조각의 위치가 null 입니다.");
+        if(pieces[x * cols + y].position == null) print("${x * cols + y}번째 조각의 위치가 null 입니다.");
         widget.puzzle.piecesPosition.add(pieces[x * cols + y].position ?? PiecePosition(x: 0, y: 0)); ///bulid time에 랜덤 값을 어떻게든 부여받기에
         ///null이 아닐 확률이 높지만 비동기 함수임을 감안해서 안전하게 로직을 짜기
       }
@@ -152,9 +153,34 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
 
   @override
   Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    final innerHeight = media.size.height - media.padding.vertical; // SafeArea 내부 높이
+    final screenWidth = media.size.width;
+
+    // 보드 폭: 화면 2/3
+    final boardWidth = screenWidth * (2 / 3);
+
+    // 보드 높이: 이미지 비율 유지 (이미지 정보를 아직 못 얻었으면 정사각으로 대체)
+    // _image는 setState로 이미 들어왔고, _getImageSize로 계산한 imageSize를 pieces 생성 시에 알고 있음
+    // 가장 안전하게는 pieces.first.imageSize를 참조(없으면 대체)
+    Size? imgSize;
+    if (pieces.isNotEmpty) {
+      imgSize = pieces.first.imageSize;
+    }
+    final double boardHeight = (imgSize != null && imgSize.width > 0)
+        ? boardWidth * (imgSize.height / imgSize.width)
+        : boardWidth; // fallback: 정사각
+
+    const double gap = 12.0; // 보드-트레이 간 간격(시각적 구분용)
+    final double trayHeight = (innerHeight - kToolbarHeight - gap - 24.0 - boardHeight)
+        .clamp(140.0, innerHeight * 0.5); // 최소 140 보장
+
+    final double trayTop = boardHeight + gap;
+    final double gameAreaHeight = trayTop + trayHeight;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('퍼즐 플레이', style: TextStyle(color: Colors.black)),
+        title: const Text('주제 이름', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -162,10 +188,56 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
         child: Center(
           child: _image == null
               ? const Text('이미지를 로드하는 중입니다...')
-              : Stack(children: pieces),
+              : PuzzleBoardScope(
+            boardWidth: boardWidth,
+            boardHeight: boardHeight,
+            trayTop: trayTop,
+            trayHeight: trayHeight,
+            child: SizedBox(
+              width: boardWidth,
+              height: gameAreaHeight,
+              child: Stack(
+                clipBehavior: Clip.none, // 조각이 보드 영역을 넘어 트레이까지 보이게
+                children: [
+                  // 보드(상단)
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Container(
+                      width: boardWidth,
+                      height: boardHeight,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.black12),
+                      ),
+                    ),
+                  ),
+
+                  // 트레이(하단)
+                  Positioned(
+                    top: trayTop,
+                    left: 0,
+                    child: Container(
+                      width: boardWidth,
+                      height: trayHeight,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.black12),
+                      ),
+                    ),
+                  ),
+
+                  // 퍼즐 조각들 (보드/트레이를 오가며 드래그)
+                  ...pieces,
+                ],
+              ),
+            ),
+          ),
         ),
       ),
-      // 이미지가 고정되었으므로 FloatingActionButton은 제거
     );
   }
+
 }
