@@ -201,59 +201,87 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
         elevation: 0,
       ),
       body: SafeArea(
-        child: Center(
-          child: _image == null
-              ? const Text('이미지를 로드하는 중입니다...')
-              : PuzzleBoardScope(
-            boardWidth: boardWidth,
-            boardHeight: boardHeight,
-            trayTop: trayTop,
-            trayHeight: trayHeight,
-            child: SizedBox(
-              width: boardWidth,
-              height: gameAreaHeight,
-              child: Stack(
-                clipBehavior: Clip.none, // 조각이 보드 영역을 넘어 트레이까지 보이게
-                children: [
-                  // 보드(상단)
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    child: Container(
+        child: Scrollbar(
+          thumbVisibility: true, // 항상 보이게 (필요없으면 false)
+          interactive: true,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Center(
+              child: _image == null
+                  ? const Text('이미지를 로드하는 중입니다...')
+                  : PuzzleBoardScope(
+                boardWidth: boardWidth,
+                boardHeight: boardHeight,
+                trayTop: trayTop,
+                trayHeight: trayHeight,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
                       width: boardWidth,
-                      height: boardHeight,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.black12),
+                      height: gameAreaHeight,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          // 보드(상단)
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            child: Container(
+                              width: boardWidth,
+                              height: boardHeight,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.black12),
+                              ),
+                            ),
+                          ),
+                          // 트레이(하단)
+                          Positioned(
+                            top: trayTop,
+                            left: 0,
+                            child: Container(
+                              width: boardWidth,
+                              height: trayHeight,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.black12),
+                              ),
+                            ),
+                          ),
+                          // 퍼즐 조각들
+                          ...pieces,
+                        ],
                       ),
                     ),
-                  ),
-
-                  // 트레이(하단)
-                  Positioned(
-                    top: trayTop,
-                    left: 0,
-                    child: Container(
+                    const SizedBox(height: 12),
+                    SizedBox(
                       width: boardWidth,
-                      height: trayHeight,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.black12),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacementNamed(
+                              '/');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text('저장하기'),
                       ),
                     ),
-                  ),
-
-                  // 퍼즐 조각들 (보드/트레이를 오가며 드래그)
-                  ...pieces,
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
     );
+
   }
 
 }
