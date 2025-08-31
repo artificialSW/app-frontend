@@ -190,7 +190,7 @@ class PuzzleListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '주제(퍼즐id): ${puzzle.puzzleId}',
+                  '주제',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -198,12 +198,12 @@ class PuzzleListItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '크기: ${puzzle.size}',
+                  'ai선정 키워드: ~~',
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '퍼즐 생성자: ${puzzle.contributors[0].name}',
+                  '진행도: ~~',
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const SizedBox(height: 12),
