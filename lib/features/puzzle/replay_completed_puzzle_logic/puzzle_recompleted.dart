@@ -7,7 +7,14 @@ class PuzzleRecompleted extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Puzzle 재 완성 페이지')),
       body: Center(
-          child: Text("퍼즐 재 완성 시 페이지")
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("축하해요 퍼즐이 완성되었어요"),
+            SizedBox(height: 30,),
+            Text("다시 풀어진 퍼즐은 열매가 열리지 않아요 ㅜㅜ"),
+          ],
+        ),
       ),
     );
   }

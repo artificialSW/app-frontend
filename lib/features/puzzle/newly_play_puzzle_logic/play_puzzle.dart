@@ -141,7 +141,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
           _navigateToAwardPage();
         }
         else {
-          _navigateToHomePage();
+          _navigateToNonAwardPage();
         }
       }
     });
@@ -158,13 +158,13 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     Navigator.of(context).pushReplacementNamed('/puzzle/completed');
   }
 
-  void _navigateToHomePage() async {
+  void _navigateToNonAwardPage() async {
     print("퍼즐 완성! 다음 페이지로 이동합니다.");
 
     // 1초 기다리기
     await Future.delayed(const Duration(seconds: 1));
 
-    Navigator.of(context).pushReplacementNamed('/');
+    Navigator.of(context).pushReplacementNamed('/puzzle/re-completed');
   }
 
   @override
