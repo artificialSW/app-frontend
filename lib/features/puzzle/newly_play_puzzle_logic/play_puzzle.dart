@@ -9,19 +9,19 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
-class NewlyPlayPuzzle extends StatefulWidget {
+class PlayPuzzle extends StatefulWidget {
   final PuzzleGame puzzle;
 
-  const NewlyPlayPuzzle({
+  const PlayPuzzle({
     Key? key,
     required this.puzzle,
   }) : super(key: key);
 
   @override
-  _NewlyPlayPuzzleState createState() => _NewlyPlayPuzzleState();
+  _PlayPuzzleState createState() => _PlayPuzzleState();
 }
 
-class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
+class _PlayPuzzleState extends State<PlayPuzzle> {
   int get rows => widget.puzzle.size!;
   int get cols => widget.puzzle.size!;
   Image? _image;
@@ -130,12 +130,14 @@ class _NewlyPlayPuzzleState extends State<NewlyPlayPuzzle> {
       }
 
       if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때
-        widget.puzzle.gameState = GameState.Completed;
+        if (widget.puzzle.gameState != GameState.Completed){
+          widget.puzzle.gameState = GameState.Completed;
 
-        Provider.of<PuzzleProvider>(
-          context,
-          listen: false,
-        ).completePuzzle(widget.puzzle);
+          Provider.of<PuzzleProvider>(
+            context,
+            listen: false,
+          ).completePuzzle(widget.puzzle);
+        }
         _navigateToNextPage();
       }
     });

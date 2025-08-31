@@ -32,6 +32,7 @@ class PuzzleGame {
       puzzleId: puzzleId, //유지
       imageWidget: imageWidget, //유지
       size: size,           //유지
+      contributors: contributors //유지
     );
   }
 }

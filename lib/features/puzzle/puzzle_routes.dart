@@ -1,4 +1,4 @@
-import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/newly_play_puzzle.dart';
+import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/play_puzzle.dart';
 import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_completed.dart';
 import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_completedlist.dart';
 import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_ongoinglist.dart';
@@ -22,27 +22,23 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
 
     case '/puzzle/write-puzzle-info':
       return MaterialPageRoute(builder: (_) => const WritePuzzleInfoPage());
-    case '/puzzle/newly-play':
+    case '/puzzle/play':
       final args = s.arguments as Map<String, dynamic>;
       final puzzleGame = args['gameInstance'] as PuzzleGame;
-      return MaterialPageRoute(builder: (_) => NewlyPlayPuzzle(puzzle: puzzleGame));
+      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleGame));
 
     case '/puzzle/ongoing-list':
       return MaterialPageRoute(builder: (_) => const OngoingPuzzlesPage());
     case '/puzzle/completed-list':
       return MaterialPageRoute(builder: (_) => CompletedPuzzlesPage());
 
-    case '/puzzle/play':
-      final args = s.arguments as Map<String, dynamic>;
-      final puzzleGame = args['gameInstance'] as PuzzleGame;
-      return MaterialPageRoute(builder: (_) => NewlyPlayPuzzle(puzzle: puzzleGame));
     case '/puzzle/completed':
       return MaterialPageRoute(builder: (_) => PuzzleCompleted());
     case '/puzzle/re-play':
       final args = s.arguments as Map<String, dynamic>;
       final original = args['gameInstance'] as PuzzleGame;
       final puzzleInstance = original.copyForReplaying();
-      return MaterialPageRoute(builder: (_) => ReplayPuzzle(puzzle: puzzleInstance));
+      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleInstance));
     case '/puzzle/re-completed':
       return MaterialPageRoute(builder: (_) => PuzzleRecompleted());
 

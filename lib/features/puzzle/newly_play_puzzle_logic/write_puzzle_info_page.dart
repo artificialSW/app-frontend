@@ -77,7 +77,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
           ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(
-                  '/puzzle/newly-play', ///일단은 라우팅 경로 re-play로 해놓고 나중에 이름 리팩터링 ㄱㄱ
+                  '/puzzle/play', ///일단은 라우팅 경로 re-play로 해놓고 나중에 이름 리팩터링 ㄱㄱ
                   arguments: {'gameInstance': getPuzzle(unplayedPuzzleIndex, selectedSize)},
                 );
               },
