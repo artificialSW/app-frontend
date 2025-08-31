@@ -51,6 +51,7 @@ class CompletedPuzzlesPage extends StatelessWidget {
                       arguments: {'gameInstance': puzzle},
                     );
                   },
+                  onSave: () {}, //TODO: 저장 기능 구현하기
                   gameState: GameState.Completed, // 완료된 퍼즐임을 표시
                 );
               },

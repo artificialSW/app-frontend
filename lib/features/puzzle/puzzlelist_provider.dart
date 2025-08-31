@@ -143,6 +143,7 @@ class PuzzleListItem extends StatelessWidget {
   final PuzzleGame puzzle;
   final VoidCallback onDelete;
   final VoidCallback onPressed;
+  final VoidCallback onSave;
   final GameState gameState;
 
   const PuzzleListItem({
@@ -150,6 +151,7 @@ class PuzzleListItem extends StatelessWidget {
     required this.puzzle,
     required this.onDelete,
     required this.onPressed,
+    required this.onSave,
     required this.gameState,
   }) : super(key: key);
 
@@ -241,7 +243,7 @@ class PuzzleListItem extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
-                child: const Text('다시 풀기', style: TextStyle(fontSize: 12)),
+                child: const Text('저장하기', style: TextStyle(fontSize: 12)),
               ),
             ),
             const SizedBox(width: 8),
@@ -249,13 +251,13 @@ class PuzzleListItem extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onPressed,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.lightBlue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
-                child: const Text('저장하기',
+                child: const Text('다시풀기',
                     style: TextStyle(color: Colors.white, fontSize: 12)),
               ),
             ),
@@ -302,111 +304,10 @@ class PuzzleListItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (gameState == GameState.Ongoing) ...[
-                    const Text(
-                      '주제',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'ai선정 키워드: ~~',
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      '진행도: ~~',
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: onDelete,
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.grey,
-                              side: const BorderSide(color: Colors.grey),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                            ),
-                            child: const Text('삭제', style: TextStyle(fontSize: 12)),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: onPressed,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                            ),
-                            child: const Text(
-                              '진행하기',
-                              style: TextStyle(color: Colors.white, fontSize: 12),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-
-                  if (gameState == GameState.Completed) ...[
-                    const Text(
-                      '주제',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      '퍼즐 푼 사람: ~~',
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      '메세지: ~~',
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: onDelete,
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.grey,
-                              side: const BorderSide(color: Colors.grey),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                            ),
-                            child: const Text('다시 풀기', style: TextStyle(fontSize: 12)),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: onPressed,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                            ),
-                            child: const Text(
-                              '저장하기',
-                              style: TextStyle(color: Colors.white, fontSize: 12),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  if (gameState == GameState.Ongoing)
+                    OngoingPuzzleCard(onDelete: onDelete, onPressed: onPressed),
+                  if (gameState == GameState.Completed)
+                    CompletedPuzzleCard(onDelete: onDelete, onPressed: onPressed),
                 ]
             ),
           ),

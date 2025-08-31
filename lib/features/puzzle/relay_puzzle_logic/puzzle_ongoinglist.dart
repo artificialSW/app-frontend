@@ -77,6 +77,7 @@ class OngoingPuzzlesPage extends StatelessWidget {
                         arguments: {'gameInstance': puzzle},
                     );
                   },
+                  onSave: () {},
                   gameState: GameState.Ongoing,
                 );
               },
