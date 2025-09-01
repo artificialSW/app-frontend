@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
+// ✅ ChatStore & 도메인
+import '../../../application/chat_store.dart';
+import '../../../domain/thread_key.dart';
+import '../../../domain/reply.dart';
+import '../../../domain/enums.dart';
+
 /// 쓰레드 화면
 /// arguments(Map) 예시: {
 ///   'id': '...',
 ///   'question': '할아버지의 21살은 어땠나요?',
 ///   'members': ['할아버지', '아빠', '동생'],
-///   'isPublic': false,
-///   'createdAt': 1719300000000,
+///   'isPublic': false,              // true면 공통, false면 개인
+///   'createdAt': 1719300000000,    // ms
 /// }
 class QuestionThreadPage extends StatefulWidget {
   const QuestionThreadPage({super.key, required this.data});
@@ -16,49 +22,34 @@ class QuestionThreadPage extends StatefulWidget {
   State<QuestionThreadPage> createState() => _QuestionThreadPageState();
 }
 
-class _QuestionThreadPageState extends State<QuestionThreadPage> {
+class _QuestionThreadPageState extends State<QuestionThreadPage>
+    with AutomaticKeepAliveClientMixin {
   static const Color _green = Color(0xFF5CBD56);
   final TextEditingController _text = TextEditingController();
 
-  // 어떤 댓글에 답글 쓰는지 (null이면 최상위 댓글)
-  _Comment? _replyTarget;
+  // 대댓글 모드 대상
+  Reply? _replyTarget;
 
-  // 데모용 더미 데이터 구성
-  late final List<_Comment> _comments = [
-    _Comment(
-      id: 'c1',
-      author: '할아버지',
-      text: '날아다녔지',
-      likes: 10,
-      children: [],
-    ),
-    _Comment(
-      id: 'c2',
-      author: '아빠',
-      text: '참 정정하셨죠',
-      likes: 10,
-      children: [],
-    ),
-    _Comment(
-      id: 'c3',
-      author: '할아버지',
-      text: '옛날 생각 많이 나네',
-      likes: 10,
-      children: [
-        _Comment(id: 'c3-1', author: '나', text: '맞아요!', likes: 1),
-        _Comment(id: 'c3-2', author: '동생', text: '멋져요!', likes: 2),
-      ],
-    ),
-    _Comment(
-      id: 'c4',
-      author: '동생',
-      text: '아빠는 21살 때 어땠어요?',
-      likes: 10,
-      children: [
-        _Comment(id: 'c4-1', author: '나', text: '궁금!', likes: 0),
-      ],
-    ),
-  ];
+  // 펼침 상태(id 집합)
+  final Set<String> _expanded = <String>{};
+
+  // 현재 사용자(예시)
+  final String _me = 'me';
+
+  late final ThreadKey _keyInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    final id = (widget.data['id'] as String?) ?? 'me';
+    final isPublic = (widget.data['isPublic'] as bool?) ?? false;
+    _keyInfo = ThreadKey(isPublic ? ThreadKind.common : ThreadKind.personal, id);
+
+    // 최초 1회만 로드(이미 캐시 있으면 no-op)
+    ChatStore.I.hydrateIfNeeded(_keyInfo).then((_) {
+      if (mounted) setState(() {});
+    });
+  }
 
   @override
   void dispose() {
@@ -66,48 +57,57 @@ class _QuestionThreadPageState extends State<QuestionThreadPage> {
     super.dispose();
   }
 
-  void _toggleLike(_Comment c) {
+  @override
+  bool get wantKeepAlive => true;
+
+  void _toggleLike(Reply r) {
+    ChatStore.I.toggleLike(_keyInfo, r.id, _me);
+    setState(() {}); // 낙관적 업데이트 즉시 반영
+  }
+
+  void _toggleReplies(String id) {
     setState(() {
-      c.isLiked = !c.isLiked;
-      if (c.isLiked) {
-        c.likes += 1;
+      if (_expanded.contains(id)) {
+        _expanded.remove(id);
       } else {
-        c.likes = (c.likes - 1).clamp(0, 1 << 31);
+        _expanded.add(id);
       }
     });
   }
 
-  void _toggleReplies(_Comment c) {
-    setState(() => c.expanded = !c.expanded);
+  void _enterReplyMode(Reply parent) {
+    setState(() => _replyTarget = parent);
+  }
+
+  void _exitReplyMode() {
+    setState(() => _replyTarget = null);
   }
 
   // 댓글/대댓글 추가
   void _submit() {
     final content = _text.text.trim();
     if (content.isEmpty) return;
-    setState(() {
-      if (_replyTarget == null) {
-        _comments.add(_Comment(
-          id: 'c${DateTime.now().microsecondsSinceEpoch}',
-          author: '나',
-          text: content,
-          likes: 0,
-        ));
-      } else {
-        _replyTarget!.children.add(_Comment(
-          id: '${_replyTarget!.id}-${DateTime.now().microsecondsSinceEpoch}',
-          author: '나',
-          text: content,
-          likes: 0,
-        ));
-        _replyTarget!.expanded = true; // 답글 추가 시 자동 펼침
-      }
-      _text.clear();
-      _replyTarget = null;
-    });
+
+    final reply = Reply(
+      id: UniqueKey().toString(),
+      threadId: _keyInfo.id,
+      parentId: _replyTarget?.id,
+      content: content,
+      createdAt: DateTime.now(),
+      authorId: _me,
+    );
+
+    ChatStore.I.addReply(_keyInfo, reply);
+    _text.clear();
+
+    if (_replyTarget != null) {
+      // 부모를 자동으로 펼침
+      _expanded.add(_replyTarget!.id);
+      _exitReplyMode();
+    }
+    setState(() {});
   }
 
-  // 상단(제목영역) 날짜 포맷
   String _fmtDate(DateTime dt) {
     const months = [
       'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
@@ -117,10 +117,22 @@ class _QuestionThreadPageState extends State<QuestionThreadPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final createdAtMs = (widget.data['createdAt'] as int?) ??
         DateTime.now().millisecondsSinceEpoch;
     final createdAt = DateTime.fromMillisecondsSinceEpoch(createdAtMs);
     final question = (widget.data['question'] as String?) ?? '';
+    final isPublic = (widget.data['isPublic'] as bool?) ?? false;
+
+    final thread = ChatStore.I.getThread(_keyInfo);
+
+    // parentId -> children 맵 구축
+    final Map<String?, List<Reply>> byParent = <String?, List<Reply>>{};
+    for (final r in thread.replies) {
+      byParent.putIfAbsent(r.parentId, () => <Reply>[]).add(r);
+    }
+    // (선택) 정렬 원하면 여기서 byParent[parent]?.sort(...);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -132,9 +144,9 @@ class _QuestionThreadPageState extends State<QuestionThreadPage> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black87),
           onPressed: () => Navigator.of(context).maybePop(),
         ),
-        title: const Text(
-          '개인질문',
-          style: TextStyle(
+        title: Text(
+          isPublic ? '공통질문' : '개인질문',
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 17,
             fontFamily: 'Pretendard',
@@ -146,7 +158,7 @@ class _QuestionThreadPageState extends State<QuestionThreadPage> {
       ),
       body: Column(
         children: [
-          // 헤더: "내가 작성" 칩, 제목, 날짜
+          // 헤더
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Column(
@@ -159,10 +171,10 @@ class _QuestionThreadPageState extends State<QuestionThreadPage> {
                     color: _green,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Text(
-                      '내가 작성',
-                      style: TextStyle(
+                      isPublic ? '공통' : '내가 작성',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
                         fontFamily: 'Pretendard',
@@ -201,18 +213,25 @@ class _QuestionThreadPageState extends State<QuestionThreadPage> {
           ),
           const Divider(height: 1),
 
-          // 댓글 리스트
+          // 댓글 리스트(트리)
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-              itemCount: _comments.length,
+              itemCount: (byParent[null] ?? const <Reply>[]).length,
               separatorBuilder: (_, __) => const SizedBox(height: 16),
-              itemBuilder: (_, i) => _CommentTile(
-                comment: _comments[i],
-                onLike: _toggleLike,
-                onToggleReplies: _toggleReplies,
-                onReply: (c) => setState(() => _replyTarget = c),
-              ),
+              itemBuilder: (_, i) {
+                final top = (byParent[null] ?? const <Reply>[])[i];
+                return _ReplyTile(
+                  reply: top,
+                  depth: 0,
+                  byParent: byParent,
+                  me: _me,
+                  expanded: _expanded.contains(top.id),
+                  onToggleExpand: () => _toggleReplies(top.id),
+                  onLike: _toggleLike,
+                  onReply: _enterReplyMode,
+                );
+              },
             ),
           ),
 
@@ -248,8 +267,8 @@ class _QuestionThreadPageState extends State<QuestionThreadPage> {
                               onSubmitted: (_) => _submit(),
                               decoration: InputDecoration(
                                 hintText: _replyTarget == null
-                                    ? 'Reply to zoeyle_'
-                                    : 'Reply to ${_replyTarget!.author}',
+                                    ? '댓글을 입력하세요'
+                                    : 'Reply to ${_replyTarget!.authorId}',
                                 hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),
                                 border: InputBorder.none,
                               ),
@@ -258,7 +277,7 @@ class _QuestionThreadPageState extends State<QuestionThreadPage> {
                           if (_replyTarget != null)
                             IconButton(
                               tooltip: '취소',
-                              onPressed: () => setState(() => _replyTarget = null),
+                              onPressed: _exitReplyMode,
                               icon: const Icon(Icons.close_rounded),
                             ),
                           IconButton(onPressed: () {}, icon: const Icon(Icons.image_outlined)),
@@ -278,48 +297,37 @@ class _QuestionThreadPageState extends State<QuestionThreadPage> {
   }
 }
 
-/* ===================== 댓글 모델/위젯 ===================== */
+/* ===================== 렌더 위젯 ===================== */
 
-class _Comment {
-  _Comment({
-    required this.id,
-    required this.author,
-    required this.text,
-    required this.likes,
-    this.children = const [],
-  });
-
-  final String id;
-  final String author;
-  final String text;
-  int likes;
-  bool isLiked = false;
-  bool expanded = false;
-  final List<_Comment> children;
-}
-
-class _CommentTile extends StatelessWidget {
-  const _CommentTile({
+class _ReplyTile extends StatelessWidget {
+  const _ReplyTile({
     super.key,
-    required this.comment,
+    required this.reply,
+    required this.depth,
+    required this.byParent,
+    required this.me,
+    required this.expanded,
+    required this.onToggleExpand,
     required this.onLike,
-    required this.onToggleReplies,
     required this.onReply,
-    this.depth = 0,
   });
 
-  final _Comment comment;
-  final void Function(_Comment) onLike;
-  final void Function(_Comment) onToggleReplies;
-  final void Function(_Comment) onReply;
+  final Reply reply;
   final int depth;
+  final Map<String?, List<Reply>> byParent;
+  final String me;
+  final bool expanded;
+  final VoidCallback onToggleExpand;
+  final void Function(Reply) onLike;
+  final void Function(Reply) onReply;
 
   static const Color _green = Color(0xFF5CBD56);
 
   @override
   Widget build(BuildContext context) {
-    // 깊이에 따라 들여쓰기/세로 라인
+    final children = byParent[reply.id] ?? const <Reply>[];
     final leftIndent = depth == 0 ? 0.0 : 20.0;
+    final isLiked = reply.likedBy.contains(me);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,7 +367,7 @@ class _CommentTile extends StatelessWidget {
                       children: [
                         // 작성자
                         Text(
-                          comment.author,
+                          reply.authorId, // authorId를 표기(필요시 닉네임 매핑)
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 16,
@@ -370,7 +378,7 @@ class _CommentTile extends StatelessWidget {
                         const SizedBox(height: 6),
                         // 내용
                         Text(
-                          comment.text,
+                          reply.content,
                           style: const TextStyle(
                             color: Color(0xFF282828),
                             fontSize: 14,
@@ -380,26 +388,23 @@ class _CommentTile extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
+
                         // 하단 액션(좋아요/댓글/답글)
                         Row(
                           children: [
                             InkWell(
                               borderRadius: BorderRadius.circular(6),
-                              onTap: () => onLike(comment),
+                              onTap: () => onLike(reply),
                               child: Row(
                                 children: [
                                   Icon(
-                                    comment.isLiked
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
+                                    isLiked ? Icons.favorite : Icons.favorite_border,
                                     size: 16,
-                                    color: comment.isLiked
-                                        ? _green
-                                        : const Color(0xFF1C1C1C),
+                                    color: isLiked ? _green : const Color(0xFF1C1C1C),
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
-                                    '${comment.likes}',
+                                    '${reply.likedBy.length}',
                                     style: const TextStyle(
                                       color: Color(0xFF1C1C1C),
                                       fontSize: 12,
@@ -416,7 +421,7 @@ class _CommentTile extends StatelessWidget {
                                 size: 16, color: Color(0xFF1C1C1C)),
                             const SizedBox(width: 6),
                             Text(
-                              '${comment.children.length}',
+                              '${children.length}',
                               style: const TextStyle(
                                 color: Color(0xFF1C1C1C),
                                 fontSize: 12,
@@ -427,7 +432,7 @@ class _CommentTile extends StatelessWidget {
                             ),
                             const SizedBox(width: 12),
                             TextButton(
-                              onPressed: () => onReply(comment),
+                              onPressed: () => onReply(reply),
                               style: TextButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                                 minimumSize: const Size(0, 32),
@@ -446,17 +451,16 @@ class _CommentTile extends StatelessWidget {
                           ],
                         ),
 
-                        // show replies / hide replies
-                        if (comment.children.isNotEmpty)
+                        // show/hide replies 토글
+                        if (children.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 6),
                             child: InkWell(
                               borderRadius: BorderRadius.circular(8),
-                              onTap: () => onToggleReplies(comment),
+                              onTap: onToggleExpand,
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  // 작은 겹친 아바타 2개
                                   SizedBox(
                                     width: 36,
                                     height: 18,
@@ -470,7 +474,7 @@ class _CommentTile extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
-                                    comment.expanded ? 'hide replies' : 'show replies',
+                                    expanded ? 'hide replies' : 'show replies',
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 12,
@@ -483,21 +487,24 @@ class _CommentTile extends StatelessWidget {
                             ),
                           ),
 
-                        // 대댓글들
-                        if (comment.expanded)
+                        // 대댓글(재귀)
+                        if (expanded)
                           Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: Column(
                               children: [
-                                for (final r in comment.children)
+                                for (final r in children)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 14),
-                                    child: _CommentTile(
-                                      comment: r,
-                                      onLike: onLike,
-                                      onToggleReplies: onToggleReplies,
-                                      onReply: onReply,
+                                    child: _ReplyTile(
+                                      reply: r,
                                       depth: depth + 1,
+                                      byParent: byParent,
+                                      me: me,
+                                      expanded: byParent[r.id]?.isNotEmpty == true,
+                                      onToggleExpand: () {}, // 자식의 토글은 상위에서 처리
+                                      onLike: onLike,
+                                      onReply: onReply,
                                     ),
                                   ),
                               ],
