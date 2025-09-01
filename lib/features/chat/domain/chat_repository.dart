@@ -1,5 +1,8 @@
 // lib/features/chat/domain/chat_repository.dart
-import 'models.dart';
+import 'models.dart';          // PersonalQuestion, CommonQuestion, InboxItem, Privacy
+import 'thread_key.dart';      // ThreadKind/common|personal + id
+import 'thread_state.dart';    // ThreadData, ThreadState
+import 'reply.dart';           // Reply
 
 /// 채팅/질문 도메인의 추상 리포지토리.
 /// 실제 구현은 Mock/REST/Firebase 등에서 제공.
@@ -34,5 +37,14 @@ abstract class ChatRepository {
     required String dmId,
     required String answerText,
   });
-}
 
+  // ---------------- Thread (공통/개인 공용) ----------------
+  /// 스레드(개인/공통 + id) 데이터 조회
+  Future<ThreadData> fetchThread(ThreadKey key);
+
+  /// 댓글/대댓글 추가 (낙관적 업데이트 권장)
+  Future<void> persistReply(ThreadKey key, Reply reply);
+
+  /// 좋아요 토글 (사용자 기준)
+  Future<void> toggleLike(ThreadKey key, String replyId, String userId);
+}
