@@ -1,3 +1,7 @@
+// 아래 3줄 추가(배럴). thread_state.dart는 export하지 않는다(순환 방지).
+export 'enums.dart';
+export 'thread_key.dart';
+export 'reply.dart';
 // lib/features/chat/domain/models.dart
 enum Privacy { public, private }
 

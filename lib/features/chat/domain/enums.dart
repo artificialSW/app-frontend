@@ -1,0 +1,1 @@
+enum ThreadKind { common, personal }
