@@ -188,8 +188,8 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
         : boardWidth; // fallback: 정사각
 
     const double gap = 12.0; // 보드-트레이 간 간격(시각적 구분용)
-    final double trayHeight = (innerHeight - kToolbarHeight - gap - 24.0 - boardHeight)
-        .clamp(140.0, innerHeight * 0.5); // 최소 140 보장
+    final double trayHeight = (innerHeight - kToolbarHeight - gap - 24.0 - boardHeight - 116)
+        .clamp(80.0, innerHeight * 0.5); // 최소 80 보장
 
     final double trayTop = boardHeight + gap;
     final double gameAreaHeight = trayTop + trayHeight;
