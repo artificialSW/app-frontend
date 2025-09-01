@@ -216,6 +216,7 @@ class _QuestionThreadPageState extends State<QuestionThreadPage>
           // 댓글 리스트(트리)
           Expanded(
             child: ListView.separated(
+              key: PageStorageKey('thread-${_keyInfo.kind}-${_keyInfo.id}'), // ✅추가함~
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
               itemCount: (byParent[null] ?? const <Reply>[]).length,
               separatorBuilder: (_, __) => const SizedBox(height: 16),
