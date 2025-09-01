@@ -211,8 +211,8 @@ class PuzzleListItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '주제',
+        Text(
+          '주제: ${puzzle.puzzleId}',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         const SizedBox(height: 4),
@@ -267,8 +267,8 @@ class PuzzleListItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '주제',
+        Text(
+          '주제: ${puzzle.puzzleId}',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         const SizedBox(height: 4),
@@ -322,8 +322,8 @@ class PuzzleListItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '주제',
+        Text(
+          '주제: ${puzzle.puzzleId}',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         const SizedBox(height: 4),
