@@ -1,19 +1,18 @@
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class OngoingPuzzlesPage extends StatelessWidget {
-  const OngoingPuzzlesPage({Key? key}) : super(key: key);
+class PuzzleArchive extends StatelessWidget {
+  const PuzzleArchive({super.key});
 
-  void _showDeleteConfirmationDialog(BuildContext context, int puzzleId) {
+  void _showDeleteConfirmationDialog(BuildContext context, PuzzleGame puzzle) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('퍼즐 삭제'),
-          content: const Text('진행하신 퍼즐을 삭제하시겠습니까?'),
+          content: const Text('퍼즐을 아카이브에서 삭제하시겠습니까?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -24,7 +23,7 @@ class OngoingPuzzlesPage extends StatelessWidget {
                 Provider.of<PuzzleProvider>(
                   context,
                   listen: false,
-                ).deletePuzzle(puzzleId);
+                ).undoArchivePuzzle(puzzle);
                 Navigator.of(context).pop();
               },
               child: const Text('예'),
@@ -35,12 +34,13 @@ class OngoingPuzzlesPage extends StatelessWidget {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          '진행중인 퍼즐 목록',
+          '퍼즐 아카이브',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -53,10 +53,10 @@ class OngoingPuzzlesPage extends StatelessWidget {
       ),
       body: Consumer<PuzzleProvider>(
         builder: (context, puzzleProvider, child) {
-          if (puzzleProvider.ongoingPuzzles.isEmpty) {
+          if (puzzleProvider.archivedPuzzles.isEmpty) {
             return const Center(
               child: Text(
-                '진행중인 퍼즐이 없습니다.',
+                '아카이빙이 비었어요. 어서 퍼즐을 풀어보세요!',
                 style: TextStyle(color: Colors.grey),
               ),
             );
@@ -64,21 +64,15 @@ class OngoingPuzzlesPage extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ListView.builder(
-              itemCount: puzzleProvider.ongoingPuzzles.length,
+              itemCount: puzzleProvider.archivedPuzzles.length,
               itemBuilder: (context, index) {
-                final puzzle = puzzleProvider.ongoingPuzzles[index];
+                final puzzle = puzzleProvider.archivedPuzzles[index];
                 return PuzzleListItem(
                   puzzle: puzzle,
-                  onDelete:
-                      () => _showDeleteConfirmationDialog(context, puzzle.puzzleId),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                        '/puzzle/play',
-                        arguments: {'gameInstance': puzzle},
-                    );
-                  },
-                  onSave: () {},
-                  gameState: GameState.Ongoing,
+                  onDelete: () => _showDeleteConfirmationDialog(context, puzzle),
+                  onPressed: () {},
+                  onSave: () {}, //TODO: 핸드폰에 저장하는 기능 구현하기
+                  gameState: GameState.Completed, // 완료된 퍼즐임을 표시
                 );
               },
             ),

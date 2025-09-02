@@ -34,49 +34,57 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
 
     puzzle.size = int.parse(size.split(" ")[0]); //"3 x 3" 이면 size = 3 됨.
 
-    ImageStore().imageWidgetList.removeAt(0); //이미지 저장 리스트의 첫 번째 이미지를 지움(지금 쓸거니까)
+    ImageStore().removeImageWidgetAt(0); //이미지 저장 리스트의 첫 번째 이미지를 지움(지금 쓸거니까)
 
     return puzzle;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: 300),
-        DropdownButtonFormField<String>(
-          value: selectedSize,
-          decoration: InputDecoration(
-            labelText: "퍼즐 사이즈 선택",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+    return Scaffold(
+      appBar: AppBar(title: const Text("Write Puzzle Info Page")),
+      body: Column(
+        children: [
+          Text("퍼즐 크기를 선택해주세요."),
+          SizedBox(height: 100),
+          Text("[퍼즐 정보]"),
+          Text("AI 선정 키워드: ~~~"),
+          Text("주제: ~~~"),
+          SizedBox(height: 100),
+          DropdownButtonFormField<String>(
+            value: selectedSize,
+            decoration: InputDecoration(
+              labelText: "퍼즐 크기 선택",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             ),
-            contentPadding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          ),
-          items: sizeOptions.map((size) {
-            return DropdownMenuItem(
-              value: size,
-              child: Text(size),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedSize = value!;
-            });
-          },
-        ),
-        SizedBox(height: 300,),
-        ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                '/puzzle/newly-play', ///일단은 라우팅 경로 re-play로 해놓고 나중에 이름 리팩터링 ㄱㄱ
-                arguments: {'gameInstance': getPuzzle(unplayedPuzzleIndex, selectedSize)},
+            items: sizeOptions.map((size) {
+              return DropdownMenuItem(
+                value: size,
+                child: Text(size),
               );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedSize = value!;
+              });
             },
-            child: const Text("입력한 정보대로 퍼즐 풀기")
-        ),
-      ],
+          ),
+          SizedBox(height: 100,),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  '/puzzle/play', ///일단은 라우팅 경로 re-play로 해놓고 나중에 이름 리팩터링 ㄱㄱ
+                  arguments: {'gameInstance': getPuzzle(unplayedPuzzleIndex, selectedSize)},
+                );
+              },
+              child: const Text("완료하기")
+          ),
+        ],
+      )
     );
   }
 }
