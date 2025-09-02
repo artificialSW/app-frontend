@@ -143,6 +143,11 @@ class PuzzleProvider with ChangeNotifier {
     puzzle.isArchived = true;
     notifyListeners();
   }
+
+  void undoArchivePuzzle(PuzzleGame puzzle) {
+    puzzle.isArchived = false;
+    notifyListeners();
+  }
 }
 
 /// 퍼즐 목록의 개별 항목 위젯
