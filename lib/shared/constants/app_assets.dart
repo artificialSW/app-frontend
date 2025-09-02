@@ -9,22 +9,9 @@ class AppAssets {
   static const appicon_whiteBackground = 'assets/images/appicon_whiteBackground.png';
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';
 
+  static const String home    = 'assets/icons/home.png';
+  static const String puzzle  = 'assets/icons/puzzle.png';
+  static const String chat    = 'assets/icons/chat.png';
+  static const String mypage = 'assets/icons/mypage.png';
 
-  //static const icons  = _Icons();
-  //static const lottie = _Lottie();
-}
-
-class _Icons {
-  const _Icons();
-
-  final String home    = 'assets/icons/home.svg';
-  final String chat    = 'assets/icons/chat.svg';
-  final String profile = 'assets/icons/profile.svg';
-}
-
-class _Lottie {
-  const _Lottie();
-
-  final String success = 'assets/lottie/success.json';
-  final String loading = 'assets/lottie/loading.json';
 }

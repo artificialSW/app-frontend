@@ -13,6 +13,9 @@ class AppColors {
   static const plumu_gray_7 = Color(0xFF585A68);
   static const plumu_gray_8 = Color(0xFF35353F);
 
+  static const activeColor = plumu_green_main;
+  static const inactiveColor = Color(0xFFD5D5D5);
+
 
   static const plumu_green_main = Color(0xFF5CBD56);
   static const plumu_green_50per = Color(0x805CBD56);
