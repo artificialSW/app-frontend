@@ -18,6 +18,34 @@ class _ChatRootState extends State<ChatRoot> with SingleTickerProviderStateMixin
   String? _selectedPersonalId; // 탭 순간 하이라이트
   String? _selectedCommonId;
 
+  // ✅ 로컬 토글 상태(내가 누른 카드들)
+  final Set<String> _likedLocal = <String>{};
+
+  // ✅ 하트 토글: 누르면 +1, 다시 누르면 -1 (0 미만 방지)
+  void _togglePersonalLike(String questionId) {
+    final list = ChatStore.I.personal.value;
+    final idx = list.indexWhere((e) => e.id == questionId);
+    if (idx < 0) return;
+
+    final cur = list[idx];
+    final isLiked = _likedLocal.contains(questionId);
+    final delta = isLiked ? -1 : 1;
+    final nextLikes = cur.likes + delta;
+    final updated = cur.copyWith(likes: nextLikes < 0 ? 0 : nextLikes);
+
+    // 숫자 즉시 반영
+    ChatStore.I.personal.value = [...list]..[idx] = updated;
+
+    // 아이콘 채움/해제 토글
+    setState(() {
+      if (isLiked) {
+        _likedLocal.remove(questionId);
+      } else {
+        _likedLocal.add(questionId);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -188,6 +216,8 @@ class _ChatRootState extends State<ChatRoot> with SingleTickerProviderStateMixin
                         selected: _selectedPersonalId == items[i].id ||
                             ChatStore.I.lastAddedPersonalId == items[i].id,
                         onTap: () => _openPersonalThread(items[i]),
+                        onLike: () => _togglePersonalLike(items[i].id),
+                        isLiked: _likedLocal.contains(items[i].id),
                       ),
                     );
                   },
@@ -319,9 +349,9 @@ class _WeeklyBanner extends StatelessWidget {
           InkWell(
             borderRadius: BorderRadius.circular(6),
             onTap: onTapHeader,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: const Text(
+            child: const Padding(
+              padding: EdgeInsets.symmetric(vertical: 2),
+              child: Text(
                 '🎉 이번주의 공통질문',
                 style: TextStyle(
                   color: _green,
@@ -401,11 +431,15 @@ class _PersonalCard extends StatelessWidget {
     required this.item,
     required this.selected,
     required this.onTap,
+    required this.onLike,     //
+    required this.isLiked,    //
   });
 
   final PersonalQuestion item;
   final bool selected;
   final VoidCallback onTap;
+  final VoidCallback onLike;  //
+  final bool isLiked;         //
 
   static const _green = Color(0xFF5CBD56);
   static const _title = Color(0xFF282828);
@@ -476,7 +510,13 @@ class _PersonalCard extends StatelessWidget {
                       ],
                     ),
                     const Spacer(),
-                    _CounterPill(likes: item.likes, comments: item.comments, whiteText: selected),
+                    _CounterPill(
+                      likes: item.likes,
+                      comments: item.comments,
+                      whiteText: selected,
+                      onLikeTap: onLike,         //  하트 탭 연결
+                      isLiked: isLiked,          //  채움/해제 반영
+                    ),
                   ],
                 ),
               ],
@@ -568,30 +608,57 @@ class _CounterPill extends StatelessWidget {
     required this.likes,
     required this.comments,
     this.whiteText = false,
+    this.onLikeTap,
+    this.isLiked = false,
   });
   final int likes;
   final int comments;
   final bool whiteText;
+  final VoidCallback? onLikeTap;
+  final bool isLiked;
 
   @override
   Widget build(BuildContext context) {
-    final color = whiteText ? Colors.white : const Color(0xFF1C1C1C);
+    final baseColor = whiteText ? Colors.white : const Color(0xFF1C1C1C);
+    final pillBg = whiteText ? Colors.white.withOpacity(0.35) : Colors.white.withOpacity(0.60);
+    final brandGreen = const Color(0xFF5CBD56);
+    final heartColor = whiteText ? Colors.white : (isLiked ? brandGreen : baseColor);
+
     return Container(
       height: 31,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: whiteText ? Colors.white.withOpacity(0.35) : Colors.white.withOpacity(0.60),
+        color: pillBg,
         borderRadius: BorderRadius.circular(15.5),
       ),
       child: Row(
         children: [
-          Icon(Icons.favorite_border, size: 16, color: color),
-          const SizedBox(width: 4),
-          Text('$likes', style: _counterStyle(color)),
+          // 하트(누를 수 있으면 onTap 연결)
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onLikeTap, // null이면 탭 비활성(공통카드의 경우)
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+                child: Row(
+                  children: [
+                    Icon(
+                      isLiked ? Icons.favorite : Icons.favorite_border, //
+                      size: 16,
+                      color: heartColor, //
+                    ),
+                    const SizedBox(width: 4),
+                    Text('$likes', style: _counterStyle(baseColor)),
+                  ],
+                ),
+              ),
+            ),
+          ),
           const SizedBox(width: 10),
-          Icon(Icons.mode_comment_outlined, size: 16, color: color),
+          Icon(Icons.mode_comment_outlined, size: 16, color: baseColor),
           const SizedBox(width: 4),
-          Text('$comments', style: _counterStyle(color)),
+          Text('$comments', style: _counterStyle(baseColor)),
         ],
       ),
     );

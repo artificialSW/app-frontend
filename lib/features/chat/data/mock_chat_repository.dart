@@ -29,8 +29,8 @@ class MockChatRepository implements ChatRepository {
       body: '이번 주 질문 내용 샘플입니다.',
       weekIndex: week,
       createdAt: now,
-      likes: 10,
-      comments: 10,
+      likes: 0,
+      comments: 0,
     );
 
     // 지난 4주치 더미
@@ -43,8 +43,8 @@ class MockChatRepository implements ChatRepository {
           body: i == 2 ? '함께 시작하고 싶은 취미활동이 있나요?' : '질문 내용을 적어주세요',
           weekIndex: w,
           createdAt: now.subtract(Duration(days: 7 * i)),
-          likes: 10,
-          comments: 10,
+          likes: 0,
+          comments: 0,
         ),
       );
     }
@@ -95,8 +95,8 @@ class MockChatRepository implements ChatRepository {
       title: title,
       privacy: privacy,
       members: members,
-      likes: 10,
-      comments: 10,
+      likes: 0,
+      comments: 0,
     );
     _personal.insert(0, p);
 
