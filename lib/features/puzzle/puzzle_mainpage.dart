@@ -1,4 +1,5 @@
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Image.asset(AppAssets.logo),
           Container(
             width: 300,
             height: 100,
