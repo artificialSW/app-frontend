@@ -1,3 +1,4 @@
+import 'package:artificialsw_frontend/features/puzzle/asset_view.dart';
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/play_puzzle.dart';
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/puzzle_archive.dart';
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/puzzle_completed.dart';
@@ -43,6 +44,8 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
       return MaterialPageRoute(builder: (_) => PuzzleRecompleted());
     case '/puzzle/archive':
       return MaterialPageRoute(builder: (_) => PuzzleArchive());
+    case '/puzzle/assetView':
+      return MaterialPageRoute(builder: (_) => AssetView());
 
     default:
       return MaterialPageRoute(builder: (_) => const PuzzleRoot());

@@ -19,7 +19,6 @@ class _PuzzleRootState extends State<PuzzleRoot> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset(AppAssets.logo),
           Container(
             width: 300,
             height: 100,
@@ -81,15 +80,24 @@ class _PuzzleRootState extends State<PuzzleRoot> {
 
             ],
           ),
-          Consumer<ImageStore>(
-            builder: (context, imageStore, child) {
-              return ElevatedButton(
-                onPressed: imageStore.isNotEmpty
-                    ? () => Navigator.of(context).pushNamed('/puzzle/write-puzzle-info')
-                    : null,
-                child: const Text("퍼즐 맞추기"),
-              );
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Consumer<ImageStore>(
+                builder: (context, imageStore, child) {
+                  return ElevatedButton(
+                    onPressed: imageStore.isNotEmpty
+                        ? () => Navigator.of(context).pushNamed('/puzzle/write-puzzle-info')
+                        : null,
+                    child: const Text("퍼즐 맞추기"),
+                  );
+                },
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pushNamed('/puzzle/assetView'),
+                child: const Text("Plumu Asset 구경하기"),
+              ),
+            ],
           ),
         ],
       ),

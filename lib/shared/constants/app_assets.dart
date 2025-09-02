@@ -10,8 +10,8 @@ class AppAssets {
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';
 
 
-  static const icons  = _Icons();
-  static const lottie = _Lottie();
+  //static const icons  = _Icons();
+  //static const lottie = _Lottie();
 }
 
 class _Icons {
