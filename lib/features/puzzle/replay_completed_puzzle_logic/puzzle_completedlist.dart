@@ -44,7 +44,7 @@ class CompletedPuzzlesPage extends StatelessWidget {
                 final puzzle = puzzleProvider.completedPuzzles[index];
                 return PuzzleListItem(
                   puzzle: puzzle,
-                  onDelete: () {}, // 완료된 퍼즐은 삭제 기능 없음
+                  onDelete: () {},
                   onPressed: () {
                     Navigator.of(context).pushNamed(
                       '/puzzle/re-play',
@@ -52,7 +52,7 @@ class CompletedPuzzlesPage extends StatelessWidget {
                     );
                   },
                   onSave: () {
-                    puzzle.isArchived = true;
+                    puzzleProvider.archivePuzzle(puzzle);
                   },
                   gameState: GameState.Completed, // 완료된 퍼즐임을 표시
                 );

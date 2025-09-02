@@ -12,8 +12,7 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position
 /// 진행중인 퍼즐과 완료된 퍼즐을 모두 관리
 class PuzzleProvider with ChangeNotifier {
 
-
-  List<PuzzleGame> _unplayedPuzzles = [
+  List<PuzzleGame> _puzzles = [
     PuzzleGame(
       puzzleId: 1,
       imageWidget: ImageStore().imageWidgetList[0],
@@ -32,10 +31,7 @@ class PuzzleProvider with ChangeNotifier {
       contributors: [User(name: 'JungHwan', id: 2)],
       isArchived: false,
     ),
-  ];
 
-  // 진행중인 퍼즐 목록
-  List<PuzzleGame> _ongoingPuzzles = [
     PuzzleGame(
       puzzleId: 3,
       imageWidget: ImageStore().imageWidgetList[2],
@@ -74,10 +70,7 @@ class PuzzleProvider with ChangeNotifier {
       contributors: [User(name: 'JungHwan', id: 2)],
       isArchived: false,
     ),
-  ];
 
-  // 완료된 퍼즐 목록을 추가합니다.
-  List<PuzzleGame> _completedPuzzles = [
     PuzzleGame(
       puzzleId: 5,
       imageWidget: ImageStore().imageWidgetList[2],
@@ -114,74 +107,40 @@ class PuzzleProvider with ChangeNotifier {
       ],
       gameState: GameState.Completed,
       contributors: [User(name: 'JungHwan', id: 2)],
-      isArchived: false,
-    ),
-  ];
-
-  List<PuzzleGame> _archivedPuzzles = [
-    PuzzleGame(
-      puzzleId: 5,
-      imageWidget: ImageStore().imageWidgetList[2],
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],
-      gameState: GameState.Completed,
-      contributors: [User(name: 'Jaewook', id: 1)],
-      isArchived: true,
-    ),
-    PuzzleGame(
-      puzzleId: 6,
-      imageWidget: ImageStore().imageWidgetList[2],
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],
-      gameState: GameState.Completed,
-      contributors: [User(name: 'JungHwan', id: 2)],
       isArchived: true,
     ),
   ];
 
-  List<PuzzleGame> get ongoingPuzzles => _ongoingPuzzles;
-  List<PuzzleGame> get completedPuzzles => _completedPuzzles;
-  List<PuzzleGame> get unplayedPuzzles => _unplayedPuzzles;
-  List<PuzzleGame> get archivedPuzzles => _archivedPuzzles;
+  List<PuzzleGame> get puzzles => _puzzles;
+  List<PuzzleGame> get ongoingPuzzles =>
+      _puzzles.where((p) => p.gameState == GameState.Ongoing).toList();
+  List<PuzzleGame> get completedPuzzles =>
+      _puzzles.where((p) => p.gameState == GameState.Completed && !p.isArchived).toList();
+  List<PuzzleGame> get unplayedPuzzles =>
+      _puzzles.where((p) => p.gameState == GameState.Unplayed).toList();
+  List<PuzzleGame> get archivedPuzzles =>
+      _puzzles.where((p) => p.gameState == GameState.Completed && p.isArchived).toList();
 
-  void startPuzzle(PuzzleGame puzzle) { //TODO: 나중에 이런식이 아니라 상태만 바꿔주는 식으로 수정하기
-    _unplayedPuzzles.removeWhere((p) => p.puzzleId == puzzle.puzzleId);///걍 _unplayedPuzzles.remove(puzzle); 하면 안되나?
-    _ongoingPuzzles.add(puzzle);
+
+  void startPuzzle(PuzzleGame puzzle) {
+    puzzle.gameState = GameState.Ongoing;
     notifyListeners();
   }
 
   // 퍼즐 삭제
   void deletePuzzle(int id) {
-    _ongoingPuzzles.removeWhere((p) => p.puzzleId == id);
+    puzzles.removeWhere((p) => p.puzzleId == id);
     notifyListeners();
   }
 
   // 퍼즐 완료
-  void completePuzzle(PuzzleGame puzzle) { //TODO: 나중에 이런식이 아니라 상태만 바꿔주는 식으로 수정하기
-    // 진행중인 목록에서 퍼즐을 제거
-    _ongoingPuzzles.removeWhere((p) => p.puzzleId == puzzle.puzzleId);
-    // 완료된 목록에 퍼즐을 추가
-    _completedPuzzles.add(puzzle);
+  void completePuzzle(PuzzleGame puzzle) {
+    puzzle.gameState = GameState.Completed;
+    notifyListeners();
+  }
+
+  void archivePuzzle(PuzzleGame puzzle) {
+    puzzle.isArchived = true;
     notifyListeners();
   }
 }
@@ -282,7 +241,7 @@ class PuzzleListItem extends StatelessWidget {
           children: [
             Expanded(
               child: OutlinedButton(
-                onPressed: onDelete,
+                onPressed: onSave,
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.grey,
                   side: const BorderSide(color: Colors.grey),
@@ -352,7 +311,7 @@ class PuzzleListItem extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: ElevatedButton(
-                onPressed: onPressed,
+                onPressed: onSave,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlue,
                   shape: RoundedRectangleBorder(
