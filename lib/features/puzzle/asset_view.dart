@@ -110,12 +110,18 @@ class AssetView extends StatelessWidget {
             ],
           ),
           Text(
-            'plumu AvantGarde',
+            'font: null(기본값)',
+            style: TextStyle(fontSize: 18.95),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            'font: plumu AvantGarde',
             textAlign: TextAlign.center,
             style: AppTextStyles.plumu,
           ),
           Text(
-            'plumu AvantGarde no',
+            'font: pretendard',
+            style: AppTextStyles.pretendard_bold.copyWith(fontSize: 18.95),
             textAlign: TextAlign.center,
           ),
         ],
