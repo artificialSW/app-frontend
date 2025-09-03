@@ -10,13 +10,16 @@ abstract class ChatRepository {
   // ---------------- 개인질문 ----------------
 
   /// 개인 질문 전체(또는 최신순) 가져오기
+  /// NOTE: 각 PersonalQuestion에는 content(내가 보낸 DM 답변 본문)가 포함되어야 한다.
   Future<List<PersonalQuestion>> fetchPersonalQuestions();
 
   /// 개인 질문 생성
+  /// [content]는 초기 본문(없으면 기본 ''), DM 승격이 아닌 일반 생성 시에도 본문을 넣어둘 수 있다.
   Future<PersonalQuestion> createPersonalQuestion({
     required String title,
     required Privacy privacy,
     List<String> members = const <String>[],
+    String content = '', // ✅ 추가
   });
 
   // ---------------- 공통질문 ----------------
@@ -33,6 +36,7 @@ abstract class ChatRepository {
   Future<List<InboxItem>> fetchInbox();
 
   /// DM에 답변 → 인박스에서 제거되고, 개인질문이 생성되어 목록으로 이동
+  /// 반환되는 PersonalQuestion의 content에는 반드시 [answerText]가 세팅되어야 한다.
   Future<PersonalQuestion> answerDm({
     required String dmId,
     required String answerText,
@@ -45,6 +49,6 @@ abstract class ChatRepository {
   /// 댓글/대댓글 추가 (낙관적 업데이트 권장)
   Future<void> persistReply(ThreadKey key, Reply reply);
 
-  /// 좋아요 토글 (사용자 기준)
+  /// 댓글 좋아요 토글 (사용자 기준)
   Future<void> toggleLike(ThreadKey key, String replyId, String userId);
 }

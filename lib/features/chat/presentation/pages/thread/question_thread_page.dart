@@ -33,6 +33,9 @@ class _QuestionThreadPageState extends State<QuestionThreadPage>
   // 펼침 상태(id 집합)
   final Set<String> _expanded = <String>{};
 
+  // ✅ 질문(카드) 좋아요 토글 로컬 상태
+  final Set<String> _likedQuestionLocal = <String>{};
+
   // 현재 사용자(예시)
   final String _me = 'me';
 
@@ -63,6 +66,28 @@ class _QuestionThreadPageState extends State<QuestionThreadPage>
   void _toggleLike(Reply r) {
     ChatStore.I.toggleLike(_keyInfo, r.id, _me);
     setState(() {}); // 낙관적 업데이트 즉시 반영
+  }
+
+  // ✅ 질문(카드) 좋아요 토글: PersonalQuestion.likes +1/-1
+  void _toggleQuestionLike(String questionId) {
+    final list = ChatStore.I.personal.value;
+    final idx = list.indexWhere((e) => e.id == questionId);
+    if (idx < 0) return;
+
+    final cur = list[idx];
+    final isLiked = _likedQuestionLocal.contains(questionId);
+    final next = cur.copyWith(likes: (cur.likes + (isLiked ? -1 : 1)).clamp(0, 1 << 31));
+    ChatStore.I.personal.value = [...list]..[idx] = next;
+
+    setState(() {
+      if (isLiked) {
+        _likedQuestionLocal.remove(questionId);
+      } else {
+        _likedQuestionLocal.add(questionId);
+      }
+    });
+
+    // TODO: 서버 동기화 필요 시 ChatStore/Repository에 메서드 추가 후 호출
   }
 
   void _toggleReplies(String id) {
@@ -133,6 +158,22 @@ class _QuestionThreadPageState extends State<QuestionThreadPage>
       byParent.putIfAbsent(r.parentId, () => <Reply>[]).add(r);
     }
     // (선택) 정렬 원하면 여기서 byParent[parent]?.sort(...);
+
+    // ✅ 개인질문이면: DM 답변 본문(content)와 질문 좋아요 수 읽기
+    String contentText = '';
+    int questionLikes = 0;
+    bool questionLikedByMe = _likedQuestionLocal.contains(_keyInfo.id);
+    if (!isPublic) {
+      final items = ChatStore.I.personal.value;
+      final idx = items.indexWhere((e) => e.id == _keyInfo.id);
+      if (idx >= 0) {
+        final pq = items[idx];
+        // NOTE: PersonalQuestion에 `content` 필드가 있어야 함
+        contentText = pq.content;        // ← 서버가 내려주는 DM 답변 본문
+        questionLikes = pq.likes;        // ← 질문 좋아요 수 재사용
+        questionLikedByMe = _likedQuestionLocal.contains(pq.id);
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -208,6 +249,17 @@ class _QuestionThreadPageState extends State<QuestionThreadPage>
                     letterSpacing: -0.46,
                   ),
                 ),
+
+                // ✅ DM 답변 본문(content)이 있으면 헤더 바로 아래에 표시 + 좋아요
+                if (contentText.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  _MyContentCard(
+                    text: contentText,
+                    likes: questionLikes,
+                    isLiked: questionLikedByMe,
+                    onToggleLike: () => _toggleQuestionLike(_keyInfo.id),
+                  ),
+                ],
               ],
             ),
           ),
@@ -538,6 +590,108 @@ class _ReplyTile extends StatelessWidget {
           border: Border.all(color: _green, width: 1.5),
         ),
         child: const Icon(Icons.person, size: 12, color: _green),
+      ),
+    );
+  }
+}
+
+// ✅ DM 답변 본문을 보여주는 카드(헤더 바로 아래)
+class _MyContentCard extends StatelessWidget {
+  const _MyContentCard({
+    required this.text,
+    required this.likes,
+    required this.isLiked,
+    required this.onToggleLike,
+  });
+
+  final String text;
+  final int likes;
+  final bool isLiked;
+  final VoidCallback onToggleLike;
+
+  static const Color _green = Color(0xFF5CBD56);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF3FFF3),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: _green.withOpacity(0.6), width: 1),
+        boxShadow: const [
+          BoxShadow(color: Color(0x10000000), blurRadius: 4, offset: Offset(0, 2)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 라벨
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(Icons.edit, size: 16, color: _green),
+              SizedBox(width: 6),
+              Text(
+                '내가 작성',
+                style: TextStyle(
+                  color: _green,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // 본문 (조금 크게)
+          Text(
+            text,
+            style: const TextStyle(
+              color: Color(0xFF1B1D1B),
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              height: 1.45,
+              fontFamily: 'Pretendard',
+            ),
+          ),
+          const SizedBox(height: 10),
+          // 좋아요
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: onToggleLike,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    child: Row(
+                      children: [
+                        Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          size: 18,
+                          color: isLiked ? _green : const Color(0xFF1C1C1C),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          '$likes',
+                          style: const TextStyle(
+                            color: Color(0xFF1C1C1C),
+                            fontSize: 12,
+                            fontFamily: 'SF Pro',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

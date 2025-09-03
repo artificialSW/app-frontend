@@ -9,6 +9,7 @@ class PersonalQuestion {
     required this.createdAt,
     this.likes = 0,
     this.comments = 0,
+    this.content = '',
   });
 
   PersonalQuestion.createdNow({
@@ -18,6 +19,7 @@ class PersonalQuestion {
     List<String> members = const <String>[],
     int likes = 0,
     int comments = 0,
+    String content = '',
   }) : this(
     id: id,
     title: title,
@@ -26,6 +28,7 @@ class PersonalQuestion {
     createdAt: DateTime.now(),
     likes: likes,
     comments: comments,
+    content: content,
   );
 
   final String id;
@@ -35,6 +38,7 @@ class PersonalQuestion {
   final DateTime createdAt;
   final int likes;
   final int comments;
+  final String content;
 
   PersonalQuestion copyWith({
     String? id,
@@ -44,6 +48,7 @@ class PersonalQuestion {
     DateTime? createdAt,
     int? likes,
     int? comments,
+    String? content,
   }) {
     return PersonalQuestion(
       id: id ?? this.id,
@@ -53,6 +58,7 @@ class PersonalQuestion {
       createdAt: createdAt ?? this.createdAt,
       likes: likes ?? this.likes,
       comments: comments ?? this.comments,
+      content: content ?? this.content,
     );
   }
 
@@ -71,6 +77,7 @@ class PersonalQuestion {
       createdAt: DateTime.parse(json['createdAt'] as String),
       likes: json['likes'] as int? ?? 0,
       comments: json['comments'] as int? ?? 0,
+      content: json['content'] as String? ?? '',
     );
   }
 
@@ -82,6 +89,7 @@ class PersonalQuestion {
     'createdAt': createdAt.toIso8601String(),
     'likes': likes,
     'comments': comments,
+    'content': content,
   };
 
   int compareToCreatedDesc(PersonalQuestion other) =>
@@ -89,7 +97,7 @@ class PersonalQuestion {
 
   @override
   String toString() =>
-      'PersonalQuestion($id, $title, $privacy, likes=$likes, comments=$comments)';
+      'PersonalQuestion($id, $title, $privacy, likes=$likes, comments=$comments, content=$content)'; // ✅ content 포함
 
   @override
   bool operator ==(Object other) =>
@@ -101,11 +109,20 @@ class PersonalQuestion {
               _listEq(members, other.members) &&
               createdAt == other.createdAt &&
               likes == other.likes &&
-              comments == other.comments;
+              comments == other.comments &&
+              content == other.content; // ✅ content 비교 추가
 
   @override
-  int get hashCode =>
-      Object.hash(id, title, privacy, Object.hashAll(members), createdAt, likes, comments);
+  int get hashCode => Object.hash(
+    id,
+    title,
+    privacy,
+    Object.hashAll(members),
+    createdAt,
+    likes,
+    comments,
+    content, // ✅ content 포함
+  );
 }
 
 bool _listEq<T>(List<T> a, List<T> b) {

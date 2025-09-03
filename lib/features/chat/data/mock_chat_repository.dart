@@ -10,12 +10,13 @@ import '../domain/enums.dart';
 
 class MockChatRepository implements ChatRepository {
   // 메모리 저장소
+// lib/features/chat/data/mock_chat_repository.dart (예시 경로)
   final List<PersonalQuestion> _personal = <PersonalQuestion>[];
   final List<InboxItem> _inbox = <InboxItem>[];
   late CommonQuestion _thisWeek;
   final List<CommonQuestion> _history = <CommonQuestion>[];
 
-  // ✅ 스레드 저장소(공통/개인 분리): 같은 키(kind,id)면 항상 같은 ThreadData를 돌려줌
+  // ✅ 스레드 저장소(공통/개인 분리)
   final Map<String, ThreadData> _commonThreads = <String, ThreadData>{};
   final Map<String, ThreadData> _personalThreads = <String, ThreadData>{};
 
@@ -67,12 +68,10 @@ class MockChatRepository implements ChatRepository {
       ),
     ]);
 
-    // ✅ 스레드 시드 데이터
-    // - 이번 주 공통질문을 스레드로도 등록
+    // ✅ 스레드 시드
     _commonThreads[_thisWeek.id] =
         ThreadData(id: _thisWeek.id, title: '${_thisWeek.title} 스레드', replies: const []);
 
-    // - 개인 스레드 기본(사용자용 고정 id 예시)
     _personalThreads['me'] =
     const ThreadData(id: 'me', title: '나의 질문 스레드', replies: []);
   }
@@ -89,6 +88,7 @@ class MockChatRepository implements ChatRepository {
     required String title,
     required Privacy privacy,
     List<String> members = const <String>[],
+    String content = '', // ✅ 추가
   }) async {
     final p = PersonalQuestion.createdNow(
       id: 'pq_${DateTime.now().microsecondsSinceEpoch}',
@@ -97,10 +97,11 @@ class MockChatRepository implements ChatRepository {
       members: members,
       likes: 0,
       comments: 0,
+      content: content, // ✅ 저장
     );
     _personal.insert(0, p);
 
-    // ✅ 새 개인질문에 대응하는 스레드도 생성(같은 id)
+    // ✅ 새 개인질문 스레드도 생성
     _personalThreads[p.id] = ThreadData(
       id: p.id,
       title: p.title,
@@ -134,33 +135,34 @@ class MockChatRepository implements ChatRepository {
   }) async {
     final idx = _inbox.indexWhere((e) => e.id == dmId);
     if (idx < 0) {
-      // 이미 처리된 DM으로 간주
+      // 이미 처리된 DM → 일반 생성 대체
       return createPersonalQuestion(
         title: answerText.isEmpty ? '개인 질문' : answerText,
         privacy: Privacy.public,
+        content: answerText, // ✅ content 채워서 반환
       );
     }
 
     final dm = _inbox.removeAt(idx);
 
-    // DM → 개인질문으로 생성 (제목은 DM 미리보기)
+    // DM → 개인질문 생성
     final created = await createPersonalQuestion(
-      title: dm.preview,
+      title: dm.preview, // 카드 제목은 DM 프리뷰
       privacy: dm.isPrivate ? Privacy.private : Privacy.public,
       members: dm.isPrivate ? <String>[dm.senderName] : const <String>[],
+      content: answerText, // ✅ 헤더 아래에 보여줄 내 답변 본문
     );
 
     return created;
   }
 
   // ---------------- Thread (공통/개인 공용) ----------------
-
   @override
   Future<ThreadData> fetchThread(ThreadKey key) async {
     await Future.delayed(const Duration(milliseconds: 80));
     final map = key.kind == ThreadKind.common ? _commonThreads : _personalThreads;
-    // 키가 없으면 첫 항목 반환(테스트 편의). 실제 API라면 404 처리 권장.
-    return map[key.id] ?? (map.values.isNotEmpty ? map.values.first : ThreadData(id: key.id, title: '스레드', replies: const []));
+    return map[key.id] ??
+        (map.values.isNotEmpty ? map.values.first : ThreadData(id: key.id, title: '스레드', replies: const []));
   }
 
   @override
@@ -192,7 +194,6 @@ class MockChatRepository implements ChatRepository {
   }
 
   int _weekNumber(DateTime d) {
-    // 간단 주차 계산(ISO 아님): 올해 1월 1일부터 경과일/7
     final first = DateTime(d.year, 1, 1);
     final days = d.difference(first).inDays;
     return (days / 7).floor() + 1;
