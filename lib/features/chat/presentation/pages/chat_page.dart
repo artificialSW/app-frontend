@@ -18,33 +18,8 @@ class _ChatRootState extends State<ChatRoot> with SingleTickerProviderStateMixin
   String? _selectedPersonalId; // 탭 순간 하이라이트
   String? _selectedCommonId;
 
-  // ✅ 로컬 토글 상태(내가 누른 카드들)
-  final Set<String> _likedLocal = <String>{};
-
-  // ✅ 하트 토글: 누르면 +1, 다시 누르면 -1 (0 미만 방지)
-  void _togglePersonalLike(String questionId) {
-    final list = ChatStore.I.personal.value;
-    final idx = list.indexWhere((e) => e.id == questionId);
-    if (idx < 0) return;
-
-    final cur = list[idx];
-    final isLiked = _likedLocal.contains(questionId);
-    final delta = isLiked ? -1 : 1;
-    final nextLikes = cur.likes + delta;
-    final updated = cur.copyWith(likes: nextLikes < 0 ? 0 : nextLikes);
-
-    // 숫자 즉시 반영
-    ChatStore.I.personal.value = [...list]..[idx] = updated;
-
-    // 아이콘 채움/해제 토글
-    setState(() {
-      if (isLiked) {
-        _likedLocal.remove(questionId);
-      } else {
-        _likedLocal.add(questionId);
-      }
-    });
-  }
+  // ✅ 현재 로그인 유저(예시)
+  final String _me = 'me';
 
   @override
   void initState() {
@@ -95,6 +70,7 @@ class _ChatRootState extends State<ChatRoot> with SingleTickerProviderStateMixin
     if (!mounted) return;
     await Navigator.of(context).pushNamed('/chat/thread', arguments: {
       'type': 'personal',
+      'isPublic': false, // 명시
       'id': q.id,
       'title': q.title,
     });
@@ -108,6 +84,7 @@ class _ChatRootState extends State<ChatRoot> with SingleTickerProviderStateMixin
     if (!mounted) return;
     await Navigator.of(context).pushNamed('/chat/thread', arguments: {
       'type': 'common',
+      'isPublic': true, // 명시
       'id': q.id,
       'title': q.title,
     });
@@ -211,14 +188,18 @@ class _ChatRootState extends State<ChatRoot> with SingleTickerProviderStateMixin
                       padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
                       itemCount: items.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (_, i) => _PersonalCard(
-                        item: items[i],
-                        selected: _selectedPersonalId == items[i].id ||
-                            ChatStore.I.lastAddedPersonalId == items[i].id,
-                        onTap: () => _openPersonalThread(items[i]),
-                        onLike: () => _togglePersonalLike(items[i].id),
-                        isLiked: _likedLocal.contains(items[i].id),
-                      ),
+                      itemBuilder: (_, i) {
+                        final pq = items[i];
+                        final likedByMe = ChatStore.I.isQuestionLikedByMe(pq.id, _me);
+                        return _PersonalCard(
+                          item: pq,
+                          selected: _selectedPersonalId == pq.id ||
+                              ChatStore.I.lastAddedPersonalId == pq.id,
+                          onTap: () => _openPersonalThread(pq),
+                          onLike: () => ChatStore.I.togglePersonalQuestionLike(pq.id, _me), // ✅ 1인 1하트
+                          isLiked: likedByMe, // ✅ 아이콘 채움/색상
+                        );
+                      },
                     );
                   },
                 ),

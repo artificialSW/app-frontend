@@ -56,7 +56,7 @@ class ChatStore {
     _repo.persistReply(key, reply);
   }
 
-  /// 좋아요 토글 (낙관적 업데이트)
+  /// 댓글 좋아요 토글 (낙관적 업데이트, 1인 1하트는 Reply.toggleLike가 보장)
   void toggleLike(ThreadKey key, String replyId, String userId) {
     final t = getThread(key);
     final updated = t.replies
@@ -64,6 +64,68 @@ class ChatStore {
         .toList();
     _threads[key] = t.copyWith(replies: updated);
     _repo.toggleLike(key, replyId, userId);
+  }
+
+  // ================== 개인질문/내 답변 하트 상태(세션 유지) ==================
+  // - 화면을 나갔다 들어와도 같은 세션에서는 중복 +1 방지
+  // - 서버 상태와 불일치 시에는 원격 반영 시 정합성을 맞추는 게 이상적(실서비스에선 서버 진실원본)
+  final Set<String> _likedQuestionsByMe = <String>{}; // key: "$userId:$questionId"
+  final Set<String> _likedContentsByMe  = <String>{}; // key: "$userId:$questionId"
+
+  bool isQuestionLikedByMe(String questionId, String userId) =>
+      _likedQuestionsByMe.contains('$userId:$questionId');
+
+  bool isContentLikedByMe(String questionId, String userId) =>
+      _likedContentsByMe.contains('$userId:$questionId');
+
+  /// 질문(카드) 하트 토글 (낙관적 + 1인 1하트)
+  Future<void> togglePersonalQuestionLike(String questionId, String userId) async {
+    final key = '$userId:$questionId';
+    final list = personal.value;
+    final idx = list.indexWhere((e) => e.id == questionId);
+    if (idx < 0) return;
+
+    final cur = list[idx];
+    final alreadyLiked = _likedQuestionsByMe.contains(key);
+
+    // 낙관적 업데이트
+    final int next = alreadyLiked ? (cur.likes - 1) : (cur.likes + 1);
+    final safeNext = next < 0 ? 0 : next;
+    personal.value = [...list]..[idx] = cur.copyWith(likes: safeNext);
+
+    if (alreadyLiked) {
+      _likedQuestionsByMe.remove(key);
+    } else {
+      _likedQuestionsByMe.add(key);
+    }
+
+    // 원격 반영 (실패 시 롤백 고려)
+    await _repo.toggleQuestionLikeOne(questionId: questionId, userId: userId);
+  }
+
+  /// 내 답변(content) 하트 토글 (낙관적 + 1인 1하트)
+  Future<void> togglePersonalContentLike(String questionId, String userId) async {
+    final key = '$userId:$questionId';
+    final list = personal.value;
+    final idx = list.indexWhere((e) => e.id == questionId);
+    if (idx < 0) return;
+
+    final cur = list[idx];
+    final alreadyLiked = _likedContentsByMe.contains(key);
+
+    // 낙관적 업데이트
+    final int next = alreadyLiked ? (cur.contentLikes - 1) : (cur.contentLikes + 1);
+    final safeNext = next < 0 ? 0 : next;
+    personal.value = [...list]..[idx] = cur.copyWith(contentLikes: safeNext);
+
+    if (alreadyLiked) {
+      _likedContentsByMe.remove(key);
+    } else {
+      _likedContentsByMe.add(key);
+    }
+
+    // 원격 반영 (실패 시 롤백 고려)
+    await _repo.toggleContentLikeOne(questionId: questionId, userId: userId);
   }
 
   // ================= 초기화/리스트 새로고침 =================
@@ -105,11 +167,13 @@ class ChatStore {
     required String title,
     required Privacy privacy,
     List<String> members = const [],
+    String content = '', // ✅ content 전달 가능
   }) async {
     final created = await _repo.createPersonalQuestion(
       title: title,
       privacy: privacy,
       members: members,
+      content: content, // ✅ repo로 전달
     );
     lastAddedPersonalId = created.id;
     await refreshPersonal();

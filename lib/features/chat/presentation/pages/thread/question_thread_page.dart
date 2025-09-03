@@ -33,9 +33,6 @@ class _QuestionThreadPageState extends State<QuestionThreadPage>
   // 펼침 상태(id 집합)
   final Set<String> _expanded = <String>{};
 
-  // ✅ 질문(카드) 좋아요 토글 로컬 상태
-  final Set<String> _likedQuestionLocal = <String>{};
-
   // 현재 사용자(예시)
   final String _me = 'me';
 
@@ -63,31 +60,16 @@ class _QuestionThreadPageState extends State<QuestionThreadPage>
   @override
   bool get wantKeepAlive => true;
 
+  // 댓글 좋아요(대댓글 포함)
   void _toggleLike(Reply r) {
     ChatStore.I.toggleLike(_keyInfo, r.id, _me);
     setState(() {}); // 낙관적 업데이트 즉시 반영
   }
 
-  // ✅ 질문(카드) 좋아요 토글: PersonalQuestion.likes +1/-1
+  // ✅ 질문(카드) 좋아요 토글: 1인 1하트(ChatStore 보존)
   void _toggleQuestionLike(String questionId) {
-    final list = ChatStore.I.personal.value;
-    final idx = list.indexWhere((e) => e.id == questionId);
-    if (idx < 0) return;
-
-    final cur = list[idx];
-    final isLiked = _likedQuestionLocal.contains(questionId);
-    final next = cur.copyWith(likes: (cur.likes + (isLiked ? -1 : 1)).clamp(0, 1 << 31));
-    ChatStore.I.personal.value = [...list]..[idx] = next;
-
-    setState(() {
-      if (isLiked) {
-        _likedQuestionLocal.remove(questionId);
-      } else {
-        _likedQuestionLocal.add(questionId);
-      }
-    });
-
-    // TODO: 서버 동기화 필요 시 ChatStore/Repository에 메서드 추가 후 호출
+    ChatStore.I.togglePersonalQuestionLike(questionId, _me);
+    setState(() {}); // 헤더 하트/카운트 갱신
   }
 
   void _toggleReplies(String id) {
@@ -159,20 +141,30 @@ class _QuestionThreadPageState extends State<QuestionThreadPage>
     }
     // (선택) 정렬 원하면 여기서 byParent[parent]?.sort(...);
 
-    // ✅ 개인질문이면: DM 답변 본문(content)와 질문 좋아요 수 읽기
+    // ✅ 개인질문이면: DM 답변 본문(content)와 질문 좋아요/내가 눌렀는지 읽기
     String contentText = '';
     int questionLikes = 0;
-    bool questionLikedByMe = _likedQuestionLocal.contains(_keyInfo.id);
+    bool questionLikedByMe = false;
     if (!isPublic) {
       final items = ChatStore.I.personal.value;
       final idx = items.indexWhere((e) => e.id == _keyInfo.id);
       if (idx >= 0) {
         final pq = items[idx];
-        // NOTE: PersonalQuestion에 `content` 필드가 있어야 함
-        contentText = pq.content;        // ← 서버가 내려주는 DM 답변 본문
-        questionLikes = pq.likes;        // ← 질문 좋아요 수 재사용
-        questionLikedByMe = _likedQuestionLocal.contains(pq.id);
+        contentText = pq.content;                // 헤더 아래에 띄울 내 답변
+        questionLikes = pq.likes;                // 질문(카드) 좋아요 수
+        questionLikedByMe = ChatStore.I.isQuestionLikedByMe(pq.id, _me);
       }
+    }
+
+    // ✅ 아래 댓글 리스트에서는 "내 답변(헤더에 이미 표시된 content)"과 내용이 같은
+    //    내 댓글(최상위만)을 중복 제거
+    List<Reply> topReplies = List<Reply>.from(byParent[null] ?? const <Reply>[]);
+    if (contentText.trim().isNotEmpty) {
+      final mine = contentText.trim();
+      topReplies = topReplies.where((r) {
+        if (r.authorId != _me) return true;
+        return r.content.trim() != mine;
+      }).toList();
     }
 
     return Scaffold(
@@ -250,7 +242,7 @@ class _QuestionThreadPageState extends State<QuestionThreadPage>
                   ),
                 ),
 
-                // ✅ DM 답변 본문(content)이 있으면 헤더 바로 아래에 표시 + 좋아요
+                // ✅ DM 답변 본문(content)이 있으면 헤더 바로 아래에 표시 + 좋아요(질문 전용)
                 if (contentText.isNotEmpty) ...[
                   const SizedBox(height: 10),
                   _MyContentCard(
@@ -268,12 +260,12 @@ class _QuestionThreadPageState extends State<QuestionThreadPage>
           // 댓글 리스트(트리)
           Expanded(
             child: ListView.separated(
-              key: PageStorageKey('thread-${_keyInfo.kind}-${_keyInfo.id}'), // ✅추가함~
+              key: PageStorageKey('thread-${_keyInfo.kind}-${_keyInfo.id}'),
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-              itemCount: (byParent[null] ?? const <Reply>[]).length,
+              itemCount: topReplies.length,
               separatorBuilder: (_, __) => const SizedBox(height: 16),
               itemBuilder: (_, i) {
-                final top = (byParent[null] ?? const <Reply>[])[i];
+                final top = topReplies[i];
                 return _ReplyTile(
                   reply: top,
                   depth: 0,
@@ -656,7 +648,7 @@ class _MyContentCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          // 좋아요
+          // 좋아요 (박스 오른쪽 아래)
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

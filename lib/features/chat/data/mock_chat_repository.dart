@@ -10,7 +10,6 @@ import '../domain/enums.dart';
 
 class MockChatRepository implements ChatRepository {
   // 메모리 저장소
-// lib/features/chat/data/mock_chat_repository.dart (예시 경로)
   final List<PersonalQuestion> _personal = <PersonalQuestion>[];
   final List<InboxItem> _inbox = <InboxItem>[];
   late CommonQuestion _thisWeek;
@@ -19,6 +18,11 @@ class MockChatRepository implements ChatRepository {
   // ✅ 스레드 저장소(공통/개인 분리)
   final Map<String, ThreadData> _commonThreads = <String, ThreadData>{};
   final Map<String, ThreadData> _personalThreads = <String, ThreadData>{};
+
+  // ✅ 1인 1하트 보장을 위한 사용자별 좋아요 집합
+  //  - key: questionId, value: userId 집합
+  final Map<String, Set<String>> _questionLikedBy = <String, Set<String>>{};
+  final Map<String, Set<String>> _contentLikedBy  = <String, Set<String>>{};
 
   MockChatRepository() {
     final now = DateTime.now();
@@ -88,7 +92,7 @@ class MockChatRepository implements ChatRepository {
     required String title,
     required Privacy privacy,
     List<String> members = const <String>[],
-    String content = '', // ✅ 추가
+    String content = '', // ✅ content 초기값
   }) async {
     final p = PersonalQuestion.createdNow(
       id: 'pq_${DateTime.now().microsecondsSinceEpoch}',
@@ -97,9 +101,14 @@ class MockChatRepository implements ChatRepository {
       members: members,
       likes: 0,
       comments: 0,
-      content: content, // ✅ 저장
+      content: content,
+      contentLikes: 0, // ✅ 분리된 카운트
     );
     _personal.insert(0, p);
+
+    // ✅ 좋아요 집합 초기화
+    _questionLikedBy[p.id] = <String>{};
+    _contentLikedBy[p.id]  = <String>{};
 
     // ✅ 새 개인질문 스레드도 생성
     _personalThreads[p.id] = ThreadData(
@@ -156,13 +165,56 @@ class MockChatRepository implements ChatRepository {
     return created;
   }
 
+  // ---------------- 좋아요(하트) ----------------
+  @override
+  Future<void> toggleQuestionLikeOne({
+    required String questionId,
+    required String userId,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 20));
+    final set = _questionLikedBy.putIfAbsent(questionId, () => <String>{});
+    final i = _personal.indexWhere((e) => e.id == questionId);
+    if (i < 0) return;
+    final cur = _personal[i];
+
+    if (set.contains(userId)) {
+      set.remove(userId);
+      _personal[i] = cur.copyWith(likes: (cur.likes - 1).clamp(0, 1 << 31));
+    } else {
+      set.add(userId);
+      _personal[i] = cur.copyWith(likes: cur.likes + 1);
+    }
+  }
+
+  @override
+  Future<void> toggleContentLikeOne({
+    required String questionId,
+    required String userId,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 20));
+    final set = _contentLikedBy.putIfAbsent(questionId, () => <String>{});
+    final i = _personal.indexWhere((e) => e.id == questionId);
+    if (i < 0) return;
+    final cur = _personal[i];
+
+    if (set.contains(userId)) {
+      set.remove(userId);
+      _personal[i] = cur.copyWith(contentLikes: (cur.contentLikes - 1).clamp(0, 1 << 31));
+    } else {
+      set.add(userId);
+      _personal[i] = cur.copyWith(contentLikes: cur.contentLikes + 1);
+    }
+  }
+
   // ---------------- Thread (공통/개인 공용) ----------------
   @override
   Future<ThreadData> fetchThread(ThreadKey key) async {
     await Future.delayed(const Duration(milliseconds: 80));
     final map = key.kind == ThreadKind.common ? _commonThreads : _personalThreads;
     return map[key.id] ??
-        (map.values.isNotEmpty ? map.values.first : ThreadData(id: key.id, title: '스레드', replies: const []));
+        (map.values.isNotEmpty
+            ? map.values.first
+            : ThreadData(id: key.id, title: '스레드', replies: const []));
   }
 
   @override
@@ -187,13 +239,14 @@ class MockChatRepository implements ChatRepository {
 
     final updated = cur.replies.map((r) {
       if (r.id != replyId) return r;
-      return r.toggleLike(userId);
+      return r.toggleLike(userId); // Reply 내부에서 1인 1하트 토글 처리
     }).toList();
 
     map[key.id] = ThreadData(id: cur.id, title: cur.title, replies: updated);
   }
 
   int _weekNumber(DateTime d) {
+    // 간단 주차 계산(ISO 아님): 올해 1월 1일부터 경과일/7
     final first = DateTime(d.year, 1, 1);
     final days = d.difference(first).inDays;
     return (days / 7).floor() + 1;

@@ -10,6 +10,7 @@ class PersonalQuestion {
     this.likes = 0,
     this.comments = 0,
     this.content = '',
+    this.contentLikes = 0,
   });
 
   PersonalQuestion.createdNow({
@@ -20,6 +21,7 @@ class PersonalQuestion {
     int likes = 0,
     int comments = 0,
     String content = '',
+    int contentLikes = 0,
   }) : this(
     id: id,
     title: title,
@@ -29,6 +31,7 @@ class PersonalQuestion {
     likes: likes,
     comments: comments,
     content: content,
+    contentLikes: contentLikes,
   );
 
   final String id;
@@ -39,6 +42,7 @@ class PersonalQuestion {
   final int likes;
   final int comments;
   final String content;
+  final int contentLikes;
 
   PersonalQuestion copyWith({
     String? id,
@@ -49,6 +53,7 @@ class PersonalQuestion {
     int? likes,
     int? comments,
     String? content,
+    int? contentLikes,
   }) {
     return PersonalQuestion(
       id: id ?? this.id,
@@ -59,6 +64,7 @@ class PersonalQuestion {
       likes: likes ?? this.likes,
       comments: comments ?? this.comments,
       content: content ?? this.content,
+      contentLikes: contentLikes ?? this.contentLikes,
     );
   }
 
@@ -78,6 +84,7 @@ class PersonalQuestion {
       likes: json['likes'] as int? ?? 0,
       comments: json['comments'] as int? ?? 0,
       content: json['content'] as String? ?? '',
+      contentLikes: json['contentLikes'] as int? ?? 0,
     );
   }
 
@@ -90,6 +97,7 @@ class PersonalQuestion {
     'likes': likes,
     'comments': comments,
     'content': content,
+    'contentLikes': contentLikes,
   };
 
   int compareToCreatedDesc(PersonalQuestion other) =>
@@ -110,7 +118,8 @@ class PersonalQuestion {
               createdAt == other.createdAt &&
               likes == other.likes &&
               comments == other.comments &&
-              content == other.content; // ✅ content 비교 추가
+              content == other.content && // ✅ content 비교 추가
+              contentLikes == other.contentLikes;
 
   @override
   int get hashCode => Object.hash(
@@ -122,6 +131,7 @@ class PersonalQuestion {
     likes,
     comments,
     content, // ✅ content 포함
+    contentLikes,
   );
 }
 
