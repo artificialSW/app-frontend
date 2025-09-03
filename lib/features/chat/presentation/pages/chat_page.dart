@@ -1,3 +1,4 @@
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'package:artificialsw_frontend/features/chat/di/di.dart';
@@ -92,25 +93,10 @@ class _ChatRootState extends State<ChatRoot> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    const appBarTitleStyle = TextStyle(
-      color: Colors.black,
-      fontSize: 17,
-      fontFamily: 'Pretendard',
-      fontWeight: FontWeight.w700,
-      height: 1.5,
-      letterSpacing: -0.46,
-    );
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        title: const Text('소통방', style: appBarTitleStyle),
-        iconTheme: const IconThemeData(color: Colors.black87),
-        actions: const [_HeaderSendIcon()],
-      ),
+      appBar: ChatRootTopBar(),
 
       body: Column(
         children: [
@@ -233,8 +219,8 @@ class _ChatRootState extends State<ChatRoot> with SingleTickerProviderStateMixin
 
 /* ---------------------- 위젯들 ---------------------- */
 
-class _HeaderSendIcon extends StatelessWidget {
-  const _HeaderSendIcon();
+class HeaderSendIcon extends StatelessWidget {
+  const HeaderSendIcon();
 
   @override
   Widget build(BuildContext context) {

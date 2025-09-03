@@ -6,7 +6,7 @@ class HomeRoot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomTopBar(),
+      appBar: HomeTopBar(),
       body: Center(
         child: ElevatedButton(
           onPressed: () {

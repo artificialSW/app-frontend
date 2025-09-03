@@ -1,5 +1,6 @@
 import 'package:artificialsw_frontend/services/image_store.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
   Widget build(BuildContext context) {
 
     return Scaffold( // 이 Scaffold를 추가합니다.
-      appBar: AppBar(title: const Text('Puzzle')),
+      appBar: PuzzlRootTopBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
