@@ -2,6 +2,7 @@ class AppAssets {
   AppAssets._(); // 인스턴스화 방지
 
   static const logo = 'assets/images/logo.png';
+  static const plumu = 'assets/images/plumu.png';
   //사용 예시: Image.asset(AppAssets.logo);
   static const logo_withTypo1 = 'assets/images/logo_withTypo1.png';
   static const logo_withTypo2 = 'assets/images/logo_withTypo2.png';

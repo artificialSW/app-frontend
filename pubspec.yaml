@@ -57,6 +57,11 @@ flutter:
     - assets/images/
     - assets/icons/
 
+  fonts:
+    - family: plumu
+      fonts:
+        - asset: assets/fonts/prodemi.otf
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

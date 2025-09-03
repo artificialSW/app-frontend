@@ -1,5 +1,6 @@
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 
@@ -107,6 +108,15 @@ class AssetView extends StatelessWidget {
                 ],
               ),
             ],
+          ),
+          Text(
+            'plumu AvantGarde',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.plumu,
+          ),
+          Text(
+            'plumu AvantGarde no',
+            textAlign: TextAlign.center,
           ),
         ],
       )
