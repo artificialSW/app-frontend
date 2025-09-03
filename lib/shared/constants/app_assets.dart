@@ -9,6 +9,7 @@ class AppAssets {
 
   static const appicon_whiteBackground = 'assets/images/appicon_whiteBackground.png';
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';
+  static const back = 'assets/icons/back.png';
 
   static const dogaam = 'assets/images/book.png';
 

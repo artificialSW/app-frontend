@@ -1,6 +1,7 @@
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 
 
@@ -10,9 +11,7 @@ class AssetView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Plumu Asset'),
-      ),
+      appBar: CanGoBackTopBar('이 topbar도 에셋이다', context),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,6 +30,7 @@ class AssetView extends StatelessWidget {
           Image.asset(AppAssets.logo_withTypo2),
           Image.asset(AppAssets.appicon_whiteBackground),
           Image.asset(AppAssets.appicon_greenBackground),
+          Image.asset(AppAssets.back),
           Row(
             children: [
               Column(

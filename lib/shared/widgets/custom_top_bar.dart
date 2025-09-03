@@ -72,3 +72,24 @@ AppBar ChatRootTopBar() => AppBar(
   iconTheme: const IconThemeData(color: Colors.black87),
   actions: const [HeaderSendIcon()],
 );
+
+AppBar CanGoBackTopBar(String title, context) => AppBar(
+  leading: IconButton(
+    icon: const Icon(Icons.arrow_back_ios_new, size: 20), //이게 젤 똑같음.
+    onPressed: () => Navigator.pop(context),
+  ),
+  title: Text(
+    title,
+    textAlign: TextAlign.center,
+    style: TextStyle(
+      color: const Color(0xFF35353F),
+      fontSize: 16,
+      fontFamily: 'Pretendard',
+      fontWeight: FontWeight.w700,
+      height: 1.50,
+    ),
+  ),
+  centerTitle: true,
+  backgroundColor: Colors.white,
+  elevation: 0,
+);

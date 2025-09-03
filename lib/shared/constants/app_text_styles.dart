@@ -10,10 +10,3 @@ class AppTextStyles {
   static const pretendard_medium = TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w500);
   static const pretendard_regular = TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w400);
 }
-//
-// - asset: assets/fonts/Pretendard/Pretendard-Regular.ttf
-// weight: 400
-// - asset: assets/fonts/Pretendard/Pretendard-Medium.ttf
-// weight: 500
-// - asset: assets/fonts/Pretendard/Pretendard-Bold.ttf
-// weight: 700
