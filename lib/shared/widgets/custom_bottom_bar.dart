@@ -28,13 +28,15 @@ class AppBottomBar extends StatelessWidget {
     final active = activeColor ?? AppColors.activeColor;
     final inactive = inactiveColor ?? AppColors.inactiveColor;
 
+    const baseHeight = kBottomNavigationBarHeight; // 56.0 (머티리얼 기본)
+
     return Material(
       elevation: elevation,
-      color: backgroundColor ?? theme.colorScheme.surface,
+      color: AppColors.plumu_white,
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 64,
+          height: baseHeight,
           child: Row(
             children: [
               for (int i = 0; i < tabs.length; i++)
@@ -79,33 +81,32 @@ class _BottomItem extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-          decoration: BoxDecoration(
-            color: AppColors.plumu_white,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                iconPath,
-                width: 19, //이렇게 직접 지정할수도 있고, 주석처리해서 기본 이미지대로 할수도 있음.
-                height: 19,
-                color: selected ? activeColor : inactiveColor,
-              ),
-              const SizedBox(height: 3),
-              SizedBox(
-                width: 29.42,
-                child: Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: selected ? activeColor : inactiveColor,
-                    fontSize: 9,
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w700,
+          child: SizedBox(
+            height: 48,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  iconPath,
+                  width: 19, //이렇게 직접 지정할수도 있고, 주석처리해서 기본 이미지대로 할수도 있음.
+                  height: 19,
+                  color: selected ? activeColor : inactiveColor,
+                ),
+                const SizedBox(height: 3),
+                SizedBox(
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: selected ? activeColor : inactiveColor,
+                      fontSize: 9,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
