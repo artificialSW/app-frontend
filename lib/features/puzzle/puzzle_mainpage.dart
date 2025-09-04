@@ -67,20 +67,27 @@ class _PuzzleRootState extends State<PuzzleRoot> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                  onPressed: () => Navigator.of(context).pushNamed('/puzzle/image-upload-test'),
-                  child: const Text("사진 업로드")
+              CustomButton(
+                text: '사진 업로드',
+                onPressed: () => Navigator.of(context).pushNamed('/puzzle/image-upload-test'),
+                width: 150,
+                fontSize: 13,
               ),
-              ElevatedButton(
-                  onPressed: () => Navigator.of(context).pushNamed('/puzzle/archive'),
-                  child: const Text("퍼즐 아카이브")
-              ),
+              SizedBox(width: 20),
+              CustomButton(
+                text: '퍼즐 아카이브',
+                onPressed: () => Navigator.of(context).pushNamed('/puzzle/archive'),
+                width: 150,
+                fontSize: 13,
+              )
 
             ],
           ),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -96,6 +103,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   );
                 },
               ),
+              SizedBox(width: 20),
               CustomButton(
                 text: 'Plumu Asset 구경하기',
                 onPressed: () => Navigator.of(context).pushNamed('/puzzle/assetView'),

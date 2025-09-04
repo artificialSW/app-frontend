@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzle_board_scope.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 import
@@ -256,19 +257,13 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
                     const SizedBox(height: 12),
                     SizedBox(
                       width: boardWidth,
-                      child: ElevatedButton(
+                      child: CustomButton(
+                        text: '저장하기',
                         onPressed: () {
                           Navigator.of(context).pushReplacementNamed(
                               '/');
                         },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: const Text('저장하기'),
-                      ),
+                      )
                     ),
                   ],
                 ),

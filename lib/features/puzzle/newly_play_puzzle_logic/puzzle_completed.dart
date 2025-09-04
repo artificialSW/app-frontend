@@ -1,3 +1,4 @@
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 class PuzzleCompleted extends StatelessWidget {
@@ -22,13 +23,18 @@ class PuzzleCompleted extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
+                  CustomButton(
+                      text: '퍼즐 홈으로',
                       onPressed: () => Navigator.of(context).pushNamed('/'),
-                      child: const Text("퍼즐 홈으로")
+                      width: 150,
+                      fontSize: 15,
                   ),
-                  ElevatedButton(
-                      onPressed: () => null,
-                      child: const Text("열매 보러가기")
+                  SizedBox(width: 30),
+                  CustomButton(
+                    text: '열매 보러가기',
+                    onPressed: null, /// onPressed: () => null 이거랑 다른 것 주의.
+                    width: 150,
+                    fontSize: 15,
                   ),
                 ],
               )
