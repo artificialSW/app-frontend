@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzle_board_scope.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // rootBundle을 사용하기 위한 import
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
@@ -195,11 +196,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     final double gameAreaHeight = trayTop + trayHeight;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('주제 이름', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: CanGoBackTopBar('퍼즐ID: ${widget.puzzle.puzzleId.toString()}', context),
       body: SafeArea(
         child: Scrollbar(
           thumbVisibility: true, // 항상 보이게 (필요없으면 false)

@@ -1,4 +1,5 @@
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -38,19 +39,7 @@ class OngoingPuzzlesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          '진행중인 퍼즐 목록',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: CanGoBackTopBar('진행중인 퍼즐 목록', context),
       body: Consumer<PuzzleProvider>(
         builder: (context, puzzleProvider, child) {
           if (puzzleProvider.ongoingPuzzles.isEmpty) {
