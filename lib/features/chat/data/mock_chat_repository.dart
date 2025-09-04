@@ -141,6 +141,7 @@ class MockChatRepository implements ChatRepository {
   Future<PersonalQuestion> answerDm({
     required String dmId,
     required String answerText,
+    required String viewerId,
   }) async {
     final idx = _inbox.indexWhere((e) => e.id == dmId);
     if (idx < 0) {
@@ -153,6 +154,9 @@ class MockChatRepository implements ChatRepository {
     }
 
     final dm = _inbox.removeAt(idx);
+
+    final members = dm.isPrivate ? <String>{dm.senderName, viewerId}.toList()
+        : const <String>[];
 
     // DM → 개인질문 생성
     final created = await createPersonalQuestion(

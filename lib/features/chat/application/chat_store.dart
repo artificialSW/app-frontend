@@ -6,10 +6,14 @@ import '../domain/chat_repository.dart';
 
 class ChatStore {
   ChatStore._();
+
   static final ChatStore I = ChatStore._();
 
   late ChatRepository _repo;
   bool _inited = false;
+
+  // ✅ 현재 로그인 사용자 ID (기본값: 'me' — init 시 안 넘겨도 동작)
+  String currentUserId = 'me';
 
   // ================= 기존 도메인 상태 =================
 
@@ -69,8 +73,10 @@ class ChatStore {
   // ================== 개인질문/내 답변 하트 상태(세션 유지) ==================
   // - 화면을 나갔다 들어와도 같은 세션에서는 중복 +1 방지
   // - 서버 상태와 불일치 시에는 원격 반영 시 정합성을 맞추는 게 이상적(실서비스에선 서버 진실원본)
-  final Set<String> _likedQuestionsByMe = <String>{}; // key: "$userId:$questionId"
-  final Set<String> _likedContentsByMe  = <String>{}; // key: "$userId:$questionId"
+  final Set<String> _likedQuestionsByMe = <String>{
+  }; // key: "$userId:$questionId"
+  final Set<String> _likedContentsByMe = <String>{
+  }; // key: "$userId:$questionId"
 
   bool isQuestionLikedByMe(String questionId, String userId) =>
       _likedQuestionsByMe.contains('$userId:$questionId');
@@ -79,7 +85,8 @@ class ChatStore {
       _likedContentsByMe.contains('$userId:$questionId');
 
   /// 질문(카드) 하트 토글 (낙관적 + 1인 1하트)
-  Future<void> togglePersonalQuestionLike(String questionId, String userId) async {
+  Future<void> togglePersonalQuestionLike(String questionId,
+      String userId) async {
     final key = '$userId:$questionId';
     final list = personal.value;
     final idx = list.indexWhere((e) => e.id == questionId);
@@ -104,7 +111,8 @@ class ChatStore {
   }
 
   /// 내 답변(content) 하트 토글 (낙관적 + 1인 1하트)
-  Future<void> togglePersonalContentLike(String questionId, String userId) async {
+  Future<void> togglePersonalContentLike(String questionId,
+      String userId) async {
     final key = '$userId:$questionId';
     final list = personal.value;
     final idx = list.indexWhere((e) => e.id == questionId);
@@ -114,7 +122,8 @@ class ChatStore {
     final alreadyLiked = _likedContentsByMe.contains(key);
 
     // 낙관적 업데이트
-    final int next = alreadyLiked ? (cur.contentLikes - 1) : (cur.contentLikes + 1);
+    final int next = alreadyLiked ? (cur.contentLikes - 1) : (cur.contentLikes +
+        1);
     final safeNext = next < 0 ? 0 : next;
     personal.value = [...list]..[idx] = cur.copyWith(contentLikes: safeNext);
 
@@ -137,6 +146,13 @@ class ChatStore {
     await refreshAll();
   }
 
+  // (선택) 로그인 후 사용자 바뀌면 호출해 목록만 재필터링
+  Future<void> setCurrentUserId(String userId) async {
+    if (currentUserId == userId) return;
+    currentUserId = userId;
+    await refreshPersonal();
+  }
+
   Future<void> refreshAll() async {
     await Future.wait([
       refreshPersonal(),
@@ -147,8 +163,20 @@ class ChatStore {
   }
 
   Future<void> refreshPersonal() async {
-    personal.value = await _repo.fetchPersonalQuestions();
+    final all = await _repo.fetchPersonalQuestions();
+
+    personal.value = all
+        .where((PersonalQuestion q) {
+      final isPublic = q.privacy == Privacy.public;
+      final isMember = q.members.contains(currentUserId);
+      final iWroteAnswer = q.content
+          .trim()
+          .isNotEmpty; // ⬅︎ 내가 답변했으면 보이게
+      return isPublic || isMember || iWroteAnswer;
+    })
+        .toList(growable: false);
   }
+
 
   Future<void> refreshWeekly() async {
     weekly.value = await _repo.fetchWeeklyQuestion();
@@ -169,10 +197,14 @@ class ChatStore {
     List<String> members = const [],
     String content = '', // ✅ content 전달 가능
   }) async {
+    // ✅ private이면 내가 반드시 보이도록 내 ID를 members에 포함
+    final normalizedMembers =
+    privacy == Privacy.private ? {...members, currentUserId}.toList() : members;
+
     final created = await _repo.createPersonalQuestion(
       title: title,
       privacy: privacy,
-      members: members,
+      members: normalizedMembers, // ← 여기만 변경
       content: content, // ✅ repo로 전달
     );
     lastAddedPersonalId = created.id;
@@ -185,7 +217,11 @@ class ChatStore {
     required String dmId,
     required String answerText,
   }) async {
-    final created = await _repo.answerDm(dmId: dmId, answerText: answerText);
+    final created = await _repo.answerDm(
+      dmId: dmId,
+      answerText: answerText,
+      viewerId: currentUserId, // ⬅︎ 추가
+    );
     lastAddedPersonalId = created.id;
     await Future.wait([refreshInbox(), refreshPersonal()]);
     return created;

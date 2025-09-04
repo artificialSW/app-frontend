@@ -142,3 +142,12 @@ bool _listEq<T>(List<T> a, List<T> b) {
   }
   return true;
 }
+extension PersonalQuestionVisibility on PersonalQuestion {
+  /// 내가 이 질문을 볼 수 있는가?
+  /// - public: 모두 OK
+  /// - private: members에 내가 포함되어야 OK
+  bool canViewFor(String userId) {
+    if (privacy == Privacy.public) return true;
+    return members.contains(userId);
+  }
+}

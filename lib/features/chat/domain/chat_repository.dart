@@ -42,6 +42,7 @@ abstract class ChatRepository {
   Future<PersonalQuestion> answerDm({
     required String dmId,
     required String answerText,
+    required String viewerId,
   });
 
   // ---------------- 좋아요(하트) ----------------
