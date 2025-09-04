@@ -436,6 +436,10 @@ class _PersonalCard extends StatelessWidget {
       letterSpacing: -0.46,
     );
 
+    // 추가: private 여부/아이콘 색
+    final bool isPrivate = item.privacy == Privacy.private;
+    final Color lockColor = selected ? Colors.white : const Color(0xFF80818B);
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 140),
       curve: Curves.easeOut,
@@ -463,40 +467,68 @@ class _PersonalCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: titleStyle),
+                // --- 타이틀 + 잠금 아이콘(privacy) ---
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (item.privacy == Privacy.private) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 1.5, right: 6),
+                        child: Icon(
+                          Icons.lock_rounded,
+                          size: 18,
+                          color: selected ? Colors.white.withOpacity(0.95) : Colors.black54,
+                          semanticLabel: '비공개',
+                        ),
+                      ),
+                    ],
+                    // 제목은 남은 공간을 차지
+                    Expanded(
+                      child: Text(
+                        item.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: titleStyle,
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 10),
+
+                // --- 멤버 아이콘(비공개일 때만 노출) + 카운터 ---
                 Row(
                   children: [
-                    // 멤버 아이콘(최대 2)
-                    Row(
-                      children: [
-                        for (int i = 0; i < (item.members.length.clamp(0, 2)); i++)
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: selected ? Colors.white.withOpacity(0.85) : Colors.white,
-                                borderRadius: BorderRadius.circular(999),
-                                border: Border.all(color: _green, width: 2),
-                              ),
-                              child: Icon(
-                                Icons.person,
-                                size: 18,
-                                color: selected ? _green.withOpacity(0.95) : _green,
+                    if (item.privacy == Privacy.private) ...[
+                      Row(
+                        children: [
+                          for (int i = 0; i < (item.members.length.clamp(0, 2) as int); i++)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  color: selected ? Colors.white.withOpacity(0.85) : Colors.white,
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(color: _green, width: 2),
+                                ),
+                                child: Icon(
+                                  Icons.person,
+                                  size: 18,
+                                  color: selected ? _green.withOpacity(0.95) : _green,
+                                ),
                               ),
                             ),
-                          ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                     const Spacer(),
                     _CounterPill(
                       likes: item.likes,
                       comments: item.comments,
                       whiteText: selected,
-                      onLikeTap: onLike,         //  하트 탭 연결
-                      isLiked: isLiked,          //  채움/해제 반영
+                      onLikeTap: onLike,   // 하트 탭 연결
+                      isLiked: isLiked,    // 채움/해제 반영
                     ),
                   ],
                 ),
@@ -506,6 +538,7 @@ class _PersonalCard extends StatelessWidget {
         ),
       ),
     );
+
   }
 }
 
