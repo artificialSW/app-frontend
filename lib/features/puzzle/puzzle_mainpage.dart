@@ -1,5 +1,5 @@
 import 'package:artificialsw_frontend/services/image_store.dart';
-import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -86,18 +86,22 @@ class _PuzzleRootState extends State<PuzzleRoot> {
             children: [
               Consumer<ImageStore>(
                 builder: (context, imageStore, child) {
-                  return ElevatedButton(
+                  return CustomButton(
+                    text: '퍼즐 맞추기',
                     onPressed: imageStore.isNotEmpty
                         ? () => Navigator.of(context).pushNamed('/puzzle/write-puzzle-info')
                         : null,
-                    child: const Text("퍼즐 맞추기"),
+                    width: 150,
+                    fontSize: 13,
                   );
                 },
               ),
-              ElevatedButton(
+              CustomButton(
+                text: 'Plumu Asset 구경하기',
                 onPressed: () => Navigator.of(context).pushNamed('/puzzle/assetView'),
-                child: const Text("Plumu Asset 구경하기"),
-              ),
+                width: 150,
+                fontSize: 13,
+              )
             ],
           ),
         ],
