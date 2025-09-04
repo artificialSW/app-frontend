@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../model/personal_question_model.dart';
+import '../state/personal_question_send.dart';
 
 class StepVisibility extends StatelessWidget {
   final VisibilityType? selected;

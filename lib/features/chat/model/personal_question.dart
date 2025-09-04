@@ -1,5 +1,5 @@
 // 서버/DB에 저장된 개인질문 1건(목록/상세에 사용)
-import 'personal_question_model.dart';
+import '../chat_personal_send_logic/state/personal_question_send.dart';
 
 class PersonalQuestionEntity {
   final String id;

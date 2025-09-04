@@ -1,4 +1,4 @@
-import 'family_member_model.dart';
+import '../../model/family_member_model.dart';
 
 enum VisibilityType { public, private }
 

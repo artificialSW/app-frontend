@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../model/family_member_model.dart';
-import '../model/personal_question_model.dart';
+import 'state/personal_question_send.dart';
 import 'steps/step_family.dart';
 import 'steps/step_visibility.dart';
 import 'steps/step_write.dart';
