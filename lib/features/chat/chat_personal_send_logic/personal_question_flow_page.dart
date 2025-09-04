@@ -24,6 +24,12 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
     FamilyMember(id: '2', name: '엄마'),
     FamilyMember(id: '3', name: '할아버지'),
   ];
+  void _scheduleReturnToChat() {
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +52,7 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
       );
     } else {
       body = const StepSuccess();
+      _scheduleReturnToChat(); // 성공 화면일 때 자동 복귀 예약
     }
 
     final canNext = switch (step) {

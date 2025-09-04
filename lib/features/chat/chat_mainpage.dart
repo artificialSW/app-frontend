@@ -19,6 +19,7 @@ class _ChatRootState extends State<ChatRoot> {
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () {
+              Navigator.pushNamed(context, '/personal-answer');
               // 메시지 전송 기능
             },
           ),
@@ -93,7 +94,7 @@ class _ChatRootState extends State<ChatRoot> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // ✅ 개인질문 작성 플로우 페이지로 이동
+          //  개인질문 작성 플로우 페이지로 이동
           Navigator.pushNamed(context, '/personal-question');
         },
         child: const Icon(Icons.add),
