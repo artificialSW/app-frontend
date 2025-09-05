@@ -23,8 +23,8 @@ String id, author, text; int likes; bool liked, expanded; List<_Reply> replies; 
 class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
   final _controller = TextEditingController();
   final List<_Comment> _comments = [
-    _Comment('c1', '아빠', '낚시, 골프', likes: 10, replies: [ _Reply('나', '그건 좀...') ]),
-    _Comment('c2', '엄마', '뜨개질, 커피', likes: 10, replies: [ _Reply('나', '나도 그렇게 생각해요') ]),
+    _Comment('c1', '아빠', '낚시, 골프', likes: 0, replies: [ _Reply('나', '그건 좀...') ]),
+    _Comment('c2', '엄마', '뜨개질, 커피', likes: 0, replies: [ _Reply('나', '나도 그렇게 생각해요') ]),
   ];
   String? _replyToId, _replyToAuthor;
 

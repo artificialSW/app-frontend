@@ -5,6 +5,7 @@ import 'model/personal_question.dart';
 import 'model/common_question.dart';
 import 'chat_personal_send_logic/state/personal_question_send.dart';
 import 'chat_thread/chat_common_thread.dart';
+import 'chat_thread/chat_personal_thread.dart';
 
 // 카드 목록 전용(페이지 내부 전용이므로 private)
 class _PersonalListItem {
@@ -59,11 +60,11 @@ class _ChatRootState extends State<ChatRoot> {
     comments: 10,
   );
   final List<CommonQuestion> _pastCommonQuestions = const [
-    CommonQuestion(id: 'c-5', title: '오랜만에 둘이서 게임이나 할까?', description: '질문 내용을 적어주세요', likes: 10, comments: 10),
-    CommonQuestion(id: 'c-4', title: '공통질문4', description: '함께 시작하고 싶은 취미활동이 있나요?', likes: 10, comments: 10),
-    CommonQuestion(id: 'c-3', title: '공통질문3', description: '질문 내용을 적어주세요', likes: 10, comments: 10),
-    CommonQuestion(id: 'c-2', title: '공통질문2', description: '질문 내용을 적어주세요', likes: 10, comments: 10),
-    CommonQuestion(id: 'c-1', title: '공통질문1', description: '질문 내용을 적어주세요', likes: 10, comments: 10),
+    CommonQuestion(id: 'c-5', title: '오랜만에 둘이서 게임이나 할까?', description: '질문 내용을 적어주세요', likes: 0, comments: 0),
+    CommonQuestion(id: 'c-4', title: '공통질문4', description: '함께 시작하고 싶은 취미활동이 있나요?', likes: 0, comments: 0),
+    CommonQuestion(id: 'c-3', title: '공통질문3', description: '질문 내용을 적어주세요', likes: 0, comments: 0),
+    CommonQuestion(id: 'c-2', title: '공통질문2', description: '질문 내용을 적어주세요', likes: 0, comments: 0),
+    CommonQuestion(id: 'c-1', title: '공통질문1', description: '질문 내용을 적어주세요', likes: 0, comments: 0),
   ];
 
   @override
@@ -154,7 +155,19 @@ class _ChatRootState extends State<ChatRoot> {
           initialLikes: item.likes,
           commentsCount: item.comments,
           selected: _selectedPersonalId == item.entity.id,
-          onTap: () => setState(() => _selectedPersonalId = item.entity.id),
+          onTap: () {
+            setState(() => _selectedPersonalId = item.entity.id);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ChatPersonalThreadPage(
+                  question: item.entity,
+                  // 이름 매핑이 아직 없으니 간단히 ID 표시. 추후 서버에서 닉네임 내려주면 교체.
+                  askerName: item.entity.askerUserId,
+                ),
+              ),
+            );
+          },
         );
       },
     );
