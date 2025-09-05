@@ -1,40 +1,91 @@
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
+import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_ongoinglist.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_deleteConfirmationDialog.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PuzzleArchive extends StatelessWidget {
   const PuzzleArchive({super.key});
-
-  void _showDeleteConfirmationDialog(BuildContext context, PuzzleGame puzzle) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('퍼즐 삭제'),
-          content: const Text('퍼즐을 아카이브에서 삭제하시겠습니까?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('아니오'),
-            ),
-            TextButton(
-              onPressed: () {
-                Provider.of<PuzzleProvider>(
-                  context,
-                  listen: false,
-                ).undoArchivePuzzle(puzzle);
-                Navigator.of(context).pop();
-              },
-              child: const Text('예'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
+  //
+  // void _showDeleteConfirmationDialog(BuildContext context, int puzzleId) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return Dialog(
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(12), // 모서리 둥글게
+  //         ),
+  //         backgroundColor: AppColors.alart_background,
+  //         child: SizedBox(
+  //           width: 280,   // 원하는 너비 지정
+  //           height: 150,  // 원하는 높이 지정 (AlertDialog보다 줄임)
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(16),
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 SizedBox(height: 15),
+  //                 const Text(
+  //                   '진행중인 퍼즐을 삭제하시겠습니까?',
+  //                   style: TextStyle(
+  //                     color: AppColors.plumu_gray_7,
+  //                     fontSize: 16,
+  //                     fontFamily: 'Pretendard',
+  //                     fontWeight: FontWeight.w700,
+  //                     height: 1.41,
+  //                   ),
+  //                 ),
+  //                 const Text(
+  //                   '퍼즐 진행상황이 모두 삭제됩니다.',
+  //                   style: TextStyle(
+  //                     color: AppColors.plumu_gray_7,
+  //                     fontSize: 14,
+  //                     fontFamily: 'Pretendard',
+  //                     fontWeight: FontWeight.w500,
+  //                     height: 1.71,
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 15),
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                   children: [
+  //                     CustomButton(
+  //                       text: '아니오',
+  //                       onPressed: () => Navigator.of(context).pop(),
+  //                       height: 40,
+  //                       width: 111,
+  //                       backgroundColor: AppColors.plumu_white,
+  //                       textColor: AppColors.plumu_gray_7,
+  //                     ),
+  //                     CustomButton(
+  //                       text: '예',
+  //                       onPressed: () {
+  //                         Provider.of<PuzzleProvider>(
+  //                           context,
+  //                           listen: false,
+  //                         ).deletePuzzle(puzzleId);
+  //                         Navigator.of(context).pop();
+  //                       },
+  //                       height: 40,
+  //                       width: 111,
+  //                       backgroundColor: AppColors.plumu_white,
+  //                       textColor: AppColors.plumu_gray_7,
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +109,16 @@ class PuzzleArchive extends StatelessWidget {
                 final puzzle = puzzleProvider.archivedPuzzles[index];
                 return PuzzleListItem(
                   puzzle: puzzle,
-                  onDelete: () => _showDeleteConfirmationDialog(context, puzzle),
+                  onDelete: () => showDialog(
+                    context: context,
+                    builder: (context) {
+                      return DeleteConfirm(
+                        title: '퍼즐을 삭제하시겠습니까?',
+                        content: '퍼즐 관련 데이터가 모두 삭제됩니다.',
+                        puzzleId: puzzle.puzzleId, // 삭제할 퍼즐 id
+                      );
+                    },
+                  ),
                   onPressed: () {},
                   onSave: () {}, //TODO: 핸드폰에 저장하는 기능 구현하기
                   gameState: GameState.Completed, // 완료된 퍼즐임을 표시

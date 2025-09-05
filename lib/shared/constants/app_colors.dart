@@ -10,8 +10,10 @@ class AppColors {
   static const plumu_gray_4 = Color(0xFFC5C8CF);
   static const plumu_gray_5 = Color(0xFF9FA2AA);
   static const plumu_gray_6 = Color(0xFF80818B);
-  static const plumu_gray_7 = Color(0xFF585A68);
+  static const plumu_gray_7 = Color(0xFF282828);
   static const plumu_gray_8 = Color(0xFF35353F);
+
+  static const alart_background = Color(0xD9FFFFFF);
 
   static const activeColor = plumu_green_main;
   static const inactiveColor = Color(0xFFD5D5D5);
