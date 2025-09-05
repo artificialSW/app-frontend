@@ -4,6 +4,7 @@ import 'widget/common_question_card.dart';
 import 'model/personal_question.dart';
 import 'model/common_question.dart';
 import 'chat_personal_send_logic/state/personal_question_send.dart';
+import 'chat_thread/chat_common_thread.dart';
 
 // 카드 목록 전용(페이지 내부 전용이므로 private)
 class _PersonalListItem {
@@ -48,7 +49,7 @@ class _ChatRootState extends State<ChatRoot> {
     ),
   ];
 
-  // 공통질문 ⬇️ (최소 더미 + 선택상태)
+  // 공통질문 (더미 + 선택상태)
   String? _selectedCommonId;
   final CommonQuestion _weeklyCommonQuestion = const CommonQuestion(
     id: 'w-2025-36',
@@ -77,9 +78,19 @@ class _ChatRootState extends State<ChatRoot> {
       ),
       body: Column(
         children: [
-          // 공통질문 배너 (탭 가능)
+          // 공통질문 배너 (탭 → 쓰레드 이동)
           InkWell(
-            onTap: () => setState(() => _selectedCommonId = _weeklyCommonQuestion.id),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ChatCommonThreadPage(
+                    question: _weeklyCommonQuestion,
+                    order: _pastCommonQuestions.length + 1, // 지난 개수 + 1
+                  ),
+                ),
+              );
+            },
             child: Container(
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(12),
@@ -149,7 +160,7 @@ class _ChatRootState extends State<ChatRoot> {
     );
   }
 
-  // 공통질문 목록 (카드 사용)
+  // 공통질문 목록 (카드 탭 → 쓰레드 이동)
   Widget _buildCommonQuestions() {
     if (_pastCommonQuestions.isEmpty) {
       return const Center(
@@ -163,7 +174,19 @@ class _ChatRootState extends State<ChatRoot> {
         return CommonQuestionCard(
           question: q,
           selected: _selectedCommonId == q.id,
-          onTap: () => setState(() => _selectedCommonId = q.id),
+          onTap: () {
+            setState(() => _selectedCommonId = q.id);
+            final order = _pastCommonQuestions.length - i; // 5,4,3...
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ChatCommonThreadPage(
+                  question: q,
+                  order: order,
+                ),
+              ),
+            );
+          },
         );
       },
     );
