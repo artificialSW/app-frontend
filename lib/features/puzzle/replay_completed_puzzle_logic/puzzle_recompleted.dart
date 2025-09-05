@@ -1,3 +1,4 @@
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 
 class PuzzleRecompleted extends StatelessWidget {
@@ -5,7 +6,7 @@ class PuzzleRecompleted extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Puzzle 재 완성 페이지')),
+      appBar: CanGoBackTopBar('Puzzle 재 완성 페이지', context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

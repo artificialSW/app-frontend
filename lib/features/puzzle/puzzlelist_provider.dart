@@ -2,7 +2,9 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
@@ -189,33 +191,23 @@ class PuzzleListItem extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: OutlinedButton(
+              child: CustomButton(
+                text: '삭제',
                 onPressed: onDelete,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.grey,
-                  side: const BorderSide(color: Colors.grey),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-                child: const Text('삭제하기', style: TextStyle(fontSize: 12)),
-              ),
+                height: 30,
+                textColor: AppColors.plumu_black,
+                backgroundColor: AppColors.plumu_gray_1,
+                fontSize: 14,
+              )
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: ElevatedButton(
+              child: CustomButton(
+                text: '진행하기',
                 onPressed: onPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-                child: const Text('진행하기',
-                    style: TextStyle(color: Colors.white, fontSize: 12)),
-              ),
+                height: 30,
+                fontSize: 14,
+              )
             ),
           ],
         ),
@@ -245,33 +237,23 @@ class PuzzleListItem extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: OutlinedButton(
+              child: CustomButton(
+                text: '아카이빙',
                 onPressed: onSave,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.grey,
-                  side: const BorderSide(color: Colors.grey),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-                child: const Text('아카이빙', style: TextStyle(fontSize: 12)),
-              ),
+                height: 30,
+                textColor: AppColors.plumu_black,
+                backgroundColor: AppColors.plumu_gray_1,
+                fontSize: 14,
+              )
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: ElevatedButton(
-                onPressed: onPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-                child: const Text('다시풀기',
-                    style: TextStyle(color: Colors.white, fontSize: 12)),
-              ),
+                child: CustomButton(
+                  text: '다시풀기',
+                  onPressed: onPressed,
+                  height: 30,
+                  fontSize: 14,
+                )
             ),
           ],
         ),
@@ -300,33 +282,23 @@ class PuzzleListItem extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: OutlinedButton(
-                onPressed: onDelete,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.grey,
-                  side: const BorderSide(color: Colors.grey),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-                child: const Text('삭제하기', style: TextStyle(fontSize: 12)),
-              ),
+                child: CustomButton(
+                  text: '삭제',
+                  onPressed: onDelete,
+                  height: 30,
+                  textColor: AppColors.plumu_black,
+                  backgroundColor: AppColors.plumu_gray_1,
+                  fontSize: 14,
+                )
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: ElevatedButton(
-                onPressed: onSave,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-                child: const Text('갤러리에 저장',
-                    style: TextStyle(color: Colors.white, fontSize: 12)),
-              ),
+                child: CustomButton(
+                  text: '갤러리에 저장',
+                  onPressed: onSave,
+                  height: 30,
+                  fontSize: 12,
+                )
             ),
           ],
         ),

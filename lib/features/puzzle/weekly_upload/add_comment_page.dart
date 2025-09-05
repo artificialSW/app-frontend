@@ -1,4 +1,5 @@
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 
@@ -29,10 +30,10 @@ class AddCommentPage extends StatelessWidget {
                 border: OutlineInputBorder(),
               ),
             ),
-            ElevatedButton(
+            CustomButton(
+                text: '코멘트 저장하기',
                 onPressed: () => Navigator.of(context).pushNamed('/'),
-                child: const Text("코멘트 저장하기")
-            ),
+            )
           ]
         )
       ),

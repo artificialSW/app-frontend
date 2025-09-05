@@ -1,3 +1,4 @@
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 
 class HomeRoot extends StatelessWidget {
@@ -5,7 +6,7 @@ class HomeRoot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      appBar: HomeTopBar(),
       body: Center(
         child: ElevatedButton(
           onPressed: () {

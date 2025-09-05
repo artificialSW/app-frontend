@@ -1,5 +1,7 @@
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +44,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Write Puzzle Info Page")),
+      appBar: CanGoBackTopBar('퍼즐 정보 입력', context),
       body: Column(
         children: [
           Text("퍼즐 크기를 선택해주세요."),
@@ -74,15 +76,15 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
             },
           ),
           SizedBox(height: 100,),
-          ElevatedButton(
+          CustomButton(
+              text: '완료하기',
               onPressed: () {
                 Navigator.of(context).pushNamed(
-                  '/puzzle/play', ///일단은 라우팅 경로 re-play로 해놓고 나중에 이름 리팩터링 ㄱㄱ
+                  '/puzzle/play',
                   arguments: {'gameInstance': getPuzzle(unplayedPuzzleIndex, selectedSize)},
                 );
               },
-              child: const Text("완료하기")
-          ),
+          )
         ],
       )
     );

@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
@@ -40,7 +42,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("이미지 업로드 테스트")),
+      appBar: CanGoBackTopBar("이미지 업로드 테스트", context),
       body: Center(
         child: Column(
           children: [
@@ -78,9 +80,9 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
             const SizedBox(height: 100),
             Text("일요일 밤 11시 59분까지 제출해주세요!"),
             const SizedBox(height: 20),
-            ElevatedButton(
+            CustomButton(
+                text: '사진 제출하기',
                 onPressed: () => Navigator.of(context).pushNamed('/puzzle/add-comment'),
-                child: const Text("사진 제출하기")
             ),
           ],
         ),

@@ -1,4 +1,8 @@
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_deleteConfirmationDialog.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -7,50 +11,10 @@ import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 class OngoingPuzzlesPage extends StatelessWidget {
   const OngoingPuzzlesPage({Key? key}) : super(key: key);
 
-  void _showDeleteConfirmationDialog(BuildContext context, int puzzleId) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('퍼즐 삭제'),
-          content: const Text('진행하신 퍼즐을 삭제하시겠습니까?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('아니오'),
-            ),
-            TextButton(
-              onPressed: () {
-                Provider.of<PuzzleProvider>(
-                  context,
-                  listen: false,
-                ).deletePuzzle(puzzleId);
-                Navigator.of(context).pop();
-              },
-              child: const Text('예'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          '진행중인 퍼즐 목록',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: CanGoBackTopBar('진행중인 퍼즐 목록', context),
       body: Consumer<PuzzleProvider>(
         builder: (context, puzzleProvider, child) {
           if (puzzleProvider.ongoingPuzzles.isEmpty) {
@@ -70,7 +34,16 @@ class OngoingPuzzlesPage extends StatelessWidget {
                 return PuzzleListItem(
                   puzzle: puzzle,
                   onDelete:
-                      () => _showDeleteConfirmationDialog(context, puzzle.puzzleId),
+                      () => showDialog(
+                        context: context,
+                        builder: (context) {
+                          return DeleteConfirm(
+                            title: '진행중인 퍼즐을 삭제하시겠습니까?',
+                            content: '퍼즐 진행상황이 모두 삭제됩니다.',
+                            puzzleId: puzzle.puzzleId, // 삭제할 퍼즐 id
+                          );
+                        },
+                      ),
                   onPressed: () {
                     Navigator.of(context).pushNamed(
                         '/puzzle/play',

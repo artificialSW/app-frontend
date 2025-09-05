@@ -55,6 +55,20 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
+    - assets/icons/
+
+  fonts:
+    - family: plumu
+      fonts:
+        - asset: assets/fonts/prodemi.otf
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard/Pretendard-Regular.otf
+          weight: 400
+        - asset: assets/fonts/Pretendard/Pretendard-Medium.otf
+          weight: 500
+        - asset: assets/fonts/Pretendard/Pretendard-Bold.otf
+          weight: 700
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -1,4 +1,6 @@
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +16,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
   Widget build(BuildContext context) {
 
     return Scaffold( // 이 Scaffold를 추가합니다.
-      appBar: AppBar(title: const Text('Puzzle')),
+      appBar: PuzzlRootTopBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -65,29 +67,50 @@ class _PuzzleRootState extends State<PuzzleRoot> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                  onPressed: () => Navigator.of(context).pushNamed('/puzzle/image-upload-test'),
-                  child: const Text("사진 업로드")
+              CustomButton(
+                text: '사진 업로드',
+                onPressed: () => Navigator.of(context).pushNamed('/puzzle/image-upload-test'),
+                width: 150,
+                fontSize: 13,
               ),
-              ElevatedButton(
-                  onPressed: () => Navigator.of(context).pushNamed('/puzzle/archive'),
-                  child: const Text("퍼즐 아카이브")
-              ),
+              SizedBox(width: 20),
+              CustomButton(
+                text: '퍼즐 아카이브',
+                onPressed: () => Navigator.of(context).pushNamed('/puzzle/archive'),
+                width: 150,
+                fontSize: 13,
+              )
 
             ],
           ),
-          Consumer<ImageStore>(
-            builder: (context, imageStore, child) {
-              return ElevatedButton(
-                onPressed: imageStore.isNotEmpty
-                    ? () => Navigator.of(context).pushNamed('/puzzle/write-puzzle-info')
-                    : null,
-                child: const Text("퍼즐 맞추기"),
-              );
-            },
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Consumer<ImageStore>(
+                builder: (context, imageStore, child) {
+                  return CustomButton(
+                    text: '퍼즐 맞추기',
+                    onPressed: imageStore.isNotEmpty
+                        ? () => Navigator.of(context).pushNamed('/puzzle/write-puzzle-info')
+                        : null,
+                    width: 150,
+                    fontSize: 13,
+                  );
+                },
+              ),
+              SizedBox(width: 20),
+              CustomButton(
+                text: 'Plumu Asset 구경하기',
+                onPressed: () => Navigator.of(context).pushNamed('/puzzle/assetView'),
+                width: 150,
+                fontSize: 13,
+              )
+            ],
           ),
         ],
       ),

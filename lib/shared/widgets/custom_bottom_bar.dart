@@ -1,3 +1,4 @@
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import '../constants/tabs.dart'; // TabItem(icon, label)과 TABS 제공한다고 가정
 
@@ -24,21 +25,23 @@ class AppBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final active = activeColor ?? theme.colorScheme.primary;
-    final inactive = inactiveColor ?? theme.colorScheme.onSurface.withOpacity(0.6);
+    final active = activeColor ?? AppColors.activeColor;
+    final inactive = inactiveColor ?? AppColors.inactiveColor;
+
+    const baseHeight = kBottomNavigationBarHeight; // 56.0 (머티리얼 기본)
 
     return Material(
       elevation: elevation,
-      color: backgroundColor ?? theme.colorScheme.surface,
+      color: AppColors.plumu_white,
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 64,
+          height: baseHeight,
           child: Row(
             children: [
               for (int i = 0; i < tabs.length; i++)
                 _BottomItem(
-                  icon: tabs[i].icon,
+                  iconPath: tabs[i].icon,
                   label: tabs[i].label,
                   selected: i == currentIndex,
                   activeColor: active,
@@ -55,7 +58,7 @@ class AppBottomBar extends StatelessWidget {
 
 class _BottomItem extends StatelessWidget {
   const _BottomItem({
-    required this.icon,
+    required this.iconPath,
     required this.label,
     required this.selected,
     required this.activeColor,
@@ -63,7 +66,7 @@ class _BottomItem extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final String iconPath;
   final String label;
   final bool selected;
   final Color activeColor;
@@ -78,25 +81,32 @@ class _BottomItem extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: selected ? activeColor.withOpacity(0.12) : Colors.transparent,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: selected ? activeColor : inactiveColor),
-              const SizedBox(height: 4),
-              AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 200),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+          child: SizedBox(
+            height: 48,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  iconPath,
+                  width: 19, //이렇게 직접 지정할수도 있고, 주석처리해서 기본 이미지대로 할수도 있음.
+                  height: 19,
                   color: selected ? activeColor : inactiveColor,
                 ),
-                child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
-              ),
-            ],
+                const SizedBox(height: 3),
+                SizedBox(
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: selected ? activeColor : inactiveColor,
+                      fontSize: 9,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
