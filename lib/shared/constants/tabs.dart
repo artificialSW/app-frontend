@@ -1,9 +1,9 @@
-import 'package:artificialsw_frontend/features/chat/presentation/pages/chat_page.dart';
 import 'package:artificialsw_frontend/features/home/home_page.dart';
 import 'package:artificialsw_frontend/features/Profile/profile_page.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_mainpage.dart';
+import 'package:artificialsw_frontend/features/chat/chat_mainpage.dart';
 
 class TabItem {
   final String icon;
