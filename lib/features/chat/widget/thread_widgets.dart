@@ -1,6 +1,8 @@
 // lib/features/chat/widget/thread_widgets.dart
 import 'package:flutter/material.dart';
 import 'package:characters/characters.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 
 /// 화면용 최소 대댓글 뷰모델
 class ThreadReplyView {
@@ -46,48 +48,63 @@ class ThreadCommentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final repliers = replies.map((e) => e.author).toSet().toList();
-    final avatar2 = repliers.take(2).toList();
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            const Icon(Icons.person, size: 20),
-            const SizedBox(width: 8),
-            Text(author, style: const TextStyle(fontWeight: FontWeight.w600)),
-          ]),
-          const SizedBox(height: 6),
-          Text(text),
-          const SizedBox(height: 6),
-          Row(children: [
-            IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              icon: Icon(liked ? Icons.favorite : Icons.favorite_border, size: 18),
-              onPressed: onToggleLike,
-            ),
-            Text('$likes'),
-            const SizedBox(width: 12),
-            const Icon(Icons.chat_bubble_outline, size: 18),
-            const SizedBox(width: 4),
-            Text('${replies.length}'),
-            const SizedBox(width: 12),
-            Row(children: [
-              _TinyAvatars(names: avatar2),
-              TextButton(
-                onPressed: onToggleExpand,
-                child: Text(expanded ? 'hide replies' : 'show replies'),
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: AppColors.plumu_green_30per,
+                shape: BoxShape.circle,
               ),
-            ]),
-            const SizedBox(width: 8),
-            TextButton(onPressed: onTapReply, child: const Text('reply')),
+              child: Icon(Icons.person, size: 18, color: AppColors.plumu_green_main),
+            ),
+            const SizedBox(width: 12),
+            Text(author, style: AppTextStyles.pretendard_medium.copyWith(fontSize: 14)),
           ]),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.only(left: 44),
+            child: Text(text, style: AppTextStyles.pretendard_regular.copyWith(fontSize: 14)),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.only(left: 44),
+            child: Row(children: [
+              GestureDetector(
+                onTap: onToggleLike,
+                child: Row(children: [
+                  Icon(liked ? Icons.favorite : Icons.favorite_border, size: 16, color: liked ? Colors.red : AppColors.plumu_gray_5),
+                  const SizedBox(width: 4),
+                  Text('$likes', style: AppTextStyles.pretendard_regular.copyWith(fontSize: 12, color: AppColors.plumu_gray_5)),
+                ]),
+              ),
+              const SizedBox(width: 16),
+              Row(children: [
+                Icon(Icons.chat_bubble_outline, size: 16, color: AppColors.plumu_gray_5),
+                const SizedBox(width: 4),
+                Text('${replies.length}', style: AppTextStyles.pretendard_regular.copyWith(fontSize: 12, color: AppColors.plumu_gray_5)),
+              ]),
+              if (replies.isNotEmpty) ...[
+                const SizedBox(width: 16),
+                GestureDetector(
+                  onTap: onToggleExpand,
+                  child: Row(children: [
+                    Icon(expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: 16, color: AppColors.plumu_gray_5),
+                    const SizedBox(width: 4),
+                    Text(expanded ? 'hide replies' : 'show replies', style: AppTextStyles.pretendard_regular.copyWith(fontSize: 12, color: AppColors.plumu_gray_5)),
+                  ]),
+                ),
+              ],
+            ]),
+          ),
           if (expanded && replies.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(left: 24, top: 4, bottom: 8),
+              padding: const EdgeInsets.only(left: 44, top: 12, bottom: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(replies.length, (i) {
@@ -98,28 +115,39 @@ class ThreadCommentTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(children: [
-                          const Icon(Icons.person, size: 18),
-                          const SizedBox(width: 8),
-                          Text(r.author, style: const TextStyle(fontWeight: FontWeight.w600)),
-                        ]),
-                        const SizedBox(height: 4),
-                        Text(r.text),
-                        Row(children: [
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            icon: Icon(r.liked ? Icons.favorite : Icons.favorite_border, size: 18),
-                            onPressed: () => onToggleReplyLike(i),
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(color: AppColors.plumu_green_30per, shape: BoxShape.circle),
+                            child: Icon(Icons.person, size: 14, color: AppColors.plumu_green_main),
                           ),
-                          Text('${r.likes}'),
+                          const SizedBox(width: 8),
+                          Text(r.author, style: AppTextStyles.pretendard_medium.copyWith(fontSize: 13)),
                         ]),
+                        const SizedBox(height: 6),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 32),
+                          child: Text(r.text, style: AppTextStyles.pretendard_regular.copyWith(fontSize: 13)),
+                        ),
+                        const SizedBox(height: 6),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 32),
+                          child: GestureDetector(
+                            onTap: () => onToggleReplyLike(i),
+                            child: Row(children: [
+                              Icon(r.liked ? Icons.favorite : Icons.favorite_border, size: 14, color: r.liked ? Colors.red : AppColors.plumu_gray_5),
+                              const SizedBox(width: 4),
+                              Text('${r.likes}', style: AppTextStyles.pretendard_regular.copyWith(fontSize: 11, color: AppColors.plumu_gray_5)),
+                            ]),
+                          ),
+                        ),
                       ],
                     ),
                   );
                 }),
               ),
             ),
-          const Divider(height: 1),
+          const Divider(height: 1, color: AppColors.plumu_gray_2),
         ],
       ),
     );
@@ -143,21 +171,43 @@ class ThreadInputBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 6, 12, 12),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        decoration: BoxDecoration(
+          color: AppColors.plumu_white,
+          border: Border(top: BorderSide(color: AppColors.plumu_gray_2, width: 1)),
+        ),
         child: Row(children: [
           Expanded(
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: hintText,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.plumu_gray_1,
+                borderRadius: BorderRadius.circular(20),
               ),
-              onSubmitted: (_) => onSubmit(),
+              child: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  hintText: hintText,
+                  hintStyle: AppTextStyles.pretendard_regular.copyWith(fontSize: 14, color: AppColors.plumu_gray_5),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  border: InputBorder.none,
+                ),
+                style: AppTextStyles.pretendard_regular.copyWith(fontSize: 14),
+                onSubmitted: (_) => onSubmit(),
+              ),
             ),
           ),
-          IconButton(icon: const Icon(Icons.send), onPressed: onSubmit),
+          const SizedBox(width: 8),
+          IconButton(icon: Icon(Icons.image_outlined, color: AppColors.plumu_gray_5, size: 20), onPressed: () {}),
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(color: AppColors.plumu_gray_5, borderRadius: BorderRadius.circular(4)),
+              child: Text('GIF', style: AppTextStyles.pretendard_medium.copyWith(fontSize: 10, color: AppColors.plumu_white)),
+            ),
+            onPressed: () {},
+          ),
+          IconButton(icon: Icon(Icons.open_in_full, color: AppColors.plumu_gray_5, size: 20), onPressed: () {}),
         ]),
       ),
     );
@@ -175,12 +225,19 @@ class _TinyAvatars extends StatelessWidget {
     return Row(
       children: names.take(2).map((n) {
         return Container(
-          margin: const EdgeInsets.only(right: 4),
-          width: 18,
-          height: 18,
-          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.black12)),
+          margin: const EdgeInsets.only(right: -4),
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: AppColors.plumu_green_30per,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 1),
+          ),
           alignment: Alignment.center,
-          child: Text(firstGrapheme(n), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600)),
+          child: Text(
+            firstGrapheme(n), 
+            style: AppTextStyles.pretendard_medium.copyWith(fontSize: 8, color: AppColors.plumu_green_main),
+          ),
         );
       }).toList(),
     );

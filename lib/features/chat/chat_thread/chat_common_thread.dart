@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import '../widget/thread_widgets.dart';   // 공용 위젯
 import '../model/common_question.dart';  // CommonQuestion 모델
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 
 class ChatCommonThreadPage extends StatefulWidget {
   final CommonQuestion question; // 상단 제목 표시
@@ -36,21 +39,50 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
     final dateStr = DateTime.now().toIso8601String().split('T').first; // YYYY-MM-DD
 
     return Scaffold(
-      appBar: AppBar(title: const Text('공통질문')),
+      appBar: CanGoBackTopBar('공통질문', context),
       body: Column(
         children: [
-          // 헤더(몇번째/제목/날짜)
+          // 헤더: N번째 질문 태그/큰 제목/날짜
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('${widget.order}번째 질문', style: const TextStyle(fontWeight: FontWeight.w600)),
+              // N번째 질문 태그
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.plumu_green_main,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${widget.order}번째 질문',
+                  style: AppTextStyles.pretendard_medium.copyWith(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // 질문 텍스트
+              Text(
+                widget.question.title, 
+                style: AppTextStyles.pretendard_bold.copyWith(
+                  fontSize: 20,
+                  color: AppColors.plumu_black,
+                  height: 1.3,
+                ),
+              ),
               const SizedBox(height: 8),
-              Text(widget.question.title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 6),
-              Text(dateStr, style: const TextStyle(fontSize: 12)),
+              // 날짜
+              Text(
+                'Jul 24. 2025', // 더미 날짜로 이미지와 맞춤
+                style: AppTextStyles.pretendard_regular.copyWith(
+                  fontSize: 12,
+                  color: AppColors.plumu_gray_5,
+                ),
+              ),
             ]),
           ),
-          const Divider(height: 1),
+          const Divider(height: 1, color: AppColors.plumu_gray_2),
 
           // 댓글 리스트
           Expanded(
@@ -83,7 +115,7 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
           // 입력
           ThreadInputBar(
             controller: _controller,
-            hintText: _replyToAuthor == null ? '댓글을 입력하세요' : '$_replyToAuthor 님에게 답글',
+            hintText: _replyToAuthor == null ? '답변을 입력하세요' : '$_replyToAuthor 님에게 답글',
             onSubmit: () {
               final t = _controller.text.trim();
               if (t.isEmpty) return;

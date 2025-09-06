@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widget/thread_widgets.dart';     // ThreadCommentTile, ThreadInputBar, ThreadReplyView
 import '../model/personal_question.dart';   // PersonalQuestionEntity
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 
 class ChatPersonalThreadPage extends StatefulWidget {
   final PersonalQuestionEntity question; // 질문 엔티티(텍스트/작성시각 등)
@@ -45,25 +48,50 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
     final dateStr = widget.question.createdAt.toIso8601String().split('T').first; // YYYY-MM-DD
 
     return Scaffold(
-      appBar: AppBar(title: const Text('개인질문')),
+      appBar: CanGoBackTopBar('개인질문', context),
       body: Column(
         children: [
-          // 헤더: 작성자/큰 제목/날짜
+          // 헤더: 내가 작성 태그/큰 제목/날짜
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                const Icon(Icons.person, size: 20),
-                const SizedBox(width: 8),
-                Text(widget.askerName, style: const TextStyle(fontWeight: FontWeight.w600)),
-              ]),
-              const SizedBox(height: 10),
-              Text(widget.question.text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 6),
-              Text(dateStr, style: const TextStyle(fontSize: 12)),
+              // 내가 작성 태그
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.plumu_green_main,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '내가 작성',
+                  style: AppTextStyles.pretendard_medium.copyWith(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // 질문 텍스트
+              Text(
+                widget.question.text, 
+                style: AppTextStyles.pretendard_bold.copyWith(
+                  fontSize: 20,
+                  color: AppColors.plumu_black,
+                  height: 1.3,
+                ),
+              ),
+              const SizedBox(height: 8),
+              // 날짜
+              Text(
+                'Jul 24. 2025', // 더미 날짜로 이미지와 맞춤
+                style: AppTextStyles.pretendard_regular.copyWith(
+                  fontSize: 12,
+                  color: AppColors.plumu_gray_5,
+                ),
+              ),
             ]),
           ),
-          const Divider(height: 1),
+          const Divider(height: 1, color: AppColors.plumu_gray_2),
 
           // 1차답변(상위 댓글) 리스트
           Expanded(
