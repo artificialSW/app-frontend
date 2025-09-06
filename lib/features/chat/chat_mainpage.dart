@@ -7,6 +7,8 @@ import 'chat_personal_send_logic/state/personal_question_send.dart';
 import 'chat_thread/chat_common_thread.dart';
 import 'chat_thread/chat_personal_thread.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 
 // 카드 목록 전용(페이지 내부 전용이므로 private)
 class _PersonalListItem {
@@ -30,21 +32,21 @@ class _ChatRootState extends State<ChatRoot> {
   final List<_PersonalListItem> _personalItems = [
     _PersonalListItem(
       entity: PersonalQuestionEntity(
-        id: 'p5', askerUserId: 'u1', responderUserId: 'u2',
+        id: 'p5', askerUserId: 'u2', responderUserId: 'u1',
         text: '할아버지의 21살은 어땠나요?', visibility: VisibilityType.public, createdAt: DateTime.now(),
       ),
       likes: 0, comments: 0,
     ),
     _PersonalListItem(
       entity: PersonalQuestionEntity(
-        id: 'p4', askerUserId: 'u1', responderUserId: 'u3',
+        id: 'p4', askerUserId: 'u3', responderUserId: 'u1',
         text: '개인 질문 4', visibility: VisibilityType.private, createdAt: DateTime.now(),
       ),
       likes: 0, comments: 0,
     ),
     _PersonalListItem(
       entity: PersonalQuestionEntity(
-        id: 'p3', askerUserId: 'u1', responderUserId: 'u2',
+        id: 'p3', askerUserId: 'u2', responderUserId: 'u2',
         text: '개인 질문 3', visibility: VisibilityType.public, createdAt: DateTime.now(),
       ),
       likes: 0, comments: 0,
@@ -68,78 +70,94 @@ class _ChatRootState extends State<ChatRoot> {
     CommonQuestion(id: 'c-1', title: '공통질문1', description: '질문 내용을 적어주세요', likes: 0, comments: 0),
   ];
 
+  // 나에게 온 질문 개수 계산 (responderUserId가 현재 사용자인 질문들)
+  int _getIncomingQuestionsCount() {
+    return _personalItems.where((item) => item.entity.responderUserId == 'u1').length;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ChatRootTopBar(),
-      body: Column(
-        children: [
-          // 공통질문 배너 (탭 → 쓰레드 이동)
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ChatCommonThreadPage(
-                    question: _weeklyCommonQuestion,
-                    order: _pastCommonQuestions.length + 1, // 지난 개수 + 1
-                  ),
-                ),
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Row(
-                children: [Icon(Icons.psychology), SizedBox(width: 8), Expanded(child: Text('이번주의 공통질문'))],
-              ),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        title: SizedBox(
+          width: 44,
+          child: Text(
+            '소통방',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 17,
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w700,
+              height: 1.50,
+              letterSpacing: -0.46,
             ),
           ),
-          Row(
+        ),
+        iconTheme: const IconThemeData(color: Colors.black87),
+        actions: [
+          Stack(
             children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _selectedIndex = 0),
+              IconButton(
+                icon: const Icon(Icons.send_rounded, color: Colors.black87),
+                tooltip: '답변하기',
+                onPressed: () => Navigator.pushNamed(context, '/personal-answer'),
+              ),
+              if (_getIncomingQuestionsCount() > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
                   child: Container(
-                    padding: const EdgeInsets.all(12),
-                    child: Text('개인질문',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: _selectedIndex == 0 ? FontWeight.bold : FontWeight.normal)),
+                    width: 16,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: AppColors.plumu_green_main,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${_getIncomingQuestionsCount()}',
+                        style: AppTextStyles.pretendard_medium.copyWith(
+                          fontSize: 10,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _selectedIndex = 1),
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    child: Text('공통질문',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: _selectedIndex == 1 ? FontWeight.bold : FontWeight.normal)),
-                  ),
-                ),
-              ),
             ],
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          _WeeklyQuestionBanner(
+            question: _weeklyCommonQuestion,
+            order: _pastCommonQuestions.length + 1,
+          ),
+          _TabBar(
+            selectedIndex: _selectedIndex,
+            onTabChanged: (index) => setState(() => _selectedIndex = index),
           ),
           Expanded(child: _selectedIndex == 0 ? _buildPersonalQuestions() : _buildCommonQuestions()),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pushNamed(context, '/personal-question'),
-        child: const Icon(Icons.add),
+        backgroundColor: AppColors.plumu_gray_4,
+        foregroundColor: Colors.white,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, size: 28),
       ),
     );
   }
 
   Widget _buildPersonalQuestions() {
     if (_personalItems.isEmpty) {
-      return const Center(
-        child: Text('질문이 없어요.\n가족에게 궁금했던 점을 질문해보세요!', textAlign: TextAlign.center),
-      );
+      return const Center(child: Text('질문이 없어요.\n가족에게 궁금했던 점을 질문해보세요!', textAlign: TextAlign.center));
     }
     return ListView.builder(
       itemCount: _personalItems.length,
@@ -152,28 +170,18 @@ class _ChatRootState extends State<ChatRoot> {
           selected: _selectedPersonalId == item.entity.id,
           onTap: () {
             setState(() => _selectedPersonalId = item.entity.id);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => ChatPersonalThreadPage(
-                  question: item.entity,
-                  // 이름 매핑이 아직 없으니 간단히 ID 표시. 추후 서버에서 닉네임 내려주면 교체.
-                  askerName: item.entity.askerUserId,
-                ),
-              ),
-            );
+            Navigator.push(context, MaterialPageRoute(
+              builder: (_) => ChatPersonalThreadPage(question: item.entity, askerName: item.entity.askerUserId),
+            ));
           },
         );
       },
     );
   }
 
-  // 공통질문 목록 (카드 탭 → 쓰레드 이동)
   Widget _buildCommonQuestions() {
     if (_pastCommonQuestions.isEmpty) {
-      return const Center(
-        child: Text('공통질문이 없어요.\n이번주의 공통질문을 확인해보세요!', textAlign: TextAlign.center),
-      );
+      return const Center(child: Text('공통질문이 없어요.\n이번주의 공통질문을 확인해보세요!', textAlign: TextAlign.center));
     }
     return ListView.builder(
       itemCount: _pastCommonQuestions.length,
@@ -184,19 +192,131 @@ class _ChatRootState extends State<ChatRoot> {
           selected: _selectedCommonId == q.id,
           onTap: () {
             setState(() => _selectedCommonId = q.id);
-            final order = _pastCommonQuestions.length - i; // 5,4,3...
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => ChatCommonThreadPage(
-                  question: q,
-                  order: order,
-                ),
-              ),
-            );
+            Navigator.push(context, MaterialPageRoute(
+              builder: (_) => ChatCommonThreadPage(question: q, order: _pastCommonQuestions.length - i),
+            ));
           },
         );
       },
+    );
+  }
+}
+
+// 이번주 공통질문 배너 위젯
+class _WeeklyQuestionBanner extends StatelessWidget {
+  final CommonQuestion question;
+  final int order;
+
+  const _WeeklyQuestionBanner({
+    required this.question,
+    required this.order,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ChatCommonThreadPage(
+              question: question,
+              order: order,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: AppColors.plumu_green_30per,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Text('🎉', style: TextStyle(fontSize: 24)),
+            const SizedBox(width: 12),
+            Text(
+              '이번주의 공통질문',
+              style: AppTextStyles.pretendard_medium.copyWith(
+                fontSize: 16,
+                color: AppColors.plumu_green_main,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// 탭바 위젯
+class _TabBar extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onTabChanged;
+
+  const _TabBar({
+    required this.selectedIndex,
+    required this.onTabChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _TabItem(
+            text: '개인질문',
+            isSelected: selectedIndex == 0,
+            onTap: () => onTabChanged(0),
+          ),
+        ),
+        Expanded(
+          child: _TabItem(
+            text: '공통질문',
+            isSelected: selectedIndex == 1,
+            onTap: () => onTabChanged(1),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// 개별 탭 아이템 위젯
+class _TabItem extends StatelessWidget {
+  final String text;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _TabItem({
+    required this.text,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          border: isSelected 
+            ? Border(bottom: BorderSide(color: AppColors.plumu_gray_7, width: 1))
+            : null,
+        ),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: AppTextStyles.pretendard_medium.copyWith(
+            fontSize: 15,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            color: isSelected ? AppColors.plumu_gray_7 : AppColors.plumu_gray_5,
+          ),
+        ),
+      ),
     );
   }
 }
