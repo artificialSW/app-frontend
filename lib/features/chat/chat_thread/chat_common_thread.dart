@@ -89,7 +89,7 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
               if (t.isEmpty) return;
               setState(() {
                 if (_replyToId == null) {
-                  _comments.insert(0, _Comment(DateTime.now().millisecondsSinceEpoch.toString(), '나', t));
+                  _comments.add(_Comment(DateTime.now().millisecondsSinceEpoch.toString(), '나', t));
                 } else {
                   final i = _comments.indexWhere((e) => e.id == _replyToId);
                   if (i != -1) { _comments[i].replies.add(_Reply('나', t)); _comments[i].expanded = true; }

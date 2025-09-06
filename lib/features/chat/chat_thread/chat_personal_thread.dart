@@ -104,7 +104,7 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
               if (t.isEmpty) return;
               setState(() {
                 if (_replyToId == null) {
-                  _answers.insert(0,
+                  _answers.add(
                       _Answer(DateTime.now().millisecondsSinceEpoch.toString(), '나', t));
                 } else {
                   final i = _answers.indexWhere((e) => e.id == _replyToId);
