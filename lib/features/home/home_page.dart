@@ -8,18 +8,24 @@ class HomeRoot extends StatelessWidget {
   const HomeRoot({super.key});
   @override
   Widget build(BuildContext context) {
+    final double chat_percent = 0.1;
+    final double puzzle_percent = 0.2;
+    final double tree_percent = 0.3;
+
+    //TODO(서버에 현재 열매랑 꽃 종류와 개수 아마 맵 형태로..? 요청하기)
+
     return Scaffold(
       appBar: HomeTopBar(),
       body: Column(
         children: [
           Container(
             height: 30,
-            child: LinearProgressIndicator(value: 0.5, semanticsLabel: 'ddd', semanticsValue: 'dafasd'),
+            child: LinearProgressIndicator(value: chat_percent),
           ),
           SizedBox(height: 15),
           Container(
             height: 30,
-            child: LinearProgressIndicator(value: 0.5, semanticsLabel: 'ddd', semanticsValue: 'dafasd'),
+            child: LinearProgressIndicator(value: puzzle_percent),
           ),
           SizedBox(height: 15),
 
@@ -65,7 +71,7 @@ class HomeRoot extends StatelessWidget {
                 children: [
                   Container(
                     height: 20,
-                    child: LinearProgressIndicator(value: 0.5, semanticsLabel: 'ddd', semanticsValue: 'dafasd'),
+                    child: LinearProgressIndicator(value: tree_percent),
                   ),
                   SizedBox(height: 10),
                   CustomButton(text: '나무 아카이브', onPressed: null)
