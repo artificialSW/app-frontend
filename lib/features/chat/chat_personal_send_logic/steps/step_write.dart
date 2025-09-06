@@ -1,16 +1,20 @@
+// lib/features/chat/chat_personal_send_logic/steps/step_write.dart
 import 'package:flutter/material.dart';
 
 class StepWrite extends StatelessWidget {
-  final String text;
+  final TextEditingController controller;
   final ValueChanged<String> onChanged;
-  const StepWrite({super.key, required this.text, required this.onChanged});
+
+  const StepWrite({
+    super.key,
+    required this.controller,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final c = TextEditingController(text: text);
-    c.selection = TextSelection.fromPosition(TextPosition(offset: c.text.length));
     return TextField(
-      controller: c,
+      controller: controller,
       maxLength: 150,
       maxLines: null,
       decoration: const InputDecoration(hintText: '질문을 작성해주세요'),

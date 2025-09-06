@@ -1,24 +1,20 @@
+// lib/features/chat/chat_personal_answer_logic/steps/step_write.dart
 import 'package:flutter/material.dart';
 
 class StepAnswerWrite extends StatelessWidget {
   final String question;
-  final String answer;
+  final TextEditingController controller;
   final ValueChanged<String> onChanged;
 
   const StepAnswerWrite({
     super.key,
     required this.question,
-    required this.answer,
+    required this.controller,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    final controller = TextEditingController(text: answer);
-    controller.selection = TextSelection.fromPosition(
-      TextPosition(offset: controller.text.length),
-    );
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

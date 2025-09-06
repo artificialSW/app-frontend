@@ -1,3 +1,4 @@
+// lib/features/chat/chat_personal_send_logic/personal_question_flow_page.dart
 import 'package:flutter/material.dart';
 import '../model/family_member_model.dart';
 import 'state/personal_question_send.dart';
@@ -5,8 +6,6 @@ import 'steps/step_family.dart';
 import 'steps/step_visibility.dart';
 import 'steps/step_write.dart';
 import 'steps/step_success.dart';
-
-enum _Step { family, visibility, write, success }
 
 class PersonalQuestionFlowPage extends StatefulWidget {
   const PersonalQuestionFlowPage({super.key});
@@ -19,11 +18,26 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
   final _state = PersonalQuestionState();
   int step = 0;
 
+  late final TextEditingController _questionController;
+
   final members = const [
     FamilyMember(id: '1', name: '아빠'),
     FamilyMember(id: '2', name: '엄마'),
     FamilyMember(id: '3', name: '할아버지'),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _questionController = TextEditingController(text: _state.question);
+  }
+
+  @override
+  void dispose() {
+    _questionController.dispose();
+    super.dispose();
+  }
+
   void _scheduleReturnToChat() {
     Future.delayed(const Duration(milliseconds: 1200), () {
       if (!mounted) return;
@@ -47,12 +61,12 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
       );
     } else if (step == 2) {
       body = StepWrite(
-        text: _state.question,
+        controller: _questionController,
         onChanged: (t) => setState(() => _state.question = t),
       );
     } else {
       body = const StepSuccess();
-      _scheduleReturnToChat(); // 성공 화면일 때 자동 복귀 예약
+      _scheduleReturnToChat();
     }
 
     final canNext = switch (step) {

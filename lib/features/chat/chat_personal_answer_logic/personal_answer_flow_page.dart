@@ -1,3 +1,4 @@
+// lib/features/chat/chat_personal_answer_logic/personal_answer_flow_page.dart
 import 'package:flutter/material.dart';
 import 'steps/step_list.dart';
 import 'steps/step_write.dart';
@@ -17,11 +18,26 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
   Map<String, String>? selected;
   String answer = '';
 
+  late final TextEditingController _answerController;
+
   // 샘플 데이터
   final questions = [
     {'from': '아빠', 'text': '아들 요즘 뭐하고 지내니?'},
     {'from': '엄마', 'text': '오랜만에 같이 영화 볼까?'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _answerController = TextEditingController(text: answer);
+  }
+
+  @override
+  void dispose() {
+    _answerController.dispose();
+    super.dispose();
+  }
+
   void _scheduleReturnToChat() {
     Future.delayed(const Duration(milliseconds: 1200), () {
       if (!mounted) return;
@@ -37,18 +53,20 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
         questions: questions,
         onSelect: (q) => setState(() {
           selected = q;
+          answer = '';
+          _answerController.text = '';
           step = _Step.write;
         }),
       );
     } else if (step == _Step.write) {
       body = StepAnswerWrite(
         question: selected?['text'] ?? '',
-        answer: answer,
+        controller: _answerController,
         onChanged: (v) => setState(() => answer = v),
       );
     } else {
       body = StepAnswerSuccess(to: selected?['from'] ?? '');
-      _scheduleReturnToChat(); // 성공 단계 들어오면 복귀 예약
+      _scheduleReturnToChat();
     }
 
     final canNext = switch (step) {
@@ -58,7 +76,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
     };
 
     return Scaffold(
-      appBar: AppBar(title: const Text("나에게 온 질문")),
+      appBar: AppBar(title: const Text('나에게 온 질문')),
       body: Padding(padding: const EdgeInsets.all(16), child: body),
       bottomNavigationBar: step == _Step.list
           ? null
@@ -66,10 +84,8 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: ElevatedButton(
-            onPressed: canNext
-                ? () => setState(() => step = _Step.success)
-                : null,
-            child: Text(step == _Step.write ? "답변하기" : ""),
+            onPressed: canNext ? () => setState(() => step = _Step.success) : null,
+            child: Text(step == _Step.write ? '답변하기' : ''),
           ),
         ),
       ),
