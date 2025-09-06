@@ -12,6 +12,8 @@ class AppAssets {
   static const back = 'assets/icons/back.png';
 
   static const dogaam = 'assets/images/book.png';
+  static const tree = 'assets/images/tree.png';
+  static const wooden_sign = 'assets/images/wooden_sign.png';
 
   static const String home    = 'assets/icons/home.png';
   static const String puzzle  = 'assets/icons/puzzle.png';
