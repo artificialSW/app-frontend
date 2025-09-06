@@ -6,6 +6,7 @@ import 'model/common_question.dart';
 import 'chat_personal_send_logic/state/personal_question_send.dart';
 import 'chat_thread/chat_common_thread.dart';
 import 'chat_thread/chat_personal_thread.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 
 // 카드 목록 전용(페이지 내부 전용이므로 private)
 class _PersonalListItem {
@@ -70,13 +71,7 @@ class _ChatRootState extends State<ChatRoot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('소통방'),
-        actions: [
-          IconButton(icon: const Icon(Icons.send),
-              onPressed: () => Navigator.pushNamed(context, '/personal-answer')),
-        ],
-      ),
+      appBar: ChatRootTopBar(),
       body: Column(
         children: [
           // 공통질문 배너 (탭 → 쓰레드 이동)
