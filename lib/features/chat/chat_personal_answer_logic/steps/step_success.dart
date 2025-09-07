@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widget/answer_step_widgets.dart';
 
 class StepAnswerSuccess extends StatelessWidget {
   final String to;
@@ -7,8 +8,8 @@ class StepAnswerSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("'$to'에게 답변을 보냈어요!", textAlign: TextAlign.center),
+    return AnswerSuccessScreen(
+      message: "'$to'에게 답변을 보냈어요!",
     );
   }
 }

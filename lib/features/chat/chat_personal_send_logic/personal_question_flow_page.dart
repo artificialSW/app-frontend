@@ -1,8 +1,8 @@
-// lib/features/chat/chat_personal_send_logic/personal_question_flow_page.dart
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'state/personal_question_send.dart';
 import 'steps/step_family.dart';
 import 'steps/step_visibility.dart';
@@ -26,6 +26,8 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
     User(id: 1, name: '아빠'),
     User(id: 2, name: '엄마'),
     User(id: 3, name: '할아버지'),
+    User(id: 4, name: '할머니'),
+    User(id: 5, name: '동생'),
   ];
 
   @override
@@ -49,6 +51,7 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 단계별 본문
     Widget body;
     if (step == 0) {
       body = StepFamily(
@@ -71,6 +74,7 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
       _scheduleReturnToChat();
     }
 
+    // 다음 버튼 활성 조건
     final canNext = switch (step) {
       0 => _state.target != null,
       1 => _state.visibility != null,
@@ -78,56 +82,74 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
       _ => false,
     };
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          children: [
-            Text(
-              '질문생성',
-              style: AppTextStyles.pretendard_bold.copyWith(
-                fontSize: 17,
-                color: AppColors.plumu_gray_7,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Container(
-              width: 20,
-              height: 2,
-              decoration: BoxDecoration(
-                color: AppColors.plumu_green_main,
-                borderRadius: BorderRadius.circular(1),
-              ),
-            ),
-          ],
+    // 상단바 + 프로그레스 (피그마 간격 맞춤)
+    final appBar = AppBar(
+      elevation: 0,
+      backgroundColor: AppColors.plumu_white,
+      centerTitle: true,
+      iconTheme: const IconThemeData(color: AppColors.plumu_gray_7),
+      title: Text(
+        '질문생성',
+        style: AppTextStyles.pretendard_bold.copyWith(
+          fontSize: 17,
+          color: AppColors.plumu_gray_7,
         ),
-        centerTitle: true,
-        backgroundColor: AppColors.plumu_white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.plumu_gray_7),
       ),
-      body: Padding(padding: const EdgeInsets.all(16), child: body),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(12),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: SizedBox(
+            height: 4,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: step.clamp(0, 3),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.plumu_green_main,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: (3 - step).clamp(0, 3),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.plumu_gray_2,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return Scaffold(
+      appBar: appBar,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: body,
+      ),
+      // 성공 단계는 하단 버튼 없음
       bottomNavigationBar: step == 3
           ? null
           : SafeArea(
-        child: Container(
+        top: false,
+        child: Padding(
           padding: const EdgeInsets.all(16),
-          child: ElevatedButton(
+          child: CustomButton(
+            text: step == 2 ? '다음' : '다음',
             onPressed: canNext ? () => setState(() => step++) : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: canNext ? AppColors.plumu_green_main : AppColors.plumu_gray_2,
-              foregroundColor: AppColors.plumu_white,
-              minimumSize: const Size(double.infinity, 52),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: Text(
-              step == 2 ? '보내기' : '다음',
-              style: AppTextStyles.pretendard_medium.copyWith(
-                fontSize: 16,
-                color: AppColors.plumu_white,
-              ),
-            ),
+            width: double.infinity,
+            height: 52,
+            fontSize: 16,
+            textColor: AppColors.plumu_white,
+            backgroundColor: AppColors.plumu_green_main,
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),

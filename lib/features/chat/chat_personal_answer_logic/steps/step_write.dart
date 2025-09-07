@@ -1,5 +1,7 @@
-// lib/features/chat/chat_personal_answer_logic/steps/step_write.dart
 import 'package:flutter/material.dart';
+import '../../widget/answer_step_widgets.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 
 class StepAnswerWrite extends StatelessWidget {
   final String question;
@@ -18,19 +20,18 @@ class StepAnswerWrite extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(question, style: const TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 12),
-        Expanded(
-          child: TextField(
-            controller: controller,
-            maxLines: null,
-            expands: true,
-            decoration: const InputDecoration(
-              hintText: '답변을 작성해주세요',
-              border: OutlineInputBorder(),
-            ),
-            onChanged: onChanged,
+        Text(
+          question,
+          style: AppTextStyles.pretendard_bold.copyWith(
+            fontSize: 17,
+            color: AppColors.plumu_gray_7,
           ),
+        ),
+        const SizedBox(height: 24),
+        AnswerTextInput(
+          controller: controller,
+          onChanged: onChanged,
+          hintText: '답변을 작성해주세요',
         ),
       ],
     );

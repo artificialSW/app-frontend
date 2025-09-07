@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widget/answer_step_widgets.dart';
 
 class StepAnswerList extends StatelessWidget {
   final List<Map<String, String>> questions;
@@ -10,17 +11,13 @@ class StepAnswerList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: questions.length,
-      itemBuilder: (context, i) {
-        final q = questions[i];
-        return Card(
-          child: ListTile(
-            title: Text("${q['from']}가 보냈어요!"),
-            subtitle: Text(q['text'] ?? ''),
-            trailing: ElevatedButton(
-              onPressed: () => onSelect(q),
-              child: const Text("답변하기"),
-            ),
-          ),
+      itemBuilder: (context, index) {
+        final q = questions[index];
+        return PersonalAnswerCard(
+          sender: q['from'] ?? '',
+          question: q['text'] ?? '',
+          isActive: false,
+          onReply: () => onSelect(q),
         );
       },
     );

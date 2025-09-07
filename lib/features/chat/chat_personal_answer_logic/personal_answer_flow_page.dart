@@ -1,5 +1,7 @@
-// lib/features/chat/chat_personal_answer_logic/personal_answer_flow_page.dart
 import 'package:flutter/material.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'steps/step_list.dart';
 import 'steps/step_write.dart';
 import 'steps/step_success.dart';
@@ -20,7 +22,6 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
 
   late final TextEditingController _answerController;
 
-  // 샘플 데이터
   final questions = [
     {'from': '아빠', 'text': '아들 요즘 뭐하고 지내니?'},
     {'from': '엄마', 'text': '오랜만에 같이 영화 볼까?'},
@@ -76,16 +77,58 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
     };
 
     return Scaffold(
-      appBar: AppBar(title: const Text('나에게 온 질문')),
-      body: Padding(padding: const EdgeInsets.all(16), child: body),
-      bottomNavigationBar: step == _Step.list
+      appBar: AppBar(
+        title: Text(
+          '나에게 온 질문',
+          style: AppTextStyles.pretendard_bold.copyWith(
+            fontSize: 17,
+            color: AppColors.plumu_gray_7,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.plumu_white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.plumu_gray_7),
+        actions: [
+          Container(
+            width: 16,
+            height: 16,
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              color: AppColors.plumu_green_main,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '2',
+                style: AppTextStyles.pretendard_medium.copyWith(
+                  fontSize: 9,
+                  color: AppColors.plumu_white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: body,
+      ),
+      bottomNavigationBar: step == _Step.list || step == _Step.success
           ? null
           : SafeArea(
+        top: false,
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: ElevatedButton(
+          child: CustomButton(
+            text: '답변하기',
             onPressed: canNext ? () => setState(() => step = _Step.success) : null,
-            child: Text(step == _Step.write ? '답변하기' : ''),
+            width: double.infinity,
+            height: 52,
+            fontSize: 16,
+            textColor: AppColors.plumu_white,
+            backgroundColor: AppColors.plumu_green_main,
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),

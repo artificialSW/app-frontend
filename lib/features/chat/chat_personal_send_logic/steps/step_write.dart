@@ -1,5 +1,5 @@
-// lib/features/chat/chat_personal_send_logic/steps/step_write.dart
 import 'package:flutter/material.dart';
+import '../../widget/send_step_widgets.dart';
 
 class StepWrite extends StatelessWidget {
   final TextEditingController controller;
@@ -13,12 +13,18 @@ class StepWrite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      maxLength: 150,
-      maxLines: null,
-      decoration: const InputDecoration(hintText: '질문을 작성해주세요'),
-      onChanged: onChanged,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const QuestionStepTitle(title: '질문을 작성해주세요'),
+        const SizedBox(height: 16),
+        QuestionTextInput(
+          controller: controller,
+          onChanged: onChanged,
+          hintText: '질문을 작성해주세요',
+          maxLength: 150,
+        ),
+      ],
     );
   }
 }
