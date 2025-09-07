@@ -1,7 +1,6 @@
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
-import 'package:artificialsw_frontend/features/chat/presentation/pages/chat_page.dart';
 
 AppBar HomeTopBar() => AppBar(
     automaticallyImplyLeading: false,   // 뒤로가기 자동 삽입 방지(중앙 정렬 깨짐 방지)
@@ -93,3 +92,15 @@ AppBar CanGoBackTopBar(String title, context) => AppBar(
   backgroundColor: Colors.white,
   elevation: 0,
 );
+class HeaderSendIcon extends StatelessWidget {
+  const HeaderSendIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.send_rounded),
+      tooltip: '답변하기',
+      onPressed: () => Navigator.pushNamed(context, '/personal-answer'),
+    );
+  }
+}
