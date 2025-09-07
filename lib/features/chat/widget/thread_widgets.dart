@@ -84,11 +84,14 @@ class ThreadCommentTile extends StatelessWidget {
                 ]),
               ),
               const SizedBox(width: 16),
-              Row(children: [
-                Icon(Icons.chat_bubble_outline, size: 16, color: AppColors.plumu_gray_5),
-                const SizedBox(width: 4),
-                Text('${replies.length}', style: AppTextStyles.pretendard_regular.copyWith(fontSize: 12, color: AppColors.plumu_gray_5)),
-              ]),
+              GestureDetector(
+                onTap: onTapReply,
+                child: Row(children: [
+                  Icon(Icons.chat_bubble_outline, size: 16, color: AppColors.plumu_gray_5),
+                  const SizedBox(width: 4),
+                  Text('${replies.length}', style: AppTextStyles.pretendard_regular.copyWith(fontSize: 12, color: AppColors.plumu_gray_5)),
+                ]),
+              ),
               if (replies.isNotEmpty) ...[
                 const SizedBox(width: 16),
                 GestureDetector(

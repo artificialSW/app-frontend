@@ -1,6 +1,8 @@
 // lib/features/chat/chat_personal_send_logic/personal_question_flow_page.dart
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'state/personal_question_send.dart';
 import 'steps/step_family.dart';
 import 'steps/step_visibility.dart';
@@ -77,14 +79,56 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
     };
 
     return Scaffold(
-      appBar: AppBar(title: const Text('질문 생성')),
+      appBar: AppBar(
+        title: Column(
+          children: [
+            Text(
+              '질문생성',
+              style: AppTextStyles.pretendard_bold.copyWith(
+                fontSize: 17,
+                color: AppColors.plumu_gray_7,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Container(
+              width: 20,
+              height: 2,
+              decoration: BoxDecoration(
+                color: AppColors.plumu_green_main,
+                borderRadius: BorderRadius.circular(1),
+              ),
+            ),
+          ],
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.plumu_white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.plumu_gray_7),
+      ),
       body: Padding(padding: const EdgeInsets.all(16), child: body),
       bottomNavigationBar: step == 3
           ? null
           : SafeArea(
-        child: ElevatedButton(
-          onPressed: canNext ? () => setState(() => step++) : null,
-          child: Text(step == 2 ? '보내기' : '다음'),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: ElevatedButton(
+            onPressed: canNext ? () => setState(() => step++) : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: canNext ? AppColors.plumu_green_main : AppColors.plumu_gray_2,
+              foregroundColor: AppColors.plumu_white,
+              minimumSize: const Size(double.infinity, 52),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: Text(
+              step == 2 ? '보내기' : '다음',
+              style: AppTextStyles.pretendard_medium.copyWith(
+                fontSize: 16,
+                color: AppColors.plumu_white,
+              ),
+            ),
+          ),
         ),
       ),
     );
