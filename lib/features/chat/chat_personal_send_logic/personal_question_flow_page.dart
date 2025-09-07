@@ -1,6 +1,6 @@
 // lib/features/chat/chat_personal_send_logic/personal_question_flow_page.dart
 import 'package:flutter/material.dart';
-import '../model/family_member_model.dart';
+import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'state/personal_question_send.dart';
 import 'steps/step_family.dart';
 import 'steps/step_visibility.dart';
@@ -20,10 +20,10 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
 
   late final TextEditingController _questionController;
 
-  final members = const [
-    FamilyMember(id: '1', name: '아빠'),
-    FamilyMember(id: '2', name: '엄마'),
-    FamilyMember(id: '3', name: '할아버지'),
+  final members = [
+    User(id: 1, name: '아빠'),
+    User(id: 2, name: '엄마'),
+    User(id: 3, name: '할아버지'),
   ];
 
   @override

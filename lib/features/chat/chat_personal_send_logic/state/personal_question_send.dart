@@ -1,9 +1,9 @@
-import '../../model/family_member_model.dart';
+import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 
 enum VisibilityType { public, private }
 
 class PersonalQuestionState {
-  FamilyMember? target;
+  User? target;
   VisibilityType? visibility;
   String question = '';
 }

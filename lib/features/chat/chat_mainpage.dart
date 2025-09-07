@@ -6,9 +6,10 @@ import 'model/common_question.dart';
 import 'chat_personal_send_logic/state/personal_question_send.dart';
 import 'chat_thread/chat_common_thread.dart';
 import 'chat_thread/chat_personal_thread.dart';
-import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
-import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'widget/weekly_question_banner.dart';
+import 'widget/tab_bar.dart';
+import 'widget/custom_app_bar.dart';
 
 // 카드 목록 전용(페이지 내부 전용이므로 private)
 class _PersonalListItem {
@@ -75,70 +76,18 @@ class _ChatRootState extends State<ChatRoot> {
     return _personalItems.where((item) => item.entity.responderUserId == 'u1').length;
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        title: SizedBox(
-          width: 44,
-          child: Text(
-            '소통방',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 17,
-              fontFamily: 'Pretendard',
-              fontWeight: FontWeight.w700,
-              height: 1.50,
-              letterSpacing: -0.46,
-            ),
-          ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.black87),
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.send_rounded, color: Colors.black87),
-                tooltip: '답변하기',
-                onPressed: () => Navigator.pushNamed(context, '/personal-answer'),
-              ),
-              if (_getIncomingQuestionsCount() > 0)
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Container(
-                    width: 16,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: AppColors.plumu_green_main,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        '${_getIncomingQuestionsCount()}',
-                        style: AppTextStyles.pretendard_medium.copyWith(
-                          fontSize: 10,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
+      appBar: ChatCustomAppBar(incomingQuestionsCount: _getIncomingQuestionsCount()),
       body: Column(
         children: [
-          _WeeklyQuestionBanner(
+          WeeklyQuestionBanner(
             question: _weeklyCommonQuestion,
             order: _pastCommonQuestions.length + 1,
           ),
-          _TabBar(
+          ChatTabBar(
             selectedIndex: _selectedIndex,
             onTabChanged: (index) => setState(() => _selectedIndex = index),
           ),
@@ -202,121 +151,3 @@ class _ChatRootState extends State<ChatRoot> {
   }
 }
 
-// 이번주 공통질문 배너 위젯
-class _WeeklyQuestionBanner extends StatelessWidget {
-  final CommonQuestion question;
-  final int order;
-
-  const _WeeklyQuestionBanner({
-    required this.question,
-    required this.order,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ChatCommonThreadPage(
-              question: question,
-              order: order,
-            ),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppColors.plumu_green_30per,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          children: [
-            Text('🎉', style: TextStyle(fontSize: 24)),
-            const SizedBox(width: 12),
-            Text(
-              '이번주의 공통질문',
-              style: AppTextStyles.pretendard_medium.copyWith(
-                fontSize: 16,
-                color: AppColors.plumu_green_main,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// 탭바 위젯
-class _TabBar extends StatelessWidget {
-  final int selectedIndex;
-  final ValueChanged<int> onTabChanged;
-
-  const _TabBar({
-    required this.selectedIndex,
-    required this.onTabChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _TabItem(
-            text: '개인질문',
-            isSelected: selectedIndex == 0,
-            onTap: () => onTabChanged(0),
-          ),
-        ),
-        Expanded(
-          child: _TabItem(
-            text: '공통질문',
-            isSelected: selectedIndex == 1,
-            onTap: () => onTabChanged(1),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// 개별 탭 아이템 위젯
-class _TabItem extends StatelessWidget {
-  final String text;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _TabItem({
-    required this.text,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        decoration: BoxDecoration(
-          border: isSelected 
-            ? Border(bottom: BorderSide(color: AppColors.plumu_gray_7, width: 1))
-            : null,
-        ),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: AppTextStyles.pretendard_medium.copyWith(
-            fontSize: 15,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            color: isSelected ? AppColors.plumu_gray_7 : AppColors.plumu_gray_5,
-          ),
-        ),
-      ),
-    );
-  }
-}

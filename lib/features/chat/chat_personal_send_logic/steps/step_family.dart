@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../model/family_member_model.dart';
+import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 
 class StepFamily extends StatelessWidget {
-  final List<FamilyMember> members;
-  final FamilyMember? selected;
-  final ValueChanged<FamilyMember> onSelect;
+  final List<User> members;
+  final User? selected;
+  final ValueChanged<User> onSelect;
   const StepFamily({super.key, required this.members, this.selected, required this.onSelect});
 
   @override
