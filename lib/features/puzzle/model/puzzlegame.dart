@@ -1,21 +1,14 @@
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
-
-part 'puzzlegame.g.dart'; // 자동 생성 파일
 
 enum GameState {Unplayed, Ongoing, Completed}
 
 /// 퍼즐 데이터 모델
-@JsonSerializable()
 class PuzzleGame {
   final int puzzleId;
   final String imageUrl;
-
-  @JsonKey(ignore: true)
   final Image? imageWidget; //JSON 직렬화 대상에서 제외. api통신용이 아니라 puzzleplay에서만 쓸거라
-
   int? size;
   final String category;
   final List<String> AIKeyword;
@@ -55,9 +48,5 @@ class PuzzleGame {
       contributors: contributors //유지
     );
   }
-
-  factory PuzzleGame.fromJson(Map<String, dynamic> json) =>
-      _$PuzzleGameFromJson(json);
-  Map<String, dynamic> toJson() => _$PuzzleGameToJson(this);
 }
 //다시 풀기 할때 DB에서 가져와서 퍼즐 다시 생성해야할수도 있으니까.
