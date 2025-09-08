@@ -43,7 +43,7 @@ class _HomeRootState extends State<HomeRoot> {
 
   @override
   Widget build(BuildContext context) {
-    final double chat_percent = 0.1;
+    final double chat_percent = 0.3;
     final double puzzle_percent = 0.2;
     final double tree_percent = 0.3;
     //TODO(서버에 현재 열매랑 꽃 종류와 개수 아마 맵 형태로..? 요청하기
