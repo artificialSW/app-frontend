@@ -18,6 +18,9 @@ class PuzzleProvider with ChangeNotifier {
     PuzzleGame(
       puzzleId: 1,
       imageWidget: ImageStore().imageWidgetList[0],
+      imageUrl: 'exampleUrl.com',
+      category: '우리 가족의 행복한 추억',
+      AIKeyword: ['만남', '사랑','이별','추억'],
       size: null,
       piecesPosition: [],
       gameState: GameState.Unplayed,
@@ -27,6 +30,9 @@ class PuzzleProvider with ChangeNotifier {
     PuzzleGame(
       puzzleId: 2,
       imageWidget: ImageStore().imageWidgetList[1],
+      imageUrl: 'exampleUrl.com',
+      category: '우리 가족의 행복한 추억',
+      AIKeyword: ['만남', '사랑','이별','추억'],
       size: null,
       piecesPosition: [],
       gameState: GameState.Unplayed,
@@ -37,6 +43,9 @@ class PuzzleProvider with ChangeNotifier {
     PuzzleGame(
       puzzleId: 3,
       imageWidget: ImageStore().imageWidgetList[2],
+      imageUrl: 'exampleUrl.com',
+      category: '우리 가족의 행복한 추억',
+      AIKeyword: ['만남', '사랑','이별','추억'],
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -56,6 +65,9 @@ class PuzzleProvider with ChangeNotifier {
     PuzzleGame(
       puzzleId: 4,
       imageWidget: ImageStore().imageWidgetList[2],
+      imageUrl: 'exampleUrl.com',
+      category: '우리 가족의 행복한 추억',
+      AIKeyword: ['만남', '사랑','이별','추억'],
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -76,6 +88,9 @@ class PuzzleProvider with ChangeNotifier {
     PuzzleGame(
       puzzleId: 5,
       imageWidget: ImageStore().imageWidgetList[2],
+      imageUrl: 'exampleUrl.com',
+      category: '우리 가족의 행복한 추억',
+      AIKeyword: ['만남', '사랑','이별','추억'],
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
@@ -95,6 +110,9 @@ class PuzzleProvider with ChangeNotifier {
     PuzzleGame(
       puzzleId: 6,
       imageWidget: ImageStore().imageWidgetList[2],
+      imageUrl: 'exampleUrl.com',
+      category: '우리 가족의 행복한 추억',
+      AIKeyword: ['만남', '사랑','이별','추억'],
       size: 3,
       piecesPosition: [
         PiecePosition(x: 10.0, y: 10.0),
