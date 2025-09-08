@@ -35,7 +35,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     super.initState();
     final imageWidget = widget.puzzle.imageWidget;
     // 처리용 함수 호출 (예: 퍼즐 생성 등)
-    _loadImage(imageWidget);
+    _loadImage(imageWidget!);
   }
 
   // 에셋 이미지를 로드하고 퍼즐 조각을 생성하는 함수
