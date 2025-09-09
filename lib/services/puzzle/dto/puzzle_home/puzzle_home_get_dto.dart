@@ -1,5 +1,5 @@
-import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home_ongoing_preview_dto.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home_completed_preview_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home/puzzle_home_ongoing_preview_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home/puzzle_home_completed_preview_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 

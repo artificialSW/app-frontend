@@ -1,7 +1,7 @@
 import 'package:artificialsw_frontend/services/image_store.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home_completed_preview_dto.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home_get_dto.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home_ongoing_preview_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home/puzzle_home_completed_preview_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home/puzzle_home_get_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home/puzzle_home_ongoing_preview_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
