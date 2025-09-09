@@ -31,7 +31,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       // ✅ 목데이터 리턴
       return PuzzleHomeGetDto(
-        ongoing: PuzzleHomeOngoingPreviewDto(
+        ongoing1: PuzzleHomeOngoingPreviewDto(
           puzzleId: 1,
           imageUrl:
               'https://picsum.photos/600/400',
@@ -39,10 +39,26 @@ class _PuzzleRootState extends State<PuzzleRoot> {
           completedPiecesId: [1, 2],
           lastSavedAt: "03:33",
         ),
-        completed: PuzzleHomeCompletedPreviewDto(
+        ongoing2: PuzzleHomeOngoingPreviewDto(
+          puzzleId: 1,
+          imageUrl:
+          'https://picsum.photos/600/400',
+          size: 4,
+          completedPiecesId: [1, 2],
+          lastSavedAt: "03:33",
+        ),
+        completed1: PuzzleHomeCompletedPreviewDto(
           puzzleId: 1,
           imageUrl:
               'https://picsum.photos/600/400',
+          size: 9,
+          title: "목데이터 title",
+          completedAt: "04:44",
+        ),
+        completed2: PuzzleHomeCompletedPreviewDto(
+          puzzleId: 1,
+          imageUrl:
+          'https://picsum.photos/600/400',
           size: 9,
           title: "목데이터 title",
           completedAt: "04:44",
@@ -79,7 +95,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   color: const Color(0xFFC0D6E6),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text("이번주의 퍼즐 키워드: ~~~"),
+                child: Text("이번주의 퍼즐 키워드: ${puzzle.keywords}"),
               ),
               SizedBox(height: 30),
               Row(
@@ -95,17 +111,33 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   ),
                 ],
               ),
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Image.network(
-                  puzzle.ongoing.imageUrl,
-                  fit: BoxFit.cover,
-                ),
+              Row(
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.network(
+                      puzzle.ongoing1.imageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.network(
+                      puzzle.ongoing2.imageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 30),
               Row(
@@ -121,13 +153,33 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   ),
                 ],
               ),
-              Container(
-                width: 400,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFC0D6E6),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+              Row(
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.network(
+                      puzzle.completed1.imageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.network(
+                      puzzle.completed2.imageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 10),
               Row(
@@ -135,10 +187,9 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                 children: [
                   CustomButton(
                     text: '사진 업로드',
-                    onPressed:
-                        () => Navigator.of(
-                          context,
-                        ).pushNamed('/puzzle/image-upload-test'),
+                    onPressed: puzzle.isFull
+                        ? null
+                        : () => Navigator.of(context).pushNamed('/puzzle/image-upload-test'),
                     width: 150,
                     fontSize: 13,
                   ),
