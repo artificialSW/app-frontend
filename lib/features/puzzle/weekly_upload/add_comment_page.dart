@@ -1,6 +1,8 @@
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 class AddCommentPage extends StatelessWidget {
@@ -32,7 +34,26 @@ class AddCommentPage extends StatelessWidget {
             ),
             CustomButton(
                 text: '코멘트 저장하기',
-                onPressed: () => Navigator.of(context).pushNamed('/'),
+                onPressed: () async {
+                  final imageStore = Provider.of<ImageStore>(context, listen: false); // 예시: 이미지들 저장된 상태관리
+                  try {
+                    // 배열에 저장된 이미지들 서버에 순차 업로드
+                    for (final imageData in imageStore.imageFileList) {
+                      await PuzzleService().uploadPuzzleImageWithMetadata(
+                        imageFile: imageData,
+                        comment: ,
+                        userId: ,
+                        category: ,
+                      );
+                    }
+
+                    // ✅ 모두 업로드 성공 시 홈으로 이동
+                    Navigator.of(context).pushNamed('/');
+                  } catch (e) {
+                    print('❌ 업로드 실패: $e');
+                    // TODO: 실패 시 사용자에게 토스트나 SnackBar 등 알림 가능
+                  }
+                },
             )
           ]
         )

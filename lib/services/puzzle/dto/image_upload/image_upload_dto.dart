@@ -6,10 +6,14 @@ part 'image_upload_dto.g.dart'; // 자동 생성 파일
 
 @JsonSerializable()
 class ImageUploadDto {
-  final PictureDataDto pictureData;
+  final PictureDataDto pictureData1;
+  final PictureDataDto pictureData2;
+  final PictureDataDto pictureData3;
 
   ImageUploadDto({
-    required this.pictureData,
+    required this.pictureData1,
+    required this.pictureData2,
+    required this.pictureData3,
   });
 
   factory ImageUploadDto.fromJson(Map<String, dynamic> json) =>

@@ -8,10 +8,20 @@ part of 'image_upload_dto.dart';
 
 ImageUploadDto _$ImageUploadDtoFromJson(Map<String, dynamic> json) =>
     ImageUploadDto(
-      pictureData: PictureDataDto.fromJson(
-        json['pictureData'] as Map<String, dynamic>,
+      pictureData1: PictureDataDto.fromJson(
+        json['pictureData1'] as Map<String, dynamic>,
+      ),
+      pictureData2: PictureDataDto.fromJson(
+        json['pictureData2'] as Map<String, dynamic>,
+      ),
+      pictureData3: PictureDataDto.fromJson(
+        json['pictureData3'] as Map<String, dynamic>,
       ),
     );
 
 Map<String, dynamic> _$ImageUploadDtoToJson(ImageUploadDto instance) =>
-    <String, dynamic>{'pictureData': instance.pictureData};
+    <String, dynamic>{
+      'pictureData1': instance.pictureData1,
+      'pictureData2': instance.pictureData2,
+      'pictureData3': instance.pictureData3,
+    };
