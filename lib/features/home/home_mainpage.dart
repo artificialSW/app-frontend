@@ -5,9 +5,9 @@ import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:artificialsw_frontend/shared/widgets/common_dialog.dart'; // CommonDialog 컴포넌트 import 추가
-import 'package:artificialsw_frontend/shared/widgets/progress_bar_with_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:artificialsw_frontend/features/home/widget/progress_bar_with_icon.dart';
 
 class HomeRoot extends StatefulWidget {
   const HomeRoot({super.key});
