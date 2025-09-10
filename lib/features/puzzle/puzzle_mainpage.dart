@@ -63,7 +63,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
           title: "목데이터 title",
           completedAt: "04:44",
         ),
-        keywords: ["목데", "이터"],
+        keywords: ["복숭아 사진 자랑", "아보카도 사진 자랑", "딸기 사진 자랑"],
         isFull: false,
       );
     }
@@ -71,6 +71,9 @@ class _PuzzleRootState extends State<PuzzleRoot> {
 
   @override
   Widget build(BuildContext context) {
+
+    final testlist = ['1번', '2번', '3번'];
+
     return Scaffold(
       // 이 Scaffold를 추가합니다.
       appBar: PuzzlRootTopBar(),
@@ -189,7 +192,12 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                     text: '사진 업로드',
                     onPressed: puzzle.isFull
                         ? null
-                        : () => Navigator.of(context).pushNamed('/puzzle/image-upload-test'),
+                        : () {
+                      Navigator.of(context).pushNamed(
+                        '/puzzle/image-upload',
+                        arguments: {'category': puzzle.keywords},
+                      );
+                    },
                     width: 150,
                     fontSize: 13,
                   ),
