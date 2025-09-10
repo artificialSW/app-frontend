@@ -5,6 +5,7 @@ import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:artificialsw_frontend/shared/widgets/common_dialog.dart'; // CommonDialog 컴포넌트 import 추가
+import 'package:artificialsw_frontend/shared/widgets/progress_bar_with_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -21,6 +22,8 @@ class _HomeRootState extends State<HomeRoot> {
   final FocusNode _focusNode = FocusNode(); // 입력 필드 포커스 관리
   
   bool _isTreeNamed = false; // 나무 이름이 정해졌는지 여부 - 화면 상태를 결정하는 핵심 변수
+  String _treeName = ''; // 입력된 나무 이름
+  String _namingDate = ''; // 나무 이름을 지어준 날짜
   
  // 캡쳐 대상 key
   Future<void> _captureImage() async {
@@ -65,6 +68,8 @@ class _HomeRootState extends State<HomeRoot> {
               Navigator.of(dialogContext).pop(); // 다이얼로그 닫기 (dialogContext 사용)
               setState(() {
                 _isTreeNamed = true; // 나무 이름이 정해진 상태로 변경 → 화면 전환
+                _treeName = name; // 입력된 이름 저장
+                _namingDate = DateTime.now().toString().substring(0, 10).replaceAll('-', '.'); // 오늘 날짜 저장 (YYYY.MM.DD)
               });
             },
           );
@@ -91,14 +96,28 @@ class _HomeRootState extends State<HomeRoot> {
       body: SingleChildScrollView( // 키보드 올라올 때 스크롤 가능하게
         child: Column(
           children: [
-          Container(
-            height: 30,
-            child: LinearProgressIndicator(value: chat_percent),
+          // 메시지 진행바 (하트 포함)
+          ProgressBarWithIcon(
+            icon: Image.asset(
+              'assets/icons/home_message.png', // home_message 아이콘
+              width: 24,
+              height: 24,
+            ),
+            score: '0점',
+            progress: chat_percent,
+            showHeart: true, // 하트 표시
           ),
           SizedBox(height: 15),
-          Container(
-            height: 30,
-            child: LinearProgressIndicator(value: puzzle_percent),
+          // 퍼즐 진행바 (하트 없음)
+          ProgressBarWithIcon(
+            icon: Image.asset(
+              'assets/icons/home_puzzle.png', // home_puzzle 아이콘
+              width: 24,
+              height: 24,
+            ),
+            score: '0점',
+            progress: puzzle_percent,
+            showHeart: false, // 하트 표시 안함
           ),
           SizedBox(height: 15),
 
@@ -147,7 +166,43 @@ class _HomeRootState extends State<HomeRoot> {
                     Positioned(
                         top: 200,
                         left: 250,
-                        child: Image.asset(AppAssets.wooden_sign)
+                        child: Stack(
+                          children: [
+                            Image.asset(AppAssets.wooden_sign),
+                            // 날짜 표시
+                            Positioned(
+                              top: 8,
+                              left: 0,
+                              right: 0,
+                              child: Text(
+                                _namingDate.isNotEmpty ? _namingDate : '2025.06.06',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 7, // 6에서 7로 증가
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Pretendard',
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            // 나무 이름 표시
+                            Positioned(
+                              top: 20,
+                              left: 0,
+                              right: 0,
+                              child: Text(
+                                _treeName.isNotEmpty ? _treeName : '나무이름',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 11, // 10에서 11로 증가
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Pretendard',
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                     )
                   ],
                 ),
