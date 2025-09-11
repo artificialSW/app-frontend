@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 
+/// 트리 페이지 네비게이션 버튼 위젯
+/// - 좌우 화살표 버튼으로 트리 페이지 간 이동
+/// - 현재 페이지에 따라 버튼 활성/비활성 상태 표시
+/// - 터치 시 PageController를 통해 페이지 전환
 class TreeNavigationButtons extends StatelessWidget {
+  /// 페이지 전환을 제어하는 컨트롤러
   final PageController pageController;
+  /// 현재 페이지 인덱스
   final int currentPage;
+  /// 전체 페이지 수
   final int totalPages;
 
   const TreeNavigationButtons({
@@ -16,9 +23,9 @@ class TreeNavigationButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      clipBehavior: Clip.none, // 아이콘 안 잘리게
+      clipBehavior: Clip.none, // 화살표 아이콘이 잘리지 않도록 설정
       children: [
-        // 왼쪽 아이콘
+        // 왼쪽 화살표 버튼 (이전 페이지로 이동)
         Positioned(
           top: 190,
           left: -10,
@@ -45,7 +52,7 @@ class TreeNavigationButtons extends StatelessWidget {
           ),
         ),
 
-        // 오른쪽 아이콘
+        // 오른쪽 화살표 버튼 (다음 페이지로 이동)
         Positioned(
           top: 190,
           right: -10,
