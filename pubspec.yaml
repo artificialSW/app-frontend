@@ -55,6 +55,12 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
+    - assets/images/fruit/
+    - assets/images/fruit/summer/
+    - assets/images/fruit/spring/
+    - assets/images/fruit/fall/
+    - assets/images/fruit/winter/
+    - assets/images/flower/
     - assets/icons/
 
   fonts:

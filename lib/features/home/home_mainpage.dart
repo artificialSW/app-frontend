@@ -186,7 +186,7 @@ class _HomeRootState extends State<HomeRoot> {
 
            // TreeDecorateSheet: 2번째/3번째 페이지에서만 표시
            if (_isTreeNamed && (_currentTreePage == 1 || _currentTreePage == 2))
-             const TreeDecorateSheet(),
+             TreeDecorateSheet(pageIndex: _currentTreePage),
         ],
       ),
     );
