@@ -63,7 +63,7 @@ class ProgressBarWithIcon extends StatelessWidget {
             child: Container(
               height: 12,
               decoration: ShapeDecoration(
-                color: const Color(0x335CBD56),
+                color: AppColors.plumu_green_20per,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),

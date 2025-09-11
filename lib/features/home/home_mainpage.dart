@@ -11,6 +11,7 @@ import 'package:flutter/rendering.dart';
 import 'package:artificialsw_frontend/features/home/widget/progress_bar_with_icon.dart';
 import 'package:artificialsw_frontend/features/home/widget/tree_navigation_buttons.dart';
 import 'package:artificialsw_frontend/features/home/widget/tree_image_page.dart';
+import 'package:artificialsw_frontend/features/home/widget/bottom_progress_bar.dart';
 
 class HomeRoot extends StatefulWidget {
   const HomeRoot({super.key});
@@ -24,12 +25,12 @@ class _HomeRootState extends State<HomeRoot> {
   final TextEditingController _nameController = TextEditingController(); // 나무 이름 입력을 위한 텍스트 컨트롤러
   final FocusNode _focusNode = FocusNode(); // 입력 필드 포커스 관리
   final PageController _pageController = PageController(); // 트리 이미지 페이지 컨트롤러
-  
+
   bool _isTreeNamed = false; // 나무 이름이 정해졌는지 여부 - 화면 상태를 결정하는 핵심 변수
   String _treeName = ''; // 입력된 나무 이름
   String _namingDate = ''; // 나무 이름을 지어준 날짜
   int _currentTreePage = 0; // 현재 트리 페이지 (0, 1, 2)
-  
+
  // 캡쳐 대상 key
   Future<void> _captureImage() async {
     try {
@@ -190,24 +191,7 @@ class _HomeRootState extends State<HomeRoot> {
             ),
           ],
           const SizedBox(height: 20),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: AppColors.plumu_gray_4,
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  Container(
-                    height: 20,
-                    child: LinearProgressIndicator(value: tree_percent),
-                  ),
-                  SizedBox(height: 10),
-                  CustomButton(text: '나무 아카이브', onPressed: null)
-                ],
-              ),
-            )
-          )
+          BottomProgressBar(progress: tree_percent)
         ],
         ),
       ),

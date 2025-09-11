@@ -22,6 +22,11 @@ class AppColors {
   static const plumu_green_main = Color(0xFF5CBD56);
   static const plumu_green_50per = Color(0x805CBD56);
   static const plumu_green_30per = Color(0x4D5CBD56);
+  static const plumu_green_20per = Color(0x335CBD56);
+  
+  // Progress bar colors
+  static const progress_background = Color(0xFFEFEAF8);
+  static const progress_fill = Color(0xFF6347B6);
 
 
   // 상태 컬러
