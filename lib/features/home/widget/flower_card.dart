@@ -6,23 +6,59 @@ class FlowerCard extends StatelessWidget {
   final String flowerName;
   final String flowerImagePath;
   final String date;
+  final String emotion; // 'love', 'comfort', 'special', 'memory', 'joy', 'hobby'
 
   const FlowerCard({
     super.key,
     required this.flowerName,
     required this.flowerImagePath,
+    required this.emotion,
     this.date = '2025.09.11',
   });
 
   @override
   Widget build(BuildContext context) {
+    // 감정별 색상 설정
+    List<Color> cardColors;
+    Color checkColor;
+    
+    switch (emotion) {
+      case 'love':
+        cardColors = [AppColors.plumu_flower_love_card_start, AppColors.plumu_flower_love_card_end];
+        checkColor = AppColors.plumu_flower_love_check;
+        break;
+      case 'comfort':
+        cardColors = [AppColors.plumu_flower_comfort_card_start, AppColors.plumu_flower_comfort_card_end];
+        checkColor = AppColors.plumu_flower_comfort_check;
+        break;
+      case 'special':
+        cardColors = [AppColors.plumu_flower_special_card_start, AppColors.plumu_flower_special_card_end];
+        checkColor = AppColors.plumu_flower_special_check;
+        break;
+      case 'memory':
+        cardColors = [AppColors.plumu_flower_memory_card_start, AppColors.plumu_flower_memory_card_end];
+        checkColor = AppColors.plumu_flower_memory_check;
+        break;
+      case 'joy':
+        cardColors = [AppColors.plumu_flower_joy_card_start, AppColors.plumu_flower_joy_card_end];
+        checkColor = AppColors.plumu_flower_joy_check;
+        break;
+      case 'hobby':
+        cardColors = [AppColors.plumu_flower_hobby_card_start, AppColors.plumu_flower_hobby_card_end];
+        checkColor = AppColors.plumu_flower_hobby_check;
+        break;
+      default:
+        cardColors = [AppColors.plumu_flower_joy_card_start, AppColors.plumu_flower_joy_card_end];
+        checkColor = AppColors.plumu_flower_joy_check;
+    }
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFFF4FFEC), Color(0xFFAEE77D)],
+          colors: cardColors,
         ),
       ),
       child: Stack(
@@ -33,7 +69,7 @@ class FlowerCard extends StatelessWidget {
             top: 6,
             child: Icon(
               Icons.check_circle,
-              color: const Color(0xFF7DD334),
+              color: checkColor,
               size: 20,
             ),
           ),

@@ -6,23 +6,51 @@ class FruitCard extends StatelessWidget {
   final String fruitName;
   final String fruitImagePath;
   final String date;
+  final String season; // 'spring', 'summer', 'fall', 'winter'
 
   const FruitCard({
     super.key,
     required this.fruitName,
     required this.fruitImagePath,
-    required this.date,
+    required this.season,
+    this.date = '2025.09.11',
   });
 
   @override
   Widget build(BuildContext context) {
+    // 계절별 색상 설정
+    List<Color> cardColors;
+    Color checkColor;
+    
+    switch (season) {
+      case 'spring':
+        cardColors = [AppColors.plumu_spring_card_start, AppColors.plumu_spring_card_end];
+        checkColor = AppColors.plumu_spring_check;
+        break;
+      case 'summer':
+        cardColors = [AppColors.plumu_summer_card_start, AppColors.plumu_summer_card_end];
+        checkColor = AppColors.plumu_summer_check;
+        break;
+      case 'fall':
+        cardColors = [AppColors.plumu_fall_card_start, AppColors.plumu_fall_card_end];
+        checkColor = AppColors.plumu_fall_check;
+        break;
+      case 'winter':
+        cardColors = [AppColors.plumu_winter_card_start, AppColors.plumu_winter_card_end];
+        checkColor = AppColors.plumu_winter_check;
+        break;
+      default:
+        cardColors = [AppColors.plumu_summer_card_start, AppColors.plumu_summer_card_end];
+        checkColor = AppColors.plumu_summer_check;
+    }
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFFF4FFEC), Color(0xFFAEE77D)],
+          colors: cardColors,
         ),
       ),
       child: Stack(
@@ -33,7 +61,7 @@ class FruitCard extends StatelessWidget {
             top: 6,
             child: Icon(
               Icons.check_circle,
-              color: const Color(0xFF7DD334),
+              color: checkColor,
               size: 20,
             ),
           ),

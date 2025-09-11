@@ -64,56 +64,60 @@ class TreeDecorateSheet extends StatelessWidget {
                       // 2번째 페이지: 모든 과일들
                       final fruits = [
                         // 여름 과일
-                        {'name': '블루베리', 'path': 'assets/images/fruit/summer/blueberry.png'},
-                        {'name': '복숭아', 'path': 'assets/images/fruit/summer/peach.png'},
-                        {'name': '자두', 'path': 'assets/images/fruit/summer/plum.png'},
-                        {'name': '망고', 'path': 'assets/images/fruit/summer/mango.png'},
-                        {'name': '코코넛', 'path': 'assets/images/fruit/summer/coconut.png'},
+                        {'name': '블루베리', 'path': 'assets/images/fruit/summer/blueberry.png', 'season': 'summer'},
+                        {'name': '복숭아', 'path': 'assets/images/fruit/summer/peach.png', 'season': 'summer'},
+                        {'name': '자두', 'path': 'assets/images/fruit/summer/plum.png', 'season': 'summer'},
+                        {'name': '망고', 'path': 'assets/images/fruit/summer/mango.png', 'season': 'summer'},
+                        {'name': '코코넛', 'path': 'assets/images/fruit/summer/coconut.png', 'season': 'summer'},
                         // 봄 과일
-                        {'name': '딸기', 'path': 'assets/images/fruit/spring/strawberry.png'},
-                        {'name': '체리', 'path': 'assets/images/fruit/spring/cherry.png'},
-                        {'name': '키위', 'path': 'assets/images/fruit/spring/kiwi.png'},
-                        {'name': '라즈베리', 'path': 'assets/images/fruit/spring/raspberry.png'},
-                        {'name': '참외', 'path': 'assets/images/fruit/spring/oriental_melon.png'},
+                        {'name': '딸기', 'path': 'assets/images/fruit/spring/strawberry.png', 'season': 'spring'},
+                        {'name': '체리', 'path': 'assets/images/fruit/spring/cherry.png', 'season': 'spring'},
+                        {'name': '키위', 'path': 'assets/images/fruit/spring/kiwi.png', 'season': 'spring'},
+                        {'name': '라즈베리', 'path': 'assets/images/fruit/spring/raspberry.png', 'season': 'spring'},
+                        {'name': '참외', 'path': 'assets/images/fruit/spring/oriental_melon.png', 'season': 'spring'},
                         // 가을 과일
-                        {'name': '무화과', 'path': 'assets/images/fruit/fall/fig.png'},
-                        {'name': '포도', 'path': 'assets/images/fruit/fall/grape.png'},
-                        {'name': '대추', 'path': 'assets/images/fruit/fall/jujube.png'},
-                        {'name': '배', 'path': 'assets/images/fruit/fall/pear.png'},
-                        {'name': '감', 'path': 'assets/images/fruit/fall/persimmon.png'},
+                        {'name': '무화과', 'path': 'assets/images/fruit/fall/fig.png', 'season': 'fall'},
+                        {'name': '포도', 'path': 'assets/images/fruit/fall/grape.png', 'season': 'fall'},
+                        {'name': '대추', 'path': 'assets/images/fruit/fall/jujube.png', 'season': 'fall'},
+                        {'name': '배', 'path': 'assets/images/fruit/fall/pear.png', 'season': 'fall'},
+                        {'name': '감', 'path': 'assets/images/fruit/fall/persimmon.png', 'season': 'fall'},
                         // 겨울 과일
-                        {'name': '사과', 'path': 'assets/images/fruit/winter/apple.png'},
-                        {'name': '아보카도', 'path': 'assets/images/fruit/winter/avocado.png'},
-                        {'name': '귤', 'path': 'assets/images/fruit/winter/mandarin.png'},
-                        {'name': '석류', 'path': 'assets/images/fruit/winter/pomegranate.png'},
-                        {'name': '유자', 'path': 'assets/images/fruit/winter/yuja.png'},
+                        {'name': '사과', 'path': 'assets/images/fruit/winter/apple.png', 'season': 'winter'},
+                        {'name': '아보카도', 'path': 'assets/images/fruit/winter/avocado.png', 'season': 'winter'},
+                        {'name': '귤', 'path': 'assets/images/fruit/winter/mandarin.png', 'season': 'winter'},
+                        {'name': '석류', 'path': 'assets/images/fruit/winter/pomegranate.png', 'season': 'winter'},
+                        {'name': '유자', 'path': 'assets/images/fruit/winter/yuja.png', 'season': 'winter'},
                       ];
                       
                       return FruitCard(
                         fruitName: fruits[index]['name']!,
                         fruitImagePath: fruits[index]['path']!,
+                        season: fruits[index]['season']!,
                         date: '2025.09.11',
                       );
                     } else {
                       // 3번째 페이지: 모든 꽃들
                       final flowers = [
-                        {'name': '아카시아', 'path': 'assets/images/flower/acacia.png'},
-                        {'name': '동백꽃', 'path': 'assets/images/flower/camellia.png'},
-                        {'name': '벚꽃', 'path': 'assets/images/flower/cherry_blossom.png'},
-                        {'name': '코스모스', 'path': 'assets/images/flower/cosmos.png'},
-                        {'name': '수국', 'path': 'assets/images/flower/hydrangea.png'},
-                        {'name': '목련', 'path': 'assets/images/flower/magnolia.png'},
-                        {'name': '팥배꽃', 'path': 'assets/images/flower/patbae_flower.png'},
-                        {'name': '매화', 'path': 'assets/images/flower/plum_blossom.png'},
-                        {'name': '장미', 'path': 'assets/images/flower/rose.png'},
-                        {'name': '해바라기', 'path': 'assets/images/flower/sunflower.png'},
-                        {'name': '튤립', 'path': 'assets/images/flower/tulip.png'},
-                        {'name': '제비꽃', 'path': 'assets/images/flower/violet.png'},
+                        {'name': '아카시아', 'path': 'assets/images/flower/acacia.png', 'emotion': 'comfort'},
+                        {'name': '수국', 'path': 'assets/images/flower/hydrangea.png', 'emotion': 'comfort'},
+                        {'name': '동백꽃', 'path': 'assets/images/flower/camellia.png', 'emotion': 'love'},
+                        {'name': '장미', 'path': 'assets/images/flower/rose.png', 'emotion': 'love'},
+                        {'name': '벚꽃', 'path': 'assets/images/flower/cherry_blossom.png', 'emotion': 'joy'},
+                        {'name': '코스모스', 'path': 'assets/images/flower/cosmos.png', 'emotion': 'joy'},
+                        {'name': '목련', 'path': 'assets/images/flower/magnolia.png', 'emotion': 'hobby'},
+                        {'name': '해바라기', 'path': 'assets/images/flower/sunflower.png', 'emotion': 'hobby'},
+                        {'name': '팥배꽃', 'path': 'assets/images/flower/patbae_flower.png', 'emotion': 'memory'},
+                        {'name': '제비꽃', 'path': 'assets/images/flower/violet.png', 'emotion': 'memory'},
+                        {'name': '매화', 'path': 'assets/images/flower/plum_blossom.png', 'emotion': 'special'},
+                        {'name': '튤립', 'path': 'assets/images/flower/tulip.png', 'emotion': 'special'},
+
+
                       ];
                       
                       return FlowerCard(
                         flowerName: flowers[index]['name']!,
                         flowerImagePath: flowers[index]['path']!,
+                        emotion: flowers[index]['emotion']!,
                         date: '2025.09.11',
                       );
                     }
