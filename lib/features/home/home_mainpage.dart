@@ -12,6 +12,7 @@ import 'package:artificialsw_frontend/features/home/widget/tree_navigation_butto
 import 'package:artificialsw_frontend/features/home/widget/tree_image_page.dart';
 import 'package:artificialsw_frontend/features/home/widget/bottom_progress_bar.dart';
 import 'package:artificialsw_frontend/features/home/widget/tree_decorate_sheet.dart';
+import 'package:artificialsw_frontend/features/home/widget/message_bubble.dart';
 
 class HomeRoot extends StatefulWidget {
   const HomeRoot({super.key});
@@ -22,6 +23,7 @@ class HomeRoot extends StatefulWidget {
 class _HomeRootState extends State<HomeRoot> {
   final GlobalKey _captureKey = GlobalKey();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _bubbleMsgController = TextEditingController(); // [추가] 버블 입력
   final FocusNode _focusNode = FocusNode();
   final PageController _pageController = PageController();
 
@@ -79,6 +81,7 @@ class _HomeRootState extends State<HomeRoot> {
   @override
   void dispose() {
     _nameController.dispose();
+    _bubbleMsgController.dispose(); // [추가]
     _focusNode.dispose();
     _pageController.dispose();
     super.dispose();
@@ -92,7 +95,6 @@ class _HomeRootState extends State<HomeRoot> {
 
     return Scaffold(
       appBar: HomeTopBar(),
-      //  시트를 화면 전체에 겹치기 위해 Stack 사용
       body: Stack(
         children: [
           // 본문
@@ -113,7 +115,7 @@ class _HomeRootState extends State<HomeRoot> {
                     progress: puzzlePercent,
                     showHeart: false,
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 48),
 
                   if (!_isTreeNamed) ...[
                     Text(
@@ -130,23 +132,13 @@ class _HomeRootState extends State<HomeRoot> {
                     const SizedBox(height: 30),
                     Image.asset(AppAssets.sprout),
                   ] else ...[
-                    Stack(
-                      children: [
-                        const DecoratedBox(
-                          decoration: BoxDecoration(color: AppColors.plumu_green_main),
-                        ),
-                        Text(
-                          '간단한 메세지를 남겨봐요!',
-                          style: AppTextStyles.pretendard_medium.copyWith(
-                            fontSize: 16,
-                            color: AppColors.plumu_white,
-                          ),
-                        ),
-                      ],
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: MessageBubble(controller: _bubbleMsgController),
                     ),
-                    const SizedBox(height: 30),
 
-                    // 트리 영역 (시트는 여기 안에 두지 않음)
+
+                    // 트리 영역
                     SizedBox(
                       width: 350,
                       height: 350,
@@ -159,12 +151,12 @@ class _HomeRootState extends State<HomeRoot> {
                               onPageChanged: (index) =>
                                   setState(() => _currentTreePage = index),
                               itemCount: 3,
-                               itemBuilder: (context, index) {
-                                 return TreeImagePage(
-                                   namingDate: _namingDate,
-                                   treeName: _treeName,
-                                 );
-                               },
+                              itemBuilder: (context, index) {
+                                return TreeImagePage(
+                                  namingDate: _namingDate,
+                                  treeName: _treeName,
+                                );
+                              },
                             ),
                             TreeNavigationButtons(
                               pageController: _pageController,
@@ -184,9 +176,9 @@ class _HomeRootState extends State<HomeRoot> {
             ),
           ),
 
-           // TreeDecorateSheet: 2번째/3번째 페이지에서만 표시
-           if (_isTreeNamed && (_currentTreePage == 1 || _currentTreePage == 2))
-             TreeDecorateSheet(pageIndex: _currentTreePage),
+          // TreeDecorateSheet: 2번째/3번째 페이지에서만 표시
+          if (_isTreeNamed && (_currentTreePage == 1 || _currentTreePage == 2))
+            TreeDecorateSheet(pageIndex: _currentTreePage),
         ],
       ),
     );

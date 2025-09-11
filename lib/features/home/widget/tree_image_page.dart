@@ -18,7 +18,7 @@ class TreeImagePage extends StatelessWidget {
     return Stack(
       children: [
         Positioned(
-          top: 0,
+          top: 40,
           left: 20,
           child: Image.asset(
             AppAssets.tree,
@@ -28,7 +28,7 @@ class TreeImagePage extends StatelessWidget {
           )
         ),
         Positioned(
-          top: 200,
+          top: 240,
           left: 250,
           child: Stack(
             children: [

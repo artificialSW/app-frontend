@@ -20,7 +20,7 @@ class TreeNavigationButtons extends StatelessWidget {
       children: [
         // 왼쪽 아이콘
         Positioned(
-          top: 150,
+          top: 190,
           left: -10,
           child: GestureDetector(
             onTap: currentPage > 0 ? () {
@@ -47,7 +47,7 @@ class TreeNavigationButtons extends StatelessWidget {
 
         // 오른쪽 아이콘
         Positioned(
-          top: 150,
+          top: 190,
           right: -10,
           child: GestureDetector(
             onTap: currentPage < totalPages - 1 ? () {
