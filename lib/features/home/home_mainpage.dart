@@ -2,12 +2,15 @@ import 'dart:ui' as ui;
 
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:artificialsw_frontend/shared/widgets/common_dialog.dart'; // CommonDialog 컴포넌트 import 추가
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:artificialsw_frontend/features/home/widget/progress_bar_with_icon.dart';
+import 'package:artificialsw_frontend/features/home/widget/tree_navigation_buttons.dart';
+import 'package:artificialsw_frontend/features/home/widget/tree_image_page.dart';
 
 class HomeRoot extends StatefulWidget {
   const HomeRoot({super.key});
@@ -20,10 +23,12 @@ class _HomeRootState extends State<HomeRoot> {
   final GlobalKey _captureKey = GlobalKey();
   final TextEditingController _nameController = TextEditingController(); // 나무 이름 입력을 위한 텍스트 컨트롤러
   final FocusNode _focusNode = FocusNode(); // 입력 필드 포커스 관리
+  final PageController _pageController = PageController(); // 트리 이미지 페이지 컨트롤러
   
   bool _isTreeNamed = false; // 나무 이름이 정해졌는지 여부 - 화면 상태를 결정하는 핵심 변수
   String _treeName = ''; // 입력된 나무 이름
   String _namingDate = ''; // 나무 이름을 지어준 날짜
+  int _currentTreePage = 0; // 현재 트리 페이지 (0, 1, 2)
   
  // 캡쳐 대상 key
   Future<void> _captureImage() async {
@@ -82,6 +87,7 @@ class _HomeRootState extends State<HomeRoot> {
   void dispose() {
     _nameController.dispose(); // 텍스트 컨트롤러 메모리 해제
     _focusNode.dispose(); // 포커스 노드 메모리 해제
+    _pageController.dispose(); // 페이지 컨트롤러 메모리 해제
     super.dispose();
   }
 
@@ -124,7 +130,10 @@ class _HomeRootState extends State<HomeRoot> {
           // 상태에 따라 중간 부분 변경
           if (!_isTreeNamed) ...[
             // 나무 이름 입력 상태
-            Text("한달동안 키울 나무의 이름을 정해주세요!"),
+            Text(
+              "한달동안 키울 나무의 이름을 정해주세요!",
+              style: AppTextStyles.pretendard_medium.copyWith(fontSize: 16),
+            ),
             SizedBox(height: 30),
             TextField(
               controller: _nameController,
@@ -141,7 +150,13 @@ class _HomeRootState extends State<HomeRoot> {
               children: [
                 DecoratedBox(
                     decoration: BoxDecoration(color: AppColors.plumu_green_main),
-                    child: Text('간단한 메세지를 남겨봐요!')
+                    child: Text(
+                      '간단한 메세지를 남겨봐요!',
+                      style: AppTextStyles.pretendard_medium.copyWith(
+                        fontSize: 16,
+                        color: AppColors.plumu_white,
+                      ),
+                    )
                 ),
               ]
             ),
@@ -153,56 +168,21 @@ class _HomeRootState extends State<HomeRoot> {
                 key: _captureKey,
                 child: Stack(
                   children: [
-                    Positioned(
-                        top: 0,
-                        left: 20,
-                        child: Image.asset(
-                          AppAssets.tree,
-                          width: 300,
-                          height: 300,
-                          fit: BoxFit.contain,
-                        )
+                    // PageView로 트리 이미지들 관리
+                    PageView.builder(
+                      controller: _pageController,
+                      onPageChanged: (index) => setState(() => _currentTreePage = index),
+                      itemCount: 3,
+                      itemBuilder: (context, index) => TreeImagePage(
+                        namingDate: _namingDate,
+                        treeName: _treeName,
+                      ),
                     ),
-                    Positioned(
-                        top: 200,
-                        left: 250,
-                        child: Stack(
-                          children: [
-                            Image.asset(AppAssets.wooden_sign),
-                            // 날짜 표시
-                            Positioned(
-                              top: 8,
-                              left: 0,
-                              right: 0,
-                              child: Text(
-                                _namingDate.isNotEmpty ? _namingDate : '2025.06.06',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 7, // 6에서 7로 증가
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'Pretendard',
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            // 나무 이름 표시
-                            Positioned(
-                              top: 20,
-                              left: 0,
-                              right: 0,
-                              child: Text(
-                                _treeName.isNotEmpty ? _treeName : '나무이름',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 11, // 10에서 11로 증가
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'Pretendard',
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
+                    // 나무 네비게이션 버튼
+                    TreeNavigationButtons(
+                      pageController: _pageController,
+                      currentPage: _currentTreePage,
+                      totalPages: 3,
                     )
                   ],
                 ),

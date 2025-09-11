@@ -87,3 +87,4 @@ class ProgressBarWithIcon extends StatelessWidget {
     );
   }
 }
+
