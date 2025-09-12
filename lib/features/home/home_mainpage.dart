@@ -105,7 +105,7 @@ class _HomeRootState extends State<HomeRoot> {
     // 진행률 값들 (임시 하드코딩, 추후 실제 데이터로 교체 예정)
     const double chatPercent = 0.3; // 메시지 진행률
     const double puzzlePercent = 0.2; // 퍼즐 진행률
-    const double treePercent = 0.7; // 트리 성장 진행률
+    const double treePercent = 0.9; // 트리 성장 진행률
 
     return Scaffold(
       appBar: HomeTopBar(),
@@ -120,9 +120,11 @@ class _HomeRootState extends State<HomeRoot> {
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment(1.15, -0.26),
-                  end: Alignment(0.38, 1.15),
+                  begin: Alignment.bottomCenter,        // ← 수직 시작
+                  end: Alignment.topCenter,       // ← 수직 끝
                   colors: SeasonalColors.getBackgroundColors(),
+                  stops: const [0.0, 0.55, 1.0],     // 전환 지점 고정(중간색 비율 보장)
+                  tileMode: TileMode.clamp,
                 ),
               ),
             ),
@@ -207,7 +209,7 @@ class _HomeRootState extends State<HomeRoot> {
                     ),
                   ],
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   BottomProgressBar(
                     progress: treePercent,
                     calendarCircleColor: SeasonalColors.getCalendarColor(),

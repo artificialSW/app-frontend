@@ -51,6 +51,4 @@ class SeasonalColors {
       return [AppColors.plumu_winter_bar_start, AppColors.plumu_winter_bar_end];
     }
   }
-
 }
-
