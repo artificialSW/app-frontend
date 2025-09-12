@@ -2,25 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/features/home/models/tree.dart';
 
 /// 트리 이미지 페이지 위젯
 /// - 나무 이미지와 나무 이름 표지판을 표시
 /// - 나무 이름 설정 날짜와 이름을 표지판에 표시
 /// - 3개 페이지 모두 동일한 구조로 표시
 class TreeImagePage extends StatelessWidget {
-  /// 나무 이름을 설정한 날짜
-  final String namingDate;
-  /// 설정된 나무 이름
   final String treeName;
+  final String namingDate;
+  final int pageIndex;
 
   const TreeImagePage({
     super.key,
-    required this.namingDate,
     required this.treeName,
+    required this.namingDate,
+    required this.pageIndex,
   });
 
   @override
   Widget build(BuildContext context) {
+    // 3개의 나무 리스트 (각 페이지별로 다른 나무)
+    final List<Tree> treeList = [
+      Tree(name: treeName, namingDate: namingDate, fruitCount: 20, flowerCount: 8),
+      Tree(name: treeName, namingDate: namingDate, fruitCount: 3, flowerCount: 0),
+      Tree(name: treeName, namingDate: namingDate, fruitCount: 0, flowerCount: 3),
+    ];
+
+    // 현재 페이지에 해당하는 나무
+    final currentTree = treeList[pageIndex];
+
     return Stack(
       children: [
         // 나무 이미지
@@ -48,7 +59,7 @@ class TreeImagePage extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: Text(
-                  namingDate.isNotEmpty ? namingDate : '2025.06.06', // 기본값 설정
+                  currentTree.namingDate,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.pretendard_bold.copyWith(
                     fontSize: 7,
@@ -62,7 +73,7 @@ class TreeImagePage extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: Text(
-                  treeName.isNotEmpty ? treeName : '나무이름', // 기본값 설정
+                  currentTree.name,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.pretendard_bold.copyWith(
                     fontSize: 11,

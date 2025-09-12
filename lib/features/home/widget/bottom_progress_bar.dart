@@ -4,10 +4,14 @@ import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 
 class BottomProgressBar extends StatelessWidget {
   final double progress;
+  final Color calendarCircleColor;
+  final List<Color> barColors;
 
   const BottomProgressBar({
     super.key,
     required this.progress,
+    required this.calendarCircleColor,
+    required this.barColors,
   });
 
   @override
@@ -36,7 +40,7 @@ class BottomProgressBar extends StatelessWidget {
               // Progress bar (pill) - 캘린더 원 공간을 고려해서 줄임
               Container(
                 margin: EdgeInsets.only(left: 25), // 캘린더 원 절반 정도 공간 확보
-                height: 32,
+                height: 30,
                 decoration: ShapeDecoration(
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
@@ -51,7 +55,7 @@ class BottomProgressBar extends StatelessWidget {
                   children: [
                     // 배경
                     Container(
-                      height: 32,
+                      height: 30,
                       decoration: BoxDecoration(
                         color: AppColors.plumu_white,
                         borderRadius: BorderRadius.circular(18),
@@ -62,10 +66,16 @@ class BottomProgressBar extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       widthFactor: progress.clamp(0.0, 1.0),
                       child: Container(
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: AppColors.plumu_green_20per,
-                          borderRadius: BorderRadius.circular(18),
+                        height: 30,
+                        decoration: ShapeDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment(0.00, 0.50),
+                            end: Alignment(1.00, 0.50),
+                            colors: barColors,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
                         ),
                       ),
                     ),
@@ -92,7 +102,7 @@ class BottomProgressBar extends StatelessWidget {
                   width: 45.67,
                   height: 42,
                   decoration: ShapeDecoration(
-                    color: const Color(0xFF5CBD56),
+                    color: calendarCircleColor,
                     shape: OvalBorder(),
                   ),
                   child: Center(

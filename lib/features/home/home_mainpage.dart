@@ -13,6 +13,7 @@ import 'package:artificialsw_frontend/features/home/widget/tree_image_page.dart'
 import 'package:artificialsw_frontend/features/home/widget/bottom_progress_bar.dart';
 import 'package:artificialsw_frontend/features/home/widget/tree_decorate_sheet.dart';
 import 'package:artificialsw_frontend/features/home/widget/message_bubble.dart';
+import 'package:artificialsw_frontend/features/home/constants/seasonal_colors.dart';
 
 /// 홈 화면의 메인 위젯
 /// - 나무 이름 설정 및 트리 이미지 표시
@@ -104,12 +105,29 @@ class _HomeRootState extends State<HomeRoot> {
     // 진행률 값들 (임시 하드코딩, 추후 실제 데이터로 교체 예정)
     const double chatPercent = 0.3; // 메시지 진행률
     const double puzzlePercent = 0.2; // 퍼즐 진행률
-    const double treePercent = 0.3; // 트리 성장 진행률
+    const double treePercent = 0.7; // 트리 성장 진행률
 
     return Scaffold(
       appBar: HomeTopBar(),
       body: Stack(
         children: [
+          // 배경 그라데이션 (234픽셀 높이로 제한, 맨 밑에 위치)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 234,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment(1.15, -0.26),
+                  end: Alignment(0.38, 1.15),
+                  colors: SeasonalColors.getBackgroundColors(),
+                ),
+              ),
+            ),
+          ),
+          
           // 메인 콘텐츠 영역
           Positioned.fill(
             child: SingleChildScrollView(
@@ -171,8 +189,9 @@ class _HomeRootState extends State<HomeRoot> {
                               itemCount: 3, // 3개 페이지
                                itemBuilder: (context, index) {
                                  return TreeImagePage(
-                                   namingDate: _namingDate,
                                    treeName: _treeName,
+                                   namingDate: _namingDate,
+                                   pageIndex: index,
                                  );
                                },
                             ),
@@ -189,7 +208,11 @@ class _HomeRootState extends State<HomeRoot> {
                   ],
 
                   const SizedBox(height: 20),
-                  BottomProgressBar(progress: treePercent),
+                  BottomProgressBar(
+                    progress: treePercent,
+                    calendarCircleColor: SeasonalColors.getCalendarColor(),
+                    barColors: SeasonalColors.getBarColors(),
+                  ),
                 ],
               ),
             ),
