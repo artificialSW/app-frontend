@@ -51,6 +51,39 @@ class AppColors {
   static const plumu_winter_card_start = Color(0xFFE0F9FE);
   static const plumu_winter_card_end = Color(0xFF96D3DE);
 
+  // 계절별 배경 그라데이션 색상
+  // 봄 (3-5월)
+  static const plumu_spring_bg_start = Color(0xFFFFFFFF);
+  static const plumu_spring_bg_middle = Color(0xFFFED4E2);
+  static const plumu_spring_bg_end = Color(0xFFFF9CBD);
+  static const plumu_spring_calendar_circle = Color(0xFFFF3578);
+  static const plumu_spring_bar_start = Color(0xFFFFF0F5);
+  static const plumu_spring_bar_end = Color(0xFFFF558D);
+  
+  // 여름 (6-8월)
+  static const plumu_summer_bg_start = Color(0xFFFFFFFF);
+  static const plumu_summer_bg_middle = Color(0xFFADDEAA);
+  static const plumu_summer_bg_end = Color(0xFF5CBD56);
+  static const plumu_summer_calendar_circle = Color(0xFF0DA203);
+  static const plumu_summer_bar_start = Color(0xFFEEF9ED);
+  static const plumu_summer_bar_end = Color(0xFF7DD334);
+  
+  // 가을 (9-11월)
+  static const plumu_fall_bg_start = Color(0xFFFFFFFF);
+  static const plumu_fall_bg_middle = Color(0xFFFFC6AA);
+  static const plumu_fall_bg_end = Color(0xFFD55619);
+  static const plumu_fall_calendar_circle = Color(0xFFA75605);
+  static const plumu_fall_bar_start = Color(0xFFFFE9D3);
+  static const plumu_fall_bar_end = Color(0xFFA55200);
+  
+  // 겨울 (12-2월)
+  static const plumu_winter_bg_start = Color(0xFFFFFFFF);
+  static const plumu_winter_bg_middle = Color(0xFFA4E1E7);
+  static const plumu_winter_bg_end = Color(0xFF00BAE0);
+  static const plumu_winter_calendar_circle = Color(0xFF0D8CA1);
+  static const plumu_winter_bar_start = Color(0xFFDDFBFF);
+  static const plumu_winter_bar_end = Color(0xFF139CB3);
+
   // 꽃 감정별 색상
   // 애정표현 (동백꽃, 장미)
   static const plumu_flower_love_card_start = Color(0xFFFEEEEE);

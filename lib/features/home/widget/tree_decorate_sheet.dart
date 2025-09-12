@@ -13,11 +13,11 @@ class TreeDecorateSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      minChildSize: 0.20,
-      initialChildSize: 0.22,
+      minChildSize: 0.05,
+      initialChildSize: 0.08,
       maxChildSize: 0.88,
       snap: true,
-      snapSizes: const [0.22, 0.5, 0.88],
+      snapSizes: const [0.08, 0.4, 0.88],
       builder: (context, controller) {
         return Container(
           decoration: ShapeDecoration(

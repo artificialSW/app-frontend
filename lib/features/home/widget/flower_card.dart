@@ -94,7 +94,7 @@ class FlowerCard extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppTextStyles.pretendard_medium.copyWith(
                 fontSize: 10,
-                color: AppColors.plumu_gray_2,
+                color: Color(0xFF797979),
               ),
             ),
           ),
