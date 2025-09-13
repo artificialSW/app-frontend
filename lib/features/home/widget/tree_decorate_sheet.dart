@@ -94,13 +94,13 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
     
     // T가 FruitCardData인지 FlowerCardData인지 확인하고 정렬
     if (cards.first is FruitCardData) {
-      return (cards as List<FruitCardData>)
-          .toList()
-          ..sort((a, b) => b.date.compareTo(a.date)) as List<T>;
+      final fruitCards = (cards as List<FruitCardData>).toList();
+      fruitCards.sort((a, b) => b.date.compareTo(a.date));
+      return fruitCards as List<T>;
     } else if (cards.first is FlowerCardData) {
-      return (cards as List<FlowerCardData>)
-          .toList()
-          ..sort((a, b) => b.date.compareTo(a.date)) as List<T>;
+      final flowerCards = (cards as List<FlowerCardData>).toList();
+      flowerCards.sort((a, b) => b.date.compareTo(a.date));
+      return flowerCards as List<T>;
     }
     
     return cards;
