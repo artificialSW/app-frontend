@@ -2,13 +2,16 @@ import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:flutter/material.dart';
 
-
 enum GameState {Unplayed, Ongoing, Completed}
+
 /// 퍼즐 데이터 모델
 class PuzzleGame {
   final int puzzleId;
-  final Image imageWidget;
+  final String imageUrl;
+  final Image? imageWidget; //JSON 직렬화 대상에서 제외. api통신용이 아니라 puzzleplay에서만 쓸거라
   int? size;
+  final String category;
+  final List<String> AIKeyword;
   List<PiecePosition> piecesPosition;
   List<int> completedPiecesId;
   GameState gameState;
@@ -18,8 +21,11 @@ class PuzzleGame {
   //선언 시점은 꼭 사용자가 '퍼즐 풀기' 버튼을 눌렀을 때로!! 왜냐면 size도 선언할때 같이 적어야한다고 선언했기 때문
   PuzzleGame({
     required this.puzzleId,
-    required this.imageWidget,
+    required this.imageUrl,
+    this.imageWidget,
     required this.size, //어쨌든 null 입력한것도 입력한거니까 에러 안 뜨는듯
+    required this.category,
+    required this.AIKeyword,
     List<PiecePosition>? piecesPosition, // completedPiecesId를 옵셔널로 선언합니다.
     GameState? gameState, // gameState를 옵셔널로 선언합니다.
     isArchived = false,
@@ -33,7 +39,10 @@ class PuzzleGame {
   PuzzleGame copyForReplaying(){
     return PuzzleGame(
       puzzleId: puzzleId, //유지
+      imageUrl: imageUrl,
       imageWidget: imageWidget, //유지
+      category: category,
+      AIKeyword: AIKeyword,
       size: size,           //유지
       gameState: gameState,    //유지
       contributors: contributors //유지
