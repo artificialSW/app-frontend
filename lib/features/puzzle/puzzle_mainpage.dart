@@ -31,7 +31,8 @@ class _PuzzleRootState extends State<PuzzleRoot> {
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       // ✅ 목데이터 리턴
       return PuzzleHomeGetDto(
-        ongoing1: PuzzleHomeOngoingPreviewDto(
+        subject: ["복숭아 사진 자랑", "아보카도 사진 자랑", "딸기 사진 자랑"],
+        inProgress: [PuzzleHomeOngoingPreviewDto(
           puzzleId: 1,
           imageUrl:
               'https://picsum.photos/600/400',
@@ -39,15 +40,16 @@ class _PuzzleRootState extends State<PuzzleRoot> {
           completedPiecesId: [1, 2],
           lastSavedAt: "03:33",
         ),
-        ongoing2: PuzzleHomeOngoingPreviewDto(
-          puzzleId: 1,
-          imageUrl:
-          'https://picsum.photos/600/400',
-          size: 4,
-          completedPiecesId: [1, 2],
-          lastSavedAt: "03:33",
-        ),
-        completed1: PuzzleHomeCompletedPreviewDto(
+          PuzzleHomeOngoingPreviewDto(
+            puzzleId: 1,
+            imageUrl:
+            'https://picsum.photos/600/400',
+            size: 4,
+            completedPiecesId: [1, 2],
+            lastSavedAt: "03:33",
+          ),
+        ],
+        completedThisWeek: [PuzzleHomeCompletedPreviewDto(
           puzzleId: 1,
           imageUrl:
               'https://picsum.photos/600/400',
@@ -55,15 +57,15 @@ class _PuzzleRootState extends State<PuzzleRoot> {
           title: "목데이터 title",
           completedAt: "04:44",
         ),
-        completed2: PuzzleHomeCompletedPreviewDto(
-          puzzleId: 1,
-          imageUrl:
-          'https://picsum.photos/600/400',
-          size: 9,
-          title: "목데이터 title",
-          completedAt: "04:44",
-        ),
-        keywords: ["복숭아 사진 자랑", "아보카도 사진 자랑", "딸기 사진 자랑"],
+          PuzzleHomeCompletedPreviewDto(
+            puzzleId: 1,
+            imageUrl:
+            'https://picsum.photos/600/400',
+            size: 9,
+            title: "목데이터 title",
+            completedAt: "04:44",
+          ),
+        ],
         isFull: false,
       );
     }
@@ -98,7 +100,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   color: const Color(0xFFC0D6E6),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text("이번주의 퍼즐 키워드: ${puzzle.keywords}"),
+                child: Text("이번주의 퍼즐 키워드: ${puzzle.subject}"),
               ),
               SizedBox(height: 30),
               Row(
@@ -124,7 +126,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: Image.network(
-                      puzzle.ongoing1.imageUrl,
+                      puzzle.inProgress[0].imageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -136,7 +138,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: Image.network(
-                      puzzle.ongoing2.imageUrl,
+                      puzzle.inProgress[1].imageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -166,7 +168,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: Image.network(
-                      puzzle.completed1.imageUrl,
+                      puzzle.completedThisWeek[0].imageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -178,7 +180,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: Image.network(
-                      puzzle.completed2.imageUrl,
+                      puzzle.completedThisWeek[1].imageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -195,7 +197,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                         : () {
                       Navigator.of(context).pushNamed(
                         '/puzzle/image-upload',
-                        arguments: {'category': puzzle.keywords},
+                        arguments: {'category': puzzle.subject},
                       );
                     },
                     width: 150,
