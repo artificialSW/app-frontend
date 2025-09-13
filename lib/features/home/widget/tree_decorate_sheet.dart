@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/home/widget/fruit_card.dart';
 import 'package:artificialsw_frontend/features/home/widget/flower_card.dart';
 
-class TreeDecorateSheet extends StatelessWidget {
+class TreeDecorateSheet extends StatefulWidget {
   final int pageIndex;
   
   const TreeDecorateSheet({
     super.key,
     required this.pageIndex,
   });
+
+  @override
+  State<TreeDecorateSheet> createState() => _TreeDecorateSheetState();
+}
+
+class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
+  // 선택된 과일과 꽃의 인덱스를 저장 (체크마크 표시용)
+  Set<int> selectedFruits = {};
+  Set<int> selectedFlowers = {};
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +67,9 @@ class TreeDecorateSheet extends StatelessWidget {
                     mainAxisSpacing: 12, // 상하 간격
                     childAspectRatio: 1, // 정사각형 비율
                   ),
-                  itemCount: pageIndex == 1 ? 20 : 12, // 과일 20개, 꽃 12개
+                  itemCount: widget.pageIndex == 1 ? 20 : 12, // 과일 20개, 꽃 12개
                   itemBuilder: (context, index) {
-                    if (pageIndex == 1) {
+                    if (widget.pageIndex == 1) {
                       // 2번째 페이지: 모든 과일들
                       final fruits = [
                         // 여름 과일
@@ -94,6 +103,18 @@ class TreeDecorateSheet extends StatelessWidget {
                         fruitImagePath: fruits[index]['path']!,
                         season: fruits[index]['season']!,
                         date: '2025.09.11',
+                        isSelected: selectedFruits.contains(index),
+                        onTap: () {
+                          setState(() {
+                            if (selectedFruits.contains(index)) {
+                              // 이미 선택된 경우 해제
+                              selectedFruits.remove(index);
+                            } else {
+                              // 새로운 선택
+                              selectedFruits.add(index);
+                            }
+                          });
+                        },
                       );
                     } else {
                       // 3번째 페이지: 모든 꽃들
@@ -119,6 +140,18 @@ class TreeDecorateSheet extends StatelessWidget {
                         flowerImagePath: flowers[index]['path']!,
                         emotion: flowers[index]['emotion']!,
                         date: '2025.09.11',
+                        isSelected: selectedFlowers.contains(index),
+                        onTap: () {
+                          setState(() {
+                            if (selectedFlowers.contains(index)) {
+                              // 이미 선택된 경우 해제
+                              selectedFlowers.remove(index);
+                            } else {
+                              // 새로운 선택
+                              selectedFlowers.add(index);
+                            }
+                          });
+                        },
                       );
                     }
                   },

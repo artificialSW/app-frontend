@@ -7,6 +7,8 @@ class FruitCard extends StatelessWidget {
   final String fruitImagePath;
   final String date;
   final String season; // 'spring', 'summer', 'fall', 'winter'
+  final bool isSelected;
+  final VoidCallback? onTap;
 
   const FruitCard({
     super.key,
@@ -14,6 +16,8 @@ class FruitCard extends StatelessWidget {
     required this.fruitImagePath,
     required this.season,
     this.date = '2025.09.11',
+    this.isSelected = false,
+    this.onTap,
   });
 
   @override
@@ -44,27 +48,29 @@ class FruitCard extends StatelessWidget {
         checkColor = AppColors.plumu_summer_check;
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: cardColors,
-        ),
-      ),
-      child: Stack(
-        children: [
-          // 체크 아이콘
-          Positioned(
-            right: 6,
-            top: 6,
-            child: Icon(
-              Icons.check_circle,
-              color: checkColor,
-              size: 20,
-            ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: cardColors,
           ),
+        ),
+        child: Stack(
+          children: [
+            // 체크 아이콘
+            Positioned(
+              right: 6,
+              top: 6,
+              child: Icon(
+                isSelected ? Icons.check_circle : Icons.check_circle_outline,
+                color: checkColor,
+                size: 20,
+              ),
+            ),
 
           // 과일 이미지
           Center(
@@ -105,7 +111,8 @@ class FruitCard extends StatelessWidget {
               ),
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
