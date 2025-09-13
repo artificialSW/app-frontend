@@ -11,7 +11,11 @@ class ImageStore extends ChangeNotifier { ///지금은 이거 원격 DB 느낌�
   final List<File> imageFileList = [];
 
   // UI에 표시할 이미지 위젯 리스트
-  final List<Image> _imageWidgetList = [];
+  final List<Image> _imageWidgetList = [
+    Image.network('exampleurl.com'),
+    Image.network('exampleurl.com'),
+    Image.network('exampleurl.com'),
+  ];
 
   // 외부에서 읽기 전용으로 접근
   List<Image> get imageWidgetList => List.unmodifiable(_imageWidgetList);
