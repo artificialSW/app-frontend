@@ -9,7 +9,7 @@ class PuzzleGame {
   final String puzzleId;
   final String imageUrl;
   final Image? imageWidget; //JSON 직렬화 대상에서 제외. api통신용이 아니라 puzzleplay에서만 쓸거라
-  int? size;
+  int size;
   final String category;
   final List<String> AIKeyword;
   List<PiecePosition> piecesPosition;

@@ -4,6 +4,9 @@ import 'dart:ui' as ui;
 import 'package:artificialsw_frontend/features/puzzle/model/puzzle_board_scope.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_save_progress/puzzlepiece_position.dart';
+import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
+import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +19,13 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 class PlayPuzzle extends StatefulWidget {
-  final PuzzleGame puzzle;
+  final PuzzleGame puzzle; //여기 선언된 것들은, 이 페이지를 불러올때 인자값을 줘야 하는 것
+  final User user;
 
   const PlayPuzzle({
     Key? key,
     required this.puzzle,
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -28,8 +33,8 @@ class PlayPuzzle extends StatefulWidget {
 }
 
 class _PlayPuzzleState extends State<PlayPuzzle> {
-  int get rows => widget.puzzle.size!;
-  int get cols => widget.puzzle.size!;
+  int get rows => widget.puzzle.size; //여기 선언된 것들은, 그냥 이 페이지 내부에서만 쓰이는 것
+  int get cols => widget.puzzle.size;
   Image? _image;
   List<PuzzlePiece> pieces = [];
   List<int> get completedPiecesId => widget.puzzle.completedPiecesId; ///게임 플레이 인스턴스에서도 다시 불러와야 쭉 하던게 이어짐.
@@ -50,8 +55,6 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
 
     _splitImage(image); // 퍼즐 조각 생성 함수
   }
-
-
 
   Future<Size> _getImageSize(Image image) async {
     final Completer<Size> completer = Completer<Size>();
@@ -82,7 +85,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
             imageSize: imageSize,
             row: x,
             col: y,
-            id: x * cols + y, // 지금 당장은 팔요 없는 것 같긴 함
+            id: (x * cols + y).toString(), // 지금 당장은 팔요 없는 것 같긴 함
             maxRow: rows,
             maxCol: cols,
             position: widget.puzzle.gameState != GameState.Ongoing
@@ -132,7 +135,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       }
       //widget.puzzle.piecesPosition[id] = pos; //게임 범위에서 조각의 위치를 업데이트(이건 이렇게 코드로 써 줘야 함)
       for (final piece in pieces) {
-        widget.puzzle.piecesPosition[piece.id] = piece.position!; //위치로 판별해서 oncompleted가 실행되는데 null일수 없음
+        widget.puzzle.piecesPosition[int.parse(piece.id)] = piece.position!; //위치로 판별해서 oncompleted가 실행되는데 null일수 없음
       }
 
       if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때
@@ -151,6 +154,31 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
         }
       }
     });
+  }
+
+  void _saveProgress() {
+    final map = <String, PuzzlePiecePosition>{};
+    for (var i = 0; i < widget.puzzle.size && i < pieces.length; i++) {
+      map[i.toString()] = PuzzlePiecePosition(row: pieces[i].row, col: pieces[i].col);
+    }
+
+    PuzzleService().savePuzzleProgress(
+        puzzleId: widget.puzzle.puzzleId,
+        puzzleSize: widget.puzzle.size,
+        pieces: map,
+        completedPiecesId: completedPiecesId,
+        contributorId: widget.user.id,
+        completed: false,
+        isPlayingPuzzle: true,
+    );
+    print('서버에 풀던 퍼즐 데이터 전송 완료: \n'
+        ' ├─ puzzleId: ${widget.puzzle.puzzleId}\n'
+        ' ├─ puzzleSize: ${widget.puzzle.size}\n'
+        ' ├─ pieces: $map\n'
+        ' ├─ completedPiecesId: $completedPiecesId\n'
+        ' └─ contributorId: ${widget.user.id}');
+
+    Navigator.of(context).pushReplacementNamed('/');
   }
 
   void _navigateToAwardPage() async {
@@ -264,8 +292,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
                       child: CustomButton(
                         text: '저장하기',
                         onPressed: () {
-                          Navigator.of(context).pushReplacementNamed(
-                              '/');
+                          _saveProgress();
                         },
                       )
                     ),

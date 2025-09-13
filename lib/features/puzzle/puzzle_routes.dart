@@ -8,6 +8,7 @@ import 'package:artificialsw_frontend/features/puzzle/puzzle_mainpage.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/write_puzzle_info_page.dart';
 import 'package:artificialsw_frontend/features/puzzle/weekly_upload/image_upload_page.dart';
+import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_recompleted.dart';
 
@@ -28,7 +29,7 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
     case '/puzzle/play':
       final args = s.arguments as Map<String, dynamic>;
       final puzzleGame = args['gameInstance'] as PuzzleGame;
-      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleGame));
+      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleGame, user: User(id: '123', name: 'Jaewook')));
 
     case '/puzzle/ongoing-list':
       return MaterialPageRoute(builder: (_) => const OngoingPuzzlesPage());
@@ -41,7 +42,7 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
       final args = s.arguments as Map<String, dynamic>;
       final original = args['gameInstance'] as PuzzleGame;
       final puzzleInstance = original.copyForReplaying();
-      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleInstance));
+      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleInstance, user: User(id: '123', name: 'Jaewook')));
     case '/puzzle/re-completed':
       return MaterialPageRoute(builder: (_) => PuzzleRecompleted());
     case '/puzzle/archive':
