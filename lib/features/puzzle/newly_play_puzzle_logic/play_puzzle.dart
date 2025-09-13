@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui' as ui;
 import 'package:artificialsw_frontend/features/puzzle/model/puzzle_board_scope.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
@@ -11,6 +12,9 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
+
 class PlayPuzzle extends StatefulWidget {
   final PuzzleGame puzzle;
 
@@ -33,9 +37,9 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   @override
   void initState() {
     super.initState();
-    final imageWidget = widget.puzzle.imageWidget;
-    // 처리용 함수 호출 (예: 퍼즐 생성 등)
-    _loadImage(imageWidget!);
+    final imageWidget = Image.network(widget.puzzle.imageUrl);
+
+    _loadImage(imageWidget);
   }
 
   // 에셋 이미지를 로드하고 퍼즐 조각을 생성하는 함수

@@ -16,34 +16,34 @@ class PuzzleProvider with ChangeNotifier {
 
   List<PuzzleGame> _puzzles = [
     PuzzleGame(
-      puzzleId: 1,
+      puzzleId: '1',
       imageWidget: ImageStore().imageWidgetList[0],
-      imageUrl: 'exampleUrl.com',
+      imageUrl: 'https://picsum.photos/600/400',
       category: '우리 가족의 행복한 추억',
       AIKeyword: ['만남', '사랑','이별','추억'],
       size: null,
       piecesPosition: [],
       gameState: GameState.Unplayed,
-      contributors: [User(name: 'Jaewook', id: 1)],
+      contributors: [User(name: 'Jaewook', id: '1')],
       isArchived: false,
     ),
     PuzzleGame(
-      puzzleId: 2,
+      puzzleId: '2',
       imageWidget: ImageStore().imageWidgetList[1],
-      imageUrl: 'exampleUrl.com',
+      imageUrl: 'https://picsum.photos/600/400',
       category: '우리 가족의 행복한 추억',
       AIKeyword: ['만남', '사랑','이별','추억'],
       size: null,
       piecesPosition: [],
       gameState: GameState.Unplayed,
-      contributors: [User(name: 'JungHwan', id: 2)],
+      contributors: [User(name: 'JungHwan', id: '2')],
       isArchived: false,
     ),
 
     PuzzleGame(
-      puzzleId: 3,
+      puzzleId: '3',
       imageWidget: ImageStore().imageWidgetList[2],
-      imageUrl: 'exampleUrl.com',
+      imageUrl: 'https://picsum.photos/600/400',
       category: '우리 가족의 행복한 추억',
       AIKeyword: ['만남', '사랑','이별','추억'],
       size: 3,
@@ -59,13 +59,13 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 90.0),
       ],
       gameState: GameState.Ongoing,
-      contributors: [User(name: 'Jaewook', id: 1), User(name: 'JungHwan', id: 2)],
+      contributors: [User(name: 'Jaewook', id: '1'), User(name: 'JungHwan', id: '2')],
       isArchived: false,
     ),
     PuzzleGame(
-      puzzleId: 4,
+      puzzleId: '4',
       imageWidget: ImageStore().imageWidgetList[2],
-      imageUrl: 'exampleUrl.com',
+      imageUrl: 'https://picsum.photos/600/400',
       category: '우리 가족의 행복한 추억',
       AIKeyword: ['만남', '사랑','이별','추억'],
       size: 3,
@@ -81,14 +81,14 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 90.0),
       ],
       gameState: GameState.Ongoing,
-      contributors: [User(name: 'JungHwan', id: 2)],
+      contributors: [User(name: 'JungHwan', id: '2')],
       isArchived: false,
     ),
 
     PuzzleGame(
-      puzzleId: 5,
+      puzzleId: '5',
       imageWidget: ImageStore().imageWidgetList[2],
-      imageUrl: 'exampleUrl.com',
+      imageUrl: 'https://picsum.photos/600/400',
       category: '우리 가족의 행복한 추억',
       AIKeyword: ['만남', '사랑','이별','추억'],
       size: 3,
@@ -104,13 +104,13 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 90.0),
       ],
       gameState: GameState.Completed,
-      contributors: [User(name: 'Jaewook', id: 1)],
+      contributors: [User(name: 'Jaewook', id: '1')],
       isArchived: false,
     ),
     PuzzleGame(
-      puzzleId: 6,
+      puzzleId: '6',
       imageWidget: ImageStore().imageWidgetList[2],
-      imageUrl: 'exampleUrl.com',
+      imageUrl: 'https://picsum.photos/600/400',
       category: '우리 가족의 행복한 추억',
       AIKeyword: ['만남', '사랑','이별','추억'],
       size: 3,
@@ -126,7 +126,7 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 90.0),
       ],
       gameState: GameState.Completed,
-      contributors: [User(name: 'JungHwan', id: 2)],
+      contributors: [User(name: 'JungHwan', id: '2')],
       isArchived: true,
     ),
   ];
@@ -148,7 +148,7 @@ class PuzzleProvider with ChangeNotifier {
   }
 
   // 퍼즐 삭제
-  void deletePuzzle(int id) {
+  void deletePuzzle(String id) {
     puzzles.removeWhere((p) => p.puzzleId == id);
     notifyListeners();
   }

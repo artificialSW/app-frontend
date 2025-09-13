@@ -10,7 +10,7 @@ class DeleteConfirm extends StatelessWidget {
   final String content;
   final String no_Button;
   final String yes_Button;
-  final int puzzleId;
+  final String puzzleId;
 
   const DeleteConfirm({
     required this.title,

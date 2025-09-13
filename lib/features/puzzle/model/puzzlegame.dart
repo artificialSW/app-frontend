@@ -6,7 +6,7 @@ enum GameState {Unplayed, Ongoing, Completed}
 
 /// 퍼즐 데이터 모델
 class PuzzleGame {
-  final int puzzleId;
+  final String puzzleId;
   final String imageUrl;
   final Image? imageWidget; //JSON 직렬화 대상에서 제외. api통신용이 아니라 puzzleplay에서만 쓸거라
   int? size;

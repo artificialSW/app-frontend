@@ -48,7 +48,7 @@ class PuzzleService {
   }
 
   // 🟡 퍼즐 생성
-  Future<PuzzleCreateResponseDto> createQuestion(PuzzleCreateRequestDto requestDto) async {
+  Future<PuzzleCreateResponseDto> createPuzzle(PuzzleCreateRequestDto requestDto) async {
     try {
       final response = await _dio.post(
         '/puzzle/create',
@@ -59,11 +59,19 @@ class PuzzleService {
     } on DioError catch (e) {
       // Dio 예외 처리
       if (e.response != null) {
-        throw Exception('에러: ${e.response?.data}');
+        print('에러: ${e.response?.data}');
       } else {
-        throw Exception('네트워크 에러: ${e.message}');
+        print('네트워크 에러: ${e.message}');
       }
     }
+    return PuzzleCreateResponseDto(
+      puzzleId: '1',
+      message: '🔥 서버 연결 실패 - 목데이터 사용 중',
+      createdAt: DateTime.now().toIso8601String(),
+      imageUrl: 'https://picsum.photos/600/400',
+      category: 'Mock 카테고리',
+      AIKeyword: ['Mock 키워드', 'Mock 키워드 2'],
+    );
   }
 
 
