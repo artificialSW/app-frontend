@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:artificialsw_frontend/features/puzzle/model/puzzle_board_scope.dart';
@@ -33,8 +34,8 @@ class PlayPuzzle extends StatefulWidget {
 }
 
 class _PlayPuzzleState extends State<PlayPuzzle> {
-  int get rows => widget.puzzle.size; //여기 선언된 것들은, 그냥 이 페이지 내부에서만 쓰이는 것
-  int get cols => widget.puzzle.size;
+  int get rows => sqrt(widget.puzzle.size).toInt(); //여기 선언된 것들은, 그냥 이 페이지 내부에서만 쓰이는 것
+  int get cols => sqrt(widget.puzzle.size).toInt();
   Image? _image;
   List<PuzzlePiece> pieces = [];
   List<int> get completedPiecesId => widget.puzzle.completedPiecesId; ///게임 플레이 인스턴스에서도 다시 불러와야 쭉 하던게 이어짐.
@@ -157,9 +158,11 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   }
 
   void _saveProgress() {
-    final map = <String, PuzzlePiecePosition>{};
+    completedPiecesId.sort();
+
+    final map = SplayTreeMap<String, PuzzlePiecePosition>(); //자동 정렬을 위해 SplayTreeMap 사용
     for (var i = 0; i < widget.puzzle.size && i < pieces.length; i++) {
-      map[i.toString()] = PuzzlePiecePosition(row: pieces[i].row, col: pieces[i].col);
+      map[pieces[i].id] = PuzzlePiecePosition(row: pieces[i].position!.y, col: pieces[i].position!.x);
     }
 
     PuzzleService().savePuzzleProgress(
@@ -171,12 +174,17 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
         completed: false,
         isPlayingPuzzle: true,
     );
+    final piecesStr = map.entries
+        .map((e) => '${e.key}: (row=${e.value.row}, col=${e.value.col})')
+        .join(', ');
+
     print('서버에 풀던 퍼즐 데이터 전송 완료: \n'
         ' ├─ puzzleId: ${widget.puzzle.puzzleId}\n'
         ' ├─ puzzleSize: ${widget.puzzle.size}\n'
-        ' ├─ pieces: $map\n'
+        ' ├─ pieces: {$piecesStr}\n'
         ' ├─ completedPiecesId: $completedPiecesId\n'
         ' └─ contributorId: ${widget.user.id}');
+
 
     Navigator.of(context).pushReplacementNamed('/');
   }

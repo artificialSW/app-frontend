@@ -4,8 +4,8 @@ part 'puzzlepiece_position.g.dart';
 
 @JsonSerializable()
 class PuzzlePiecePosition {
-  final int row;
-  final int col;
+  final double row;
+  final double col;
 
   PuzzlePiecePosition({
     required this.row,

@@ -48,7 +48,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
       imageUrl: dto.imageUrl,
       category: dto.category,
       AIKeyword: dto.AIKeyword,
-      size: int.parse(selectedSize.split(" ")[0]),
+      size: int.parse(selectedSize.split(" ")[0]) * int.parse(selectedSize.split(" ")[0]),
       piecesPosition: [],
       gameState: GameState.Unplayed, //어짜피 서버 연동하면 필요없어서 걍 냅둠
       contributors: [userInfo],
