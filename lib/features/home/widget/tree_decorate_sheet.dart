@@ -6,10 +6,12 @@ import 'package:artificialsw_frontend/features/home/models/flower_card_data.dart
 
 class TreeDecorateSheet extends StatefulWidget {
   final int pageIndex;
+  final Function(List<String>, List<String>)? onSelectionChanged;
   
   const TreeDecorateSheet({
     super.key,
     required this.pageIndex,
+    this.onSelectionChanged,
   });
 
   @override
@@ -21,9 +23,9 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
   List<FruitCardData> fruitCards = [];
   List<FlowerCardData> flowerCards = [];
   
-  // 선택된 카드들의 ID를 저장 (최대 3개 제한)
-  Set<String> selectedFruitIds = {};
-  Set<String> selectedFlowerIds = {};
+  // 선택된 카드들의 ID를 저장 (최대 3개 제한, 순서 유지, 해제된 위치는 null)
+  List<String?> selectedFruitIds = [null, null, null];
+  List<String?> selectedFlowerIds = [null, null, null];
 
   @override
   void initState() {
@@ -52,11 +54,11 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
         isSelected: false,
       ),
       FruitCardData(
-        id: 'fruit_fall_001',
+        id: 'fruit_winter_001',
         name: '사과',
-        imagePath: 'assets/images/fruit/fall/apple.png',
-        date: '2024-10-10',  // 가을 날짜
-        puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png',
+        imagePath: 'assets/images/fruit/winter/apple.png',
+        date: '2024-12-15',  // 겨울 날짜
+        puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png',
         isSelected: false,
       ),
     ];
@@ -189,14 +191,23 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
                         onTap: () {
                           setState(() {
                             if (isSelected) {
-                              // 이미 선택된 경우 해제
-                              selectedFruitIds.remove(fruitCard.id);
-                            } else if (selectedFruitIds.length < 3) {
-                              // 새로운 선택 (최대 3개 제한)
-                              selectedFruitIds.add(fruitCard.id);
+                              // 이미 선택된 경우 해제 (해제된 위치를 null로)
+                              final index = selectedFruitIds.indexOf(fruitCard.id);
+                              if (index != -1) {
+                                selectedFruitIds[index] = null;
+                              }
+                            } else {
+                              // 새로운 선택 (첫 번째 빈 위치에 추가)
+                              final emptyIndex = selectedFruitIds.indexOf(null);
+                              if (emptyIndex != -1) {
+                                selectedFruitIds[emptyIndex] = fruitCard.id;
+                              }
                             }
-                            // 3개가 이미 선택된 경우: 아무것도 하지 않음
                           });
+                          // 선택 상태 변경을 부모에게 알림 (null 제외하고 전달)
+                          final nonNullFruitIds = selectedFruitIds.where((id) => id != null).cast<String>().toList();
+                          final nonNullFlowerIds = selectedFlowerIds.where((id) => id != null).cast<String>().toList();
+                          widget.onSelectionChanged?.call(nonNullFruitIds, nonNullFlowerIds);
                         },
                       );
                     } else {
@@ -232,14 +243,23 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
                         onTap: () {
                           setState(() {
                             if (isSelected) {
-                              // 이미 선택된 경우 해제
-                              selectedFlowerIds.remove(flowerCard.id);
-                            } else if (selectedFlowerIds.length < 3) {
-                              // 새로운 선택 (최대 3개 제한)
-                              selectedFlowerIds.add(flowerCard.id);
+                              // 이미 선택된 경우 해제 (해제된 위치를 null로)
+                              final index = selectedFlowerIds.indexOf(flowerCard.id);
+                              if (index != -1) {
+                                selectedFlowerIds[index] = null;
+                              }
+                            } else {
+                              // 새로운 선택 (첫 번째 빈 위치에 추가)
+                              final emptyIndex = selectedFlowerIds.indexOf(null);
+                              if (emptyIndex != -1) {
+                                selectedFlowerIds[emptyIndex] = flowerCard.id;
+                              }
                             }
-                            // 3개가 이미 선택된 경우: 아무것도 하지 않음
                           });
+                          // 선택 상태 변경을 부모에게 알림 (null 제외하고 전달)
+                          final nonNullFruitIds = selectedFruitIds.where((id) => id != null).cast<String>().toList();
+                          final nonNullFlowerIds = selectedFlowerIds.where((id) => id != null).cast<String>().toList();
+                          widget.onSelectionChanged?.call(nonNullFruitIds, nonNullFlowerIds);
                         },
                       );
                     }

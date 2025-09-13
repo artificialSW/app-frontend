@@ -14,6 +14,8 @@ import 'package:artificialsw_frontend/features/home/widget/bottom_progress_bar.d
 import 'package:artificialsw_frontend/features/home/widget/tree_decorate_sheet.dart';
 import 'package:artificialsw_frontend/features/home/widget/message_bubble.dart';
 import 'package:artificialsw_frontend/features/home/constants/seasonal_colors.dart';
+import 'package:artificialsw_frontend/features/home/models/fruit_card_data.dart';
+import 'package:artificialsw_frontend/features/home/models/flower_card_data.dart';
 
 /// 홈 화면의 메인 위젯
 /// - 나무 이름 설정 및 트리 이미지 표시
@@ -40,6 +42,10 @@ class _HomeRootState extends State<HomeRoot> {
   String _treeName = ''; // 설정된 나무 이름
   String _namingDate = ''; // 나무 이름 설정 날짜
   int _currentTreePage = 0; // 현재 트리 페이지 (0: 첫번째, 1: 두번째, 2: 세번째)
+  
+  // 선택된 과일/꽃 상태 (순서대로 관리, 해제된 위치는 null)
+  List<String?> _selectedFruitIds = [null, null, null]; // 선택된 과일 ID들 (순서 유지)
+  List<String?> _selectedFlowerIds = [null, null, null]; // 선택된 꽃 ID들 (순서 유지)
 
   /// 트리 이미지를 캡처하여 다이얼로그로 표시하는 함수
   Future<void> _captureImage() async {
@@ -67,34 +73,116 @@ class _HomeRootState extends State<HomeRoot> {
   /// - 확인 후 나무 이름과 날짜를 상태에 저장
   void _onNameSubmitted() {
     final name = _nameController.text.trim();
-    if (name.isNotEmpty) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) {
-          return CommonDialog(
-            title: "나무의 이름이 정해졌어요",
-            subtitle: "멋진 이름인데요!",
-            buttonText: "확인",
-            onButtonPressed: () {
-              Navigator.of(dialogContext).pop();
-              setState(() {
-                _isTreeNamed = true;
-                _treeName = name;
-                _namingDate =
-                    DateTime.now().toString().substring(0, 10).replaceAll('-', '.');
-              });
-            },
-          );
+    if (name.isEmpty) return;
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => CommonDialog(
+        title: "나무의 이름이 정해졌어요",
+        subtitle: "멋진 이름인데요!",
+        buttonText: "확인",
+        onButtonPressed: () {
+          Navigator.of(dialogContext).pop();
+          setState(() {
+            _isTreeNamed = true;
+            _treeName = name;
+            _namingDate = DateTime.now().toString().substring(0, 10).replaceAll('-', '.');
+          });
         },
-      );
-    }
+      ),
+    );
+  }
+
+  /// 선택된 과일 데이터를 순서대로 반환 (null 위치는 건너뛰기)
+  List<FruitCardData> _getSelectedFruits() {
+    // 테스트용 과일 데이터 (TreeDecorateSheet와 동일)
+    const allFruits = [
+      FruitCardData(
+        id: 'fruit_spring_001',
+        name: '딸기',
+        imagePath: 'assets/images/fruit/spring/strawberry.png',
+        date: '2024-04-15',
+        puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png',
+        isSelected: true,
+      ),
+      FruitCardData(
+        id: 'fruit_summer_001',
+        name: '복숭아',
+        imagePath: 'assets/images/fruit/summer/peach.png',
+        date: '2024-07-20',
+        puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png',
+        isSelected: true,
+      ),
+      FruitCardData(
+        id: 'fruit_winter_001',
+        name: '사과',
+        imagePath: 'assets/images/fruit/winter/apple.png',
+        date: '2024-12-15',
+        puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png',
+        isSelected: true,
+      ),
+    ];
+    
+    // 선택된 ID 순서대로 과일 반환 (null 위치는 건너뛰기)
+    return _selectedFruitIds
+        .where((id) => id != null)
+        .map((id) => allFruits.firstWhere((f) => f.id == id))
+        .toList();
+  }
+
+  /// 선택된 꽃 데이터를 순서대로 반환 (null 위치는 건너뛰기)
+  List<FlowerCardData> _getSelectedFlowers() {
+    // 테스트용 꽃 데이터 (TreeDecorateSheet와 동일)
+    const allFlowers = [
+      FlowerCardData(
+        id: 'flower_love_001',
+        name: '장미',
+        imagePath: 'assets/images/flower/rose.png',
+        emotion: 'love',
+        date: '2024-09-13',
+        communicationText: '사랑 관련 소통을 통해 획득',
+        isSelected: true,
+      ),
+      FlowerCardData(
+        id: 'flower_comfort_001',
+        name: '아카시아',
+        imagePath: 'assets/images/flower/acacia.png',
+        emotion: 'comfort',
+        date: '2024-09-12',
+        communicationText: '위로 관련 소통을 통해 획득',
+        isSelected: true,
+      ),
+    ];
+    
+    // 선택된 ID 순서대로 꽃 반환 (null 위치는 건너뛰기)
+    return _selectedFlowerIds
+        .where((id) => id != null)
+        .map((id) => allFlowers.firstWhere((f) => f.id == id))
+        .toList();
+  }
+
+  /// 선택 상태가 변경되었을 때 호출되는 콜백 (순서 유지)
+  void _onSelectionChanged(List<String> selectedFruitIds, List<String> selectedFlowerIds) {
+    setState(() {
+      // null로 초기화
+      _selectedFruitIds = [null, null, null];
+      _selectedFlowerIds = [null, null, null];
+      
+      // 선택된 ID들을 순서대로 배치
+      for (int i = 0; i < selectedFruitIds.length && i < 3; i++) {
+        _selectedFruitIds[i] = selectedFruitIds[i];
+      }
+      for (int i = 0; i < selectedFlowerIds.length && i < 3; i++) {
+        _selectedFlowerIds[i] = selectedFlowerIds[i];
+      }
+    });
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _bubbleMsgController.dispose(); // [추가]
+    _bubbleMsgController.dispose();
     _focusNode.dispose();
     _pageController.dispose();
     super.dispose();
@@ -194,6 +282,8 @@ class _HomeRootState extends State<HomeRoot> {
                                    treeName: _treeName,
                                    namingDate: _namingDate,
                                    pageIndex: index,
+                                   selectedFruits: _getSelectedFruits(),
+                                   selectedFlowers: _getSelectedFlowers(),
                                  );
                                },
                             ),
@@ -222,7 +312,10 @@ class _HomeRootState extends State<HomeRoot> {
 
            // 트리 장식 시트: 2번째/3번째 페이지에서만 표시 (과일/꽃 카드)
            if (_isTreeNamed && (_currentTreePage == 1 || _currentTreePage == 2))
-             TreeDecorateSheet(pageIndex: _currentTreePage),
+             TreeDecorateSheet(
+               pageIndex: _currentTreePage,
+               onSelectionChanged: _onSelectionChanged,
+             ),
         ],
       ),
     );

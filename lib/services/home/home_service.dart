@@ -42,44 +42,4 @@ class HomeService {
     }
   }
 
-  // 🔵 선택된 카드 업데이트 (PUT)
-  Future<void> updateSelectedCards({
-    required String userId,
-    required List<String> selectedFruitIds,
-    required List<String> selectedFlowerIds,
-  }) async {
-    try {
-      final response = await _dio.put('/api/users/$userId/tree-decoration', data: {
-        'selectedFruitIds': selectedFruitIds,
-        'selectedFlowerIds': selectedFlowerIds,
-      });
-
-      if (response.statusCode == 200) {
-        print('✅ 선택된 카드 업데이트 성공');
-      } else {
-        print('⚠️ 업데이트 실패: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('❌ 업데이트 오류: $e');
-      throw Exception('선택된 카드 업데이트 실패: $e');
-    }
-  }
-
-  // 🟠 선택된 카드 삭제 (DELETE)
-  Future<void> deleteSelectedCards({
-    required String userId,
-  }) async {
-    try {
-      final response = await _dio.delete('/api/users/$userId/tree-decoration');
-
-      if (response.statusCode == 200) {
-        print('✅ 선택된 카드 삭제 성공');
-      } else {
-        print('⚠️ 삭제 실패: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('❌ 삭제 오류: $e');
-      throw Exception('선택된 카드 삭제 실패: $e');
-    }
-  }
 }

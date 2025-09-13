@@ -56,29 +56,30 @@ class FlowerCard extends StatelessWidget {
         checkColor = AppColors.plumu_flower_joy_check;
     }
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: cardColors,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: cardColors,
         ),
-        child: Stack(
-          children: [
-            // 체크 아이콘
-            Positioned(
-              right: 6,
-              top: 6,
+      ),
+      child: Stack(
+        children: [
+          // 체크 아이콘 (클릭 가능)
+          Positioned(
+            right: 6,
+            top: 6,
+            child: GestureDetector(
+              onTap: onTap,
               child: Icon(
                 isSelected ? Icons.check_circle : Icons.check_circle_outline,
                 color: checkColor,
                 size: 20,
               ),
             ),
+          ),
 
           // 꽃 이미지
           Center(
@@ -121,7 +122,6 @@ class FlowerCard extends StatelessWidget {
           ),
           ],
         ),
-      ),
     );
   }
 }
