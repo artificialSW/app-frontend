@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/home/widget/fruit_card.dart';
 import 'package:artificialsw_frontend/features/home/widget/flower_card.dart';
+import 'package:artificialsw_frontend/features/home/models/fruit_card_data.dart';
+import 'package:artificialsw_frontend/features/home/models/flower_card_data.dart';
 
 class TreeDecorateSheet extends StatefulWidget {
   final int pageIndex;
@@ -15,9 +17,94 @@ class TreeDecorateSheet extends StatefulWidget {
 }
 
 class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
-  // 선택된 과일과 꽃의 인덱스를 저장 (체크마크 표시용)
-  Set<int> selectedFruits = {};
-  Set<int> selectedFlowers = {};
+  // 실제 카드 데이터들 (서버에서 받아올 예정)
+  List<FruitCardData> fruitCards = [];
+  List<FlowerCardData> flowerCards = [];
+  
+  // 선택된 카드들의 ID를 저장 (최대 3개 제한)
+  Set<String> selectedFruitIds = {};
+  Set<String> selectedFlowerIds = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // 테스트용 데이터 (나중에 서버에서 받아올 예정)
+    _loadTestData();
+  }
+
+  void _loadTestData() {
+    // 테스트용 과일 카드들 (season은 date 기준으로 자동 계산됨)
+    final rawFruitCards = [
+      FruitCardData(
+        id: 'fruit_spring_001',
+        name: '딸기',
+        imagePath: 'assets/images/fruit/spring/strawberry.png',
+        date: '2024-04-15',  // 봄 날짜
+        puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png',
+        isSelected: false,
+      ),
+      FruitCardData(
+        id: 'fruit_summer_001',
+        name: '복숭아',
+        imagePath: 'assets/images/fruit/summer/peach.png',
+        date: '2024-07-20',  // 여름 날짜
+        puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png',
+        isSelected: false,
+      ),
+      FruitCardData(
+        id: 'fruit_fall_001',
+        name: '사과',
+        imagePath: 'assets/images/fruit/fall/apple.png',
+        date: '2024-10-10',  // 가을 날짜
+        puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png',
+        isSelected: false,
+      ),
+    ];
+
+    // 테스트용 꽃 카드들 (emotion은 백엔드에서 받아옴)
+    final rawFlowerCards = [
+      FlowerCardData(
+        id: 'flower_love_001',
+        name: '장미',
+        imagePath: 'assets/images/flower/rose.png',
+        emotion: 'love',
+        date: '2024-09-13',
+        communicationText: '사랑 관련 소통을 통해 획득',
+        isSelected: false,
+      ),
+      FlowerCardData(
+        id: 'flower_comfort_001',
+        name: '아카시아',
+        imagePath: 'assets/images/flower/acacia.png',
+        emotion: 'comfort',
+        date: '2024-09-12',
+        communicationText: '위로 관련 소통을 통해 획득',
+        isSelected: false,
+      ),
+    ];
+
+    // 날짜순으로 정렬 (최신순)
+    fruitCards = _sortCardsByDate(rawFruitCards);
+    flowerCards = _sortCardsByDate(rawFlowerCards);
+  }
+
+  /// 카드들을 날짜순으로 정렬하는 메서드 (최신순)
+  List<T> _sortCardsByDate<T>(List<T> cards) {
+    if (cards.isEmpty) return cards;
+    
+    // T가 FruitCardData인지 FlowerCardData인지 확인하고 정렬
+    if (cards.first is FruitCardData) {
+      return (cards as List<FruitCardData>)
+          .toList()
+          ..sort((a, b) => b.date.compareTo(a.date)) as List<T>;
+    } else if (cards.first is FlowerCardData) {
+      return (cards as List<FlowerCardData>)
+          .toList()
+          ..sort((a, b) => b.date.compareTo(a.date)) as List<T>;
+    }
+    
+    return cards;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,89 +154,91 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
                     mainAxisSpacing: 12, // 상하 간격
                     childAspectRatio: 1, // 정사각형 비율
                   ),
-                  itemCount: widget.pageIndex == 1 ? 20 : 12, // 과일 20개, 꽃 12개
+                  itemCount: widget.pageIndex == 1 ? fruitCards.length : flowerCards.length,
                   itemBuilder: (context, index) {
                     if (widget.pageIndex == 1) {
-                      // 2번째 페이지: 모든 과일들
-                      final fruits = [
-                        // 여름 과일
-                        {'name': '블루베리', 'path': 'assets/images/fruit/summer/blueberry.png', 'season': 'summer'},
-                        {'name': '복숭아', 'path': 'assets/images/fruit/summer/peach.png', 'season': 'summer'},
-                        {'name': '자두', 'path': 'assets/images/fruit/summer/plum.png', 'season': 'summer'},
-                        {'name': '망고', 'path': 'assets/images/fruit/summer/mango.png', 'season': 'summer'},
-                        {'name': '코코넛', 'path': 'assets/images/fruit/summer/coconut.png', 'season': 'summer'},
-                        // 봄 과일
-                        {'name': '딸기', 'path': 'assets/images/fruit/spring/strawberry.png', 'season': 'spring'},
-                        {'name': '체리', 'path': 'assets/images/fruit/spring/cherry.png', 'season': 'spring'},
-                        {'name': '키위', 'path': 'assets/images/fruit/spring/kiwi.png', 'season': 'spring'},
-                        {'name': '라즈베리', 'path': 'assets/images/fruit/spring/raspberry.png', 'season': 'spring'},
-                        {'name': '참외', 'path': 'assets/images/fruit/spring/oriental_melon.png', 'season': 'spring'},
-                        // 가을 과일
-                        {'name': '무화과', 'path': 'assets/images/fruit/fall/fig.png', 'season': 'fall'},
-                        {'name': '포도', 'path': 'assets/images/fruit/fall/grape.png', 'season': 'fall'},
-                        {'name': '대추', 'path': 'assets/images/fruit/fall/jujube.png', 'season': 'fall'},
-                        {'name': '배', 'path': 'assets/images/fruit/fall/pear.png', 'season': 'fall'},
-                        {'name': '감', 'path': 'assets/images/fruit/fall/persimmon.png', 'season': 'fall'},
-                        // 겨울 과일
-                        {'name': '사과', 'path': 'assets/images/fruit/winter/apple.png', 'season': 'winter'},
-                        {'name': '아보카도', 'path': 'assets/images/fruit/winter/avocado.png', 'season': 'winter'},
-                        {'name': '귤', 'path': 'assets/images/fruit/winter/mandarin.png', 'season': 'winter'},
-                        {'name': '석류', 'path': 'assets/images/fruit/winter/pomegranate.png', 'season': 'winter'},
-                        {'name': '유자', 'path': 'assets/images/fruit/winter/yuja.png', 'season': 'winter'},
-                      ];
+                      // 2번째 페이지: 과일 카드들
+                      if (fruitCards.isEmpty) {
+                        // 카드가 없는 경우 빈 상태 표시
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              '아직 획득한 과일이 없습니다',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      
+                      final fruitCard = fruitCards[index];
+                      final isSelected = selectedFruitIds.contains(fruitCard.id);
                       
                       return FruitCard(
-                        fruitName: fruits[index]['name']!,
-                        fruitImagePath: fruits[index]['path']!,
-                        season: fruits[index]['season']!,
-                        date: '2025.09.11',
-                        isSelected: selectedFruits.contains(index),
+                        fruitName: fruitCard.name,
+                        fruitImagePath: fruitCard.imagePath,
+                        season: fruitCard.season,
+                        date: fruitCard.date,
+                        isSelected: isSelected,
                         onTap: () {
                           setState(() {
-                            if (selectedFruits.contains(index)) {
+                            if (isSelected) {
                               // 이미 선택된 경우 해제
-                              selectedFruits.remove(index);
-                            } else {
-                              // 새로운 선택
-                              selectedFruits.add(index);
+                              selectedFruitIds.remove(fruitCard.id);
+                            } else if (selectedFruitIds.length < 3) {
+                              // 새로운 선택 (최대 3개 제한)
+                              selectedFruitIds.add(fruitCard.id);
                             }
+                            // 3개가 이미 선택된 경우: 아무것도 하지 않음
                           });
                         },
                       );
                     } else {
-                      // 3번째 페이지: 모든 꽃들
-                      final flowers = [
-                        {'name': '아카시아', 'path': 'assets/images/flower/acacia.png', 'emotion': 'comfort'},
-                        {'name': '수국', 'path': 'assets/images/flower/hydrangea.png', 'emotion': 'comfort'},
-                        {'name': '동백꽃', 'path': 'assets/images/flower/camellia.png', 'emotion': 'love'},
-                        {'name': '장미', 'path': 'assets/images/flower/rose.png', 'emotion': 'love'},
-                        {'name': '벚꽃', 'path': 'assets/images/flower/cherry_blossom.png', 'emotion': 'joy'},
-                        {'name': '코스모스', 'path': 'assets/images/flower/cosmos.png', 'emotion': 'joy'},
-                        {'name': '목련', 'path': 'assets/images/flower/magnolia.png', 'emotion': 'hobby'},
-                        {'name': '해바라기', 'path': 'assets/images/flower/sunflower.png', 'emotion': 'hobby'},
-                        {'name': '팥배꽃', 'path': 'assets/images/flower/patbae_flower.png', 'emotion': 'memory'},
-                        {'name': '제비꽃', 'path': 'assets/images/flower/violet.png', 'emotion': 'memory'},
-                        {'name': '매화', 'path': 'assets/images/flower/plum_blossom.png', 'emotion': 'special'},
-                        {'name': '튤립', 'path': 'assets/images/flower/tulip.png', 'emotion': 'special'},
-
-
-                      ];
+                      // 3번째 페이지: 꽃 카드들
+                      if (flowerCards.isEmpty) {
+                        // 카드가 없는 경우 빈 상태 표시
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              '아직 획득한 꽃이 없습니다',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      
+                      final flowerCard = flowerCards[index];
+                      final isSelected = selectedFlowerIds.contains(flowerCard.id);
                       
                       return FlowerCard(
-                        flowerName: flowers[index]['name']!,
-                        flowerImagePath: flowers[index]['path']!,
-                        emotion: flowers[index]['emotion']!,
-                        date: '2025.09.11',
-                        isSelected: selectedFlowers.contains(index),
+                        flowerName: flowerCard.name,
+                        flowerImagePath: flowerCard.imagePath,
+                        emotion: flowerCard.emotion,
+                        date: flowerCard.date,
+                        isSelected: isSelected,
                         onTap: () {
                           setState(() {
-                            if (selectedFlowers.contains(index)) {
+                            if (isSelected) {
                               // 이미 선택된 경우 해제
-                              selectedFlowers.remove(index);
-                            } else {
-                              // 새로운 선택
-                              selectedFlowers.add(index);
+                              selectedFlowerIds.remove(flowerCard.id);
+                            } else if (selectedFlowerIds.length < 3) {
+                              // 새로운 선택 (최대 3개 제한)
+                              selectedFlowerIds.add(flowerCard.id);
                             }
+                            // 3개가 이미 선택된 경우: 아무것도 하지 않음
                           });
                         },
                       );
