@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_request_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_response_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
+import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +26,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
 
   String selectedSize = "3 x 3";
   int unplayedPuzzleIndex = 0;
+  User userInfo = User(name: 'Jaewook', id: '123');
 
   final List<String> sizeOptions = [
     "3 x 3",
@@ -27,18 +34,44 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
     "5 x 5",
   ];
 
-  PuzzleGame getPuzzle(int idx, String size){ ///여기선 '퍼즐 풀겠다!'선언했을때 일어나야 할 로직들이 담김.
-    final puzzle = Provider.of<PuzzleProvider>(
-      context,
-      listen: false, //이건 그냥 복사해서 가져오기만 하므로 재빌드 할 필요 없어서 false
-    ).unplayedPuzzles[idx];
-    unplayedPuzzleIndex++;
+  PuzzleGame getPuzzle(PuzzleCreateResponseDto dto){ ///여기선 '퍼즐 풀겠다!'선언했을때 일어나야 할 로직들이 담김.
 
-    puzzle.size = int.parse(size.split(" ")[0]); //"3 x 3" 이면 size = 3 됨.
-
-    ImageStore().removeImageWidgetAt(0); //이미지 저장 리스트의 첫 번째 이미지를 지움(지금 쓸거니까)
+    final puzzle = PuzzleGame(
+      puzzleId: dto.puzzleId,
+      imageWidget: ImageStore().imageWidgetList[0],
+      imageUrl: dto.imageUrl,
+      category: dto.category,
+      AIKeyword: dto.AIKeyword,
+      size: int.parse(selectedSize.split(" ")[0]) * int.parse(selectedSize.split(" ")[0]),
+      piecesPosition: [],
+      gameState: GameState.Unplayed, //어짜피 서버 연동하면 필요없어서 걍 냅둠
+      contributors: [userInfo],
+      isArchived: false, //어짜피 서버 연동하면 필요없어서 걍 냅둠
+    );
 
     return puzzle;
+  }
+
+  Future<void> _createPuzzle() async {
+    final puzzleDto = await PuzzleService().createPuzzle(
+      PuzzleCreateRequestDto(
+        userId: "123",
+        size: int.parse(selectedSize.split(" ")[0]) * int.parse(selectedSize.split(" ")[0]),
+      )
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('✅ 퍼즐 생성 완료!')),
+    );
+
+    const encoder = JsonEncoder.withIndent('  ');
+    final prettyJson = encoder.convert(puzzleDto.toJson());
+    print('📤 퍼즐 생성 결과:\n$prettyJson');
+
+    Navigator.of(context).pushNamed(
+      '/puzzle/play',
+      arguments: {'gameInstance': getPuzzle(puzzleDto)},
+    );
   }
 
   @override
@@ -79,10 +112,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
           CustomButton(
               text: '완료하기',
               onPressed: () {
-                Navigator.of(context).pushNamed(
-                  '/puzzle/play',
-                  arguments: {'gameInstance': getPuzzle(unplayedPuzzleIndex, selectedSize)},
-                );
+                _createPuzzle();
               },
           )
         ],

@@ -11,6 +11,9 @@ PuzzleCreateResponseDto _$PuzzleCreateResponseDtoFromJson(
 ) => PuzzleCreateResponseDto(
   puzzleId: json['puzzleId'] as String,
   imageUrl: json['imageUrl'] as String,
+  category: json['category'] as String,
+  AIKeyword:
+      (json['AIKeyword'] as List<dynamic>).map((e) => e as String).toList(),
   createdAt: json['createdAt'] as String,
   message: json['message'] as String,
 );
@@ -20,6 +23,8 @@ Map<String, dynamic> _$PuzzleCreateResponseDtoToJson(
 ) => <String, dynamic>{
   'puzzleId': instance.puzzleId,
   'imageUrl': instance.imageUrl,
+  'category': instance.category,
+  'AIKeyword': instance.AIKeyword,
   'createdAt': instance.createdAt,
   'message': instance.message,
 };

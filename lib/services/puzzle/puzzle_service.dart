@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:artificialsw_frontend/services/puzzle/dto/image_upload/image_upload_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_request_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_response_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_save_progress/puzzlepiece_position.dart';
 import 'package:dio/dio.dart';
 import 'package:artificialsw_frontend/services/api_client.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home/puzzle_home_get_dto.dart';
@@ -17,28 +19,20 @@ class PuzzleService {
   }
 
   // 사진 업로드(POST)
-  Future<void> uploadPuzzleImageWithMetadata({
-    required File imageFile,
-    required String comment,
-    required int userId,
-    required String category,
-  }) async {
-    final formData = FormData.fromMap({
-      'image': MultipartFile.fromFileSync(imageFile.path),
-      'comment': comment,
-      'userId': userId.toString(),  //userId → string으로
-      'category': category,
-    });
-
+  Future<void> uploadPuzzleImagesWithMetadata(ImageUploadDto dto) async {
     try {
+      // DTO → JSON 변환
+      final formData = dto.toJson();
+
+      // POST 요청
       final response = await _dio.post(
-        '/puzzle/image',
+        '/puzzle/images',
         data: formData,
-        options: Options(contentType: 'multipart/form-data'),
+        options: Options(contentType: 'application/json'),
       );
 
       if (response.statusCode == 200) {
-        print('✅ 업로드 성공');
+        print('✅ 여러 장 업로드 성공');
       } else {
         print('⚠️ 실패: ${response.statusCode}');
       }
@@ -47,8 +41,9 @@ class PuzzleService {
     }
   }
 
+
   // 🟡 퍼즐 생성
-  Future<PuzzleCreateResponseDto> createQuestion(PuzzleCreateRequestDto requestDto) async {
+  Future<PuzzleCreateResponseDto> createPuzzle(PuzzleCreateRequestDto requestDto) async {
     try {
       final response = await _dio.post(
         '/puzzle/create',
@@ -59,10 +54,54 @@ class PuzzleService {
     } on DioError catch (e) {
       // Dio 예외 처리
       if (e.response != null) {
-        throw Exception('에러: ${e.response?.data}');
+        print('에러: ${e.response?.data}');
       } else {
-        throw Exception('네트워크 에러: ${e.message}');
+        print('네트워크 에러: ${e.message}');
       }
+    }
+    return PuzzleCreateResponseDto(
+      puzzleId: '1',
+      message: '🔥 서버 연결 실패 - 목데이터 사용 중',
+      createdAt: DateTime.now().toIso8601String(),
+      imageUrl: 'https://picsum.photos/600/400',
+      category: 'Mock 카테고리',
+      AIKeyword: ['Mock 키워드', 'Mock 키워드 2'],
+    );
+  }
+
+  // 퍼즐 중간 저장
+  Future<void> savePuzzleProgress({
+    required String puzzleId,
+    required int puzzleSize,
+    required Map<String, PuzzlePiecePosition> pieces,
+    required List<int> completedPiecesId,
+    required String contributorId,
+    required bool completed,
+    required bool isPlayingPuzzle,
+  }) async {
+    final formData = FormData.fromMap({
+      'puzzleId': puzzleId,
+      'puzzleSize': puzzleSize,
+      'pieces': pieces,
+      'completedPiecesId': completedPiecesId,
+      'contributorId': contributorId,
+      'completed': completed,
+      'isPlayingPuzzle': isPlayingPuzzle,
+    });
+
+    try {
+      final response = await _dio.post(
+        '/puzzles/$puzzleId/save-progress', //여기 경로 puzzle 아니고 puzzles 되어있다..
+        data: formData,
+      );
+
+      if (response.statusCode == 200) {
+        print('✅ 업로드 성공');
+      } else {
+        print('⚠️ 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ 오류 발생: $e');
     }
   }
 

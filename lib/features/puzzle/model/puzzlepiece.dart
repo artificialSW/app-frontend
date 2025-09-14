@@ -11,7 +11,7 @@ class PuzzlePiece extends StatefulWidget {
   final Size imageSize;
   final int row;
   final int col;
-  final int id;
+  final String id;
   final int maxRow;
   final int maxCol;
   PiecePosition? position; ///얘는 PuzzleGame의 piecesPosition[idx] 와 다르게 nullable함.

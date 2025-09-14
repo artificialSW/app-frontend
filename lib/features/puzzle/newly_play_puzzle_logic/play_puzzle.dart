@@ -1,8 +1,14 @@
 import 'dart:async';
+import 'dart:collection';
+import 'dart:convert';
 import 'dart:math';
+import 'dart:ui' as ui;
 import 'package:artificialsw_frontend/features/puzzle/model/puzzle_board_scope.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_save_progress/puzzlepiece_position.dart';
+import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
+import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +17,17 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
+
 class PlayPuzzle extends StatefulWidget {
-  final PuzzleGame puzzle;
+  final PuzzleGame puzzle; //여기 선언된 것들은, 이 페이지를 불러올때 인자값을 줘야 하는 것
+  final User user;
 
   const PlayPuzzle({
     Key? key,
     required this.puzzle,
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -24,8 +35,8 @@ class PlayPuzzle extends StatefulWidget {
 }
 
 class _PlayPuzzleState extends State<PlayPuzzle> {
-  int get rows => widget.puzzle.size!;
-  int get cols => widget.puzzle.size!;
+  int get rows => sqrt(widget.puzzle.size).toInt(); //여기 선언된 것들은, 그냥 이 페이지 내부에서만 쓰이는 것
+  int get cols => sqrt(widget.puzzle.size).toInt();
   Image? _image;
   List<PuzzlePiece> pieces = [];
   List<int> get completedPiecesId => widget.puzzle.completedPiecesId; ///게임 플레이 인스턴스에서도 다시 불러와야 쭉 하던게 이어짐.
@@ -33,9 +44,9 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   @override
   void initState() {
     super.initState();
-    final imageWidget = widget.puzzle.imageWidget;
-    // 처리용 함수 호출 (예: 퍼즐 생성 등)
-    _loadImage(imageWidget!);
+    final imageWidget = Image.network(widget.puzzle.imageUrl);
+
+    _loadImage(imageWidget);
   }
 
   // 에셋 이미지를 로드하고 퍼즐 조각을 생성하는 함수
@@ -46,8 +57,6 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
 
     _splitImage(image); // 퍼즐 조각 생성 함수
   }
-
-
 
   Future<Size> _getImageSize(Image image) async {
     final Completer<Size> completer = Completer<Size>();
@@ -78,7 +87,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
             imageSize: imageSize,
             row: x,
             col: y,
-            id: x * cols + y, // 지금 당장은 팔요 없는 것 같긴 함
+            id: (x * cols + y).toString(), // 지금 당장은 팔요 없는 것 같긴 함
             maxRow: rows,
             maxCol: cols,
             position: widget.puzzle.gameState != GameState.Ongoing
@@ -128,7 +137,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       }
       //widget.puzzle.piecesPosition[id] = pos; //게임 범위에서 조각의 위치를 업데이트(이건 이렇게 코드로 써 줘야 함)
       for (final piece in pieces) {
-        widget.puzzle.piecesPosition[piece.id] = piece.position!; //위치로 판별해서 oncompleted가 실행되는데 null일수 없음
+        widget.puzzle.piecesPosition[int.parse(piece.id)] = piece.position!; //위치로 판별해서 oncompleted가 실행되는데 null일수 없음
       }
 
       if (completedPiecesId.length == rows * cols) { //모든 Piece가 다 맞춰졌을 때
@@ -147,6 +156,57 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
         }
       }
     });
+  }
+
+  void _saveProgress() {
+    completedPiecesId.sort();
+
+    final map = SplayTreeMap<String, PuzzlePiecePosition>(); //자동 정렬을 위해 SplayTreeMap 사용
+    for (var i = 0; i < widget.puzzle.size && i < pieces.length; i++) {
+      map[pieces[i].id] = PuzzlePiecePosition(row: pieces[i].position!.y, col: pieces[i].position!.x);
+    }
+
+    // 여기서부터 테스트 출력용 로직.
+    final data = {
+      "puzzleId": widget.puzzle.puzzleId,
+      "puzzleSize": widget.puzzle.size,
+      "pieces": map.map(
+            (key, value) => MapEntry(
+          key,
+          {"row": value.row, "col": value.col},
+        ),
+      ),
+      "completedPiecesId": completedPiecesId,
+      "contributorId": widget.user.id,
+      "completed": false,
+      "isPlayingPuzzle": true,
+    };
+    // 예쁘게 출력
+    const encoder = JsonEncoder.withIndent('  ');
+    print("📤 서버에 풀던 퍼즐 데이터 전송 완료:\n${encoder.convert(data)}");
+
+    PuzzleService().savePuzzleProgress(
+        puzzleId: widget.puzzle.puzzleId,
+        puzzleSize: widget.puzzle.size,
+        pieces: map,
+        completedPiecesId: completedPiecesId,
+        contributorId: widget.user.id,
+        completed: false,
+        isPlayingPuzzle: true,
+    );
+    final piecesStr = map.entries
+        .map((e) => '${e.key}: (row=${e.value.row}, col=${e.value.col})')
+        .join(', ');
+
+    // print('서버에 풀던 퍼즐 데이터 전송 완료: \n'
+    //     ' ├─ puzzleId: ${widget.puzzle.puzzleId}\n'
+    //     ' ├─ puzzleSize: ${widget.puzzle.size}\n'
+    //     ' ├─ pieces: {$piecesStr}\n'
+    //     ' ├─ completedPiecesId: $completedPiecesId\n'
+    //     ' └─ contributorId: ${widget.user.id}');
+
+
+    Navigator.of(context).pushReplacementNamed('/');
   }
 
   void _navigateToAwardPage() async {
@@ -260,8 +320,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
                       child: CustomButton(
                         text: '저장하기',
                         onPressed: () {
-                          Navigator.of(context).pushReplacementNamed(
-                              '/');
+                          _saveProgress();
                         },
                       )
                     ),

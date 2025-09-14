@@ -23,11 +23,11 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
   late final TextEditingController _questionController;
 
   final members = [
-    User(id: 1, name: '아빠'),
-    User(id: 2, name: '엄마'),
-    User(id: 3, name: '할아버지'),
-    User(id: 4, name: '할머니'),
-    User(id: 5, name: '동생'),
+    User(id: '1', name: '아빠'),
+    User(id: '2', name: '엄마'),
+    User(id: '3', name: '할아버지'),
+    User(id: '4', name: '할머니'),
+    User(id: '5', name: '동생'),
   ];
 
   @override

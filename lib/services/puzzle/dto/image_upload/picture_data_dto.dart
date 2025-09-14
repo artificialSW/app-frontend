@@ -6,13 +6,13 @@ part 'picture_data_dto.g.dart'; // 자동 생성 파일
 @JsonSerializable()
 class PictureDataDto {
   final String userId;
-  final String imageFile;
+  final String imageBase64;
   final String comment;
   final String category;
 
   PictureDataDto({
     required this.userId,
-    required this.imageFile,
+    required this.imageBase64,
     required this.comment,
     required this.category,
   });

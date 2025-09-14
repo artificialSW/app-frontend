@@ -9,7 +9,7 @@ part of 'picture_data_dto.dart';
 PictureDataDto _$PictureDataDtoFromJson(Map<String, dynamic> json) =>
     PictureDataDto(
       userId: json['userId'] as String,
-      imageFile: json['imageFile'] as String,
+      imageBase64: json['imageFile'] as String,
       comment: json['comment'] as String,
       category: json['category'] as String,
     );
@@ -17,7 +17,7 @@ PictureDataDto _$PictureDataDtoFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$PictureDataDtoToJson(PictureDataDto instance) =>
     <String, dynamic>{
       'userId': instance.userId,
-      'imageFile': instance.imageFile,
+      'imageFile': instance.imageBase64,
       'comment': instance.comment,
       'category': instance.category,
     };
