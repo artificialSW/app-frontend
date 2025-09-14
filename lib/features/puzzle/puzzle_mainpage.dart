@@ -73,9 +73,6 @@ class _PuzzleRootState extends State<PuzzleRoot> {
 
   @override
   Widget build(BuildContext context) {
-
-    final testlist = ['1번', '2번', '3번'];
-
     return Scaffold(
       // 이 Scaffold를 추가합니다.
       appBar: PuzzlRootTopBar(),

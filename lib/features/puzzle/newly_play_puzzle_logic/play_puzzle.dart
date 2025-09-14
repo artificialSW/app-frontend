@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:artificialsw_frontend/features/puzzle/model/puzzle_board_scope.dart';
@@ -165,6 +166,25 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       map[pieces[i].id] = PuzzlePiecePosition(row: pieces[i].position!.y, col: pieces[i].position!.x);
     }
 
+    // 여기서부터 테스트 출력용 로직.
+    final data = {
+      "puzzleId": widget.puzzle.puzzleId,
+      "puzzleSize": widget.puzzle.size,
+      "pieces": map.map(
+            (key, value) => MapEntry(
+          key,
+          {"row": value.row, "col": value.col},
+        ),
+      ),
+      "completedPiecesId": completedPiecesId,
+      "contributorId": widget.user.id,
+      "completed": false,
+      "isPlayingPuzzle": true,
+    };
+    // 예쁘게 출력
+    const encoder = JsonEncoder.withIndent('  ');
+    print("📤 서버에 풀던 퍼즐 데이터 전송 완료:\n${encoder.convert(data)}");
+
     PuzzleService().savePuzzleProgress(
         puzzleId: widget.puzzle.puzzleId,
         puzzleSize: widget.puzzle.size,
@@ -178,12 +198,12 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
         .map((e) => '${e.key}: (row=${e.value.row}, col=${e.value.col})')
         .join(', ');
 
-    print('서버에 풀던 퍼즐 데이터 전송 완료: \n'
-        ' ├─ puzzleId: ${widget.puzzle.puzzleId}\n'
-        ' ├─ puzzleSize: ${widget.puzzle.size}\n'
-        ' ├─ pieces: {$piecesStr}\n'
-        ' ├─ completedPiecesId: $completedPiecesId\n'
-        ' └─ contributorId: ${widget.user.id}');
+    // print('서버에 풀던 퍼즐 데이터 전송 완료: \n'
+    //     ' ├─ puzzleId: ${widget.puzzle.puzzleId}\n'
+    //     ' ├─ puzzleSize: ${widget.puzzle.size}\n'
+    //     ' ├─ pieces: {$piecesStr}\n'
+    //     ' ├─ completedPiecesId: $completedPiecesId\n'
+    //     ' └─ contributorId: ${widget.user.id}');
 
 
     Navigator.of(context).pushReplacementNamed('/');

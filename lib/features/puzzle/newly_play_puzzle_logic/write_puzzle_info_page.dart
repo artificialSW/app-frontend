@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_request_dto.dart';
@@ -54,13 +56,17 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
     final puzzleDto = await PuzzleService().createPuzzle(
       PuzzleCreateRequestDto(
         userId: "123",
-        size: int.parse(selectedSize.split(" ")[0]),
+        size: int.parse(selectedSize.split(" ")[0]) * int.parse(selectedSize.split(" ")[0]),
       )
     );
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('✅ 퍼즐 생성 완료!')),
     );
+
+    const encoder = JsonEncoder.withIndent('  ');
+    final prettyJson = encoder.convert(puzzleDto.toJson());
+    print('📤 퍼즐 생성 결과:\n$prettyJson');
 
     Navigator.of(context).pushNamed(
       '/puzzle/play',
