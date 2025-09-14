@@ -161,29 +161,18 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   void _saveProgress() {
     completedPiecesId.sort();
 
-    final map = SplayTreeMap<String, PuzzlePiecePosition>(); //자동 정렬을 위해 SplayTreeMap 사용
+    final map = SplayTreeMap<String, PuzzlePiecePosition>((a, b) {  //자동 정렬을 위해 SplayTreeMap 사용
+      final ai = int.tryParse(a);
+      final bi = int.tryParse(b);
+      if (ai != null && bi != null) return ai.compareTo(bi);
+      if (ai != null) return -1;  // 숫자인 쪽을 먼저
+      if (bi != null) return 1;
+      return a.compareTo(b);      // 둘 다 숫자 아니면 문자열 비교
+    });
+
     for (var i = 0; i < widget.puzzle.size && i < pieces.length; i++) {
       map[pieces[i].id] = PuzzlePiecePosition(row: pieces[i].position!.y, col: pieces[i].position!.x);
     }
-
-    // 여기서부터 테스트 출력용 로직.
-    final data = {
-      "puzzleId": widget.puzzle.puzzleId,
-      "puzzleSize": widget.puzzle.size,
-      "pieces": map.map(
-            (key, value) => MapEntry(
-          key,
-          {"row": value.row, "col": value.col},
-        ),
-      ),
-      "completedPiecesId": completedPiecesId,
-      "contributorId": widget.user.id,
-      "completed": false,
-      "isPlayingPuzzle": true,
-    };
-    // 예쁘게 출력
-    const encoder = JsonEncoder.withIndent('  ');
-    print("📤 서버에 풀던 퍼즐 데이터 전송 완료:\n${encoder.convert(data)}");
 
     PuzzleService().savePuzzleProgress(
         puzzleId: widget.puzzle.puzzleId,
@@ -198,13 +187,12 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
         .map((e) => '${e.key}: (row=${e.value.row}, col=${e.value.col})')
         .join(', ');
 
-    // print('서버에 풀던 퍼즐 데이터 전송 완료: \n'
-    //     ' ├─ puzzleId: ${widget.puzzle.puzzleId}\n'
-    //     ' ├─ puzzleSize: ${widget.puzzle.size}\n'
-    //     ' ├─ pieces: {$piecesStr}\n'
-    //     ' ├─ completedPiecesId: $completedPiecesId\n'
-    //     ' └─ contributorId: ${widget.user.id}');
-
+    debugPrint('서버에 풀던 퍼즐 데이터 전송 완료: \n'
+        ' ├─ puzzleId: ${widget.puzzle.puzzleId}\n'
+        ' ├─ puzzleSize: ${widget.puzzle.size}\n'
+        ' ├─ pieces: {$piecesStr}\n'
+        ' ├─ completedPiecesId: $completedPiecesId\n'
+        ' └─ contributorId: ${widget.user.id}');
 
     Navigator.of(context).pushReplacementNamed('/');
   }
