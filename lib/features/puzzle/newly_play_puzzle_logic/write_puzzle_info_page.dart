@@ -34,14 +34,6 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
 
   PuzzleGame getPuzzle(PuzzleCreateResponseDto dto){ ///여기선 '퍼즐 풀겠다!'선언했을때 일어나야 할 로직들이 담김.
 
-
-    // final String puzzleId;
-    // final String imageUrl;
-    // final String category;
-    // final List<String> AIKeyword;
-    // final String createdAt;
-    // final String message;
-
     final puzzle = PuzzleGame(
       puzzleId: dto.puzzleId,
       imageWidget: ImageStore().imageWidgetList[0],

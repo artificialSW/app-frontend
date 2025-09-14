@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:artificialsw_frontend/services/puzzle/dto/image_upload/image_upload_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_request_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_response_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_save_progress/puzzlepiece_position.dart';
@@ -18,28 +19,20 @@ class PuzzleService {
   }
 
   // 사진 업로드(POST)
-  Future<void> uploadPuzzleImageWithMetadata({
-    required File imageFile,
-    required String comment,
-    required int userId,
-    required String category,
-  }) async {
-    final formData = FormData.fromMap({
-      'image': MultipartFile.fromFileSync(imageFile.path),
-      'comment': comment,
-      'userId': userId.toString(),  //userId → string으로
-      'category': category,
-    });
-
+  Future<void> uploadPuzzleImagesWithMetadata(ImageUploadDto dto) async {
     try {
+      // DTO → JSON 변환
+      final formData = dto.toJson();
+
+      // POST 요청
       final response = await _dio.post(
-        '/puzzle/image',
+        '/puzzle/images',
         data: formData,
-        options: Options(contentType: 'multipart/form-data'), //이미지를 보낼 거라 적어줌. 일반적으로는 작성 X
+        options: Options(contentType: 'application/json'),
       );
 
       if (response.statusCode == 200) {
-        print('✅ 업로드 성공');
+        print('✅ 여러 장 업로드 성공');
       } else {
         print('⚠️ 실패: ${response.statusCode}');
       }
@@ -47,6 +40,7 @@ class PuzzleService {
       print('❌ 오류 발생: $e');
     }
   }
+
 
   // 🟡 퍼즐 생성
   Future<PuzzleCreateResponseDto> createPuzzle(PuzzleCreateRequestDto requestDto) async {

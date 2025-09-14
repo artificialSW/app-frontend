@@ -1,11 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:artificialsw_frontend/features/puzzle/model/image_upload_unit.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/image_upload/image_upload_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/image_upload/picture_data_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:artificialsw_frontend/services/image_store.dart';
 
 class ImageUploadPage extends StatefulWidget {
   final List<String> category;
@@ -62,20 +64,48 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
   }
 
   Future<void> _submitAll() async {
+    // pictureData 배열 준비
+    final List<Map<String, dynamic>> pictureDataList = [];
+
     for (final item in _uploads) {
-      await PuzzleService().uploadPuzzleImageWithMetadata(
-        imageFile: item.imageFile,
-        comment: item.comment,
-        userId: 123, ///이거 실제 userId로 바꿔야 함.
-        category: item.category,
+      final base64String = await imageFileToBase64(item.imageFile);
+
+      pictureDataList.add({
+        "userId": 123, // int로 그대로 넣음
+        "imageBase64": "${base64String.substring(0, 50)}...",
+        "comment": item.comment,
+        "category": item.category,
+      });
+
+      // 실제 업로드
+      await PuzzleService().uploadPuzzleImagesWithMetadata(
+        ImageUploadDto(
+          pictureData: [
+            PictureDataDto(
+              userId: "123",
+              imageBase64: base64String,
+              comment: item.comment,
+              category: item.category,
+            ),
+          ],
+        ),
       );
     }
 
+    // ✅ JSON 형식으로 보기 좋게 출력
+    const encoder = JsonEncoder.withIndent('  ');
+    print('pictureData: ${encoder.convert(pictureDataList)}');
+
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('✅ 전체 업로드 완료!')),
+      const SnackBar(content: Text('✅ 전체 업로드 완료!')),
     );
 
     Navigator.of(context).pushNamed('/');
+  }
+
+  Future<String> imageFileToBase64(File imageFile) async {
+    final imageBytes = await imageFile.readAsBytesSync();
+    return base64Encode(imageBytes);
   }
 
   @override
