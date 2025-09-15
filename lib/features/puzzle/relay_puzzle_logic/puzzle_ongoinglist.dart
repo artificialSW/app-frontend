@@ -35,9 +35,9 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
           PuzzleGetInProgressDataDto(
             puzzleId: '1',
             imageUrl: 'https://picsum.photos/600/400',
-            contributors: ['mock1', 'mock', 'mock'],
+            contributors: ['진행중-mock1', 'mock', 'mock'],
             lastSavedAt: 'mock 시간 데이터1',
-            AIKeyword: ['mock1', 'AI', 'keyword'],
+            AIKeyword: ['진행중인mock1', 'AI', 'keyword'],
             category: 'mock 카테고리1'
           ),
           PuzzleGetInProgressDataDto(

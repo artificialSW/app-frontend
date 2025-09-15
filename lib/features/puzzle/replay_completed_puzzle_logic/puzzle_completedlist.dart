@@ -35,9 +35,9 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
             PuzzleGetCompletedDataDto(
                 puzzleId: '1',
                 imageUrl: 'https://picsum.photos/600/400',
-                contributors: ['mock1', 'mock', 'mock'],
+                contributors: ['완료-mock1', 'mock', 'mock'],
                 completedAt: 'mock 시간 데이터1',
-                AIKeyword: ['mock1', 'AI', 'keyword'],
+                AIKeyword: ['완료-mock1', 'AI', 'keyword'],
                 category: 'mock 카테고리1'
             ),
             PuzzleGetCompletedDataDto(
@@ -118,7 +118,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                 onSave: () {
                   // 저장 로직
                 },
-                gameState: GameState.Ongoing,
+                gameState: GameState.Completed,
                 isArchived: false,
               );
             },

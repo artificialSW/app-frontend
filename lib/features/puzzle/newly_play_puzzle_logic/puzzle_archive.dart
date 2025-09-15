@@ -35,9 +35,9 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
             PuzzleGetArchivedDataDto(
                 puzzleId: '1',
                 imageUrl: 'https://picsum.photos/600/400',
-                contributors: ['mock1', 'mock', 'mock'],
+                contributors: ['아카이브의mock1', 'mock', 'mock'],
                 archivedAt: 'mock 시간 데이터1',
-                AIKeyword: ['mock1', 'AI', 'keyword'],
+                AIKeyword: ['아카이브의mock1', 'AI', 'keyword'],
                 category: 'mock 카테고리1'
             ),
             PuzzleGetArchivedDataDto(
