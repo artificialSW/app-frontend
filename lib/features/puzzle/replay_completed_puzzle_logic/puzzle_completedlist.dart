@@ -115,8 +115,11 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                     arguments: {'gameInstance': puzzleGame},
                   );
                 },
-                onSave: () {
-                  // 저장 로직
+                onSave: () async {
+                  await PuzzleService().archiveCompletedPuzzle(puzzleDto.puzzleId);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('아카이브 요청 완료 (성공 여부는 콘솔 참고)')),
+                  );
                 },
                 gameState: GameState.Completed,
                 isArchived: false,

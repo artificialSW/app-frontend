@@ -22,9 +22,9 @@ class PuzzleArchive extends StatefulWidget {
 class _PuzzleArchiveState extends State<PuzzleArchive> {
   final _user = User(name: 'MockUser', id: '123');
 
-  late Future<PuzzleGetArchivedListDto> _completedPuzzlesFuture;
+  late Future<PuzzleGetArchivedListDto> _archivedPuzzlesFuture;
 
-  Future<PuzzleGetArchivedListDto> _fetchCompletedPuzzles() async {
+  Future<PuzzleGetArchivedListDto> _fetchArchivedPuzzles() async {
     try{
       return await PuzzleService().getArchivedList();
     } catch (e){
@@ -64,48 +64,49 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
   @override
   void initState() {
     super.initState();
-    _completedPuzzlesFuture = _fetchCompletedPuzzles();
+    _archivedPuzzlesFuture = _fetchArchivedPuzzles();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CanGoBackTopBar('퍼즐 아카이브', context),
-      body: Consumer<PuzzleProvider>(
-        builder: (context, puzzleProvider, child) {
-          if (puzzleProvider.archivedPuzzles.isEmpty) {
-            return const Center(
-              child: Text(
-                '아카이빙이 비었어요. 어서 퍼즐을 풀어보세요!',
-                style: TextStyle(color: Colors.grey),
-              ),
-            );
+      body: FutureBuilder<PuzzleGetArchivedListDto>(
+        future: _fetchArchivedPuzzles(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ListView.builder(
-              itemCount: puzzleProvider.archivedPuzzles.length,
-              itemBuilder: (context, index) {
-                final puzzle = puzzleProvider.archivedPuzzles[index];
-                return PuzzleListItem(
-                  puzzleDto: puzzle,
-                  onDelete: () => showDialog(
-                    context: context,
-                    builder: (context) {
-                      return DeleteConfirm(
-                        title: '퍼즐을 삭제하시겠습니까?',
-                        content: '퍼즐 관련 데이터가 모두 삭제됩니다.',
-                        puzzleId: puzzle.puzzleId, // 삭제할 퍼즐 id
-                      );
-                    },
-                  ),
-                  onPressed: () {},
-                  onSave: () {}, //TODO: 핸드폰에 저장하는 기능 구현하기
-                  gameState: GameState.Completed, // 완료된 퍼즐임을 표시
-                  isArchived: true,
-                );
-              },
-            ),
+          if (snapshot.hasError || !snapshot.hasData) {
+            return const Center(child: Text('데이터 불러오기 실패'));
+          }
+
+          final puzzles = snapshot.data!.archivedList;
+
+          if (puzzles.isEmpty) {
+            return const Center(child: Text('아카이브에 퍼즐이 없습니다.'));
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: puzzles.length,
+            itemBuilder: (context, index) {
+              final puzzleDto = puzzles[index];
+              return PuzzleListItem(
+                puzzleDto: puzzleDto,
+                onDelete: () {
+                  // 삭제 로직
+                },
+                onPressed: () {
+
+                },
+                onSave: () {
+                  // 저장 로직
+                },
+                gameState: GameState.Completed,
+                isArchived: true,
+              );
+            },
           );
         },
       ),

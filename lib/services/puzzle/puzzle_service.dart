@@ -165,6 +165,26 @@ class PuzzleService {
     return PuzzleGetArchivedListDto.fromJson(response.data);
   }
 
+  // 완료된 퍼즐을 아카이브로 이동 (POST)
+  Future<void> archiveCompletedPuzzle(String puzzleId) async {
+    try {
+      final response = await _dio.post('/puzzles/$puzzleId/archive');
+
+      if (response.statusCode == 200) {
+        final message = response.data['message'];
+        print('✅ 퍼즐 아카이브 성공: $message');
+      } else {
+        print('⚠️ 퍼즐 아카이브 실패: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      final error = e.response?.data['message'] ?? e.message;
+      print('❌ 아카이브 요청 중 오류 발생: $error');
+    } catch (e) {
+      print('❌ 예외 발생: $e');
+    }
+  }
+
+
 // 🔵 퍼즐 삭제
 
 }
