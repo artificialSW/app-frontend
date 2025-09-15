@@ -30,9 +30,9 @@ class TreeImagePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // 3개의 나무 리스트 (각 페이지별로 다른 나무)
     final List<Tree> treeList = [
-      Tree(name: treeName, namingDate: namingDate, fruitCount: 20, flowerCount: 8),
-      Tree(name: treeName, namingDate: namingDate, fruitCount: 3, flowerCount: 0),
-      Tree(name: treeName, namingDate: namingDate, fruitCount: 0, flowerCount: 3),
+      Tree(id: 'tree_1', name: treeName, namingDate: namingDate, fruitCount: 20, flowerCount: 8),
+      Tree(id: 'tree_2', name: treeName, namingDate: namingDate, fruitCount: 3, flowerCount: 0),
+      Tree(id: 'tree_3', name: treeName, namingDate: namingDate, fruitCount: 0, flowerCount: 3),
     ];
 
     // 현재 페이지에 해당하는 나무

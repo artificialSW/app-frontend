@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:artificialsw_frontend/services/api_client.dart';
+import 'dto/tree_name_id/tree_name_request_dto.dart';
+import 'dto/tree_name_id/tree_id_response_dto.dart';
 
 /// 홈 관련 서버 통신을 담당하는 서비스 클래스
 /// 퍼즐과 동일한 패턴으로 구현
@@ -39,6 +41,22 @@ class HomeService {
     } catch (e) {
       print('❌ 저장 오류: $e');
       throw Exception('선택된 카드 저장 실패: $e');
+    }
+  }
+
+  // 🌳 나무 이름으로 나무 ID 조회 (POST)
+  Future<TreeIdResponseDto> getTreeIdByName({
+    required String userId,
+    required String treeName,
+  }) async {
+    try {
+      final requestDto = TreeNameRequestDto(treeName: treeName);
+      final response = await _dio.post('/api/users/$userId/tree-name', data: requestDto.toJson());
+      
+      return TreeIdResponseDto.fromJson(response.data);
+    } catch (e) {
+      print('❌ 나무 ID 조회 오류: $e');
+      throw Exception('나무 ID 조회 실패: $e');
     }
   }
 
