@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:artificialsw_frontend/services/puzzle/dto/get_archived_puzzle_list/puzzle_get_archived_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle/play_puzzle_completed_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle_list/puzzle_get_completed_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle/play_puzzle_in_progress_dto.dart';
@@ -156,6 +157,12 @@ class PuzzleService {
   Future<PlayPuzzleCompletedDto> playCompletedPuzzle(String puzzleId) async {
     final response = await _dio.get('/puzzles/$puzzleId/retry');
     return PlayPuzzleCompletedDto.fromJson(response.data);
+  }
+
+  // 아카이브된 퍼즐 불러오기 (GET)
+  Future<PuzzleGetArchivedListDto> getArchivedList() async {
+    final response = await _dio.get('/puzzles/archive');
+    return PuzzleGetArchivedListDto.fromJson(response.data);
   }
 
 // 🔵 퍼즐 삭제

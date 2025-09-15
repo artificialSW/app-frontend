@@ -48,8 +48,8 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
       return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleInstance, user: User(id: '123', name: 'Jaewook')));
     case '/puzzle/re-completed':
       return MaterialPageRoute(builder: (_) => PuzzleRecompleted());
-    // case '/puzzle/archive':
-    //   return MaterialPageRoute(builder: (_) => PuzzleArchive());
+    case '/puzzle/archive':
+      return MaterialPageRoute(builder: (_) => PuzzleArchive());
     case '/puzzle/assetView':
       return MaterialPageRoute(builder: (_) => AssetView());
 
