@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:artificialsw_frontend/services/puzzle/dto/image_upload/image_upload_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_request_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_response_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_request_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_response_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_save_progress/puzzlepiece_position.dart';
@@ -42,7 +44,7 @@ class PuzzleService {
   }
 
 
-  // 🟡 퍼즐 생성
+  // 🟡 퍼즐 생성 : POST
   Future<PuzzleCreateResponseDto> createPuzzle(PuzzleCreateRequestDto requestDto) async {
     try {
       final response = await _dio.post(
@@ -69,7 +71,7 @@ class PuzzleService {
     );
   }
 
-  // 퍼즐 중간 저장
+  // 퍼즐 중간 저장 : POST
   Future<void> savePuzzleProgress({
     required String puzzleId,
     required int puzzleSize,
@@ -102,6 +104,28 @@ class PuzzleService {
       }
     } catch (e) {
       print('❌ 오류 발생: $e');
+    }
+  }
+
+  // 퍼즐 완료
+  Future<PuzzleCompleteResponseDto> completePuzzle(PuzzleCompleteRequestDto request) async {
+
+    try {
+      final response = await _dio.post(
+        '/puzzles/${request.puzzleId}/complete',
+        data: request.toJson(), // JSON 자동 직렬화
+      );
+
+      return PuzzleCompleteResponseDto.fromJson(response.data); //그냥 .g 파일에 있는 함수임. 어렵게 생각 ㄴㄴ
+    } catch (e) {
+      print('❌ 퍼즐 완료 처리 실패: $e');
+      return PuzzleCompleteResponseDto(
+        puzzleId: '123',
+        message: '🔥 서버 연결 실패 - 목데이터 사용 중',
+        fruitName: 'Mock 과일 이름',
+        fruitMessage: 'Mock 과일 메시지',
+        contributors: ['mock', 'mock']
+      ); // 이런 식의 기본 생성자가 있을 때만!
     }
   }
 

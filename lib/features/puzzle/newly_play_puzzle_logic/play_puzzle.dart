@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import 'package:artificialsw_frontend/features/puzzle/model/puzzle_board_scope.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_request_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_save_progress/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
@@ -200,12 +201,28 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   void _navigateToAwardPage() async {
     print("퍼즐 완성! 다음 페이지로 이동합니다.");
 
+    final puzzleDto = await PuzzleService().completePuzzle(
+        PuzzleCompleteRequestDto(
+          puzzleId: widget.puzzle.puzzleId,
+          solverId: widget.user.id,
+        )
+    );
+    ///TODO("AIKeyword, category, 생성된 열매 등등 넘겨받기")
+    //{
+    //   "puzzleId": "puzzle789",
+    //   "message": "이때 할아버지 엄청 신나셨던거 기억나?"
+    //   "fruitName" : "귤"
+    //   "fruitMessage" : "탐스러운 겨울 귤 획득!"
+    //   "contributors" : ["재욱", "정환"]
+    // }
+
     // 1초 기다리기
     await Future.delayed(const Duration(seconds: 1));
 
-
-    // '/puzzle/in-progress' 대신 이동할 페이지의 라우트 이름을 사용
-    Navigator.of(context).pushReplacementNamed('/puzzle/completed');
+    Navigator.of(context).pushReplacementNamed(
+        '/puzzle/completed',
+        arguments: {'result': puzzleDto}
+    );
   }
 
   void _navigateToNonAwardPage() async {
@@ -213,7 +230,6 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
 
     // 1초 기다리기
     await Future.delayed(const Duration(seconds: 1));
-
     Navigator.of(context).pushReplacementNamed('/puzzle/re-completed');
   }
 
