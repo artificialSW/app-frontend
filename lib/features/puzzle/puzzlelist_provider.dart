@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_data_dto.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
@@ -172,19 +173,21 @@ class PuzzleProvider with ChangeNotifier {
 
 /// 퍼즐 목록의 개별 항목 위젯
 class PuzzleListItem extends StatelessWidget {
-  final PuzzleGame puzzle;
+  final dynamic puzzleDto; // PuzzleGetInProgressDataDto or PuzzleGetCompletedDataDto or PuzzleGetArchivedDataDto
   final VoidCallback onDelete;
   final VoidCallback onPressed;
   final VoidCallback onSave;
   final GameState gameState;
+  final bool isArchived;
 
   const PuzzleListItem({
     Key? key,
-    required this.puzzle,
+    required this.puzzleDto,
     required this.onDelete,
     required this.onPressed,
     required this.onSave,
     required this.gameState,
+    required this.isArchived,
   }) : super(key: key);
 
   // 진행중 퍼즐 카드
@@ -196,7 +199,7 @@ class PuzzleListItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '주제: ${puzzle.puzzleId}',
+          '주제: ${puzzleDto.category}',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         const SizedBox(height: 4),
@@ -242,7 +245,7 @@ class PuzzleListItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '주제: ${puzzle.puzzleId}',
+          '주제: ${puzzleDto.category}',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         const SizedBox(height: 4),
@@ -287,7 +290,7 @@ class PuzzleListItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '주제: ${puzzle.puzzleId}',
+          '주제: ${puzzleDto.category}',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         const SizedBox(height: 4),
@@ -352,7 +355,7 @@ class PuzzleListItem extends StatelessWidget {
               height: 130,
               child: FittedBox(
                 fit: BoxFit.contain,
-                child: puzzle.imageWidget,
+                child: Image.network(puzzleDto.imageUrl),
               ),
             ),
           ),
@@ -363,9 +366,9 @@ class PuzzleListItem extends StatelessWidget {
                 children: [
                   if (gameState == GameState.Ongoing)
                     OngoingPuzzleCard(onDelete: onDelete, onPressed: onPressed),
-                  if (gameState == GameState.Completed && puzzle.isArchived == false)
+                  if (gameState == GameState.Completed && isArchived == false)
                     CompletedPuzzleCard(onDelete: onDelete, onPressed: onPressed),
-                  if (gameState == GameState.Completed && puzzle.isArchived == true)
+                  if (gameState == GameState.Completed && isArchived == true)
                     ArchivedPuzzleCard(onDelete: onDelete, onSave: onSave),
                 ]
             ),

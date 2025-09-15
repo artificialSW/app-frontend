@@ -1,57 +1,58 @@
-import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
-import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
-import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_ongoinglist.dart';
-import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
-import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
-import 'package:artificialsw_frontend/shared/widgets/custom_deleteConfirmationDialog.dart';
-import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-class PuzzleArchive extends StatelessWidget {
-  const PuzzleArchive({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CanGoBackTopBar('퍼즐 아카이브', context),
-      body: Consumer<PuzzleProvider>(
-        builder: (context, puzzleProvider, child) {
-          if (puzzleProvider.archivedPuzzles.isEmpty) {
-            return const Center(
-              child: Text(
-                '아카이빙이 비었어요. 어서 퍼즐을 풀어보세요!',
-                style: TextStyle(color: Colors.grey),
-              ),
-            );
-          }
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ListView.builder(
-              itemCount: puzzleProvider.archivedPuzzles.length,
-              itemBuilder: (context, index) {
-                final puzzle = puzzleProvider.archivedPuzzles[index];
-                return PuzzleListItem(
-                  puzzle: puzzle,
-                  onDelete: () => showDialog(
-                    context: context,
-                    builder: (context) {
-                      return DeleteConfirm(
-                        title: '퍼즐을 삭제하시겠습니까?',
-                        content: '퍼즐 관련 데이터가 모두 삭제됩니다.',
-                        puzzleId: puzzle.puzzleId, // 삭제할 퍼즐 id
-                      );
-                    },
-                  ),
-                  onPressed: () {},
-                  onSave: () {}, //TODO: 핸드폰에 저장하는 기능 구현하기
-                  gameState: GameState.Completed, // 완료된 퍼즐임을 표시
-                );
-              },
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
+// import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
+// import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
+// import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_ongoinglist.dart';
+// import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+// import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+// import 'package:artificialsw_frontend/shared/widgets/custom_deleteConfirmationDialog.dart';
+// import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
+// import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+//
+// class PuzzleArchive extends StatelessWidget {
+//   const PuzzleArchive({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: CanGoBackTopBar('퍼즐 아카이브', context),
+//       body: Consumer<PuzzleProvider>(
+//         builder: (context, puzzleProvider, child) {
+//           if (puzzleProvider.archivedPuzzles.isEmpty) {
+//             return const Center(
+//               child: Text(
+//                 '아카이빙이 비었어요. 어서 퍼즐을 풀어보세요!',
+//                 style: TextStyle(color: Colors.grey),
+//               ),
+//             );
+//           }
+//           return Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//             child: ListView.builder(
+//               itemCount: puzzleProvider.archivedPuzzles.length,
+//               itemBuilder: (context, index) {
+//                 final puzzle = puzzleProvider.archivedPuzzles[index];
+//                 return PuzzleListItem(
+//                   puzzleDto: puzzle,
+//                   onDelete: () => showDialog(
+//                     context: context,
+//                     builder: (context) {
+//                       return DeleteConfirm(
+//                         title: '퍼즐을 삭제하시겠습니까?',
+//                         content: '퍼즐 관련 데이터가 모두 삭제됩니다.',
+//                         puzzleId: puzzle.puzzleId, // 삭제할 퍼즐 id
+//                       );
+//                     },
+//                   ),
+//                   onPressed: () {},
+//                   onSave: () {}, //TODO: 핸드폰에 저장하는 기능 구현하기
+//                   gameState: GameState.Completed, // 완료된 퍼즐임을 표시
+//                   isArchived: true,
+//                 );
+//               },
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }

@@ -1,5 +1,10 @@
 import 'dart:io';
 
+import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle/play_puzzle_completed_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle_list/puzzle_get_completed_list_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle/play_puzzle_in_progress_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_data_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/image_upload/image_upload_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_request_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_response_dto.dart';
@@ -13,7 +18,7 @@ import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home/puzzle_hom
 class PuzzleService {
   final Dio _dio = ApiClient.dio;
 
-  // 🟢 퍼즐 홈 화면 정보 가져오기(GET)
+  // 🟢 퍼즐 홈 화면 정보 가져오기 (GET)
   Future<PuzzleHomeGetDto> getPuzzleHome() async {
     final response = await _dio.get('/puzzle/home');
 
@@ -129,7 +134,29 @@ class PuzzleService {
     }
   }
 
+  // 진행중인 퍼즐 목록 불러오기 (GET)
+  Future<PuzzleGetInProgressListDto> getInProgressList() async {
+    final response = await _dio.get('/puzzles/in-progress');
+    return PuzzleGetInProgressListDto.fromJson(response.data);
+  }
 
+  //진행중인 퍼즐 목록에서 퍼즐 풀기 (퍼즐 이어풀기) (GET)
+  Future<PlayPuzzleInProgressDto> playInProgressPuzzle(String puzzleId) async {
+    final response = await _dio.get('/puzzles/$puzzleId/progress');
+    return PlayPuzzleInProgressDto.fromJson(response.data);
+  }
+
+  // 완료된 퍼즐 목록 불러오기 (GET)
+  Future<PuzzleGetCompletedListDto> getCompletedList() async {
+    final response = await _dio.get('/puzzles/completed');
+    return PuzzleGetCompletedListDto.fromJson(response.data);
+  }
+
+  //완료된 퍼즐 목록에서 퍼즐 풀기 (퍼즐 다시풀기) (GET)
+  Future<PlayPuzzleCompletedDto> playCompletedPuzzle(String puzzleId) async {
+    final response = await _dio.get('/puzzles/$puzzleId/retry');
+    return PlayPuzzleCompletedDto.fromJson(response.data);
+  }
 
 // 🔵 퍼즐 삭제
 

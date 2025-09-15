@@ -1,3 +1,6 @@
+import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle/play_puzzle_in_progress_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_data_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_response_dto.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +49,36 @@ class PuzzleGame {
       size: size,           //유지
       gameState: gameState,    //유지
       contributors: contributors //유지
+    );
+  }
+
+  //"imageUrl" : "url",
+  // 	"size" : 9,
+  // 	"youCanPlayPuzzle" : true
+  //   "pieces": { //map의 key값이 pieceId를 의미함
+  // 		0: (0.0, 0.0),// "String: (double, double)" 형식임
+  // 		1: (276.7342359654034, 2.5206910903800974),
+  // 		2: (0.0, 0.0),
+  // 		3: (0.0, 0.0),
+  // 		4: (0.0, 0.0),
+  // 		5: (0.0, 0.0),
+  // 		6: (0.0, 0.0),
+  // 		7: (0.0, 0.0),
+  // 		8: (0.0, 0.0)
+  // 	},
+
+  static PuzzleGame fromDto(
+      dynamic dto, //PlayPuzzleInProgressDto or PlayPuzzleCompletedDto
+      User user,
+      String puzzleId,
+      List<String> AIKeyword,
+      String category) {
+    return PuzzleGame(
+      puzzleId: puzzleId,
+      imageUrl: dto.imageUrl,
+      size: dto.size,
+      category: category,
+      AIKeyword: AIKeyword,
     );
   }
 }
