@@ -7,7 +7,7 @@ class FlowerCardData {
   final String emotion;               // 감정/성격 (love, comfort, joy, hobby, memory, special)
   final String date;                  // 소통한 날짜
   final String communicationText;     // 소통 내용 텍스트 (카드 클릭 시 표시용)
-  final bool isSelected;              // 선택 상태 (꾸미기용)
+  final int order;                    // 나무에 달린 위치 (0: 안달림, 1-3: 위치)
 
   const FlowerCardData({
     required this.id,
@@ -16,7 +16,28 @@ class FlowerCardData {
     required this.emotion,
     required this.date,
     required this.communicationText,
-    required this.isSelected,
+    this.order = 0,                   // 기본값 0 (안달림)
   });
+
+  /// FlowerCardData 복사 메서드
+  FlowerCardData copyWith({
+    String? id,
+    String? name,
+    String? imagePath,
+    String? emotion,
+    String? date,
+    String? communicationText,
+    int? order,
+  }) {
+    return FlowerCardData(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      imagePath: imagePath ?? this.imagePath,
+      emotion: emotion ?? this.emotion,
+      date: date ?? this.date,
+      communicationText: communicationText ?? this.communicationText,
+      order: order ?? this.order,
+    );
+  }
 
 }

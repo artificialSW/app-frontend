@@ -115,72 +115,74 @@ class TreeImagePage extends StatelessWidget {
     List<Widget> decorations = [];
 
     if (pageIndex == 1 && selectedFruits != null && selectedFruits!.isNotEmpty) {
-      // 두 번째 페이지: 과일 배치 (순서대로)
-      for (int i = 0; i < selectedFruits!.length && i < 3; i++) {
-        final fruit = selectedFruits![i];
-        final position = positions[i]; // 순서대로 위치 할당
-        
-        decorations.add(
-          Positioned(
-            left: position.dx - 15, // 이미지 중심으로 조정
-            top: position.dy - 15,
-            child: Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+      // 4. 두 번째 페이지: 과일 배치 (order 값에 따라)
+      for (final fruit in selectedFruits!) {
+        if (fruit.order > 0 && fruit.order <= 3) {
+          final position = positions[fruit.order - 1]; // order 1→위치0, order 2→위치1, order 3→위치2
+          
+          decorations.add(
+            Positioned(
+              left: position.dx - 15, // 이미지 중심으로 조정
+              top: position.dy - 15,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.asset(
+                    fruit.imagePath,
+                    fit: BoxFit.cover,
                   ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.asset(
-                  fruit.imagePath,
-                  fit: BoxFit.cover,
                 ),
               ),
             ),
-          ),
-        );
+          );
+        }
       }
     } else if (pageIndex == 2 && selectedFlowers != null && selectedFlowers!.isNotEmpty) {
-      // 세 번째 페이지: 꽃 배치 (순서대로)
-      for (int i = 0; i < selectedFlowers!.length && i < 3; i++) {
-        final flower = selectedFlowers![i];
-        final position = positions[i]; // 순서대로 위치 할당
-        
-        decorations.add(
-          Positioned(
-            left: position.dx - 15, // 이미지 중심으로 조정
-            top: position.dy - 15,
-            child: Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+      // 4. 세 번째 페이지: 꽃 배치 (order 값에 따라)
+      for (final flower in selectedFlowers!) {
+        if (flower.order > 0 && flower.order <= 3) {
+          final position = positions[flower.order - 1]; // order 1→위치0, order 2→위치1, order 3→위치2
+          
+          decorations.add(
+            Positioned(
+              left: position.dx - 15, // 이미지 중심으로 조정
+              top: position.dy - 15,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.asset(
+                    flower.imagePath,
+                    fit: BoxFit.cover,
                   ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.asset(
-                  flower.imagePath,
-                  fit: BoxFit.cover,
                 ),
               ),
             ),
-          ),
-        );
+          );
+        }
       }
     }
 

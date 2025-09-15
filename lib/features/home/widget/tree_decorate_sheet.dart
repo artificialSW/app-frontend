@@ -6,7 +6,7 @@ import 'package:artificialsw_frontend/features/home/models/flower_card_data.dart
 
 class TreeDecorateSheet extends StatefulWidget {
   final int pageIndex;
-  final Function(List<String>, List<String>)? onSelectionChanged;
+  final Function(List<FruitCardData>, List<FlowerCardData>)? onSelectionChanged;
   
   const TreeDecorateSheet({
     super.key,
@@ -22,10 +22,6 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
   // 실제 카드 데이터들 (서버에서 받아올 예정)
   List<FruitCardData> fruitCards = [];
   List<FlowerCardData> flowerCards = [];
-  
-  // 선택된 카드들의 ID를 저장 (최대 3개 제한, 순서 유지, 해제된 위치는 null)
-  List<String?> selectedFruitIds = [null, null, null];
-  List<String?> selectedFlowerIds = [null, null, null];
 
   @override
   void initState() {
@@ -43,7 +39,7 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
         imagePath: 'assets/images/fruit/spring/strawberry.png',
         date: '2024-04-15',  // 봄 날짜
         puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png',
-        isSelected: false,
+        order: 0,  // 기본값: 안달림
       ),
       FruitCardData(
         id: 'fruit_summer_001',
@@ -51,7 +47,7 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
         imagePath: 'assets/images/fruit/summer/peach.png',
         date: '2024-07-20',  // 여름 날짜
         puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png',
-        isSelected: false,
+        order: 0,  // 기본값: 안달림
       ),
       FruitCardData(
         id: 'fruit_winter_001',
@@ -59,7 +55,7 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
         imagePath: 'assets/images/fruit/winter/apple.png',
         date: '2024-12-15',  // 겨울 날짜
         puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png',
-        isSelected: false,
+        order: 0,  // 기본값: 안달림
       ),
     ];
 
@@ -72,7 +68,7 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
         emotion: 'love',
         date: '2024-09-13',
         communicationText: '사랑 관련 소통을 통해 획득',
-        isSelected: false,
+        order: 0,  // 기본값: 안달림
       ),
       FlowerCardData(
         id: 'flower_comfort_001',
@@ -81,7 +77,7 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
         emotion: 'comfort',
         date: '2024-09-12',
         communicationText: '위로 관련 소통을 통해 획득',
-        isSelected: false,
+        order: 0,  // 기본값: 안달림
       ),
     ];
 
@@ -106,6 +102,16 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
     }
     
     return cards;
+  }
+
+  /// 다음 사용 가능한 order 값을 찾는 메서드 (순서대로 채우기)
+  /// 1, 2, 3 중에서 사용되지 않은 첫 번째 값 반환
+  int _getNextAvailableOrder(List<dynamic> cards) {
+    final usedOrders = cards.map((card) => card.order).toSet();
+    for (int i = 1; i <= 3; i++) {
+      if (!usedOrders.contains(i)) return i;
+    }
+    return 4; // 모든 위치가 사용 중 (더 이상 선택 불가)
   }
 
   @override
@@ -180,34 +186,29 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
                       }
                       
                       final fruitCard = fruitCards[index];
-                      final isSelected = selectedFruitIds.contains(fruitCard.id);
                       
                       return FruitCard(
                         fruitName: fruitCard.name,
                         fruitImagePath: fruitCard.imagePath,
                         season: fruitCard.season,
                         date: fruitCard.date,
-                        isSelected: isSelected,
+                        order: fruitCard.order, // order 값으로 체크표시 표시 (0: 안달림, 1-3: 위치)
                         onTap: () {
                           setState(() {
-                            if (isSelected) {
-                              // 이미 선택된 경우 해제 (해제된 위치를 null로)
-                              final index = selectedFruitIds.indexOf(fruitCard.id);
-                              if (index != -1) {
-                                selectedFruitIds[index] = null;
-                              }
+                            // 1. 체크표시 클릭 시 상태 변경
+                            if (fruitCard.order > 0) {
+                              // 해제: order를 0으로 (나무에서 제거)
+                              fruitCards[index] = fruitCard.copyWith(order: 0);
                             } else {
-                              // 새로운 선택 (첫 번째 빈 위치에 추가)
-                              final emptyIndex = selectedFruitIds.indexOf(null);
-                              if (emptyIndex != -1) {
-                                selectedFruitIds[emptyIndex] = fruitCard.id;
+                              // 선택: 다음 사용 가능한 order 할당 (나무에 추가)
+                              final nextOrder = _getNextAvailableOrder(fruitCards);
+                              if (nextOrder <= 3) {
+                                fruitCards[index] = fruitCard.copyWith(order: nextOrder);
                               }
                             }
                           });
-                          // 선택 상태 변경을 부모에게 알림 (null 제외하고 전달)
-                          final nonNullFruitIds = selectedFruitIds.where((id) => id != null).cast<String>().toList();
-                          final nonNullFlowerIds = selectedFlowerIds.where((id) => id != null).cast<String>().toList();
-                          widget.onSelectionChanged?.call(nonNullFruitIds, nonNullFlowerIds);
+                          // 2. 부모(HomeMainPage)에게 선택 상태 변경 알림
+                          widget.onSelectionChanged?.call(fruitCards, flowerCards);
                         },
                       );
                     } else {
@@ -232,34 +233,29 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
                       }
                       
                       final flowerCard = flowerCards[index];
-                      final isSelected = selectedFlowerIds.contains(flowerCard.id);
                       
                       return FlowerCard(
                         flowerName: flowerCard.name,
                         flowerImagePath: flowerCard.imagePath,
                         emotion: flowerCard.emotion,
                         date: flowerCard.date,
-                        isSelected: isSelected,
+                        order: flowerCard.order, // order 값으로 체크표시 표시 (0: 안달림, 1-3: 위치)
                         onTap: () {
                           setState(() {
-                            if (isSelected) {
-                              // 이미 선택된 경우 해제 (해제된 위치를 null로)
-                              final index = selectedFlowerIds.indexOf(flowerCard.id);
-                              if (index != -1) {
-                                selectedFlowerIds[index] = null;
-                              }
+                            // 1. 체크표시 클릭 시 상태 변경
+                            if (flowerCard.order > 0) {
+                              // 해제: order를 0으로 (나무에서 제거)
+                              flowerCards[index] = flowerCard.copyWith(order: 0);
                             } else {
-                              // 새로운 선택 (첫 번째 빈 위치에 추가)
-                              final emptyIndex = selectedFlowerIds.indexOf(null);
-                              if (emptyIndex != -1) {
-                                selectedFlowerIds[emptyIndex] = flowerCard.id;
+                              // 선택: 다음 사용 가능한 order 할당 (나무에 추가)
+                              final nextOrder = _getNextAvailableOrder(flowerCards);
+                              if (nextOrder <= 3) {
+                                flowerCards[index] = flowerCard.copyWith(order: nextOrder);
                               }
                             }
                           });
-                          // 선택 상태 변경을 부모에게 알림 (null 제외하고 전달)
-                          final nonNullFruitIds = selectedFruitIds.where((id) => id != null).cast<String>().toList();
-                          final nonNullFlowerIds = selectedFlowerIds.where((id) => id != null).cast<String>().toList();
-                          widget.onSelectionChanged?.call(nonNullFruitIds, nonNullFlowerIds);
+                          // 2. 부모(HomeMainPage)에게 선택 상태 변경 알림
+                          widget.onSelectionChanged?.call(fruitCards, flowerCards);
                         },
                       );
                     }

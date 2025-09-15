@@ -43,9 +43,9 @@ class _HomeRootState extends State<HomeRoot> {
   String _namingDate = ''; // 나무 이름 설정 날짜
   int _currentTreePage = 0; // 현재 트리 페이지 (0: 첫번째, 1: 두번째, 2: 세번째)
   
-  // 선택된 과일/꽃 상태 (순서대로 관리, 해제된 위치는 null)
-  List<String?> _selectedFruitIds = [null, null, null]; // 선택된 과일 ID들 (순서 유지)
-  List<String?> _selectedFlowerIds = [null, null, null]; // 선택된 꽃 ID들 (순서 유지)
+  // 선택된 과일/꽃 상태 (order 필드 기반으로 관리)
+  List<FruitCardData> _selectedFruits = []; // 선택된 과일 카드들
+  List<FlowerCardData> _selectedFlowers = []; // 선택된 꽃 카드들
 
   /// 트리 이미지를 캡처하여 다이얼로그로 표시하는 함수
   Future<void> _captureImage() async {
@@ -94,88 +94,24 @@ class _HomeRootState extends State<HomeRoot> {
     );
   }
 
-  /// 선택된 과일 데이터를 순서대로 반환 (null 위치는 건너뛰기)
+  /// 3. 선택된 과일 데이터를 반환 (order > 0인 카드들만)
+  /// TreeImagePage에서 나무에 표시할 과일들을 필터링
   List<FruitCardData> _getSelectedFruits() {
-    // 테스트용 과일 데이터 (TreeDecorateSheet와 동일)
-    const allFruits = [
-      FruitCardData(
-        id: 'fruit_spring_001',
-        name: '딸기',
-        imagePath: 'assets/images/fruit/spring/strawberry.png',
-        date: '2024-04-15',
-        puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png',
-        isSelected: true,
-      ),
-      FruitCardData(
-        id: 'fruit_summer_001',
-        name: '복숭아',
-        imagePath: 'assets/images/fruit/summer/peach.png',
-        date: '2024-07-20',
-        puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png',
-        isSelected: true,
-      ),
-      FruitCardData(
-        id: 'fruit_winter_001',
-        name: '사과',
-        imagePath: 'assets/images/fruit/winter/apple.png',
-        date: '2024-12-15',
-        puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png',
-        isSelected: true,
-      ),
-    ];
-    
-    // 선택된 ID 순서대로 과일 반환 (null 위치는 건너뛰기)
-    return _selectedFruitIds
-        .where((id) => id != null)
-        .map((id) => allFruits.firstWhere((f) => f.id == id))
-        .toList();
+    return _selectedFruits.where((fruit) => fruit.order > 0).toList();
   }
 
-  /// 선택된 꽃 데이터를 순서대로 반환 (null 위치는 건너뛰기)
+  /// 3. 선택된 꽃 데이터를 반환 (order > 0인 카드들만)
+  /// TreeImagePage에서 나무에 표시할 꽃들을 필터링
   List<FlowerCardData> _getSelectedFlowers() {
-    // 테스트용 꽃 데이터 (TreeDecorateSheet와 동일)
-    const allFlowers = [
-      FlowerCardData(
-        id: 'flower_love_001',
-        name: '장미',
-        imagePath: 'assets/images/flower/rose.png',
-        emotion: 'love',
-        date: '2024-09-13',
-        communicationText: '사랑 관련 소통을 통해 획득',
-        isSelected: true,
-      ),
-      FlowerCardData(
-        id: 'flower_comfort_001',
-        name: '아카시아',
-        imagePath: 'assets/images/flower/acacia.png',
-        emotion: 'comfort',
-        date: '2024-09-12',
-        communicationText: '위로 관련 소통을 통해 획득',
-        isSelected: true,
-      ),
-    ];
-    
-    // 선택된 ID 순서대로 꽃 반환 (null 위치는 건너뛰기)
-    return _selectedFlowerIds
-        .where((id) => id != null)
-        .map((id) => allFlowers.firstWhere((f) => f.id == id))
-        .toList();
+    return _selectedFlowers.where((flower) => flower.order > 0).toList();
   }
 
-  /// 선택 상태가 변경되었을 때 호출되는 콜백 (순서 유지)
-  void _onSelectionChanged(List<String> selectedFruitIds, List<String> selectedFlowerIds) {
+  /// 2. TreeDecorateSheet에서 선택 상태가 변경되었을 때 호출되는 콜백
+  /// 전체 카드 리스트를 받아서 저장하고 화면 갱신
+  void _onSelectionChanged(List<FruitCardData> fruitCards, List<FlowerCardData> flowerCards) {
     setState(() {
-      // null로 초기화
-      _selectedFruitIds = [null, null, null];
-      _selectedFlowerIds = [null, null, null];
-      
-      // 선택된 ID들을 순서대로 배치
-      for (int i = 0; i < selectedFruitIds.length && i < 3; i++) {
-        _selectedFruitIds[i] = selectedFruitIds[i];
-      }
-      for (int i = 0; i < selectedFlowerIds.length && i < 3; i++) {
-        _selectedFlowerIds[i] = selectedFlowerIds[i];
-      }
+      _selectedFruits = fruitCards;    // 전체 과일 카드 리스트 저장
+      _selectedFlowers = flowerCards;  // 전체 꽃 카드 리스트 저장
     });
   }
 

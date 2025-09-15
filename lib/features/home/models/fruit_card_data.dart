@@ -6,7 +6,7 @@ class FruitCardData {
   final String imagePath;             // 과일 이미지 경로
   final String date;                  // 퍼즐을 푼 날짜
   final String puzzleImagePath;       // 퍼즐 이미지 경로 (카드 클릭 시 표시용)
-  final bool isSelected;              // 선택 상태 (꾸미기용)
+  final int order;                    // 나무에 달린 위치 (0: 안달림, 1-3: 위치)
 
   const FruitCardData({
     required this.id,
@@ -14,7 +14,7 @@ class FruitCardData {
     required this.imagePath,
     required this.date,
     required this.puzzleImagePath,
-    required this.isSelected,
+    this.order = 0,                   // 기본값 0 (안달림)
   });
 
   /// 날짜를 기준으로 계절을 계산하는 메서드
@@ -31,6 +31,25 @@ class FruitCardData {
     } else {
       return 'winter';
     }
+  }
+
+  /// FruitCardData 복사 메서드
+  FruitCardData copyWith({
+    String? id,
+    String? name,
+    String? imagePath,
+    String? date,
+    String? puzzleImagePath,
+    int? order,
+  }) {
+    return FruitCardData(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      imagePath: imagePath ?? this.imagePath,
+      date: date ?? this.date,
+      puzzleImagePath: puzzleImagePath ?? this.puzzleImagePath,
+      order: order ?? this.order,
+    );
   }
 
 }

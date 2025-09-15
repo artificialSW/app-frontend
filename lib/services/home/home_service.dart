@@ -2,6 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:artificialsw_frontend/services/api_client.dart';
 import 'dto/tree_name_id/tree_name_request_dto.dart';
 import 'dto/tree_name_id/tree_id_response_dto.dart';
+import 'dto/custom_tree_fruit/fruit_hanging_request_dto.dart';
+import 'dto/custom_tree_fruit/custom_fruit_response_dto.dart';
+import 'dto/custom_tree_flower/flower_hanging_request_dto.dart';
+import 'dto/custom_tree_flower/custom_flower_response_dto.dart';
 
 /// 홈 관련 서버 통신을 담당하는 서비스 클래스
 /// 퍼즐과 동일한 패턴으로 구현
@@ -44,7 +48,7 @@ class HomeService {
     }
   }
 
-  // 🌳 나무 이름으로 나무 ID 조회 (POST)
+  //  나무 이름으로 나무 ID 조회 (POST)
   Future<TreeIdResponseDto> getTreeIdByName({
     required String userId,
     required String treeName,
@@ -57,6 +61,74 @@ class HomeService {
     } catch (e) {
       print('❌ 나무 ID 조회 오류: $e');
       throw Exception('나무 ID 조회 실패: $e');
+    }
+  }
+
+  //  커스텀 나무 과일 조회 (GET)
+  Future<CustomFruitResponseDto> getCustomTreeFruits({
+    required String treeId,
+  }) async {
+    try {
+      final response = await _dio.get('/api/tree/custom/$treeId/fruit');
+      return CustomFruitResponseDto.fromJson(response.data);
+    } catch (e) {
+      print('❌ 커스텀 나무 과일 조회 오류: $e');
+      throw Exception('커스텀 나무 과일 조회 실패: $e');
+    }
+  }
+
+  // 🍎 5. 과일 달기 (POST) - 백엔드로 order 상태 전달
+  // 요청 형태: {"fruit-hanging": [{"id": "fruit_id", "order": 1}, ...]}
+  // order: 0(안달림), 1(첫번째위치), 2(두번째위치), 3(세번째위치)
+  Future<void> hangFruits({
+    required List<FruitHangingItem> fruitHangingItems,
+  }) async {
+    try {
+      final requestDto = FruitHangingRequestDto(fruitHanging: fruitHangingItems);
+      final response = await _dio.post('/api/tree/fruits/hanging', data: requestDto.toJson());
+      
+      if (response.statusCode == 200) {
+        print('✅ 과일 달기 성공');
+      } else {
+        print('⚠️ 과일 달기 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ 과일 달기 오류: $e');
+      throw Exception('과일 달기 실패: $e');
+    }
+  }
+
+  //  커스텀 나무 꽃 조회 (GET)
+  Future<CustomFlowerResponseDto> getCustomTreeFlowers({
+    required String treeId,
+  }) async {
+    try {
+      final response = await _dio.get('/api/tree/custom/$treeId/flower');
+      return CustomFlowerResponseDto.fromJson(response.data);
+    } catch (e) {
+      print('❌ 커스텀 나무 꽃 조회 오류: $e');
+      throw Exception('커스텀 나무 꽃 조회 실패: $e');
+    }
+  }
+
+  // 🌸 5. 꽃 달기 (POST) - 백엔드로 order 상태 전달
+  // 요청 형태: {"flower-hanging": [{"id": "flower_id", "order": 1}, ...]}
+  // order: 0(안달림), 1(첫번째위치), 2(두번째위치), 3(세번째위치)
+  Future<void> hangFlowers({
+    required List<FlowerHangingItem> flowerHangingItems,
+  }) async {
+    try {
+      final requestDto = FlowerHangingRequestDto(flowerHanging: flowerHangingItems);
+      final response = await _dio.post('/api/tree/flowers/hanging', data: requestDto.toJson());
+      
+      if (response.statusCode == 200) {
+        print('✅ 꽃 달기 성공');
+      } else {
+        print('⚠️ 꽃 달기 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ 꽃 달기 오류: $e');
+      throw Exception('꽃 달기 실패: $e');
     }
   }
 
