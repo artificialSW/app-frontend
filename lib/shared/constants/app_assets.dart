@@ -10,8 +10,11 @@ class AppAssets {
   static const appicon_whiteBackground = 'assets/images/appicon_whiteBackground.png';
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';
   static const back = 'assets/icons/back.png';
+  static const lock = 'assets/icons/lock.png';
 
   static const dogaam = 'assets/images/book.png';
+  static const guidebook_1 = 'assets/images/guidebook_1.png';
+  static const guidebook_2 = 'assets/images/guidebook_2.png';
   static const tree = 'assets/images/tree.png';
   static const wooden_sign = 'assets/images/wooden_sign.png';
   static const sprout = 'assets/images/sprout.png';
