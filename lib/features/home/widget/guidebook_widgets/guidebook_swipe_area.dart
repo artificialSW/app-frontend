@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/features/home/guidebook_logic/guidebook_flower_detail.dart';
 
 /// 가이드북 책 스와이프 영역 위젯
 class GuidebookSwipeArea extends StatelessWidget {
@@ -110,18 +111,22 @@ class GuidebookSwipeArea extends StatelessWidget {
     return Stack(
       children: [
         baseBookImage,
-        // 잠금 장치/꽃들 (3x2 그리드)
+        // 잠금 장치/꽃들 (6x2 그리드)
         if (pageIndex == 0) // 01페이지
           Positioned(
             top: 110,
             left: 185,
-            child: _buildLockGrid(pageIndex),
+            child: Builder(
+              builder: (context) => _buildLockGrid(context, pageIndex),
+            ),
           ),
         if (pageIndex == 1) // 02페이지
           Positioned(
             top: 110,
             right: 185,
-            child: _buildLockGrid(pageIndex),
+            child: Builder(
+              builder: (context) => _buildLockGrid(context, pageIndex),
+            ),
           ),
         // 페이지 번호 01 (왼쪽 책 아이콘의 왼쪽 끝으로부터 158)
         if (pageIndex == 0)
@@ -158,7 +163,7 @@ class GuidebookSwipeArea extends StatelessWidget {
   }
 
   /// 잠금 장치/꽃 그리드 (6x2)
-  Widget _buildLockGrid(int pageIndex) {
+  Widget _buildLockGrid(BuildContext context, int pageIndex) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(2, (rowIndex) => 
@@ -170,7 +175,7 @@ class GuidebookSwipeArea extends StatelessWidget {
                 right: colIndex < 5 ? 20 : 0,
                 bottom: rowIndex < 1 ? 20 : 0,
               ),
-              child: _buildFlowerOrLock(pageIndex, rowIndex, colIndex),
+              child: _buildFlowerOrLock(context, pageIndex, rowIndex, colIndex),
             ),
           ),
         ),
@@ -179,8 +184,8 @@ class GuidebookSwipeArea extends StatelessWidget {
   }
 
   /// 꽃 또는 잠금 장치 위젯
-  Widget _buildFlowerOrLock(int pageIndex, int rowIndex, int colIndex) {
-    final flowerIndex = pageIndex * 6 + rowIndex * 6 + colIndex; // 0-11 인덱스
+  Widget _buildFlowerOrLock(BuildContext context, int pageIndex, int rowIndex, int colIndex) {
+    final flowerIndex = rowIndex * 6 + colIndex; // 0-11 인덱스
     
     // 해금 상태 확인 (기본값: 잠금)
     final isUnlocked = flowerIndex < flowerUnlockedStates.length 
@@ -189,7 +194,7 @@ class GuidebookSwipeArea extends StatelessWidget {
     
     if (isUnlocked) {
       return GestureDetector(
-        onTap: () => _onFlowerTap(flowerIndex),
+        onTap: () => _onFlowerTap(context, flowerIndex),
         child: _buildFlowerIcon(flowerIndex),
       );
     } else {
@@ -197,13 +202,14 @@ class GuidebookSwipeArea extends StatelessWidget {
     }
   }
 
+
   /// 꽃 아이콘 위젯
   Widget _buildFlowerIcon(int flowerIndex) {
     String flowerAsset;
     
-    // 꽃 인덱스에 따른 아이콘 매핑 (6x2 그리드)
-    // 1행: 동백꽃, 아카시아, 매화, 팥배꽃, 벚꽃, 목련
-    // 2행: 장미, 수국, 튤립, 제비꽃, 코스모스, 해바라기
+    // 꽃 인덱스에 따른 아이콘 매핑 (책 배치 기준)
+    // 1행: 동백꽃, 아카시아, 매화, 팥배꽃, 벚꽃, 목련 (인덱스 0-5)
+    // 2행: 장미, 수국, 튤립, 제비꽃, 코스모스, 해바라기 (인덱스 6-11)
     switch (flowerIndex) {
       case 0: flowerAsset = AppAssets.flower_camellia; break; // 동백꽃
       case 1: flowerAsset = AppAssets.flower_acacia; break; // 아카시아
@@ -228,9 +234,14 @@ class GuidebookSwipeArea extends StatelessWidget {
   }
 
   /// 꽃 클릭 처리
-  void _onFlowerTap(int flowerIndex) {
-    // TODO: 꽃 클릭 시 상세 정보 표시 또는 다른 액션
-    print('꽃 클릭: $flowerIndex');
+  void _onFlowerTap(BuildContext context, int flowerIndex) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => GuidebookFlowerDetailPage(
+          flowerIndex: flowerIndex,
+        ),
+      ),
+    );
   }
 
   /// 잠금 아이콘 위젯

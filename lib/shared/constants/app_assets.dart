@@ -27,6 +27,7 @@ class AppAssets {
   static const flower_patbae = 'assets/images/flower/patbae_flower.png'; // 팥배꽃 (기타)
 
   static const dogaam = 'assets/images/book.png';
+  static const guidebook = 'assets/images/guidebook.png';
   static const guidebook_1 = 'assets/images/guidebook_1.png';
   static const guidebook_2 = 'assets/images/guidebook_2.png';
   static const tree = 'assets/images/tree.png';
