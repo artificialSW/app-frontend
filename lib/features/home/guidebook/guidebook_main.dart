@@ -5,6 +5,7 @@ import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/features/home/home_mainpage.dart';
 import 'package:artificialsw_frontend/features/home/widget/guidebook_widgets/guidebook_tab_bar.dart';
 import 'package:artificialsw_frontend/features/home/widget/guidebook_widgets/guidebook_swipe_area.dart';
+import 'package:artificialsw_frontend/services/home/home_service.dart';
 
 /// 가이드북 메인 페이지
 /// 사용자가 앱의 기능과 사용법을 확인할 수 있는 페이지
@@ -19,11 +20,42 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   int _selectedTab = 0; // 0: 꽃, 1: 열매
+  final HomeService _homeService = HomeService();
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  /// 꽃 해금 상태 반환 (API 호출)
+  Future<List<bool>> _getFlowerUnlockedStates() async {
+    try {
+      final response = await _homeService.getFlowerUnlockStatus();
+      final unlockedIds = response.resolvedFlowers;
+      
+      // 12개 꽃의 해금 상태 (true: 해금됨, false: 잠금)
+      return List.generate(12, (index) => unlockedIds.contains(index));
+    } catch (e) {
+      print('❌ 꽃 해금 상태 조회 실패, 기본값 사용: $e');
+      // API 실패 시 기본값 반환 (현재는 테스트용으로 일부만 해금)
+      // 1행: 동백꽃, 아카시아, 매화, 팥배꽃, 벚꽃, 목련
+      // 2행: 장미, 수국, 튤립, 제비꽃, 코스모스, 해바라기
+      return [
+        true,  // 0: 동백꽃
+        false, // 1: 아카시아
+        false, // 2: 매화
+        false, // 3: 팥배꽃
+        false, // 4: 벚꽃
+        false, // 5: 목련
+        true,  // 6: 장미
+        true,  // 7: 수국
+        false, // 8: 튤립
+        false, // 9: 제비꽃
+        false, // 10: 코스모스
+        false, // 11: 해바라기
+      ];
+    }
   }
 
   @override
@@ -69,11 +101,18 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
                         selectedTab: _selectedTab,
                         onTabChanged: (tab) => setState(() => _selectedTab = tab),
                       ),
-                      GuidebookSwipeArea(
-                        pageController: _pageController,
-                        currentPage: _currentPage,
-                        selectedTab: _selectedTab,
-                        onPageChanged: (page) => setState(() => _currentPage = page),
+                      FutureBuilder<List<bool>>(
+                        future: _getFlowerUnlockedStates(),
+                        builder: (context, snapshot) {
+                          final flowerUnlockedStates = snapshot.data ?? [];
+                          return GuidebookSwipeArea(
+                            pageController: _pageController,
+                            currentPage: _currentPage,
+                            selectedTab: _selectedTab,
+                            onPageChanged: (page) => setState(() => _currentPage = page),
+                            flowerUnlockedStates: flowerUnlockedStates,
+                          );
+                        },
                       ),
                       Container(
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),

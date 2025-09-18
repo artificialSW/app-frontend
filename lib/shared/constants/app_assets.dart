@@ -11,6 +11,20 @@ class AppAssets {
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';
   static const back = 'assets/icons/back.png';
   static const lock = 'assets/icons/lock.png';
+  
+  // 꽃 이미지들 (assets/images/flower/)
+  static const flower_camellia = 'assets/images/flower/camellia.png'; // 동백꽃
+  static const flower_rose = 'assets/images/flower/rose.png'; // 장미
+  static const flower_acacia = 'assets/images/flower/acacia.png'; // 아카시아
+  static const flower_hydrangea = 'assets/images/flower/hydrangea.png'; // 수국
+  static const flower_plum = 'assets/images/flower/plum_blossom.png'; // 매화
+  static const flower_tulip = 'assets/images/flower/tulip.png'; // 튤립
+  static const flower_violet = 'assets/images/flower/violet.png'; // 제비꽃 (할미꽃 대신)
+  static const flower_magnolia = 'assets/images/flower/magnolia.png'; // 목련 (라벤더 대신)
+  static const flower_cherry = 'assets/images/flower/cherry_blossom.png'; // 벚꽃
+  static const flower_cosmos = 'assets/images/flower/cosmos.png'; // 코스모스
+  static const flower_sunflower = 'assets/images/flower/sunflower.png'; // 해바라기
+  static const flower_patbae = 'assets/images/flower/patbae_flower.png'; // 팥배꽃 (기타)
 
   static const dogaam = 'assets/images/book.png';
   static const guidebook_1 = 'assets/images/guidebook_1.png';
