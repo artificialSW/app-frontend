@@ -1,5 +1,6 @@
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
+import 'package:artificialsw_frontend/services/api_client.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle/play_puzzle_in_progress_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_data_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_list_dto.dart';
@@ -9,6 +10,7 @@ import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_deleteConfirmationDialog.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -97,7 +99,7 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
               return PuzzleListItem(
                 puzzleDto: puzzleDto,
                 onDelete: () {
-                  // 삭제 로직
+                  PuzzleService().deletePuzzle(puzzleDto.puzzleId);
                 },
                 onPressed: () async {
                   PlayPuzzleInProgressDto response;
@@ -124,10 +126,6 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                     );
                   }
 
-                  // final String imageUrl;
-                  // final int size;
-                  // final bool youCanPlayPuzzle;
-                  // final Map<String, PiecePosition> piecesPosition;
                   ///받아온 puzzle dto를 puzzlegame의 fromDto에 넣어서 퍼즐 인스턴스 받아옴
                   final puzzleGame = PuzzleGame.fromDto(
                       await response, //이거 왜 await으로 해야 하는지 몰겠다 오류나면 빼자

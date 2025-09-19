@@ -184,7 +184,13 @@ class PuzzleService {
     }
   }
 
-
 // 🔵 퍼즐 삭제
-
+  Future<void> deletePuzzle(String puzzleId) async {
+    final response = await _dio.delete('/puzzles/$puzzleId');
+    if (response.statusCode == 200) {
+      print('✅ 퍼즐 삭제 성공');
+    } else {
+      print('⚠️ 퍼즐 삭제 실패(Puzzle_Service): ${response.statusCode}');
+    }
+  }
 }
