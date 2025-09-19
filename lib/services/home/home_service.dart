@@ -6,6 +6,7 @@ import 'dto/custom_tree_fruit/fruit_hanging_request_dto.dart';
 import 'dto/custom_tree_fruit/custom_fruit_response_dto.dart';
 import 'dto/custom_tree_flower/flower_hanging_request_dto.dart';
 import 'dto/custom_tree_flower/custom_flower_response_dto.dart';
+import 'dto/guidebook/flower_unlock_response_dto.dart';
 
 /// 홈 관련 서버 통신을 담당하는 서비스 클래스
 /// 퍼즐과 동일한 패턴으로 구현
@@ -129,6 +130,17 @@ class HomeService {
     } catch (e) {
       print('❌ 꽃 달기 오류: $e');
       throw Exception('꽃 달기 실패: $e');
+    }
+  }
+
+  // 📖 꽃 도감 해금 상태 조회 (GET)
+  Future<FlowerUnlockResponseDto> getFlowerUnlockStatus() async {
+    try {
+      final response = await _dio.get('/api/book/flower');
+      return FlowerUnlockResponseDto.fromJson(response.data);
+    } catch (e) {
+      print('❌ 꽃 도감 해금 상태 조회 오류: $e');
+      throw Exception('꽃 도감 해금 상태 조회 실패: $e');
     }
   }
 
