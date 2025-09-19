@@ -1,16 +1,11 @@
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
-import 'package:artificialsw_frontend/features/puzzle/relay_puzzle_logic/puzzle_ongoinglist.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_archived_puzzle_list/puzzle_get_archived_data_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_archived_puzzle_list/puzzle_get_archived_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
-import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
-import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
-import 'package:artificialsw_frontend/shared/widgets/custom_deleteConfirmationDialog.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class PuzzleArchive extends StatefulWidget {
   const PuzzleArchive({super.key});
@@ -95,7 +90,7 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
               return PuzzleListItem(
                 puzzleDto: puzzleDto,
                 onDelete: () {
-                  // 삭제 로직
+                  PuzzleService().deletePuzzle(puzzleDto.puzzleId);
                 },
                 onPressed: () {
 
