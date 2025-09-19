@@ -24,21 +24,30 @@ class GuidebookSwipeArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Container(
-          width: double.infinity,
-          height: 440,
-          margin: const EdgeInsets.only(top: 100),
-          child: PageView.builder(
-            controller: pageController,
-            physics: const ClampingScrollPhysics(),
-            padEnds: false,
-            onPageChanged: onPageChanged,
-            itemCount: 2,
-            itemBuilder: (context, index) => _buildBookPage(index),
-          ),
-        ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final screenWidth = MediaQuery.of(context).size.width;
+          final screenHeight = MediaQuery.of(context).size.height;
+          final widthRatio = screenWidth / 430;
+          final heightRatio = screenHeight / 932;
+          
+          return Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              width: double.infinity,
+              height: 471 * heightRatio,
+              margin: EdgeInsets.only(top: 60 * heightRatio),
+              child: PageView.builder(
+                controller: pageController,
+                physics: const ClampingScrollPhysics(),
+                padEnds: false,
+                onPageChanged: onPageChanged,
+                itemCount: 2,
+                itemBuilder: (context, index) => _buildBookPage(index),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -70,100 +79,121 @@ class GuidebookSwipeArea extends StatelessWidget {
 
     // 열매 탭일 때는 페이지 번호만 표시
     if (selectedTab == 1) {
-      return Stack(
-        children: [
-          baseBookImage,
-          // 페이지 번호 01 (왼쪽 책 아이콘의 왼쪽 끝으로부터 182)
-          if (pageIndex == 0)
-            Positioned(
-              top: 280,
-              left: 182,
-              child: Text(
-                '01',
-                style: AppTextStyles.pretendard_bold.copyWith(
-                  color: AppColors.plumu_black,
-                  fontSize: 12.48,
-                  height: 2.92,
-                  letterSpacing: -0.32,
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final screenWidth = MediaQuery.of(context).size.width;
+          final screenHeight = MediaQuery.of(context).size.height;
+          final widthRatio = screenWidth / 430;
+          final heightRatio = screenHeight / 932;
+          
+          return Stack(
+            children: [
+              baseBookImage,
+              // 페이지 번호 01 (왼쪽 책 아이콘의 왼쪽 끝으로부터 190 - 꽃 탭과 동일)
+              if (pageIndex == 0)
+                Positioned(
+                  top: 300 * heightRatio,
+                  left: 190 * widthRatio,
+                  child: Text(
+                    '01',
+                    style: AppTextStyles.pretendard_bold.copyWith(
+                      color: AppColors.plumu_black,
+                      fontSize: 12.48 * widthRatio,
+                      height: 2.92,
+                      letterSpacing: -0.32 * widthRatio,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          // 페이지 번호 02 (오른쪽 책 아이콘의 오른쪽 끝으로부터 182)
-          if (pageIndex == 1)
-            Positioned(
-              top: 280,
-              right: 182,
-              child: Text(
-                '02',
-                style: AppTextStyles.pretendard_bold.copyWith(
-                  color: AppColors.plumu_black,
-                  fontSize: 12.48,
-                  height: 2.92,
-                  letterSpacing: -0.32,
+              // 페이지 번호 02 (오른쪽 책 아이콘의 오른쪽 끝으로부터 190 - 꽃 탭과 동일)
+              if (pageIndex == 1)
+                Positioned(
+                  top: 300 * heightRatio,
+                  right: 190 * widthRatio,
+                  child: Text(
+                    '02',
+                    style: AppTextStyles.pretendard_bold.copyWith(
+                      color: AppColors.plumu_black,
+                      fontSize: 12.48 * widthRatio,
+                      height: 2.92,
+                      letterSpacing: -0.32 * widthRatio,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-        ],
+            ],
+          );
+        },
       );
     }
 
     // 꽃 탭일 때는 페이지 번호와 잠금 장치 추가
-    return Stack(
-      children: [
-        baseBookImage,
-        // 잠금 장치/꽃들 (6x2 그리드)
-        if (pageIndex == 0) // 01페이지
-          Positioned(
-            top: 110,
-            left: 185,
-            child: Builder(
-              builder: (context) => _buildLockGrid(context, pageIndex),
-            ),
-          ),
-        if (pageIndex == 1) // 02페이지
-          Positioned(
-            top: 110,
-            right: 185,
-            child: Builder(
-              builder: (context) => _buildLockGrid(context, pageIndex),
-            ),
-          ),
-        // 페이지 번호 01 (왼쪽 책 아이콘의 왼쪽 끝으로부터 158)
-        if (pageIndex == 0)
-          Positioned(
-            top: 280,
-            left: 182,
-            child: Text(
-              '01',
-              style: AppTextStyles.pretendard_bold.copyWith(
-                color: AppColors.plumu_black,
-                fontSize: 12.48,
-                height: 2.92,
-                letterSpacing: -0.32,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        final screenHeight = MediaQuery.of(context).size.height;
+        final widthRatio = screenWidth / 430;
+        final heightRatio = screenHeight / 932;
+        
+        return Stack(
+          children: [
+            baseBookImage,
+            // 잠금 장치/꽃들 (6x2 그리드) - 반응형 위치, 높이 증가에 맞춰 조정
+            if (pageIndex == 0) // 01페이지
+              Positioned(
+                top: 118 * heightRatio, // 높이 비율에 맞춰 조정 (110 * 1.0705)
+                left: 190 * widthRatio,
+                child: Builder(
+                  builder: (context) => _buildLockGrid(context, pageIndex),
+                ),
               ),
-            ),
-          ),
-        // 페이지 번호 02 (오른쪽 책 아이콘의 오른쪽 끝으로부터 158)
-        if (pageIndex == 1)
-          Positioned(
-            top: 280,
-            right: 182,
-            child: Text(
-              '02',
-              style: AppTextStyles.pretendard_bold.copyWith(
-                color: AppColors.plumu_black,
-                fontSize: 12.48,
-                height: 2.92,
-                letterSpacing: -0.32,
+            if (pageIndex == 1) // 02페이지
+              Positioned(
+                top: 118 * heightRatio, // 높이 비율에 맞춰 조정 (110 * 1.0705)
+                right: 190 * widthRatio,
+                child: Builder(
+                  builder: (context) => _buildLockGrid(context, pageIndex),
+                ),
               ),
-            ),
-          ),
-      ],
+            // 페이지 번호 01 (왼쪽 책 아이콘의 왼쪽 끝으로부터 190) - 높이 비율에 맞춰 조정
+            if (pageIndex == 0)
+              Positioned(
+                top: 300 * heightRatio, // 높이 비율에 맞춰 조정 (280 * 1.0705)
+                left: 190 * widthRatio,
+                child: Text(
+                  '01',
+                  style: AppTextStyles.pretendard_bold.copyWith(
+                    color: AppColors.plumu_black,
+                    fontSize: 12.48 * widthRatio,
+                    height: 2.92,
+                    letterSpacing: -0.32 * widthRatio,
+                  ),
+                ),
+              ),
+            // 페이지 번호 02 (오른쪽 책 아이콘의 오른쪽 끝으로부터 190) - 높이 비율에 맞춰 조정
+            if (pageIndex == 1)
+              Positioned(
+                top: 300 * heightRatio, // 높이 비율에 맞춰 조정 (280 * 1.0705)
+                right: 190 * widthRatio,
+                child: Text(
+                  '02',
+                  style: AppTextStyles.pretendard_bold.copyWith(
+                    color: AppColors.plumu_black,
+                    fontSize: 12.48 * widthRatio,
+                    height: 2.92,
+                    letterSpacing: -0.32 * widthRatio,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 
   /// 잠금 장치/꽃 그리드 (6x2)
   Widget _buildLockGrid(BuildContext context, int pageIndex) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final widthRatio = screenWidth / 430;
+    
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(2, (rowIndex) => 
@@ -172,8 +202,8 @@ class GuidebookSwipeArea extends StatelessWidget {
           children: List.generate(6, (colIndex) => 
             Padding(
               padding: EdgeInsets.only(
-                right: colIndex < 5 ? 20 : 0,
-                bottom: rowIndex < 1 ? 20 : 0,
+                right: colIndex < 5 ? 25 * widthRatio : 0,
+                bottom: rowIndex < 1 ? 25 * widthRatio : 0,
               ),
               child: _buildFlowerOrLock(context, pageIndex, rowIndex, colIndex),
             ),
@@ -195,16 +225,16 @@ class GuidebookSwipeArea extends StatelessWidget {
     if (isUnlocked) {
       return GestureDetector(
         onTap: () => _onFlowerTap(context, flowerIndex),
-        child: _buildFlowerIcon(flowerIndex),
+        child: _buildFlowerIcon(context, flowerIndex),
       );
     } else {
-      return _buildLockIcon();
+      return _buildLockIcon(context);
     }
   }
 
 
   /// 꽃 아이콘 위젯
-  Widget _buildFlowerIcon(int flowerIndex) {
+  Widget _buildFlowerIcon(BuildContext context, int flowerIndex) {
     String flowerAsset;
     
     // 꽃 인덱스에 따른 아이콘 매핑 (책 배치 기준)
@@ -226,10 +256,13 @@ class GuidebookSwipeArea extends StatelessWidget {
       default: flowerAsset = AppAssets.flower_patbae; break;
     }
     
+    final screenWidth = MediaQuery.of(context).size.width;
+    final widthRatio = screenWidth / 430;
+    
     return Image.asset(
       flowerAsset,
-      width: 57,
-      height: 57,
+      width: 60 * widthRatio,
+      height: 60 * widthRatio,
     );
   }
 
@@ -245,11 +278,14 @@ class GuidebookSwipeArea extends StatelessWidget {
   }
 
   /// 잠금 아이콘 위젯
-  Widget _buildLockIcon() {
+  Widget _buildLockIcon(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final widthRatio = screenWidth / 430;
+    
     return Image.asset(
       AppAssets.lock,
-      width: 57,
-      height: 57,
+      width: 60 * widthRatio,
+      height: 60 * widthRatio,
     );
   }
 }

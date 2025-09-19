@@ -96,7 +96,7 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
                   Column(
                     children: [
                       // 상단 여백
-                      const SizedBox(height: 100),
+                      const SizedBox(height: 80),
                       GuidebookTabBar(
                         selectedTab: _selectedTab,
                         onTabChanged: (tab) => setState(() => _selectedTab = tab),
