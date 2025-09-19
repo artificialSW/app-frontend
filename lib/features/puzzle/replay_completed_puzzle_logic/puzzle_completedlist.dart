@@ -95,7 +95,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
               return PuzzleListItem(
                 puzzleDto: puzzleDto,
                 onDelete: () {
-                  // 삭제 로직
+                  null; //삭제 기능 없음
                 },
                 onPressed: () async {
                   ///api 호출하여 dto 받아옴( puzzleId => puzzle dto )
@@ -117,6 +117,9 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                 },
                 onSave: () async {
                   await PuzzleService().archiveCompletedPuzzle(puzzleDto.puzzleId);
+                  setState(() {
+                    _completedPuzzlesFuture = _fetchCompletedPuzzles(); //새로운 future로 업데이트
+                  });
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('아카이브 요청 완료 (성공 여부는 콘솔 참고)')),
                   );
