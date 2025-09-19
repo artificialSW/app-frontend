@@ -3,11 +3,17 @@ import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 class PuzzleCompleted extends StatelessWidget {
-  final PuzzleCompleteResponseDto result;
+  final String message;
+  final String fruitName;
+  final String fruitMessage;
+  final List<String> contributors;
 
   const PuzzleCompleted({
     Key? key,
-    required this.result,
+    required this.message,
+    required this.fruitName,
+    required this.fruitMessage,
+    required this.contributors,
   });
 
   @override
@@ -18,11 +24,11 @@ class PuzzleCompleted extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(result.fruitMessage),
+              Text(fruitMessage),
               SizedBox(height: 30),
-              Text("${result.contributors} 덕분에 ${result.fruitName} 열매가 자라났어요!"),
+              Text("${contributors} 덕분에 ${fruitName} 열매가 자라났어요!"),
               SizedBox(height: 30),
-              Text("메세지: ${result.message}"),
+              Text("메세지: ${message}"),
               SizedBox(height: 30),
               ElevatedButton(
                   onPressed: () => null,

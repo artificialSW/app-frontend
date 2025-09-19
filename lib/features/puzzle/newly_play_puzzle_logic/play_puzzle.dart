@@ -207,21 +207,22 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
           solverId: widget.user.id,
         )
     );
-    ///TODO("AIKeyword, category, 생성된 열매 등등 넘겨받기")
-    //{
-    //   "puzzleId": "puzzle789",
-    //   "message": "이때 할아버지 엄청 신나셨던거 기억나?"
-    //   "fruitName" : "귤"
-    //   "fruitMessage" : "탐스러운 겨울 귤 획득!"
-    //   "contributors" : ["재욱", "정환"]
-    // }
+    final message = puzzleDto.message;
+    final fruitName = puzzleDto.fruitName;
+    final fruitMessage = puzzleDto.fruitMessage;
+    final contributors = puzzleDto.contributors;
 
     // 1초 기다리기
     await Future.delayed(const Duration(seconds: 1));
 
     Navigator.of(context).pushReplacementNamed(
         '/puzzle/completed',
-        arguments: {'result': puzzleDto}
+        arguments: {
+          'message': message,
+          'fruitName': fruitName,
+          'fruitMessage': fruitMessage,
+          'contributors': contributors,
+        }
     );
   }
 

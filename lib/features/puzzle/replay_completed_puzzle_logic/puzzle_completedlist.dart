@@ -1,6 +1,7 @@
 //completed_puzzles_page.dart
 
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle/play_puzzle_completed_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle_list/puzzle_get_completed_data_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle_list/puzzle_get_completed_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
@@ -98,12 +99,21 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                   null; //삭제 기능 없음
                 },
                 onPressed: () async {
+                  PlayPuzzleCompletedDto response;
                   ///api 호출하여 dto 받아옴( puzzleId => puzzle dto )
-                  final response = PuzzleService().playCompletedPuzzle(puzzleDto.puzzleId);
-                  //일단 목데이터 처리는 나중에..
+                  try{
+                    response = await PuzzleService().playCompletedPuzzle(puzzleDto.puzzleId);
+                  } catch(e){
+                    print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
+                    response = PlayPuzzleCompletedDto(
+                      imageUrl: 'https://picsum.photos/600/400',
+                      size: 9,
+                      message: '풀어진 퍼즐 목데이터 메세지',
+                    );
+                  }
                   ///받아온 puzzle dto를 puzzlegame의 fromDto에 넣어서 퍼즐 인스턴스 받아옴
                   final puzzleGame = PuzzleGame.fromDto(
-                      await response, //이거 왜 await으로 해야 하는지 몰겠다 오류나면 빼자
+                      response, //이거 왜 await으로 해야 하는지 몰겠다 오류나면 빼자
                       _user,
                       puzzleDto.puzzleId,
                       puzzleDto.AIKeyword,
@@ -112,7 +122,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                   ///받아온 퍼즐 인스턴스를 네비게이터에 넣기
                   Navigator.of(context).pushNamed(
                     '/puzzle/play',
-                    arguments: {'gameInstance': puzzleGame},
+                    arguments: {'gameInstance': puzzleGame, 'message': response.message},
                   );
                 },
                 onSave: () async {

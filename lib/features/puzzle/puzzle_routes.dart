@@ -39,8 +39,16 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
 
     case '/puzzle/completed':
       final args = s.arguments as Map<String, dynamic>;
-      final result = args['result'] as PuzzleCompleteResponseDto;
-      return MaterialPageRoute(builder: (_) => PuzzleCompleted(result: result));
+      final message = args['message'] as String;
+      final fruitName = args['fruitName'] as String;
+      final fruitMessage = args['fruitMessage'] as String;
+      final contributors = args['contributors'] as List<String>;
+      return MaterialPageRoute(builder: (_) => PuzzleCompleted(
+          message: message,
+          fruitName: fruitName,
+          fruitMessage: fruitMessage,
+          contributors: contributors)
+      );
     case '/puzzle/re-play':
       final args = s.arguments as Map<String, dynamic>;
       final original = args['gameInstance'] as PuzzleGame;
