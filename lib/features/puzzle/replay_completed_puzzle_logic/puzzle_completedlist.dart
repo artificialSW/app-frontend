@@ -1,6 +1,11 @@
 //completed_puzzles_page.dart
 
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle/play_puzzle_completed_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle_list/puzzle_get_completed_data_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle_list/puzzle_get_completed_list_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
+import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,45 +13,131 @@ import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 
 /// 완료된 퍼즐 목록 페이지
-class CompletedPuzzlesPage extends StatelessWidget {
+class CompletedPuzzlesPage extends StatefulWidget {
   const CompletedPuzzlesPage({Key? key}) : super(key: key);
+
+  @override
+  State<CompletedPuzzlesPage> createState() => _CompletedPuzzlesPageState();
+}
+
+class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
+  final _user = User(name: 'MockUser', id: '123');
+
+  late Future<PuzzleGetCompletedListDto> _completedPuzzlesFuture;
+
+  Future<PuzzleGetCompletedListDto> _fetchCompletedPuzzles() async {
+    try{
+      return await PuzzleService().getCompletedList();
+    } catch (e){
+      print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
+      // ✅ 목데이터 리턴
+      return PuzzleGetCompletedListDto(
+          completedList: [
+            PuzzleGetCompletedDataDto(
+                puzzleId: '1',
+                imageUrl: 'https://picsum.photos/600/400',
+                contributors: ['완료-mock1', 'mock', 'mock'],
+                completedAt: 'mock 시간 데이터1',
+                AIKeyword: ['완료-mock1', 'AI', 'keyword'],
+                category: 'mock 카테고리1'
+            ),
+            PuzzleGetCompletedDataDto(
+                puzzleId: '2',
+                imageUrl: 'https://picsum.photos/600/400',
+                contributors: ['mock2', 'mock', 'mock'],
+                completedAt: 'mock2 시간 데이터2',
+                AIKeyword: ['mock2', 'AI', 'keyword'],
+                category: 'mock 카테고리2'
+            ),
+            PuzzleGetCompletedDataDto(
+                puzzleId: '3',
+                imageUrl: 'https://picsum.photos/600/400',
+                contributors: ['mock3', 'mock', 'mock'],
+                completedAt: 'mock3 시간 데이터3',
+                AIKeyword: ['mock3', 'AI', 'keyword'],
+                category: 'mock 카테고리3'
+            ),
+          ]
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _completedPuzzlesFuture = _fetchCompletedPuzzles();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CanGoBackTopBar('완료된 퍼즐 목록', context),
-      body: Consumer<PuzzleProvider>(
-        builder: (context, puzzleProvider, child) {
-          if (puzzleProvider.completedPuzzles.isEmpty) {
-            return const Center(
-              child: Text(
-                '완료된 퍼즐이 없습니다.',
-                style: TextStyle(color: Colors.grey),
-              ),
-            );
+      body: FutureBuilder<PuzzleGetCompletedListDto>(
+        future: _fetchCompletedPuzzles(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ListView.builder(
-              itemCount: puzzleProvider.completedPuzzles.length,
-              itemBuilder: (context, index) {
-                final puzzle = puzzleProvider.completedPuzzles[index];
-                return PuzzleListItem(
-                  puzzle: puzzle,
-                  onDelete: () {},
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      '/puzzle/re-play',
-                      arguments: {'gameInstance': puzzle},
+          if (snapshot.hasError || !snapshot.hasData) {
+            return const Center(child: Text('데이터 불러오기 실패'));
+          }
+
+          final puzzles = snapshot.data!.completedList;
+
+          if (puzzles.isEmpty) {
+            return const Center(child: Text('완료된 퍼즐이 없습니다.'));
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: puzzles.length,
+            itemBuilder: (context, index) {
+              final puzzleDto = puzzles[index];
+              return PuzzleListItem(
+                puzzleDto: puzzleDto,
+                onDelete: () {
+                  null; //삭제 기능 없음
+                },
+                onPressed: () async {
+                  PlayPuzzleCompletedDto response;
+                  ///api 호출하여 dto 받아옴( puzzleId => puzzle dto )
+                  try{
+                    response = await PuzzleService().playCompletedPuzzle(puzzleDto.puzzleId);
+                  } catch(e){
+                    print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
+                    response = PlayPuzzleCompletedDto(
+                      imageUrl: 'https://picsum.photos/600/400',
+                      size: 9,
+                      message: '풀어진 퍼즐 목데이터 메세지',
                     );
-                  },
-                  onSave: () {
-                    puzzleProvider.archivePuzzle(puzzle);
-                  },
-                  gameState: GameState.Completed, // 완료된 퍼즐임을 표시
-                );
-              },
-            ),
+                  }
+                  ///받아온 puzzle dto를 puzzlegame의 fromDto에 넣어서 퍼즐 인스턴스 받아옴
+                  final puzzleGame = PuzzleGame.fromDto(
+                      response, //이거 왜 await으로 해야 하는지 몰겠다 오류나면 빼자
+                      _user,
+                      puzzleDto.puzzleId,
+                      puzzleDto.AIKeyword,
+                      puzzleDto.category
+                  );
+                  ///받아온 퍼즐 인스턴스를 네비게이터에 넣기
+                  Navigator.of(context).pushNamed(
+                    '/puzzle/play',
+                    arguments: {'gameInstance': puzzleGame, 'message': response.message},
+                  );
+                },
+                onSave: () async {
+                  await PuzzleService().archiveCompletedPuzzle(puzzleDto.puzzleId);
+                  setState(() {
+                    _completedPuzzlesFuture = _fetchCompletedPuzzles(); //새로운 future로 업데이트
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('아카이브 요청 완료 (성공 여부는 콘솔 참고)')),
+                  );
+                },
+                gameState: GameState.Completed,
+                isArchived: false,
+              );
+            },
           );
         },
       ),

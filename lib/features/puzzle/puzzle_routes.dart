@@ -8,6 +8,7 @@ import 'package:artificialsw_frontend/features/puzzle/puzzle_mainpage.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/write_puzzle_info_page.dart';
 import 'package:artificialsw_frontend/features/puzzle/weekly_upload/image_upload_page.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_response_dto.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_recompleted.dart';
@@ -37,7 +38,17 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
       return MaterialPageRoute(builder: (_) => CompletedPuzzlesPage());
 
     case '/puzzle/completed':
-      return MaterialPageRoute(builder: (_) => PuzzleCompleted());
+      final args = s.arguments as Map<String, dynamic>;
+      final message = args['message'] as String;
+      final fruitName = args['fruitName'] as String;
+      final fruitMessage = args['fruitMessage'] as String;
+      final contributors = args['contributors'] as List<String>;
+      return MaterialPageRoute(builder: (_) => PuzzleCompleted(
+          message: message,
+          fruitName: fruitName,
+          fruitMessage: fruitMessage,
+          contributors: contributors)
+      );
     case '/puzzle/re-play':
       final args = s.arguments as Map<String, dynamic>;
       final original = args['gameInstance'] as PuzzleGame;

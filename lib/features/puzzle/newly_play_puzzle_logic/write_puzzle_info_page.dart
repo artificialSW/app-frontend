@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
-import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/services/old_image_store.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_request_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_create/puzzle_create_response_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';

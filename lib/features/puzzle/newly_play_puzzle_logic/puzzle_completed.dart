@@ -1,7 +1,20 @@
+import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_response_dto.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 class PuzzleCompleted extends StatelessWidget {
+  final String message;
+  final String fruitName;
+  final String fruitMessage;
+  final List<String> contributors;
+
+  const PuzzleCompleted({
+    Key? key,
+    required this.message,
+    required this.fruitName,
+    required this.fruitMessage,
+    required this.contributors,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +24,11 @@ class PuzzleCompleted extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("사랑스러운 봄의 딸기 획득!"),
+              Text(fruitMessage),
               SizedBox(height: 30),
-              Text("~~, ~~ 덕분에 ~~ 열매가 자라났어요!"),
+              Text("${contributors} 덕분에 ${fruitName} 열매가 자라났어요!"),
+              SizedBox(height: 30),
+              Text("메세지: ${message}"),
               SizedBox(height: 30),
               ElevatedButton(
                   onPressed: () => null,
