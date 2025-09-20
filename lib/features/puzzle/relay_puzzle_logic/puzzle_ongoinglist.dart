@@ -1,7 +1,7 @@
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/api_client.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle/play_puzzle_in_progress_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/play_in_progress_puzzle/play_puzzle_in_progress_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_data_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
@@ -42,7 +42,9 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
             contributors: ['진행중-mock1', 'mock', 'mock'],
             lastSavedAt: 'mock 시간 데이터1',
             AIKeyword: ['진행중인mock1', 'AI', 'keyword'],
-            category: 'mock 카테고리1'
+            category: 'mock 카테고리1',
+            completedPiecesCount: 3,
+            size: 9,
           ),
           PuzzleGetInProgressDataDto(
               puzzleId: '2',
@@ -50,7 +52,9 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
               contributors: ['mock2', 'mock', 'mock'],
               lastSavedAt: 'mock2 시간 데이터2',
               AIKeyword: ['mock2', 'AI', 'keyword'],
-              category: 'mock 카테고리2'
+              category: 'mock 카테고리2',
+            completedPiecesCount: 3,
+            size: 9,
           ),
           PuzzleGetInProgressDataDto(
               puzzleId: '3',
@@ -58,7 +62,9 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
               contributors: ['mock3', 'mock', 'mock'],
               lastSavedAt: 'mock3 시간 데이터3',
               AIKeyword: ['mock3', 'AI', 'keyword'],
-              category: 'mock 카테고리3'
+              category: 'mock 카테고리3',
+            completedPiecesCount: 3,
+            size: 9,
           ),
         ]
       );
