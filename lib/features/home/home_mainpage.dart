@@ -135,12 +135,12 @@ class _HomeRootState extends State<HomeRoot> {
       appBar: HomeTopBar(),
       body: Stack(
         children: [
-          // 배경 그라데이션 (234픽셀 높이로 제한, 맨 밑에 위치)
+          // 배경 그라데이션 (더 높은 높이로 조정, 맨 밑에 위치)
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            height: 234,
+            height: 300,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -177,19 +177,44 @@ class _HomeRootState extends State<HomeRoot> {
 
                   // 나무 이름이 설정되지 않은 경우: 새싹 화면
                   if (!_isTreeNamed) ...[
-                    Text(
-                      "한달동안 키울 나무의 이름을 정해주세요!",
-                      style: AppTextStyles.pretendard_medium.copyWith(fontSize: 16),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            "한달동안 키울\n나무의 이름을 정해주세요!",
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.pretendard_medium.copyWith(
+                              fontSize: 16,
+                              height: 1.3,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Container(
+                            width: 280,
+                            height: 52,
+                            decoration: const ShapeDecoration(
+                              color: Color(0xFFE4F4E3),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                            ),
+                            child: TextField(
+                              controller: _nameController,
+                              focusNode: _focusNode,
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                hintText: "???",
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              ),
+                              onSubmitted: (_) => _onNameSubmitted(),
+                            ),
+                          ),
+                          const SizedBox(height: 60),
+                          Image.asset(AppAssets.sprout, width: 169, height: 169),
+                          const SizedBox(height: 60), // 트리 화면과 동일한 위치로 맞추기 위해 조정된 여백
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 30),
-                    TextField(
-                      controller: _nameController,
-                      focusNode: _focusNode,
-                      decoration: const InputDecoration(hintText: "???"),
-                      onSubmitted: (_) => _onNameSubmitted(),
-                    ),
-                    const SizedBox(height: 30),
-                    Image.asset(AppAssets.sprout),
                   // 나무 이름이 설정된 경우: 메인 트리 화면
                   ] else ...[
                     Align(
@@ -235,12 +260,13 @@ class _HomeRootState extends State<HomeRoot> {
                     ),
                   ],
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 50),
                   BottomProgressBar(
                     progress: treePercent,
                     calendarCircleColor: SeasonalColors.getCalendarColor(),
                     barColors: SeasonalColors.getBarColors(),
                   ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),

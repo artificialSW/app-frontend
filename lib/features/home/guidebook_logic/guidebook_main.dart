@@ -28,6 +28,26 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
     super.dispose();
   }
 
+  /// 기본 해금 상태 반환 (즉시 표시용)
+  List<bool> _getDefaultUnlockStates() {
+    // 1행: 0: 동백꽃, 1: 아카시아, 2: 매화, 3: 팥배꽃, 4: 벚꽃, 5: 목련
+    // 2행: 6: 장미, 7: 수국, 8: 튤립, 9: 제비꽃, 10: 코스모스, 11: 해바라기
+    return [
+      true,  // 0: 동백꽃
+      true,  // 1: 아카시아
+      false, // 2: 매화 (잠금)
+      true,  // 3: 팥배꽃
+      false, // 4: 벚꽃 (잠금)
+      true,  // 5: 목련
+      true,  // 6: 장미
+      false, // 7: 수국 (잠금)
+      true,  // 8: 튤립
+      false, // 9: 제비꽃 (잠금)
+      true,  // 10: 코스모스
+      false, // 11: 해바라기 (잠금)
+    ];
+  }
+
   /// 꽃 해금 상태 반환 (API 호출)
   Future<List<bool>> _getFlowerUnlockedStates() async {
     try {
@@ -38,23 +58,7 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
       return List.generate(12, (index) => unlockedIds.contains(index));
     } catch (e) {
       print('❌ 꽃 해금 상태 조회 실패, 기본값 사용: $e');
-      // API 실패 시 기본값 반환 (테스트용으로 일부 꽃 해금)
-      // 1행: 0: 동백꽃, 1: 아카시아, 2: 매화, 3: 팥배꽃, 4: 벚꽃, 5: 목련
-      // 2행: 6: 장미, 7: 수국, 8: 튤립, 9: 제비꽃, 10: 코스모스, 11: 해바라기
-      return [
-        true,  // 0: 동백꽃
-        true,  // 1: 아카시아
-        false, // 2: 매화 (잠금)
-        true,  // 3: 팥배꽃
-        false, // 4: 벚꽃 (잠금)
-        true,  // 5: 목련
-        true,  // 6: 장미
-        false, // 7: 수국 (잠금)
-        true,  // 8: 튤립
-        false, // 9: 제비꽃 (잠금)
-        true,  // 10: 코스모스
-        false, // 11: 해바라기 (잠금)
-      ];
+      return _getDefaultUnlockStates();
     }
   }
 
@@ -103,8 +107,9 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
                       ),
                       FutureBuilder<List<bool>>(
                         future: _getFlowerUnlockedStates(),
+                        initialData: _getDefaultUnlockStates(), // 즉시 표시할 기본값
                         builder: (context, snapshot) {
-                          final flowerUnlockedStates = snapshot.data ?? [];
+                          final flowerUnlockedStates = snapshot.data ?? _getDefaultUnlockStates();
                           return GuidebookSwipeArea(
                             pageController: _pageController,
                             currentPage: _currentPage,
