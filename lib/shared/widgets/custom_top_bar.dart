@@ -9,6 +9,8 @@ AppBar HomeTopBar() => AppBar(
     toolbarHeight: 56,                  // 와이어프레임 높이 맞춤
     titleSpacing: 0,                    // 양옆 여백 제어
     leadingWidth: 56,                   // 좌우 균형(우측 actions 없을 때)
+    backgroundColor: Colors.transparent, // 배경 투명하게
+    elevation: 0,                       // 그림자 제거
     title: SizedBox(
       width: 60,
       height: 24.08,
