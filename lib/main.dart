@@ -1,5 +1,5 @@
 // lib/main.dart
-import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/services/old_image_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';

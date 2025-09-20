@@ -1,10 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
+import 'package:artificialsw_frontend/services/image_server_custom.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_archived_puzzle_list/puzzle_get_archived_data_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_archived_puzzle_list/puzzle_get_archived_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class PuzzleArchive extends StatefulWidget {
@@ -95,8 +99,17 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
                 onPressed: () {
 
                 },
-                onSave: () {
-                  // 저장 로직
+                onSave: () async {
+                  try {
+                    await ImageSaverCustom.saveImage("https://i1.sndcdn.com/artworks-000218997483-xdgm10-t500x500.jpg");
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("이미지 저장 완료")),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("저장 실패: ${e.toString()}")),
+                    );
+                  }
                 },
                 gameState: GameState.Completed,
                 isArchived: true,

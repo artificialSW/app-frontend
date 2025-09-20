@@ -5,7 +5,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:artificialsw_frontend/features/puzzle/model/puzzle_board_scope.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
-import 'package:artificialsw_frontend/services/image_store.dart';
+import 'package:artificialsw_frontend/services/old_image_store.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_request_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_save_progress/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
