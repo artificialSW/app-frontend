@@ -1,0 +1,12 @@
+warning: in the working copy of 'lib/features/home/home_mainpage.dart', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/features/home/widget/flower_card.dart', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/features/home/widget/fruit_card.dart', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/features/home/widget/tree_decorate_sheet.dart', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/features/home/widget/tree_image_page.dart', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/services/home/home_service.dart', LF will be replaced by CRLF the next time Git touches it
+lib/features/home/home_mainpage.dart
+lib/features/home/widget/flower_card.dart
+lib/features/home/widget/fruit_card.dart
+lib/features/home/widget/tree_decorate_sheet.dart
+lib/features/home/widget/tree_image_page.dart
+lib/services/home/home_service.dart

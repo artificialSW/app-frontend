@@ -14,6 +14,8 @@ import 'package:artificialsw_frontend/features/home/widget/bottom_progress_bar.d
 import 'package:artificialsw_frontend/features/home/widget/tree_decorate_sheet.dart';
 import 'package:artificialsw_frontend/features/home/widget/message_bubble.dart';
 import 'package:artificialsw_frontend/features/home/constants/seasonal_colors.dart';
+import 'package:artificialsw_frontend/features/home/models/fruit_card_data.dart';
+import 'package:artificialsw_frontend/features/home/models/flower_card_data.dart';
 
 /// 홈 화면의 메인 위젯
 /// - 나무 이름 설정 및 트리 이미지 표시
@@ -40,6 +42,10 @@ class _HomeRootState extends State<HomeRoot> {
   String _treeName = ''; // 설정된 나무 이름
   String _namingDate = ''; // 나무 이름 설정 날짜
   int _currentTreePage = 0; // 현재 트리 페이지 (0: 첫번째, 1: 두번째, 2: 세번째)
+  
+  // 선택된 과일/꽃 상태 (order 필드 기반으로 관리)
+  List<FruitCardData> _selectedFruits = []; // 선택된 과일 카드들
+  List<FlowerCardData> _selectedFlowers = []; // 선택된 꽃 카드들
 
   /// 트리 이미지를 캡처하여 다이얼로그로 표시하는 함수
   Future<void> _captureImage() async {
@@ -67,34 +73,52 @@ class _HomeRootState extends State<HomeRoot> {
   /// - 확인 후 나무 이름과 날짜를 상태에 저장
   void _onNameSubmitted() {
     final name = _nameController.text.trim();
-    if (name.isNotEmpty) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) {
-          return CommonDialog(
-            title: "나무의 이름이 정해졌어요",
-            subtitle: "멋진 이름인데요!",
-            buttonText: "확인",
-            onButtonPressed: () {
-              Navigator.of(dialogContext).pop();
-              setState(() {
-                _isTreeNamed = true;
-                _treeName = name;
-                _namingDate =
-                    DateTime.now().toString().substring(0, 10).replaceAll('-', '.');
-              });
-            },
-          );
+    if (name.isEmpty) return;
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => CommonDialog(
+        title: "나무의 이름이 정해졌어요",
+        subtitle: "멋진 이름인데요!",
+        buttonText: "확인",
+        onButtonPressed: () {
+          Navigator.of(dialogContext).pop();
+          setState(() {
+            _isTreeNamed = true;
+            _treeName = name;
+            _namingDate = DateTime.now().toString().substring(0, 10).replaceAll('-', '.');
+          });
         },
-      );
-    }
+      ),
+    );
+  }
+
+  /// 3. 선택된 과일 데이터를 반환 (order > 0인 카드들만)
+  /// TreeImagePage에서 나무에 표시할 과일들을 필터링
+  List<FruitCardData> _getSelectedFruits() {
+    return _selectedFruits.where((fruit) => fruit.order > 0).toList();
+  }
+
+  /// 3. 선택된 꽃 데이터를 반환 (order > 0인 카드들만)
+  /// TreeImagePage에서 나무에 표시할 꽃들을 필터링
+  List<FlowerCardData> _getSelectedFlowers() {
+    return _selectedFlowers.where((flower) => flower.order > 0).toList();
+  }
+
+  /// 2. TreeDecorateSheet에서 선택 상태가 변경되었을 때 호출되는 콜백
+  /// 전체 카드 리스트를 받아서 저장하고 화면 갱신
+  void _onSelectionChanged(List<FruitCardData> fruitCards, List<FlowerCardData> flowerCards) {
+    setState(() {
+      _selectedFruits = fruitCards;    // 전체 과일 카드 리스트 저장
+      _selectedFlowers = flowerCards;  // 전체 꽃 카드 리스트 저장
+    });
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _bubbleMsgController.dispose(); // [추가]
+    _bubbleMsgController.dispose();
     _focusNode.dispose();
     _pageController.dispose();
     super.dispose();
@@ -111,12 +135,12 @@ class _HomeRootState extends State<HomeRoot> {
       appBar: HomeTopBar(),
       body: Stack(
         children: [
-          // 배경 그라데이션 (234픽셀 높이로 제한, 맨 밑에 위치)
+          // 배경 그라데이션 (더 높은 높이로 조정, 맨 밑에 위치)
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            height: 234,
+            height: 300,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -153,19 +177,44 @@ class _HomeRootState extends State<HomeRoot> {
 
                   // 나무 이름이 설정되지 않은 경우: 새싹 화면
                   if (!_isTreeNamed) ...[
-                    Text(
-                      "한달동안 키울 나무의 이름을 정해주세요!",
-                      style: AppTextStyles.pretendard_medium.copyWith(fontSize: 16),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            "한달동안 키울\n나무의 이름을 정해주세요!",
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.pretendard_medium.copyWith(
+                              fontSize: 16,
+                              height: 1.3,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Container(
+                            width: 280,
+                            height: 52,
+                            decoration: const ShapeDecoration(
+                              color: Color(0xFFE4F4E3),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                            ),
+                            child: TextField(
+                              controller: _nameController,
+                              focusNode: _focusNode,
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                hintText: "???",
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              ),
+                              onSubmitted: (_) => _onNameSubmitted(),
+                            ),
+                          ),
+                          const SizedBox(height: 60),
+                          Image.asset(AppAssets.sprout, width: 169, height: 169),
+                          const SizedBox(height: 60), // 트리 화면과 동일한 위치로 맞추기 위해 조정된 여백
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 30),
-                    TextField(
-                      controller: _nameController,
-                      focusNode: _focusNode,
-                      decoration: const InputDecoration(hintText: "???"),
-                      onSubmitted: (_) => _onNameSubmitted(),
-                    ),
-                    const SizedBox(height: 30),
-                    Image.asset(AppAssets.sprout),
                   // 나무 이름이 설정된 경우: 메인 트리 화면
                   ] else ...[
                     Align(
@@ -194,6 +243,8 @@ class _HomeRootState extends State<HomeRoot> {
                                    treeName: _treeName,
                                    namingDate: _namingDate,
                                    pageIndex: index,
+                                   selectedFruits: _getSelectedFruits(),
+                                   selectedFlowers: _getSelectedFlowers(),
                                  );
                                },
                             ),
@@ -209,12 +260,13 @@ class _HomeRootState extends State<HomeRoot> {
                     ),
                   ],
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 50),
                   BottomProgressBar(
                     progress: treePercent,
                     calendarCircleColor: SeasonalColors.getCalendarColor(),
                     barColors: SeasonalColors.getBarColors(),
                   ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -222,7 +274,10 @@ class _HomeRootState extends State<HomeRoot> {
 
            // 트리 장식 시트: 2번째/3번째 페이지에서만 표시 (과일/꽃 카드)
            if (_isTreeNamed && (_currentTreePage == 1 || _currentTreePage == 2))
-             TreeDecorateSheet(pageIndex: _currentTreePage),
+             TreeDecorateSheet(
+               pageIndex: _currentTreePage,
+               onSelectionChanged: _onSelectionChanged,
+             ),
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
+import 'package:artificialsw_frontend/features/home/guidebook_logic/guidebook_main.dart';
 
 AppBar HomeTopBar() => AppBar(
     automaticallyImplyLeading: false,   // 뒤로가기 자동 삽입 방지(중앙 정렬 깨짐 방지)
@@ -18,7 +19,19 @@ AppBar HomeTopBar() => AppBar(
       ),
     ),
     actions: [
-      IconButton(onPressed: null, icon: Image.asset(AppAssets.dogaam)),
+      Builder(
+        builder: (context) => IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const GuidebookMainPage(),
+              ),
+            );
+          },
+          icon: Image.asset(AppAssets.dogaam),
+        ),
+      ),
     ],
   );
 
