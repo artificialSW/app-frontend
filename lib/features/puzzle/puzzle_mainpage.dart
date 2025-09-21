@@ -465,7 +465,7 @@ class _RoundIconButton extends StatelessWidget {
           child: CircleAvatar(
             radius: 28,
             backgroundColor:
-            isDisabled ? Colors.grey.shade200 : backgroundColor,
+            isDisabled ? AppColors.plumu_gray_3 : AppColors.plumu_green_main,
             child: Icon(
               icon,
               color: Colors.white,
@@ -476,10 +476,9 @@ class _RoundIconButton extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 13,
-            color: textColor ??
-                (isDisabled ? Colors.grey : Colors.black87),
+          style: AppTextStyles.pretendard_medium.copyWith(
+            fontSize: 11,
+            color: isDisabled ? AppColors.plumu_gray_3 : AppColors.plumu_green_main,
           ),
         ),
       ],
