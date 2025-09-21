@@ -189,14 +189,33 @@ class GuidebookFlowerDetailPage extends StatelessWidget {
             right: 0,
             child: Padding(
               padding: const EdgeInsets.only(left: 32),
-              child: Text(
-                '도감에 새로운\n꽃이 등록되었어요!',
-                style: AppTextStyles.pretendard_bold.copyWith(
-                  color: flowerData['color'] as Color,
-                  fontSize: 27,
-                  height: 1.33,
-                  letterSpacing: -0.32,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '우리 가족의\n꽃 도감 확인하기',
+                    style: AppTextStyles.pretendard_bold.copyWith(
+                      color: flowerData['color'] as Color,
+                      fontSize: 27,
+                      height: 1.33,
+                      letterSpacing: -0.32,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: 265,
+                    height: 25,
+                    child: Text(
+                      '${flowerData['name']}의 생성 기준을 확인해보세요!',
+                      style: AppTextStyles.pretendard_medium.copyWith(
+                        color: const Color(0xFF333333),
+                        fontSize: 15,
+                        height: 1.50,
+                        letterSpacing: -0.46,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
