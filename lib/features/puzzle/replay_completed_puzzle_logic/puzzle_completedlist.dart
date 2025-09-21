@@ -1,7 +1,7 @@
 //completed_puzzles_page.dart
 
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle/play_puzzle_completed_dto.dart';
+import 'package:artificialsw_frontend/services/puzzle/dto/play_completed_puzzle/play_puzzle_completed_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle_list/puzzle_get_completed_data_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle_list/puzzle_get_completed_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
@@ -39,7 +39,8 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                 contributors: ['완료-mock1', 'mock', 'mock'],
                 completedAt: 'mock 시간 데이터1',
                 AIKeyword: ['완료-mock1', 'AI', 'keyword'],
-                category: 'mock 카테고리1'
+                category: 'mock 카테고리1',
+              message: 'mock1 우리 할아버지 신나셨던거 기억나?'
             ),
             PuzzleGetCompletedDataDto(
                 puzzleId: '2',
@@ -47,7 +48,8 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                 contributors: ['mock2', 'mock', 'mock'],
                 completedAt: 'mock2 시간 데이터2',
                 AIKeyword: ['mock2', 'AI', 'keyword'],
-                category: 'mock 카테고리2'
+                category: 'mock 카테고리2',
+                message: 'mock1 우리 할아버지 신나셨던거 기억나?'
             ),
             PuzzleGetCompletedDataDto(
                 puzzleId: '3',
@@ -55,7 +57,8 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                 contributors: ['mock3', 'mock', 'mock'],
                 completedAt: 'mock3 시간 데이터3',
                 AIKeyword: ['mock3', 'AI', 'keyword'],
-                category: 'mock 카테고리3'
+                category: 'mock 카테고리3',
+                message: 'mock1 우리 할아버지 신나셨던거 기억나?'
             ),
           ]
       );

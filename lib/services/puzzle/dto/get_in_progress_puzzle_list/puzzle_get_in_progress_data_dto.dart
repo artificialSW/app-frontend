@@ -11,6 +11,8 @@ class PuzzleGetInProgressDataDto {
   final String lastSavedAt;
   final List<String> AIKeyword;
   final String category;
+  final int completedPiecesCount;
+  final int size;
 
   PuzzleGetInProgressDataDto({
     required this.puzzleId,
@@ -19,6 +21,8 @@ class PuzzleGetInProgressDataDto {
     required this.lastSavedAt,
     required this.AIKeyword,
     required this.category,
+    required this.completedPiecesCount,
+    required this.size,
   });
 
   factory PuzzleGetInProgressDataDto.fromJson(Map<String, dynamic> json) =>

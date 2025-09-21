@@ -206,7 +206,7 @@ class PuzzleListItem extends StatelessWidget {
         Text('ai선정 키워드: ${puzzleDto.AIKeyword}',
             style: const TextStyle(color: Colors.grey, fontSize: 12)),
         const SizedBox(height: 8),
-        Text('진행도: ~~',
+        Text('진행도: ${(puzzleDto.completedPiecesCount/puzzleDto.size*100).toDouble().toStringAsFixed(0)}%',
             style: TextStyle(color: Colors.grey, fontSize: 12)),
         const SizedBox(height: 12),
         Row(
@@ -252,7 +252,7 @@ class PuzzleListItem extends StatelessWidget {
         Text('퍼즐 푼 사람: ${puzzleDto.contributors}',
             style: TextStyle(color: Colors.grey, fontSize: 12)),
         const SizedBox(height: 8),
-        const Text('메세지: ~~',
+        Text('메세지: ${puzzleDto.message}',
             style: TextStyle(color: Colors.grey, fontSize: 12)),
         const SizedBox(height: 12),
         Row(

@@ -11,12 +11,13 @@ PuzzleGetCompletedDataDto _$PuzzleGetCompletedDataDtoFromJson(
 ) => PuzzleGetCompletedDataDto(
   puzzleId: json['puzzleId'] as String,
   imageUrl: json['imageUrl'] as String,
+  category: json['category'] as String,
+  AIKeyword:
+      (json['AIKeyword'] as List<dynamic>).map((e) => e as String).toList(),
   contributors:
       (json['contributors'] as List<dynamic>).map((e) => e as String).toList(),
   completedAt: json['completedAt'] as String,
-  AIKeyword:
-      (json['AIKeyword'] as List<dynamic>).map((e) => e as String).toList(),
-  category: json['category'] as String,
+  message: json['message'] as String,
 );
 
 Map<String, dynamic> _$PuzzleGetCompletedDataDtoToJson(
@@ -24,8 +25,9 @@ Map<String, dynamic> _$PuzzleGetCompletedDataDtoToJson(
 ) => <String, dynamic>{
   'puzzleId': instance.puzzleId,
   'imageUrl': instance.imageUrl,
+  'category': instance.category,
+  'AIKeyword': instance.AIKeyword,
   'contributors': instance.contributors,
   'completedAt': instance.completedAt,
-  'AIKeyword': instance.AIKeyword,
-  'category': instance.category,
+  'message': instance.message,
 };

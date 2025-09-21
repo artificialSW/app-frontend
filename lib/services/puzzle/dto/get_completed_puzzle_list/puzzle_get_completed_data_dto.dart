@@ -7,18 +7,22 @@ part 'puzzle_get_completed_data_dto.g.dart'; // 자동 생성 파일
 class PuzzleGetCompletedDataDto {
   final String puzzleId;
   final String imageUrl;
+  final String category;
+  final List<String> AIKeyword;
   final List<String> contributors;
   final String completedAt;
-  final List<String> AIKeyword;
-  final String category;
+  final String message;
+
+
 
   PuzzleGetCompletedDataDto({
     required this.puzzleId,
     required this.imageUrl,
+    required this.category,
+    required this.AIKeyword,
     required this.contributors,
     required this.completedAt,
-    required this.AIKeyword,
-    required this.category,
+    required this.message,
   });
 
   factory PuzzleGetCompletedDataDto.fromJson(Map<String, dynamic> json) =>
