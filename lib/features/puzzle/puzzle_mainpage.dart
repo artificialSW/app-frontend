@@ -34,7 +34,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       // ✅ 목데이터 리턴
       return PuzzleHomeGetDto(
-        subject: ["복숭아 사진 자랑", "아보카도 사진 자랑", "딸기 사진 자랑"],
+        subject: ["복숭아 사진 자랑", "아보카도 사진 자랑", "자유주제: 원하는 사진을 올려보세요!"],
         inProgress: [PuzzleHomeOngoingPreviewDto(
           puzzleId: 1,
           imageUrl:
@@ -120,7 +120,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                               ),
                               SizedBox(height: screenHeight*0.007),
                               Text(
-                                  '키워드에 맞는 사진을 올려보세요! 물론 자유주제도 좋아요 :)',
+                                  '키워드에 맞는 사진을 올려보세요! :)',
                                   style: AppTextStyles.pretendard_medium.copyWith(
                                     fontSize: 12,
                                     color: AppColors.plumu_gray_6,
