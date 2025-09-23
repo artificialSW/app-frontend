@@ -17,37 +17,43 @@ class WeeklyQuestionBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ChatCommonThreadPage(
-              question: question,
-              order: order,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ChatCommonThreadPage(
+                  question: question,
+                  order: order,
+                ),
+              ),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: AppColors.plumu_green_30per,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              children: [
+                Text('🎉', style: TextStyle(fontSize: 24)),
+                const SizedBox(width: 12),
+                Text(
+                  '이번주의 공통질문',
+                  style: AppTextStyles.pretendard_medium.copyWith(
+                    fontSize: 16,
+                    color: AppColors.plumu_green_main,
+                  ),
+                ),
+              ],
             ),
           ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppColors.plumu_green_30per,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          children: [
-            Text('🎉', style: TextStyle(fontSize: 24)),
-            const SizedBox(width: 12),
-            Text(
-              '이번주의 공통질문',
-              style: AppTextStyles.pretendard_medium.copyWith(
-                fontSize: 16,
-                color: AppColors.plumu_green_main,
-              ),
-            ),
-          ],
         ),
       ),
     );

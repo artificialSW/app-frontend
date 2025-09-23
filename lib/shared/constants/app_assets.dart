@@ -11,6 +11,7 @@ class AppAssets {
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';
   static const back = 'assets/icons/back.png';
   static const lock = 'assets/icons/lock.png';
+  static const lock_fill = 'assets/icons/lock_fill.png';
   
   // 꽃 이미지들 (assets/images/flower/)
   static const flower_camellia = 'assets/images/flower/camellia.png'; // 동백꽃
@@ -38,5 +39,10 @@ class AppAssets {
   static const String puzzle  = 'assets/icons/puzzle.png';
   static const String chat    = 'assets/icons/chat.png';
   static const String mypage = 'assets/icons/mypage.png';
+
+  // Chat specific icons
+  static const String paperplane = 'assets/icons/paperplane.png';
+  static const String person_circle = 'assets/icons/person_circle.png';
+  static const String message = 'assets/icons/message.png';
 
 }

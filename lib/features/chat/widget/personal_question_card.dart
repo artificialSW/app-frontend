@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import '../model/personal_question.dart';
 import '../chat_personal_send_logic/state/personal_question_send.dart';
 
@@ -55,7 +56,6 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
       borderRadius: BorderRadius.circular(8),
     );
 
-    final Color titleColor = _pressed ? Colors.white : const Color(0xFF282828);
     final Color circleStroke = _pressed ? Colors.white : AppColors.plumu_green_main;
     final Color statText = _pressed ? Colors.white : const Color(0xFF1C1C1C);
     final Color statIcon = _pressed ? Colors.white : Colors.black87;
@@ -84,36 +84,34 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
                     width: 350, // 텍스트 줄바꿈 여유(피그마 레드 마크 350)
                     child: Text(
                       widget.question.text,
-                      style: AppTextStyles.pretendard_bold.copyWith(
-                        fontSize: 17, height: 1.5, letterSpacing: -0.46, color: titleColor,
+                      style: TextStyle(
+                        color: _pressed ? Colors.white : const Color(0xFF282828),
+                        fontSize: 17,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w700,
+                        height: 1.50,
+                        letterSpacing: -0.46,
                       ),
                       maxLines: 1, overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
 
-                // 참여자 아이콘 그룹: X=23, Y=48, W=74, H=36 (28지름, 간격 10)
+                // 참여자 아이콘 그룹: X=23, Y=48, size ~35x36, 간격 10
                 Positioned(
                   left: 23, top: 48,
-                  child: Row(
-                    children: List.generate(2, (_) => Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      width: 28, height: 28,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: circleStroke, width: 2),
-                        color: _pressed ? Colors.white.withOpacity(0.15) : Colors.transparent,
-                      ),
-                      child: Icon(Icons.person, size: 18, color: circleStroke),
-                    )),
-                  ),
+                  child: Row(children: [
+                    _ParticipantIcon(pressed: _pressed, color: circleStroke),
+                    const SizedBox(width: 0),
+                    _ParticipantIcon(pressed: _pressed, color: circleStroke),
+                  ]),
                 ),
 
-                // 잠금: right=12, top=10, size=21
+                // 잠금: right=12, top=10, size=20x25, filled icon asset
                 if (isPrivate)
-                  const Positioned(
+                  Positioned(
                     right: 12, top: 10,
-                    child: Icon(Icons.lock, size: 21, color: AppColors.plumu_green_50per),
+                    child: Image.asset(AppAssets.lock_fill, width: 20, height: 25, color: const Color(0x7F5CBD56)),
                   ),
 
                 // 좋아요/댓글 캡슐: right=10, bottom=9, 105x31, r=15.5
@@ -138,7 +136,7 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
                         ),
                         const SizedBox(width: 12),
                         Row(children: [
-                          Icon(Icons.chat_bubble_outline, size: 18, color: statIcon),
+                          Image.asset(AppAssets.message, width: 18, height: 18, color: statIcon),
                           const SizedBox(width: 4),
                           Text('${widget.commentsCount}', style: TextStyle(fontSize: 14, color: statText)),
                         ]),
@@ -152,5 +150,28 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
         ),
       ),
     );
+  }
+}
+
+class _ParticipantIcon extends StatelessWidget {
+  final bool pressed;
+  final Color color;
+  const _ParticipantIcon({required this.pressed, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    if (pressed) {
+      return Container(
+        width: 35,
+        height: 36,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.15),
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 2),
+        ),
+        child: Icon(Icons.person, size: 20, color: Colors.white),
+      );
+    }
+    return Image.asset(AppAssets.person_circle, width: 35, height: 36);
   }
 }

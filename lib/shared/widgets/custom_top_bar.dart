@@ -113,7 +113,7 @@ class HeaderSendIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.send_rounded),
+      icon: Image.asset(AppAssets.paperplane),
       tooltip: '답변하기',
       onPressed: () => Navigator.pushNamed(context, '/personal-answer'),
     );
