@@ -8,21 +8,10 @@ import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-// 디자인 통일: CustomAppBar, CustomButton 적용
-// 색상, 폰트: AppColors, AppTextStyles 적용
 
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:artificialsw_frontend/features/puzzle/model/image_upload_unit.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/image_upload/image_upload_dto.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/image_upload/picture_data_dto.dart';
-import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
+// 디자인 통일
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
-import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ImageUploadPage extends StatefulWidget {
   final List<String> category;
@@ -37,7 +26,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
   final List<UploadUnit> _uploads = [];
   File? _currentImage;
   final TextEditingController _commentController = TextEditingController();
-  final int maxCount = 3;
+  final int maxCount = 3; // 카테고리 3개 기준
 
   @override
   void initState() {
@@ -45,6 +34,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
     _commentController.addListener(() => setState(() {}));
   }
 
+  // --- 기존 함수 유지: 이미지 픽커 ---
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
@@ -55,22 +45,101 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
     }
   }
 
+  // 카테고리 index로 이미 업로드된 항목 찾기
+  UploadUnit? _getUploadForIndex(int idx) {
+    final cat = widget.category[idx]; //실제 카테고리
+    final foundIdx = _uploads.indexWhere((u) => u.category == cat); //카테고리가 있는지 체크
+    if (foundIdx == -1) return null;
+    return _uploads[foundIdx];
+  }
+
+  // --- 기존 함수 유지(로직만 보강): 저장 ---
   void _saveCurrentEntry(int curridx) {
-    if (_currentImage != null && _commentController.text.isNotEmpty) {
+    // curridx 카테고리에 대한 기존 항목
+    final existing = _getUploadForIndex(curridx);
+
+    // 새 이미지가 없고, 기존 이미지도 없으면 저장 불가(코멘트만으로는 불가)
+    final imageFile = _currentImage ?? existing?.imageFile;
+    if (imageFile != null && _commentController.text.isNotEmpty) {
       setState(() {
-        _uploads.add(
-          UploadUnit(
-            imageFile: _currentImage!,
-            comment: _commentController.text,
-            category: widget.category[curridx],
-          ),
+        final newUnit = UploadUnit(
+          imageFile: imageFile,
+          comment: _commentController.text,
+          category: widget.category[curridx],
         );
+
+        final cat = widget.category[curridx];
+        final existIdx = _uploads.indexWhere((u) => u.category == cat);
+        if (existIdx >= 0) {
+          _uploads[existIdx] = newUnit; // 교체(수정)
+        } else {
+          _uploads.add(newUnit); // 신규 추가
+        }
+
         _currentImage = null;
         _commentController.clear();
       });
     }
   }
 
+  // 코멘트 입력 팝업
+  Future<void> _showCommentDialog(int idx, {String? initial}) async {
+    _commentController.text = initial ?? '';
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          title: Text(
+            '코멘트 입력',
+            style: AppTextStyles.pretendard_bold.copyWith(fontSize: 18),
+          ),
+          content: TextField(
+            controller: _commentController,
+            maxLines: null,
+            decoration: const InputDecoration(
+              hintText: '사진에 대한 코멘트를 입력하세요',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // 취소 시 현재 선택 이미지는 초기화
+                setState(() {
+                  _currentImage = null;
+                  _commentController.clear();
+                });
+                Navigator.of(dialogContext).pop(context);
+              },
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                _saveCurrentEntry(idx);
+                Navigator.of(dialogContext).pop(context);
+              },
+              child: const Text('저장'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 타일 탭 → 이미지 선택 → 코멘트 팝업
+  Future<void> _handleAddOrEdit(int idx) async {
+    final existing = _getUploadForIndex(idx);
+
+    // 이미지 먼저 선택(기존 이미지만 수정 원하면 "취소" 후 팝업에서 저장이 되도록 허용)
+    await _pickImage();
+
+    // 이미지 선택 취소했더라도, 기존 이미지가 있으면 코멘트만 수정 가능
+    await _showCommentDialog(idx, initial: existing?.comment);
+  }
+
+  // --- 기존 함수 유지: 업로드 제출 ---
   Future<void> _submitAll() async {
     final List<Map<String, dynamic>> pictureDataList = [];
 
@@ -98,75 +167,176 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
       );
     }
 
-    // ✅ 보기 좋게 JSON 출력 (디버깅용)
+    // 디버깅용 로그
     const encoder = JsonEncoder.withIndent('  ');
+    // ignore: avoid_print
     print('pictureData: ${encoder.convert(pictureDataList)}');
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('✅ 전체 업로드 완료!')),
     );
 
+    // 퍼즐 메인으로 이동 (기존 동작 유지)
     Navigator.of(context).pushNamed('/');
+  }
+
+  Widget _buildCategoryTile(int idx) {
+    final uploaded = _getUploadForIndex(idx); ///처음이라면 upload == null,
+    ///처음이 아니라면 UploadUnit 타입 저장
+    ///   { final File imageFile,
+    ///   final String comment,
+    ///   final String category }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 초록 라운드 칩: "주제1" 등
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppColors.plumu_green_main,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Text(
+            widget.category[idx],
+            style: AppTextStyles.pretendard_bold.copyWith(
+              fontSize: 12,
+              color: AppColors.plumu_white,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        // + 타일 / 이미지 미리보기
+        GestureDetector(
+          onTap: () => _handleAddOrEdit(idx),
+          child: Container(
+            width: 152,
+            height: 152,
+            decoration: BoxDecoration(
+              color: AppColors.plumu_gray_2,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: uploaded == null
+                ? //upload가 null일때
+            Center(
+              child: Icon(
+                Icons.add,
+                size: 40,
+                color: Colors.grey, // 아이콘만 기본색 사용(에러 방지)
+              ),
+            )
+                : //upload가 null이 아닐 때
+            Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.file(uploaded.imageFile, fit: BoxFit.cover),
+                // 우상단에 살짝 편집 힌트(선택 사항, 디자인 최소 변경)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.35),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.edit,
+                      size: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isEntryComplete = _currentImage != null && _commentController.text.isNotEmpty;
     final isDone = _uploads.length >= maxCount;
-    final currentIndex = _uploads.length;
 
     return Scaffold(
       appBar: CanGoBackTopBar('사진 업로드', context),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_uploads.length < maxCount) ...[
-              Text(
-                '주제: ${widget.category[currentIndex]}',
-                style: AppTextStyles.pretendard_bold.copyWith(fontSize: 18),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 상단 타이틀 영역 (아이콘 + 제목 + 부제)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 퍼즐 아이콘 느낌 (자산 없어서 기본 아이콘 사용)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Icon(
+                      Icons.extension, // 퍼즐 조각 유사 아이콘
+                      color: AppColors.plumu_green_main,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '사진 업로드하기',
+                          style: AppTextStyles.pretendard_bold.copyWith(
+                            fontSize: 22,
+                            color: AppColors.plumu_green_main,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '이번주의 주제별로 사진을 제출해주세요!',
+                          style: AppTextStyles.pretendard_regular.copyWith(
+                            fontSize: 14,
+                            color: AppColors.plumu_gray_7,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
-              CustomButton(
-                text: _currentImage == null ? '이미지 선택' : '이미지 다시 선택',
-                onPressed: _pickImage,
-              ),
-              const SizedBox(height: 12),
-              if (_currentImage != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.file(_currentImage!, height: 160),
-                ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _commentController,
-                decoration: const InputDecoration(
-                  labelText: '코멘트를 입력하세요',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: null,
-              ),
-              const SizedBox(height: 12),
-              CustomButton(
-                text: '저장 (${_uploads.length + 1}/$maxCount)',
-                onPressed: isEntryComplete ? () => _saveCurrentEntry(currentIndex) : null,
-              ),
-            ] else ...[
-              Center(
-                child: Text(
-                  '모든 이미지와 코멘트 입력 완료 🎉',
-                  style: AppTextStyles.pretendard_bold.copyWith(fontSize: 16),
-                ),
-              ),
+
+              const SizedBox(height: 20),
+
+              // 주제 1~3 섹션 (세로 나열, 모두 한 화면에서 미리보기 가능)
+              for (int i = 0; i < maxCount && i < widget.category.length; i++) ...[
+                _buildCategoryTile(i),
+                const SizedBox(height: 24),
+              ],
+
+              // 하단 여백
+              const SizedBox(height: 8),
             ],
-            const Spacer(),
-            CustomButton(
-              text: '🚀 업로드하기',
-              onPressed: isDone ? _submitAll : null,
-              backgroundColor: isDone ? AppColors.plumu_green_main : AppColors.plumu_gray_3,
-            ),
-          ],
+          ),
+        ),
+      ),
+      // 하단 "제출하기" 버튼 (기존 업로드 함수 사용)
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: CustomButton(
+            text: '제출하기',
+            onPressed: isDone ? _submitAll : null,
+            width: double.infinity,
+            height: 52,
+            fontSize: 16,
+            textColor: AppColors.plumu_white,
+            backgroundColor:
+            isDone ? AppColors.plumu_green_main : AppColors.plumu_gray_3,
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
