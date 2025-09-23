@@ -10,6 +10,9 @@ class AppAssets {
   static const appicon_whiteBackground = 'assets/images/appicon_whiteBackground.png';
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';
   static const back = 'assets/icons/back.png';
+  static const forward = 'assets/icons/forward.png';
+  static const filter = 'assets/icons/filter.png';
+  static const archive = 'assets/icons/archive.png';
   static const lock = 'assets/icons/lock.png';
   
   // 꽃 이미지들 (assets/images/flower/)

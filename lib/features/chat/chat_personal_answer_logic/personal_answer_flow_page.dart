@@ -25,7 +25,18 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
   final questions = [
     {'from': '아빠', 'text': '아들 요즘 뭐하고 지내니?'},
     {'from': '엄마', 'text': '오랜만에 같이 영화 볼까?'},
-  ];
+  ]; /// 여기서 GET으로 개인질문 목록 받아오기
+  //   {
+  // 			"Q_id" : "12",
+  // 		  "content" : "개인_안녕?",
+  // 		  "sender" : "123", //나
+  // 		  "receiver" : "134",
+  // 		  "likes" : 10,
+  // 		  "comments" : 3,
+  // 		  "solved" : false,
+  // 		  "is_public" : true
+  // 		},
+  // 	  ...
 
   @override
   void initState() {
@@ -67,6 +78,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
       );
     } else {
       body = StepAnswerSuccess(to: selected?['from'] ?? '');
+      ///여기 POST로 서버에 응답 전송하는 로직 추가하기
       _scheduleReturnToChat();
     }
 

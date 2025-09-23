@@ -8,6 +8,7 @@ import 'steps/step_family.dart';
 import 'steps/step_visibility.dart';
 import 'steps/step_write.dart';
 import 'steps/step_success.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 
 class PersonalQuestionFlowPage extends StatefulWidget {
   const PersonalQuestionFlowPage({super.key});
@@ -28,7 +29,7 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
     User(id: '3', name: '할아버지'),
     User(id: '4', name: '할머니'),
     User(id: '5', name: '동생'),
-  ];
+  ]; ///이거 서버로부터 GET으로 받아오기(API document에 추가해 놓음)
 
   @override
   void initState() {
@@ -82,54 +83,8 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
       _ => false,
     };
 
-    // 상단바 + 프로그레스 (피그마 간격 맞춤)
-    final appBar = AppBar(
-      elevation: 0,
-      backgroundColor: AppColors.plumu_white,
-      centerTitle: true,
-      iconTheme: const IconThemeData(color: AppColors.plumu_gray_7),
-      title: Text(
-        '질문생성',
-        style: AppTextStyles.pretendard_bold.copyWith(
-          fontSize: 17,
-          color: AppColors.plumu_gray_7,
-        ),
-      ),
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(12),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: SizedBox(
-            height: 4,
-            child: Row(
-              children: [
-                Expanded(
-                  flex: step.clamp(0, 3),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.plumu_green_main,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: (3 - step).clamp(0, 3),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.plumu_gray_2,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-
     return Scaffold(
-      appBar: appBar,
+      appBar: CreateQuestionTopBar(step),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: body,

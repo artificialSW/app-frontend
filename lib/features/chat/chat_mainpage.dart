@@ -11,14 +11,6 @@ import 'widget/weekly_question_banner.dart';
 import 'widget/tab_bar.dart';
 import 'widget/custom_app_bar.dart';
 
-// 카드 목록 전용(페이지 내부 전용이므로 private)
-class _PersonalListItem {
-  final PersonalQuestionEntity entity;
-  final int likes;
-  final int comments;
-  const _PersonalListItem({required this.entity, required this.likes, required this.comments});
-}
-
 class ChatRoot extends StatefulWidget {
   const ChatRoot({super.key});
   @override
@@ -74,7 +66,7 @@ class _ChatRootState extends State<ChatRoot> {
   // 나에게 온 질문 개수 계산 (responderUserId가 현재 사용자인 질문들)
   int _getIncomingQuestionsCount() {
     return _personalItems.where((item) => item.entity.responderUserId == 'u1').length;
-  }
+  } ///삭제하기. 이거 백에서 계산해서 넘겨줌. API 대로라면..?
 
 
   @override
@@ -91,7 +83,9 @@ class _ChatRootState extends State<ChatRoot> {
             selectedIndex: _selectedIndex,
             onTabChanged: (index) => setState(() => _selectedIndex = index),
           ),
-          Expanded(child: _selectedIndex == 0 ? _buildPersonalQuestions() : _buildCommonQuestions()),
+          Expanded(
+              child: _selectedIndex == 0 ? _buildPersonalQuestions() : _buildCommonQuestions()
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -149,5 +143,13 @@ class _ChatRootState extends State<ChatRoot> {
       },
     );
   }
+}
+
+// 카드 목록 전용(페이지 내부 전용이므로 private)
+class _PersonalListItem {
+  final PersonalQuestionEntity entity;
+  final int likes;
+  final int comments;
+  const _PersonalListItem({required this.entity, required this.likes, required this.comments});
 }
 
