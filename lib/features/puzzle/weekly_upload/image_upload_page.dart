@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 // 디자인 통일
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/widgets/image_upload_dialog.dart';
 
 class ImageUploadPage extends StatefulWidget {
   final List<String> category;
@@ -85,48 +86,33 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
   // 코멘트 입력 팝업
   Future<void> _showCommentDialog(int idx, {String? initial}) async {
     _commentController.text = initial ?? '';
+
+    final existing = _getUploadForIndex(idx); // 우리가 만든 헬퍼 (없으면 null)
+
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          title: Text(
-            '코멘트 입력',
-            style: AppTextStyles.pretendard_bold.copyWith(fontSize: 18),
-          ),
-          content: TextField(
-            controller: _commentController,
-            maxLines: null,
-            decoration: const InputDecoration(
-              hintText: '사진에 대한 코멘트를 입력하세요',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                // 취소 시 현재 선택 이미지는 초기화
-                setState(() {
-                  _currentImage = null;
-                  _commentController.clear();
-                });
-                Navigator.of(dialogContext).pop(context);
-              },
-              child: const Text('취소'),
-            ),
-            TextButton(
-              onPressed: () {
-                _saveCurrentEntry(idx);
-                Navigator.of(dialogContext).pop(context);
-              },
-              child: const Text('저장'),
-            ),
-          ],
+        return CommentDialog(
+          controller: _commentController,
+          currentImage: _currentImage,              // 새로 고른 이미지
+          existingImage: existing?.imageFile,       // 기존 이미지
+          onCancel: () {
+            setState(() {
+              _currentImage = null;
+              _commentController.clear();
+            });
+            Navigator.of(dialogContext).pop();      // ✅ 팝업만 닫기
+          },
+          onSave: () {
+            _saveCurrentEntry(idx);                 // 기존 로직 재사용
+            Navigator.of(dialogContext).pop();      // ✅ 팝업만 닫기
+          },
         );
       },
     );
   }
+
 
   // 타일 탭 → 이미지 선택 → 코멘트 팝업
   Future<void> _handleAddOrEdit(int idx) async {
@@ -268,6 +254,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
 
     return Scaffold(
       appBar: CanGoBackTopBar('사진 업로드', context),
+      backgroundColor: AppColors.plumu_white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
