@@ -181,6 +181,9 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
   }
 
   Widget _buildCategoryTile(int idx) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     final uploaded = _getUploadForIndex(idx); ///처음이라면 upload == null,
     ///처음이 아니라면 UploadUnit 타입 저장
     ///   { final File imageFile,
@@ -210,8 +213,8 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
         GestureDetector(
           onTap: () => _handleAddOrEdit(idx),
           child: Container(
-            width: 152,
-            height: 152,
+            width: screenHeight*0.15,
+            height: screenHeight*0.15,
             decoration: BoxDecoration(
               color: AppColors.plumu_gray_2,
               borderRadius: BorderRadius.circular(12),
@@ -258,6 +261,9 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     final isDone = _uploads.length >= maxCount;
 
     return Scaffold(
@@ -281,7 +287,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
                       size: 28,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,12 +313,12 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
                 ],
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               // 주제 1~3 섹션 (세로 나열, 모두 한 화면에서 미리보기 가능)
               for (int i = 0; i < maxCount && i < widget.category.length; i++) ...[
                 _buildCategoryTile(i),
-                const SizedBox(height: 24),
+                SizedBox(height: screenHeight*0.02),
               ],
 
               // 하단 여백
