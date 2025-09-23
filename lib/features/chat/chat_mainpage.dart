@@ -11,14 +11,6 @@ import 'widget/weekly_question_banner.dart';
 import 'widget/tab_bar.dart';
 import 'widget/custom_app_bar.dart';
 
-// 카드 목록 전용(페이지 내부 전용이므로 private)
-class _PersonalListItem {
-  final PersonalQuestionEntity entity;
-  final int likes;
-  final int comments;
-  const _PersonalListItem({required this.entity, required this.likes, required this.comments});
-}
-
 class ChatRoot extends StatefulWidget {
   const ChatRoot({super.key});
   @override
@@ -151,5 +143,13 @@ class _ChatRootState extends State<ChatRoot> {
       },
     );
   }
+}
+
+// 카드 목록 전용(페이지 내부 전용이므로 private)
+class _PersonalListItem {
+  final PersonalQuestionEntity entity;
+  final int likes;
+  final int comments;
+  const _PersonalListItem({required this.entity, required this.likes, required this.comments});
 }
 
