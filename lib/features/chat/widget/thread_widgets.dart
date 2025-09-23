@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:characters/characters.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 
 /// 화면용 최소 대댓글 뷰모델
 class ThreadReplyView {
@@ -87,7 +88,7 @@ class ThreadCommentTile extends StatelessWidget {
               GestureDetector(
                 onTap: onTapReply,
                 child: Row(children: [
-                  Icon(Icons.chat_bubble_outline, size: 16, color: AppColors.plumu_gray_5),
+                  Image.asset(AppAssets.message, width: 16, height: 16, color: AppColors.plumu_gray_5),
                   const SizedBox(width: 4),
                   Text('${replies.length}', style: AppTextStyles.pretendard_regular.copyWith(fontSize: 12, color: AppColors.plumu_gray_5)),
                 ]),

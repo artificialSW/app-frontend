@@ -42,7 +42,7 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
       true,  // 6: 장미
       false, // 7: 수국 (잠금)
       true,  // 8: 튤립
-      false, // 9: 제비꽃 (잠금)
+      true, // 9: 제비꽃 (잠금)
       true,  // 10: 코스모스
       false, // 11: 해바라기 (잠금)
     ];

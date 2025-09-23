@@ -132,10 +132,24 @@ class _HomeRootState extends State<HomeRoot> {
     const double treePercent = 0.9; // 트리 성장 진행률
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: HomeTopBar(),
       body: Stack(
         children: [
-          // 배경 그라데이션 (더 높은 높이로 조정, 맨 밑에 위치)
+          // 전체 배경 그라데이션 (앱바 포함하여 전체 화면)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment(0.00, 0.79),
+                  end: Alignment(0.45, 0.50),
+                  colors: [const Color(0xFFA4E1E6), const Color(0x4CA4E1E7)],
+                ),
+              ),
+            ),
+          ),
+          
+          // 하단 계절별 배경 그라데이션 (기존 유지)
           Positioned(
             bottom: 0,
             left: 0,
@@ -159,6 +173,8 @@ class _HomeRootState extends State<HomeRoot> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  // AppBar 높이만큼 상단 패딩 추가
+                  SizedBox(height: MediaQuery.of(context).padding.top + 56), // status bar + app bar height
                   // 상단 진행률 바들
                   ProgressBarWithIcon(
                     icon: Image.asset('assets/icons/home_message.png', width: 24, height: 24),
@@ -182,11 +198,11 @@ class _HomeRootState extends State<HomeRoot> {
                       child: Column(
                         children: [
                           Text(
-                            "한달동안 키울\n나무의 이름을 정해주세요!",
+                            '한달동안 키울 \n나무의 이름을 정해주세요!',
                             textAlign: TextAlign.center,
                             style: AppTextStyles.pretendard_medium.copyWith(
-                              fontSize: 16,
-                              height: 1.3,
+                              color: const Color(0xFF10360D),
+                              fontSize: 23,
                             ),
                           ),
                           const SizedBox(height: 30),
@@ -209,9 +225,8 @@ class _HomeRootState extends State<HomeRoot> {
                               onSubmitted: (_) => _onNameSubmitted(),
                             ),
                           ),
-                          const SizedBox(height: 60),
+                          const SizedBox(height: 65),
                           Image.asset(AppAssets.sprout, width: 169, height: 169),
-                          const SizedBox(height: 60), // 트리 화면과 동일한 위치로 맞추기 위해 조정된 여백
                         ],
                       ),
                     ),
@@ -260,7 +275,7 @@ class _HomeRootState extends State<HomeRoot> {
                     ),
                   ],
 
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 65),
                   BottomProgressBar(
                     progress: treePercent,
                     calendarCircleColor: SeasonalColors.getCalendarColor(),

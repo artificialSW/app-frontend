@@ -77,7 +77,7 @@ class GuidebookSwipeArea extends StatelessWidget {
       filterQuality: FilterQuality.high,
     );
 
-    // 열매 탭일 때는 페이지 번호만 표시
+    // 열매 탭일 때는 페이지 번호와 자물쇠 아이콘들 표시
     if (selectedTab == 1) {
       return LayoutBuilder(
         builder: (context, constraints) {
@@ -89,6 +89,23 @@ class GuidebookSwipeArea extends StatelessWidget {
           return Stack(
             children: [
               baseBookImage,
+              // 자물쇠 아이콘들 (5개) - 꽃 탭과 동일한 위치
+              if (pageIndex == 0) // 01페이지
+                Positioned(
+                  top: 118 * heightRatio,
+                  left: 190 * widthRatio,
+                  child: Builder(
+                    builder: (context) => _buildFruitLockGrid(context, pageIndex),
+                  ),
+                ),
+              if (pageIndex == 1) // 02페이지
+                Positioned(
+                  top: 118 * heightRatio,
+                  right: 190 * widthRatio,
+                  child: Builder(
+                    builder: (context) => _buildFruitLockGrid(context, pageIndex),
+                  ),
+                ),
               // 페이지 번호 01 (왼쪽 책 아이콘의 왼쪽 끝으로부터 190 - 꽃 탭과 동일)
               if (pageIndex == 0)
                 Positioned(
@@ -286,6 +303,43 @@ class GuidebookSwipeArea extends StatelessWidget {
       AppAssets.lock,
       width: 60 * widthRatio,
       height: 60 * widthRatio,
+    );
+  }
+
+  /// 열매용 자물쇠 그리드 (5개) - 위 3개, 아래 2개
+  Widget _buildFruitLockGrid(BuildContext context, int pageIndex) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final widthRatio = screenWidth / 430;
+    
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 위 3개 자물쇠
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(3, (index) => 
+            Padding(
+              padding: EdgeInsets.only(
+                right: index < 2 ? 25 * widthRatio : 0,
+                bottom: 25 * widthRatio,
+              ),
+              child: _buildLockIcon(context),
+            ),
+          ),
+        ),
+        // 아래 2개 자물쇠 (중앙 정렬)
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(2, (index) => 
+            Padding(
+              padding: EdgeInsets.only(
+                right: index < 1 ? 25 * widthRatio : 0,
+              ),
+              child: _buildLockIcon(context),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

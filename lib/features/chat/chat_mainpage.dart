@@ -72,6 +72,7 @@ class _ChatRootState extends State<ChatRoot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: ChatCustomAppBar(incomingQuestionsCount: _getIncomingQuestionsCount()),
       body: Column(
         children: [

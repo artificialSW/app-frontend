@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 
 /// 개인 답변 카드 위젯
 class PersonalAnswerCard extends StatelessWidget {
@@ -60,10 +61,10 @@ class PersonalAnswerCard extends StatelessWidget {
             ),
           ),
           // 잠금 아이콘
-          const Positioned(
+          Positioned(
             right: 12,
             top: 10,
-            child: Icon(Icons.lock, size: 21, color: AppColors.plumu_green_50per),
+            child: Image.asset(AppAssets.lock_fill, width: 20, height: 25, color: const Color(0x7F5CBD56)),
           ),
           // 답변하기 버튼
           Positioned(
