@@ -74,7 +74,7 @@ class _ChatRootState extends State<ChatRoot> {
   // 나에게 온 질문 개수 계산 (responderUserId가 현재 사용자인 질문들)
   int _getIncomingQuestionsCount() {
     return _personalItems.where((item) => item.entity.responderUserId == 'u1').length;
-  }
+  } ///삭제하기. 이거 백에서 계산해서 넘겨줌. API 대로라면..?
 
 
   @override
@@ -91,7 +91,9 @@ class _ChatRootState extends State<ChatRoot> {
             selectedIndex: _selectedIndex,
             onTabChanged: (index) => setState(() => _selectedIndex = index),
           ),
-          Expanded(child: _selectedIndex == 0 ? _buildPersonalQuestions() : _buildCommonQuestions()),
+          Expanded(
+              child: _selectedIndex == 0 ? _buildPersonalQuestions() : _buildCommonQuestions()
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

@@ -2,6 +2,7 @@ import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/features/home/guidebook_logic/guidebook_main.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 
 AppBar HomeTopBar() => AppBar(
     automaticallyImplyLeading: false,   // 뒤로가기 자동 삽입 방지(중앙 정렬 깨짐 방지)
@@ -117,3 +118,48 @@ class HeaderSendIcon extends StatelessWidget {
     );
   }
 }
+
+AppBar CreateQuestionTopBar(int step) => AppBar(
+  elevation: 0,
+  backgroundColor: AppColors.plumu_white,
+  centerTitle: true,
+  iconTheme: const IconThemeData(color: AppColors.plumu_gray_7),
+  title: Text(
+    '질문생성',
+    style: AppTextStyles.pretendard_bold.copyWith(
+      fontSize: 17,
+      color: AppColors.plumu_gray_7,
+    ),
+  ),
+  bottom: PreferredSize(
+    preferredSize: const Size.fromHeight(12),
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: SizedBox(
+        height: 4,
+        child: Row(
+          children: [
+            Expanded(
+              flex: step.clamp(0, 3),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.plumu_green_main,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: (3 - step).clamp(0, 3),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.plumu_gray_2,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  ),
+);
