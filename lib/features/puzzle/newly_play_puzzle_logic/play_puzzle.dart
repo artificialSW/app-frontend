@@ -167,6 +167,9 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   }
 
   void _captureAndSaveProgress(double boardHeight) async {
+
+    late final base64String;
+
     try {
       RenderRepaintBoundary boundary =
       _captureKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
@@ -201,13 +204,13 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       final pngBytes = byteData!.buffer.asUint8List();
 
       // base64 저장
-      final base64String = base64Encode(pngBytes);
-      final directory = await getTemporaryDirectory();
-      final filePath = '${directory.path}/captured_image_base64.txt';
-      final file = File(filePath);
-
-      await file.writeAsString(base64String);
-      print("캡쳐 완료: $filePath");
+      base64String = base64Encode(pngBytes);
+      // 테스트 로직 final directory = await getTemporaryDirectory();
+      // final filePath = '${directory.path}/captured_image_base64.txt';
+      // final file = File(filePath);
+      //
+      // await file.writeAsString(base64String);
+      // print("캡쳐 완료: $filePath");
     } catch (e) {
       print("캡쳐 실패: $e");
     }
@@ -232,7 +235,8 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
 
     PuzzleService().savePuzzleProgress(
         puzzleId: widget.puzzle.puzzleId,
-        puzzleSize: widget.puzzle.size,
+        imageFile: base64String,
+        //puzzleSize: widget.puzzle.size,
         pieces: map,
         completedPiecesId: completedPiecesId,
         contributorId: widget.user.id,
@@ -245,7 +249,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
 
     debugPrint('서버에 풀던 퍼즐 데이터 전송 완료: \n'
         ' ├─ puzzleId: ${widget.puzzle.puzzleId}\n'
-        ' ├─ puzzleSize: ${widget.puzzle.size}\n'
+        ' ├─ imageFile: ${base64String}\n'
         ' ├─ pieces: {$piecesStr}\n'
         ' ├─ completedPiecesId: $completedPiecesId\n'
         ' └─ contributorId: ${widget.user.id}');
