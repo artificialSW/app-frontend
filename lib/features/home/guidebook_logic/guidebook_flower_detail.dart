@@ -4,6 +4,7 @@ import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/features/home/home_mainpage.dart';
+import 'package:artificialsw_frontend/features/home/widget/guidebook_widgets/hash_tag_widget.dart';
 
 /// 가이드북 꽃 상세 페이지
 /// 꽃 클릭 시 나타나는 상세 정보 페이지
@@ -115,8 +116,8 @@ class GuidebookFlowerDetailPage extends StatelessWidget {
           'icon': AppAssets.flower_violet,
           'width': 97.0,
           'height': 97.0,
-          'color': AppColors.plumu_flower_memory_check,
-          'gradient': AppColors.plumu_flower_memory_card_end,
+          'color': const Color(0xFF8732D0),
+          'gradient': const Color(0xFFF6DCFF),
         };
       case 10: // 코스모스 (2행 5번째)
         return {
@@ -274,6 +275,180 @@ class GuidebookFlowerDetailPage extends StatelessWidget {
                       fit: BoxFit.contain,
                     ),
                   ),
+                  // 동백꽃과 장미일 때 해시태그 표시 (오른쪽 페이지 중앙정렬)
+                  if (flowerIndex == 0 || flowerIndex == 6) // 동백꽃 (인덱스 0) 또는 장미 (인덱스 6)
+                    Positioned(
+                      left: 204,
+                      top: 75,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          HashTagWidget(
+                            text: '#사랑',
+                            backgroundColor: AppColors.plumu_flower_love_card_end,
+                            borderColor: AppColors.plumu_flower_love_check,
+                            textColor: AppColors.plumu_flower_love_check,
+                          ),
+                          const SizedBox(height: 8),
+                          HashTagWidget(
+                            text: '#애정표현',
+                            backgroundColor: AppColors.plumu_flower_love_card_end,
+                            borderColor: AppColors.plumu_flower_love_check,
+                            textColor: AppColors.plumu_flower_love_check,
+                          ),
+                        ],
+                      ),
+                    ),
+                  // 아카시아와 수국일 때 해시태그 표시 (오른쪽 페이지 중앙정렬)
+                  if (flowerIndex == 1 || flowerIndex == 7) // 아카시아 (인덱스 1) 또는 수국 (인덱스 7)
+                    Positioned(
+                      left: 204,
+                      top: 75,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          HashTagWidget(
+                            text: '#힘든일',
+                            backgroundColor: AppColors.plumu_flower_comfort_card_end,
+                            borderColor: AppColors.plumu_flower_comfort_check,
+                            textColor: AppColors.plumu_flower_comfort_check,
+                          ),
+                          const SizedBox(height: 8),
+                          HashTagWidget(
+                            text: '#위로와격려',
+                            backgroundColor: AppColors.plumu_flower_comfort_card_end,
+                            borderColor: AppColors.plumu_flower_comfort_check,
+                            textColor: AppColors.plumu_flower_comfort_check,
+                          ),
+                        ],
+                      ),
+                    ),
+                  // 매화꽃과 튤립일 때 해시태그 표시 (오른쪽 페이지 중앙정렬)
+                  if (flowerIndex == 2 || flowerIndex == 8) // 매화꽃 (인덱스 2) 또는 튤립 (인덱스 8)
+                    Positioned(
+                      left: 204,
+                      top: 75,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          HashTagWidget(
+                            text: '#기념일',
+                            backgroundColor: AppColors.plumu_flower_special_card_end,
+                            borderColor: AppColors.plumu_flower_special_check,
+                            textColor: AppColors.plumu_flower_special_check,
+                          ),
+                          const SizedBox(height: 8),
+                          HashTagWidget(
+                            text: '#특별한날',
+                            backgroundColor: AppColors.plumu_flower_special_card_end,
+                            borderColor: AppColors.plumu_flower_special_check,
+                            textColor: AppColors.plumu_flower_special_check,
+                          ),
+                        ],
+                      ),
+                    ),
+                  // 팥배꽃일 때 해시태그 표시 (오른쪽 페이지 중앙정렬)
+                  if (flowerIndex == 3) // 팥배꽃 (인덱스 3)
+                    Positioned(
+                      left: 204,
+                      top: 75,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          HashTagWidget(
+                            text: '#추억',
+                            backgroundColor: AppColors.plumu_flower_memory_card_end,
+                            borderColor: AppColors.plumu_flower_memory_check,
+                            textColor: AppColors.plumu_flower_memory_check,
+                          ),
+                          const SizedBox(height: 8),
+                          HashTagWidget(
+                            text: '#과거회상',
+                            backgroundColor: AppColors.plumu_flower_memory_card_end,
+                            borderColor: AppColors.plumu_flower_memory_check,
+                            textColor: AppColors.plumu_flower_memory_check,
+                          ),
+                        ],
+                      ),
+                    ),
+                  // 벚꽃과 코스모스일 때 해시태그 표시 (오른쪽 페이지 중앙정렬)
+                  if (flowerIndex == 4 || flowerIndex == 10) // 벚꽃 (인덱스 4) 또는 코스모스 (인덱스 10)
+                    Positioned(
+                      left: 204,
+                      top: 75,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          HashTagWidget(
+                            text: '#기쁜일',
+                            backgroundColor: AppColors.plumu_flower_joy_card_end,
+                            borderColor: AppColors.plumu_flower_joy_check,
+                            textColor: AppColors.plumu_flower_joy_check,
+                          ),
+                          const SizedBox(height: 8),
+                          HashTagWidget(
+                            text: '#행복한순간',
+                            backgroundColor: AppColors.plumu_flower_joy_card_end,
+                            borderColor: AppColors.plumu_flower_joy_check,
+                            textColor: AppColors.plumu_flower_joy_check,
+                          ),
+                        ],
+                      ),
+                    ),
+                  // 목련과 해바라기일 때 해시태그 표시 (오른쪽 페이지 중앙정렬)
+                  if(flowerIndex == 9)
+                    Positioned(
+                      left: 204,
+                      top: 75,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          HashTagWidget(
+                            text: '#추억',
+                            backgroundColor: const Color(0xFFF6DCFF),
+                            borderColor: const Color(0xFF8732D0),
+                            textColor: const Color(0xFF8732D0),
+                          ),
+                          const SizedBox(height: 8),
+                          HashTagWidget(
+                            text: '#과거회상',
+                            backgroundColor: const Color(0xFFF6DCFF),
+                            borderColor: const Color(0xFF8732D0),
+                            textColor: const Color(0xFF8732D0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (flowerIndex == 5 || flowerIndex == 11) // 목련 (인덱스 5) 또는 해바라기 (인덱스 11)
+                    Positioned(
+                      left: 204,
+                      top: 75,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          HashTagWidget(
+                            text: '#취미',
+                            backgroundColor: AppColors.plumu_flower_hobby_card_end,
+                            borderColor: AppColors.plumu_flower_hobby_check,
+                            textColor: AppColors.plumu_flower_hobby_check,
+                          ),
+                          const SizedBox(height: 8),
+                          HashTagWidget(
+                            text: '#관심사',
+                            backgroundColor: AppColors.plumu_flower_hobby_card_end,
+                            borderColor: AppColors.plumu_flower_hobby_check,
+                            textColor: AppColors.plumu_flower_hobby_check,
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
