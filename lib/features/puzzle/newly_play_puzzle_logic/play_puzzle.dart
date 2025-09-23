@@ -20,6 +20,11 @@ import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import 'package:flutter/rendering.dart'; // RenderRepaintBoundary 정의되어 있음
+import 'package:path_provider/path_provider.dart';
+import 'dart:io'; // File, Directory 클래스 등 포함
+
+
 
 class PlayPuzzle extends StatefulWidget {
   final PuzzleGame puzzle; //여기 선언된 것들은, 이 페이지를 불러올때 인자값을 줘야 하는 것
@@ -41,6 +46,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   Image? _image;
   List<PuzzlePiece> pieces = [];
   List<int> get completedPiecesId => widget.puzzle.completedPiecesId; ///게임 플레이 인스턴스에서도 다시 불러와야 쭉 하던게 이어짐.
+  final GlobalKey _captureKey = GlobalKey(); // 캡쳐 대상 위젯을 식별하기 위한 키
 
   @override
   void initState() {
@@ -150,6 +156,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
             context,
             listen: false,
           ).completePuzzle(widget.puzzle);
+
           _navigateToAwardPage();
         }
         else {
@@ -159,7 +166,55 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     });
   }
 
-  void _saveProgress() {
+  void _captureAndSaveProgress(double boardHeight) async {
+    try {
+      RenderRepaintBoundary boundary =
+      _captureKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+
+      // 원본 이미지 전체
+      ui.Image fullImage = await boundary.toImage(pixelRatio: 3.0);
+
+      // 캡쳐 영역만큼 잘라내기 (좌상단 기준)
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(recorder);
+
+      // 자를 영역 크기 설정
+      final width = fullImage.width.toDouble();
+      final height = boardHeight * 3.0; // pixelRatio가 3.0이었으므로 스케일 반영
+
+      // 이미지 그리기 (0, 0) 위치에 그리되 자를 높이만큼만
+      final paint = Paint();
+      canvas.drawImageRect(
+        fullImage,
+        Rect.fromLTWH(0, 0, width, height), // 원본에서 자를 부분
+        Rect.fromLTWH(0, 0, width, height), // 새 이미지 캔버스 크기
+        paint,
+      );
+
+      // 잘라낸 이미지 생성
+      final croppedImage = await recorder
+          .endRecording()
+          .toImage(width.toInt(), height.toInt());
+
+      final byteData =
+      await croppedImage.toByteData(format: ui.ImageByteFormat.png);
+      final pngBytes = byteData!.buffer.asUint8List();
+
+      // base64 저장
+      final base64String = base64Encode(pngBytes);
+      final directory = await getTemporaryDirectory();
+      final filePath = '${directory.path}/captured_image_base64.txt';
+      final file = File(filePath);
+
+      await file.writeAsString(base64String);
+      print("캡쳐 완료: $filePath");
+    } catch (e) {
+      print("캡쳐 실패: $e");
+    }
+
+
+
+    ///save logic
     completedPiecesId.sort();
 
     final map = SplayTreeMap<String, PuzzlePiecePosition>((a, b) {  //자동 정렬을 위해 SplayTreeMap 사용
@@ -242,6 +297,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
 
     // 보드 폭: 화면 2/3
     final boardWidth = screenWidth * (2 / 3);
+    final trayWidth = boardWidth;
 
     // 보드 높이: 이미지 비율 유지 (이미지 정보를 아직 못 얻었으면 정사각으로 대체)
     // _image는 setState로 이미 들어왔고, _getImageSize로 계산한 imageSize를 pieces 생성 시에 알고 있음
@@ -272,7 +328,8 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
             child: Center(
               child: _image == null
                   ? const Text('이미지를 로드하는 중입니다...')
-                  : PuzzleBoardScope(
+                  :
+              PuzzleBoardScope(
                 boardWidth: boardWidth,
                 boardHeight: boardHeight,
                 trayTop: trayTop,
@@ -286,21 +343,8 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          // 보드(상단)
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            child: Container(
-                              width: boardWidth,
-                              height: boardHeight,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade200,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: Colors.black12),
-                              ),
-                            ),
-                          ),
-                          // 트레이(하단)
+                          /// ❌ 캡처 대상 아님
+                          // 트레이
                           Positioned(
                             top: trayTop,
                             left: 0,
@@ -314,8 +358,31 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
                               ),
                             ),
                           ),
-                          // 퍼즐 조각들
-                          ...pieces,
+                          /// ✅ 캡쳐할 영역만 감싸기
+                          RepaintBoundary(
+                            key: _captureKey, // 전역 키
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                // 보드
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  child: Container(
+                                    width: boardWidth,
+                                    height: boardHeight,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: Colors.black12),
+                                    ),
+                                  ),
+                                ),
+                                // 퍼즐 조각들
+                                ...pieces,
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -325,9 +392,9 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
                       child: CustomButton(
                         text: '저장하기',
                         onPressed: () {
-                          _saveProgress();
+                          _captureAndSaveProgress(boardHeight);
                         },
-                      )
+                      ),
                     ),
                   ],
                 ),
