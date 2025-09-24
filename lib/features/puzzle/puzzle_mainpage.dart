@@ -82,6 +82,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
     return Scaffold(
       // 이 Scaffold를 추가합니다.
       appBar: PuzzlRootTopBar(),
+      backgroundColor: AppColors.plumu_white,
       body: FutureBuilder<PuzzleHomeGetDto>(
         future: _puzzleFuture,
         builder: (context, snapshot) {

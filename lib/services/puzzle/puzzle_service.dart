@@ -80,7 +80,8 @@ class PuzzleService {
   // 퍼즐 중간 저장 : POST
   Future<void> savePuzzleProgress({
     required String puzzleId,
-    required int puzzleSize,
+    required String imageFile,
+    //required int puzzleSize,
     required Map<String, PuzzlePiecePosition> pieces,
     required List<int> completedPiecesId,
     required String contributorId,
@@ -89,7 +90,8 @@ class PuzzleService {
   }) async {
     final formData = FormData.fromMap({
       'puzzleId': puzzleId,
-      'puzzleSize': puzzleSize,
+      'imageFile': imageFile,
+      //'puzzleSize': puzzleSize,
       'pieces': pieces,
       'completedPiecesId': completedPiecesId,
       'contributorId': contributorId,
