@@ -19,7 +19,7 @@ class PuzzleArchive extends StatefulWidget {
 }
 
 class _PuzzleArchiveState extends State<PuzzleArchive> {
-  final _user = User(name: 'MockUser', id: '123');
+  final _user = User(name: 'MockUser', id: '123', role: '아빠');
 
   late Future<PuzzleGetArchivedListDto> _archivedPuzzlesFuture;
 

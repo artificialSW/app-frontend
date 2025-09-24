@@ -6,10 +6,12 @@ part 'usermodel.g.dart'; // 자동 생성 파일
 class User{
   final String name;
   final String id;
+  final String role;
 
   User({
     required this.name,
     required this.id,
+    required this.role,
   });
 
   factory User.fromJson(Map<String, dynamic> json) =>
