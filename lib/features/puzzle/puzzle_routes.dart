@@ -29,7 +29,7 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
     case '/puzzle/play':
       final args = s.arguments as Map<String, dynamic>;
       final puzzleGame = args['gameInstance'] as PuzzleGame;
-      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleGame, user: User(id: '123', name: 'Jaewook')));
+      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleGame, user: User(id: '123', name: 'Jaewook',role: '아빠')));
 
     case '/puzzle/ongoing-list':
       return MaterialPageRoute(builder: (_) => const OngoingPuzzlesPage());
@@ -52,7 +52,7 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
       final args = s.arguments as Map<String, dynamic>;
       final original = args['gameInstance'] as PuzzleGame;
       final puzzleInstance = original.copyForReplaying();
-      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleInstance, user: User(id: '123', name: 'Jaewook')));
+      return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleInstance, user: User(id: '123', name: 'Jaewook', role: '아빠')));
     case '/puzzle/re-completed':
       return MaterialPageRoute(builder: (_) => PuzzleRecompleted());
     case '/puzzle/archive':

@@ -25,7 +25,7 @@ class PuzzleProvider with ChangeNotifier {
       size: 2,
       piecesPosition: [],
       gameState: GameState.Unplayed,
-      contributors: [User(name: 'Jaewook', id: '1')],
+      contributors: [User(name: 'Jaewook', id: '1', role: '아빠')],
       isArchived: false,
     ),
     PuzzleGame(
@@ -37,7 +37,7 @@ class PuzzleProvider with ChangeNotifier {
       size: 2,
       piecesPosition: [],
       gameState: GameState.Unplayed,
-      contributors: [User(name: 'JungHwan', id: '2')],
+      contributors: [User(name: 'JungHwan', id: '2', role: '아빠')],
       isArchived: false,
     ),
 
@@ -60,7 +60,7 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 90.0),
       ],
       gameState: GameState.Ongoing,
-      contributors: [User(name: 'Jaewook', id: '1'), User(name: 'JungHwan', id: '2')],
+      contributors: [User(name: 'Jaewook', id: '1', role: '아빠'), User(name: 'JungHwan', id: '2', role: '아빠')],
       isArchived: false,
     ),
     PuzzleGame(
@@ -82,7 +82,7 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 90.0),
       ],
       gameState: GameState.Ongoing,
-      contributors: [User(name: 'JungHwan', id: '2')],
+      contributors: [User(name: 'JungHwan', id: '2', role: '아빠')],
       isArchived: false,
     ),
 
@@ -105,7 +105,7 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 90.0),
       ],
       gameState: GameState.Completed,
-      contributors: [User(name: 'Jaewook', id: '1')],
+      contributors: [User(name: 'Jaewook', id: '1', role: '아빠')],
       isArchived: false,
     ),
     PuzzleGame(
@@ -127,7 +127,7 @@ class PuzzleProvider with ChangeNotifier {
         PiecePosition(x: 90.0, y: 90.0),
       ],
       gameState: GameState.Completed,
-      contributors: [User(name: 'JungHwan', id: '2')],
+      contributors: [User(name: 'JungHwan', id: '2', role: '아빠')],
       isArchived: true,
     ),
   ];

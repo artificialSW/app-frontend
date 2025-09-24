@@ -24,11 +24,11 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
   late final TextEditingController _questionController;
 
   final members = [
-    User(id: '1', name: '아빠'),
-    User(id: '2', name: '엄마'),
-    User(id: '3', name: '할아버지'),
-    User(id: '4', name: '할머니'),
-    User(id: '5', name: '동생'),
+    User(id: '1', name: '허준혁', role: '아빠'),
+    User(id: '2', name: '박태권', role: '엄마'),
+    User(id: '3', name: '신정환', role: '할아버지'),
+    User(id: '4', name: 'cozy', role: '할머니'),
+    User(id: '5', name: '김동욱', role: '둘째아들'),
   ]; ///이거 서버로부터 GET으로 받아오기(API document에 추가해 놓음)
 
   @override

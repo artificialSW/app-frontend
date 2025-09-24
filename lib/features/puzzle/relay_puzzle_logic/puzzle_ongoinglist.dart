@@ -25,7 +25,7 @@ class OngoingPuzzlesPage extends StatefulWidget {
 
 class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
 
-  final _user = User(name: 'MockUser', id: '123');
+  final _user = User(name: 'MockUser', id: '123', role: '아빠');
   late Future<PuzzleGetInProgressListDto> _ongoingPuzzlesFuture;
 
   Future<PuzzleGetInProgressListDto> _fetchOngoingPuzzles() async {
