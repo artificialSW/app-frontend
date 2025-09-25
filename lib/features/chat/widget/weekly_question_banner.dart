@@ -28,7 +28,7 @@ class WeeklyQuestionBanner extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (_) => ChatCommonThreadPage(
-                  question: question,
+                  questionId: question.id,
                   order: order,
                 ),
               ),

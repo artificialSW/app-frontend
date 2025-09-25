@@ -7,11 +7,11 @@ import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 
 class ChatCommonThreadPage extends StatefulWidget {
-  final CommonQuestion question; /// 이거 삭제하기. API에서 받아오기 때문에 메인에서 이거 넘겨줄 필요 없음
+  final String questionId;
   final int order; /// N번째 질문 -> 이건 필요할듯
   const ChatCommonThreadPage({
     super.key,
-    required this.question, /// 이거 삭제하기. API에서 받아오기 때문에 메인에서 이거 넘겨줄 필요 없음
+    required this.questionId,
     required this.order,
   });
 
@@ -73,7 +73,7 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
                 const SizedBox(height: 16),
                 // 질문 텍스트
                 Text(
-                  widget.question.title,
+                  '공통질문 제목', // TODO: API에서 받아온 데이터로 교체
                   style: AppTextStyles.pretendard_bold.copyWith(
                     fontSize: 20,
                     color: AppColors.plumu_black,

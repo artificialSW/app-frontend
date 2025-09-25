@@ -63,10 +63,10 @@ class _ChatRootState extends State<ChatRoot> {
     CommonQuestion(id: 'c-1', title: '공통질문1', description: '질문 내용을 적어주세요', likes: 0, comments: 0),
   ];
 
-  // 나에게 온 질문 개수 계산 (responderUserId가 현재 사용자인 질문들)
+  // TODO: API에서 unsolved 값을 받아와서 사용
   int _getIncomingQuestionsCount() {
-    return _personalItems.where((item) => item.entity.responderUserId == 'u1').length;
-  } ///삭제하기. 이거 백에서 계산해서 넘겨줌. API 대로라면..?
+    return 2; // 임시 더미 값
+  }
 
 
   @override
@@ -115,7 +115,7 @@ class _ChatRootState extends State<ChatRoot> {
           onTap: () {
             setState(() => _selectedPersonalId = item.entity.id);
             Navigator.push(context, MaterialPageRoute(
-              builder: (_) => ChatPersonalThreadPage(question: item.entity, askerName: item.entity.askerUserId),
+              builder: (_) => ChatPersonalThreadPage(questionId: item.entity.id),
             ));
           },
         );
@@ -137,7 +137,7 @@ class _ChatRootState extends State<ChatRoot> {
           onTap: () {
             setState(() => _selectedCommonId = q.id);
             Navigator.push(context, MaterialPageRoute(
-              builder: (_) => ChatCommonThreadPage(question: q, order: _pastCommonQuestions.length - i),
+              builder: (_) => ChatCommonThreadPage(questionId: q.id, order: _pastCommonQuestions.length - i),
             ));
           },
         );

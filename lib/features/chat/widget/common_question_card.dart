@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
-import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import '../model/common_question.dart';
 
 class CommonQuestionCard extends StatefulWidget {
@@ -39,10 +38,9 @@ class _CommonQuestionCardState extends State<CommonQuestionCard> {
     final BoxDecoration bg = _pressed
         ? BoxDecoration(
       gradient: const LinearGradient(
-        begin: Alignment(0.0, -1.0),
-        end: Alignment(0.0, 1.0),
-        colors: [Color(0xFF5CBD56), Color(0xFFADDEAA), Colors.white],
-        stops: [0.0, 0.75, 1.0],
+        begin: Alignment(1.20, -0.20),
+        end: Alignment(-0.00, 0.37),
+        colors: [Colors.white, AppColors.plumu_green_main],
       ),
       borderRadius: BorderRadius.circular(8),
     )
@@ -135,7 +133,7 @@ class _CommonQuestionCardState extends State<CommonQuestionCard> {
                         // 댓글
                         Row(
                           children: [
-                            Image.asset(AppAssets.message, width: 18, height: 18, color: statIcon),
+                            Icon(Icons.chat_bubble_outline_rounded, size: 18, color: statIcon),
                             const SizedBox(width: 4),
                             Text('${widget.question.comments}', style: TextStyle(fontSize: 14, color: statText)),
                           ],

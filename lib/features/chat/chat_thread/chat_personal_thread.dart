@@ -6,13 +6,11 @@ import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 
 class ChatPersonalThreadPage extends StatefulWidget {
-  final PersonalQuestionEntity question; /// 이거 삭제하기. API에서 받아오기 때문에 메인에서 이거 넘겨줄 필요 없음
-  final String askerName; /// 이거 삭제하기. API에서 받아오기 때문에 메인에서 이거 넘겨줄 필요 없음
+  final String questionId;
 
   const ChatPersonalThreadPage({
     super.key,
-    required this.question, /// 이거 삭제하기. API에서 받아오기 때문에 메인에서 이거 넘겨줄 필요 없음
-    required this.askerName,/// 이거 삭제하기. API에서 받아오기 때문에 메인에서 이거 넘겨줄 필요 없음
+    required this.questionId,
   });
 
   @override
@@ -39,7 +37,8 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
 
   @override
   Widget build(BuildContext context) {
-    final dateStr = widget.question.createdAt
+    // TODO: API에서 받아온 데이터로 교체
+    final dateStr = DateTime.now()
         .toIso8601String()
         .split('T')
         .first; // YYYY-MM-DD
@@ -75,7 +74,7 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
                 const SizedBox(height: 16),
                 // 질문 텍스트
                 Text(
-                  widget.question.text,
+                  '질문 내용', // TODO: API에서 받아온 데이터로 교체
                   style: AppTextStyles.pretendard_bold.copyWith(
                     fontSize: 20,
                     color: AppColors.plumu_black,
