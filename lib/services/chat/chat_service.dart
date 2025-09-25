@@ -7,6 +7,7 @@ import 'package:artificialsw_frontend/services/chat/dto/chat_reply/chat_reply_re
 import 'package:artificialsw_frontend/services/chat/dto/chat_reply/chat_reply_response_dto.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_question_create/chat_question_create_request_dto.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_question_create/chat_question_create_response_dto.dart';
+import 'package:artificialsw_frontend/services/chat/dto/chat_main_common/chat_main_common_question_dto.dart';
 
 class ChatService {
   final Dio _dio = ApiClient.dio;
@@ -122,6 +123,31 @@ class ChatService {
       // Dio 예외 처리
       if (e.response != null) {
         print('❌ [ChatService] 개인질문 생성 실패: ${e.response?.data}');
+      } else {
+        print('❌ [ChatService] 네트워크 에러: ${e.message}');
+      }
+      rethrow;
+    }
+  }
+
+  // 공통질문 홈 페이지 정보 가져오기 (GET)
+  Future<List<ChatMainCommonQuestionDto>> getChatMainCommon() async {
+    try {
+      print('[ChatService] 공통질문 홈 페이지 데이터 요청 중...');
+      final response = await _dio.get('/api/community/home/public');
+      
+      if (response.statusCode == 200) {
+        print('[ChatService] 공통질문 홈 페이지 데이터 조회 성공');
+        print('[ChatService] 공통질문 개수: ${response.data['qusetions']?.length ?? 0}개');
+      }
+      
+      return (response.data['qusetions'] as List)
+          .map((json) => ChatMainCommonQuestionDto.fromJson(json))
+          .toList();
+    } on DioError catch (e) {
+      // Dio 예외 처리
+      if (e.response != null) {
+        print('❌ [ChatService] 공통질문 홈 페이지 조회 실패: ${e.response?.data}');
       } else {
         print('❌ [ChatService] 네트워크 에러: ${e.message}');
       }
