@@ -6,7 +6,7 @@ part 'chat_main_personal_question_card_dto.g.dart';
 @JsonSerializable()
 class ChatMainPersonalQuestionCardDto {
   @JsonKey(name: 'Q_id')
-  final String questionId;
+  final int questionId;
   final String content;
   final int sender;
   final int receiver;

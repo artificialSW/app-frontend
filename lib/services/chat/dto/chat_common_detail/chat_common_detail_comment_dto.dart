@@ -4,7 +4,7 @@ part 'chat_common_detail_comment_dto.g.dart';
 
 @JsonSerializable()
 class ChatCommonDetailCommentDto {
-  final String commentId;
+  final int commentId;
   final String writer;
   final String content;
   final int likes;

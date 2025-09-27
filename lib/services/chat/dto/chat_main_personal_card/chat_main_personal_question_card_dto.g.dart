@@ -9,7 +9,7 @@ part of 'chat_main_personal_question_card_dto.dart';
 ChatMainPersonalQuestionCardDto _$ChatMainPersonalQuestionCardDtoFromJson(
         Map<String, dynamic> json) =>
     ChatMainPersonalQuestionCardDto(
-      questionId: json['Q_id'] as String,
+      questionId: json['Q_id'] as int,
       content: json['content'] as String,
       sender: json['sender'] as int,
       receiver: json['receiver'] as int,

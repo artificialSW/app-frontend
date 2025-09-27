@@ -14,7 +14,7 @@ enum ChatLikeType {
 @JsonSerializable()
 class ChatLikeRequestDto {
   final ChatLikeType what;
-  final String id;
+  final int id;
 
   const ChatLikeRequestDto({
     required this.what,

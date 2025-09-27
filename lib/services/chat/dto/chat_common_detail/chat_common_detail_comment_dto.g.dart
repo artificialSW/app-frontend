@@ -9,7 +9,7 @@ part of 'chat_common_detail_comment_dto.dart';
 ChatCommonDetailCommentDto _$ChatCommonDetailCommentDtoFromJson(
         Map<String, dynamic> json) =>
     ChatCommonDetailCommentDto(
-      commentId: json['commentId'] as String,
+      commentId: json['commentId'] as int,
       writer: json['writer'] as String,
       content: json['content'] as String,
       likes: json['likes'] as int,
