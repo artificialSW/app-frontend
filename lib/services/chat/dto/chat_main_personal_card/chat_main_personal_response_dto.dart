@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'chat_main_personal_question_dto.dart';
+import 'chat_main_personal_question_card_dto.dart';
 
 part 'chat_main_personal_response_dto.g.dart';
 
 @JsonSerializable()
 class ChatMainPersonalResponseDto {
-  final List<ChatMainPersonalQuestionDto> questions;
+  final List<ChatMainPersonalQuestionCardDto> questions;
   final int unsolved;
 
   ChatMainPersonalResponseDto({

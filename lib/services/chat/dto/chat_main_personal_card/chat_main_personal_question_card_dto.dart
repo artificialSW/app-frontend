@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'chat_main_personal_question_dto.g.dart';
+part 'chat_main_personal_question_card_dto.g.dart';
 
 @JsonSerializable()
-class ChatMainPersonalQuestionDto {
+class ChatMainPersonalQuestionCardDto {
   @JsonKey(name: 'Q_id')
   final String questionId;
   final String content;
@@ -17,7 +17,7 @@ class ChatMainPersonalQuestionDto {
   @JsonKey(name: 'createAt')
   final String createdAt;
 
-  ChatMainPersonalQuestionDto({
+  ChatMainPersonalQuestionCardDto({
     required this.questionId,
     required this.content,
     required this.sender,
@@ -28,7 +28,7 @@ class ChatMainPersonalQuestionDto {
     required this.createdAt,
   });
 
-  factory ChatMainPersonalQuestionDto.fromJson(Map<String, dynamic> json) =>
-      _$ChatMainPersonalQuestionDtoFromJson(json);
-  Map<String, dynamic> toJson() => _$ChatMainPersonalQuestionDtoToJson(this);
+  factory ChatMainPersonalQuestionCardDto.fromJson(Map<String, dynamic> json) =>
+      _$ChatMainPersonalQuestionCardDtoFromJson(json);
+  Map<String, dynamic> toJson() => _$ChatMainPersonalQuestionCardDtoToJson(this);
 }

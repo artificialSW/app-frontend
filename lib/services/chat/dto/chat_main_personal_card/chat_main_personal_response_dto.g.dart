@@ -10,7 +10,7 @@ ChatMainPersonalResponseDto _$ChatMainPersonalResponseDtoFromJson(
         Map<String, dynamic> json) =>
     ChatMainPersonalResponseDto(
       questions: (json['questions'] as List<dynamic>)
-          .map((e) => ChatMainPersonalQuestionDto.fromJson(e as Map<String, dynamic>))
+          .map((e) => ChatMainPersonalQuestionCardDto.fromJson(e as Map<String, dynamic>))
           .toList(),
       unsolved: json['unsolved'] as int,
     );
