@@ -101,7 +101,6 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                 children: [
                   Container(
                       width: screenWidth*0.92,
-                      height: screenHeight*0.22,
                       decoration: BoxDecoration(
                         color: AppColors.plumu_green_30per,
                         borderRadius: BorderRadius.circular(8),
@@ -128,70 +127,12 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                                   )
                               ),
                               SizedBox(height: screenHeight*0.01,),
-                              EmotionTag(label: puzzle.subject[0]),
-                              SizedBox(height: screenHeight*0.01,),
-                              EmotionTag(label: puzzle.subject[1]),
-                              SizedBox(height: screenHeight*0.01,),
-                              EmotionTag(label: puzzle.subject[2]),
+                              EmotionTag(label: '사진 등록하러 가기'),
                             ]
                         ),
                       )
                   ),
                   SizedBox(height: screenHeight*0.01),
-                  Row(
-                    children: [
-                      SizedBox(width: screenWidth*0.03,),
-                      Text(
-                        "진행중",
-                        style: AppTextStyles.pretendard_bold.copyWith(
-                          fontSize: 17,
-                          color: AppColors.plumu_gray_7,
-                        ),
-                      ),
-                      Spacer(), // 중간 공간 확보
-                      Padding(
-                        padding: EdgeInsets.only(right: screenWidth * 0.03), // (1 - 0.03 - 0.9 = 0.07)
-                        child: IconButton(
-                          icon: Image.asset(AppAssets.forward),
-                          iconSize: 28,
-                          color: AppColors.plumu_gray_7,
-                          tooltip: '진행중인 퍼즐 목록으로 이동',
-                          onPressed: () => Navigator.of(context).pushNamed('/puzzle/ongoing-list'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(width: screenWidth*0.06,),
-                      Container(
-                        width: screenWidth*0.4,
-                        height: screenWidth*0.4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          puzzle.inProgress[0].imageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(width: screenWidth*0.06,),
-                      Container(
-                        width: screenWidth*0.4,
-                        height: screenWidth*0.4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          puzzle.inProgress[1].imageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight*0.02),
                   Row(
                     children: [
                       SizedBox(width: screenWidth*0.03,),
@@ -215,36 +156,97 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      SizedBox(width: screenWidth*0.06,),
-                      Container(
-                        width: screenWidth*0.4,
-                        height: screenWidth*0.4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          puzzle.completedThisWeek[0].imageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(width: screenWidth*0.06),
-                      Container(
-                        width: screenWidth*0.4,
-                        height: screenWidth*0.4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          puzzle.completedThisWeek[1].imageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                  // Row(
+                  //   children: [
+                  //     SizedBox(width: screenWidth*0.06,),
+                  //     Container(
+                  //       width: screenWidth*0.4,
+                  //       height: screenWidth*0.4,
+                  //       decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(8),
+                  //       ),
+                  //       clipBehavior: Clip.antiAlias,
+                  //       child: Image.network(
+                  //         puzzle.completedThisWeek[0].imageUrl,
+                  //         fit: BoxFit.cover,
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: screenWidth*0.06),
+                  //     Container(
+                  //       width: screenWidth*0.4,
+                  //       height: screenWidth*0.4,
+                  //       decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(8),
+                  //       ),
+                  //       clipBehavior: Clip.antiAlias,
+                  //       child: Image.network(
+                  //         puzzle.completedThisWeek[1].imageUrl,
+                  //         fit: BoxFit.cover,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 20,),
+                  PuzzleCardCarousel(
+                    imageUrls: [
+                      ...puzzle.completedThisWeek.map((item) => item.imageUrl),
+                      'https://picsum.photos/600/400',
                     ],
                   ),
+                  // Row(
+                  //   children: [
+                  //     SizedBox(width: screenWidth*0.03,),
+                  //     Text(
+                  //       "진행중",
+                  //       style: AppTextStyles.pretendard_bold.copyWith(
+                  //         fontSize: 17,
+                  //         color: AppColors.plumu_gray_7,
+                  //       ),
+                  //     ),
+                  //     Spacer(), // 중간 공간 확보
+                  //     Padding(
+                  //       padding: EdgeInsets.only(right: screenWidth * 0.03), // (1 - 0.03 - 0.9 = 0.07)
+                  //       child: IconButton(
+                  //         icon: Image.asset(AppAssets.forward),
+                  //         iconSize: 28,
+                  //         color: AppColors.plumu_gray_7,
+                  //         tooltip: '진행중인 퍼즐 목록으로 이동',
+                  //         onPressed: () => Navigator.of(context).pushNamed('/puzzle/ongoing-list'),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // Row(
+                  //   children: [
+                  //     SizedBox(width: screenWidth*0.06,),
+                  //     Container(
+                  //       width: screenWidth*0.4,
+                  //       height: screenWidth*0.4,
+                  //       decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(8),
+                  //       ),
+                  //       clipBehavior: Clip.antiAlias,
+                  //       child: Image.network(
+                  //         puzzle.inProgress[0].imageUrl,
+                  //         fit: BoxFit.cover,
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: screenWidth*0.06,),
+                  //     Container(
+                  //       width: screenWidth*0.4,
+                  //       height: screenWidth*0.4,
+                  //       decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(8),
+                  //       ),
+                  //       clipBehavior: Clip.antiAlias,
+                  //       child: Image.network(
+                  //         puzzle.inProgress[1].imageUrl,
+                  //         fit: BoxFit.cover,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(height: screenHeight*0.02),
                 ],
               ),
               PuzzleHomeButtonsPanel(isFull: puzzle.isFull, category: puzzle.subject),
@@ -271,7 +273,7 @@ class EmotionTag extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Container(
-      width: screenWidth*0.8,
+      width: screenWidth*0.4,
       height: screenHeight*0.03,
       decoration: BoxDecoration(
         color: AppColors.plumu_green_main,
@@ -483,6 +485,134 @@ class _RoundIconButton extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+
+class SolvedPuzzleCardWidget extends StatelessWidget {
+  final String imageUrl;
+  SolvedPuzzleCardWidget({
+    super.key,
+    required this.imageUrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // 배경 이미지 (네트워크에서 가져옴)
+        SizedBox(
+          width: 200,
+          height: 200,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: Image.network(
+              imageUrl, // 백엔드에서 넘겨받은 이미지 URL
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(child: CircularProgressIndicator());
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Center(child: Icon(Icons.broken_image));
+              },
+            ),
+          ),
+        ),
+
+        // 아래 텍스트 (날짜 + 퍼즐 제목)
+        Positioned(
+          bottom: 16,
+          left: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Text(dateString, style: AppTextStyles.dateText),
+              // Text(puzzleTitle, style: AppTextStyles.titleText),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class PuzzleCardCarousel extends StatefulWidget {
+  final List<String> imageUrls;
+  const PuzzleCardCarousel({super.key, required this.imageUrls});
+
+  @override
+  State<PuzzleCardCarousel> createState() => _PuzzleCardCarouselState();
+}
+
+class _PuzzleCardCarouselState extends State<PuzzleCardCarousel> {
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(viewportFraction: 0.6);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 260,
+      child: PageView.builder(
+        controller: _pageController,
+        itemCount: widget.imageUrls.length,
+        itemBuilder: (context, index) {
+          return AnimatedBuilder(
+            animation: _pageController,
+            builder: (context, child) {
+              double value = 0.0;
+              if (_pageController.position.haveDimensions) {
+                value = _pageController.page! - index;
+              }
+
+              // 🔢 1. Scale 계산 (중앙 1.0, 옆 0.8)
+              final scale = (1 - value.abs() * 0.2).clamp(0.8, 1.0);
+
+              // 🔄 2. Rotate 계산 (좌우 -5도 ~ +5도)
+              final rotation = (- value * 0.1).clamp(-0.1, 0.1); // 라디안
+
+              // 🌫️ 3. Opacity 계산 (중앙 1.0, 옆 0.5)
+              final opacity = (1 - value.abs() * 0.5).clamp(0.5, 1.0);
+
+              return Opacity(
+                opacity: opacity,
+                child: Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.identity()
+                    ..scale(scale)
+                    ..rotateZ(rotation),
+                  // child: Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 0),
+                  //   child: SolvedPuzzleCardWidget(
+                  //     imageUrl: widget.imageUrls[index],
+                  //   ),
+                  // ),
+                  child: Transform.translate(
+                    offset: const Offset(0, 0),
+                      child: SolvedPuzzleCardWidget(
+                        imageUrl: widget.imageUrls[index],
+                      ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
