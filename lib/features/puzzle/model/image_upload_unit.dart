@@ -2,7 +2,7 @@ import 'dart:io';
 
 class UploadUnit {
   final File imageFile;
-  final String comment;
+  String comment;
   final String category;
 
   UploadUnit({
