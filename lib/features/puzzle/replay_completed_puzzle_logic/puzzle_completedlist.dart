@@ -109,7 +109,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                   } catch(e){
                     print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
                     response = PlayPuzzleCompletedDto(
-                      imageUrl: 'https://picsum.photos/600/400',
+                      imageUrl: 'https://picsum.photos/400/400',
                       size: 9,
                       message: '풀어진 퍼즐 목데이터 메세지',
                     );

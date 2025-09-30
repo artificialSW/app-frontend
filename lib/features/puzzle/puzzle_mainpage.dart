@@ -56,7 +56,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
               'https://picsum.photos/400/400',
           size: 4,
           completedPiecesId: [1, 2],
-          lastSavedAt: "2025-09-30T04:44:00Z",
+          lastSavedAt: "2025-09-29T04:44:00Z",
         ),
           PuzzleHomeOngoingPreviewDto(
             puzzleId: 1,
@@ -73,7 +73,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
               'https://picsum.photos/400/400',
           size: 9,
           title: "목데이터 title",
-          completedAt: "2025-09-30T04:44:00Z",
+          completedAt: "2025-09-29T04:44:00Z",
         ),
           PuzzleHomeCompletedPreviewDto(
             puzzleId: 1,
@@ -81,7 +81,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
             'https://picsum.photos/400/400',
             size: 9,
             title: "목데이터 title",
-            completedAt: "2025-09-30T04:44:00Z",
+            completedAt: "2025-09-28T04:44:00Z",
           ),
         ],
         isFull: false,
@@ -171,43 +171,16 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                       ),
                     ],
                   ),
-                  // Row(
-                  //   children: [
-                  //     SizedBox(width: screenWidth*0.06,),
-                  //     Container(
-                  //       width: screenWidth*0.4,
-                  //       height: screenWidth*0.4,
-                  //       decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(8),
-                  //       ),
-                  //       clipBehavior: Clip.antiAlias,
-                  //       child: Image.network(
-                  //         puzzle.completedThisWeek[0].imageUrl,
-                  //         fit: BoxFit.cover,
-                  //       ),
-                  //     ),
-                  //     SizedBox(width: screenWidth*0.06),
-                  //     Container(
-                  //       width: screenWidth*0.4,
-                  //       height: screenWidth*0.4,
-                  //       decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(8),
-                  //       ),
-                  //       clipBehavior: Clip.antiAlias,
-                  //       child: Image.network(
-                  //         puzzle.completedThisWeek[1].imageUrl,
-                  //         fit: BoxFit.cover,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // SizedBox(height: 20,),
+
                   PuzzleCardCarousel(
                     imageUrls: [
                       ...puzzle.completedThisWeek.map((item) => item.imageUrl),
                       'https://picsum.photos/600/400',
                     ],
-                    completedAt: formatUtcToDateString(puzzle.completedThisWeek[0].completedAt),
+                    completedDates: [
+                      ...puzzle.completedThisWeek.map((item) => formatUtcToDateString(item.completedAt)),
+                      '2025.08.23',
+                    ],
                   ),
                   Row(
                     children: [
@@ -235,30 +208,20 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   Row(
                     children: [
                       SizedBox(width: screenWidth*0.06,),
-                      Container(
-                        width: screenWidth*0.4,
-                        height: screenWidth*0.4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          puzzle.inProgress[0].imageUrl,
-                          fit: BoxFit.cover,
-                        ),
+                      PuzzleCardWidget(
+                          imageUrl: puzzle.inProgress[0].imageUrl,
+                          dateInfo: formatUtcToDateString(puzzle.inProgress[0].lastSavedAt),
+                          imageSize: max(screenWidth*0.4, 150),
+                          dateFontSize: 11,
+                          textFontSize: 14,
                       ),
                       SizedBox(width: screenWidth*0.06,),
-                      Container(
-                        width: screenWidth*0.4,
-                        height: screenWidth*0.4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          puzzle.inProgress[1].imageUrl,
-                          fit: BoxFit.cover,
-                        ),
+                      PuzzleCardWidget(
+                          imageUrl: puzzle.inProgress[0].imageUrl,
+                          dateInfo: formatUtcToDateString(puzzle.inProgress[1].lastSavedAt),
+                          imageSize: max(screenWidth*0.4, 150),
+                          dateFontSize: 11,
+                          textFontSize: 14,
                       ),
                     ],
                   ),
@@ -506,13 +469,19 @@ class _RoundIconButton extends StatelessWidget {
 }
 
 
-class SolvedPuzzleCardWidget extends StatelessWidget {
+class PuzzleCardWidget extends StatelessWidget {
   final String imageUrl;
-  final String completedAt;
-  SolvedPuzzleCardWidget({
+  final String dateInfo;
+  double? imageSize;
+  double dateFontSize;
+  double textFontSize;
+  PuzzleCardWidget({
     super.key,
     required this.imageUrl,
-    required this.completedAt,
+    required this.dateInfo,
+    this.imageSize,
+    required this.dateFontSize,
+    required this.textFontSize,
   });
 
   @override
@@ -521,8 +490,8 @@ class SolvedPuzzleCardWidget extends StatelessWidget {
       children: [
         // 배경 이미지 (네트워크에서 가져옴)
         SizedBox(
-          width: 200,
-          height: 200,
+          width: imageSize ?? 250,
+          height: imageSize ?? 250,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(24),
             child: Image.network(
@@ -543,13 +512,13 @@ class SolvedPuzzleCardWidget extends StatelessWidget {
 
         // 아래 텍스트 (날짜 + 퍼즐 제목)
         Positioned(
-          bottom: 34,
+          bottom: 8,
           left: 16,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(completedAt, style: AppTextStyles.pretendard_medium.copyWith(fontSize: 13, color: AppColors.plumu_white)),
-              Text('퍼즐 조각', style: AppTextStyles.pretendard_bold.copyWith(fontSize: 16, color: AppColors.plumu_white)),
+              Text(dateInfo, style: AppTextStyles.pretendard_medium.copyWith(fontSize: dateFontSize, color: AppColors.plumu_white)),
+              Text('퍼즐 조각', style: AppTextStyles.pretendard_bold.copyWith(fontSize: textFontSize, color: AppColors.plumu_white)),
             ],
           ),
         ),
@@ -560,8 +529,8 @@ class SolvedPuzzleCardWidget extends StatelessWidget {
 
 class PuzzleCardCarousel extends StatefulWidget {
   final List<String> imageUrls;
-  final String completedAt;
-  const PuzzleCardCarousel({super.key, required this.imageUrls, required this.completedAt});
+  final List<String> completedDates;
+  const PuzzleCardCarousel({super.key, required this.imageUrls, required this.completedDates});
 
   @override
   State<PuzzleCardCarousel> createState() => _PuzzleCardCarouselState();
@@ -618,9 +587,11 @@ class _PuzzleCardCarouselState extends State<PuzzleCardCarousel> {
                     ..rotateZ(rotation),
                   child: Transform.translate(
                     offset: const Offset(0, 0),
-                      child: SolvedPuzzleCardWidget(
+                      child: PuzzleCardWidget(
                         imageUrl: widget.imageUrls[index],
-                        completedAt: widget.completedAt,
+                        dateInfo: widget.completedDates[index],
+                        dateFontSize: 14,
+                        textFontSize: 17,
                       ),
                   ),
                 ),

@@ -71,7 +71,7 @@ class PuzzleService {
       puzzleId: '1',
       message: '🔥 서버 연결 실패 - 목데이터 사용 중',
       createdAt: DateTime.now().toIso8601String(),
-      imageUrl: 'https://picsum.photos/600/400',
+      imageUrl: 'https://picsum.photos/400/400',
       category: 'Mock 카테고리',
       AIKeyword: ['Mock 키워드', 'Mock 키워드 2'],
     );
