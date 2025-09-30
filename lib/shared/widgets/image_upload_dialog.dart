@@ -5,6 +5,7 @@ import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 
 class CommentDialog extends StatefulWidget {
   final TextEditingController controller;
+  final String currentCategory;
   final File? currentImage;   // 새로 고른 이미지 (없으면 null)
   final File? existingImage;  // 기존 저장된 이미지 (없으면 null)
   final VoidCallback onCancel; // 취소 콜백 (예: _currentImage = null; controller.clear();)
@@ -13,6 +14,7 @@ class CommentDialog extends StatefulWidget {
   const CommentDialog({
     super.key,
     required this.controller,
+    required this.currentCategory,
     required this.onCancel,
     required this.onSave,
     this.currentImage,
@@ -52,19 +54,34 @@ class _CommentDialogState extends State<CommentDialog> {
       backgroundColor: AppColors.plumu_white,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      title: Text(
-        '코멘트 입력',
-        style: AppTextStyles.pretendard_bold.copyWith(fontSize: 18),
+      title: Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: AppColors.plumu_green_main,
+            borderRadius: const BorderRadius.all(
+              Radius.circular(12),
+            ),
+          ),
+          child: Text(
+            widget.currentCategory,
+            style: AppTextStyles.pretendard_bold.copyWith(
+              fontSize: 14,
+              color: AppColors.plumu_white,
+            ),
+          ),
+        )
       ),
       content: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
           if (_previewImage != null) ...[
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.file(
                 _previewImage!,
-                height: 140,
+                height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),

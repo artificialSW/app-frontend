@@ -95,6 +95,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
       builder: (dialogContext) {
         return CommentDialog(
           controller: _commentController,
+          currentCategory: widget.category[idx],
           currentImage: _currentImage,              // 새로 고른 이미지
           existingImage: existing?.imageFile,       // 기존 이미지
           onCancel: () {
