@@ -81,7 +81,7 @@ class _CommentDialogState extends State<CommentDialog> {
               borderRadius: BorderRadius.circular(8),
               child: Image.file(
                 _previewImage!,
-                height: 200,
+                height: 230,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
