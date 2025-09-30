@@ -212,16 +212,20 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                           imageUrl: puzzle.inProgress[0].imageUrl,
                           dateInfo: formatUtcToDateString(puzzle.inProgress[0].lastSavedAt),
                           imageSize: max(screenWidth*0.4, 150),
-                          dateFontSize: 11,
+                          dateFontSize: 10,
+                          text: '진행중인 퍼즐',
                           textFontSize: 14,
+                          heightOffset: max(screenWidth*0.2, 100),
                       ),
                       SizedBox(width: screenWidth*0.06,),
                       PuzzleCardWidget(
-                          imageUrl: puzzle.inProgress[0].imageUrl,
+                          imageUrl: puzzle.inProgress[1].imageUrl,
                           dateInfo: formatUtcToDateString(puzzle.inProgress[1].lastSavedAt),
                           imageSize: max(screenWidth*0.4, 150),
-                          dateFontSize: 11,
+                          dateFontSize: 10,
                           textFontSize: 14,
+                          text: '진행중인 퍼즐',
+                          heightOffset: max(screenWidth*0.2, 100),
                       ),
                     ],
                   ),
@@ -473,8 +477,11 @@ class PuzzleCardWidget extends StatelessWidget {
   final String imageUrl;
   final String dateInfo;
   double? imageSize;
-  double dateFontSize;
-  double textFontSize;
+  final double dateFontSize;
+  final double textFontSize;
+  String? text;
+  double? heightOffset;
+
   PuzzleCardWidget({
     super.key,
     required this.imageUrl,
@@ -482,6 +489,8 @@ class PuzzleCardWidget extends StatelessWidget {
     this.imageSize,
     required this.dateFontSize,
     required this.textFontSize,
+    this.text,
+    this.heightOffset
   });
 
   @override
@@ -512,13 +521,13 @@ class PuzzleCardWidget extends StatelessWidget {
 
         // 아래 텍스트 (날짜 + 퍼즐 제목)
         Positioned(
-          bottom: 8,
+          bottom: heightOffset ?? 12,
           left: 16,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(dateInfo, style: AppTextStyles.pretendard_medium.copyWith(fontSize: dateFontSize, color: AppColors.plumu_white)),
-              Text('퍼즐 조각', style: AppTextStyles.pretendard_bold.copyWith(fontSize: textFontSize, color: AppColors.plumu_white)),
+              Text(text ?? '퍼즐 조각', style: AppTextStyles.pretendard_bold.copyWith(fontSize: textFontSize, color: AppColors.plumu_white)),
             ],
           ),
         ),
