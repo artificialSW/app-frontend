@@ -35,7 +35,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
           completedList: [
             PuzzleGetCompletedDataDto(
                 puzzleId: '1',
-                imageUrl: 'https://picsum.photos/600/400',
+                imageUrl: 'https://picsum.photos/400/400',
                 contributors: ['완료-mock1', 'mock', 'mock'],
                 completedAt: 'mock 시간 데이터1',
                 AIKeyword: ['완료-mock1', 'AI', 'keyword'],
@@ -44,7 +44,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
             ),
             PuzzleGetCompletedDataDto(
                 puzzleId: '2',
-                imageUrl: 'https://picsum.photos/600/400',
+                imageUrl: 'https://picsum.photos/400/400',
                 contributors: ['mock2', 'mock', 'mock'],
                 completedAt: 'mock2 시간 데이터2',
                 AIKeyword: ['mock2', 'AI', 'keyword'],
@@ -53,7 +53,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
             ),
             PuzzleGetCompletedDataDto(
                 puzzleId: '3',
-                imageUrl: 'https://picsum.photos/600/400',
+                imageUrl: 'https://picsum.photos/400/400',
                 contributors: ['mock3', 'mock', 'mock'],
                 completedAt: 'mock3 시간 데이터3',
                 AIKeyword: ['mock3', 'AI', 'keyword'],

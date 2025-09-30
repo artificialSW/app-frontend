@@ -38,7 +38,7 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
         inProgressList: [
           PuzzleGetInProgressDataDto(
             puzzleId: '1',
-            imageUrl: 'https://picsum.photos/600/400',
+            imageUrl: 'https://picsum.photos/400/400',
             contributors: ['진행중-mock1', 'mock', 'mock'],
             lastSavedAt: 'mock 시간 데이터1',
             AIKeyword: ['진행중인mock1', 'AI', 'keyword'],
@@ -48,7 +48,7 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
           ),
           PuzzleGetInProgressDataDto(
               puzzleId: '2',
-              imageUrl: 'https://picsum.photos/600/400',
+              imageUrl: 'https://picsum.photos/400/400',
               contributors: ['mock2', 'mock', 'mock'],
               lastSavedAt: 'mock2 시간 데이터2',
               AIKeyword: ['mock2', 'AI', 'keyword'],
@@ -58,7 +58,7 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
           ),
           PuzzleGetInProgressDataDto(
               puzzleId: '3',
-              imageUrl: 'https://picsum.photos/600/400',
+              imageUrl: 'https://picsum.photos/400/400',
               contributors: ['mock3', 'mock', 'mock'],
               lastSavedAt: 'mock3 시간 데이터3',
               AIKeyword: ['mock3', 'AI', 'keyword'],
