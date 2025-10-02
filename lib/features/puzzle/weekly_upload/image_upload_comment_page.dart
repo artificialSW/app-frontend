@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
+import 'dart:math';
 
 class CommentPage extends StatefulWidget {
   final String currentCategory;
@@ -53,16 +54,19 @@ class _CommentPageState extends State<CommentPage> {
   Widget build(BuildContext context) {
     print("CommentPage 들어옴, currentImage=${widget.currentImage?.path}, existingImage=${widget.existingImage?.path}");
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: CanGoBackTopBar('코멘트', context),
       backgroundColor: AppColors.plumu_white,
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // 카테고리 라벨
-            Container(
+            Container( //주제(카테고리)
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: AppColors.plumu_green_main,
@@ -83,27 +87,47 @@ class _CommentPageState extends State<CommentPage> {
                 borderRadius: BorderRadius.circular(8),
                 child: Image.file(
                   _previewImage!,
-                  height: 230,
-                  width: double.infinity,
+                  height: min(screenHeight*0.3, screenWidth*0.8),
+                  width: min(screenHeight*0.3, screenWidth*0.8),
                   fit: BoxFit.cover,
                 ),
               ),
               const SizedBox(height: 12),
             ],
             // 텍스트 입력
-            TextField(
-              controller: _controller,
-              autofocus: true,
-              maxLines: null,
-              decoration: const InputDecoration(
-                hintText: '사진에 대한 코멘트를 입력하세요',
-                border: OutlineInputBorder(),
+            Container(
+              width: screenWidth*0.8,
+              height: screenHeight*0.1,
+              child: TextField(
+                controller: _controller,
+                autofocus: true,
+                maxLines: null,
+                decoration: InputDecoration(
+                  hintText: '코멘트를 남겨주세요.',
+                  filled: true,
+                  fillColor: const Color(0xFFFFFFFF), // background: #FFF
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Color(0xFFAAAAAA), // border: 1px solid #AAA
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(16), // border-radius: 16px
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Color(0xFFAAAAAA),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
               ),
             ),
             const Spacer(),
             // 저장 버튼
+            SizedBox(width: double.infinity,), ///이거 중앙정렬 위해 필요함.(지우지말기)
             SizedBox(
-              width: double.infinity,
+              width: screenWidth*0.7,
               child: TextButton(
                 onPressed: _canSave
                     ? () => Navigator.pop(context, {
@@ -121,7 +145,7 @@ class _CommentPageState extends State<CommentPage> {
                       borderRadius: BorderRadius.circular(8)),
                 ),
                 child: Text(
-                  '저장',
+                  '코멘트 남기기',
                   style: AppTextStyles.pretendard_bold.copyWith(
                     color: AppColors.plumu_white,
                     fontSize: 14,
@@ -129,6 +153,7 @@ class _CommentPageState extends State<CommentPage> {
                 ),
               ),
             ),
+            SizedBox(height: 10,),
           ],
         ),
       ),

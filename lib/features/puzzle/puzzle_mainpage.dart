@@ -142,7 +142,14 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                                   )
                               ),
                               SizedBox(height: screenHeight*0.01,),
-                              EmotionTag(label: '사진 등록하러 가기'),
+                              EmotionTag(
+                                  label: '사진 등록하러 가기',
+                                  onclick: puzzle.isFull
+                                      ? null
+                                      : () {
+                                    Navigator.of(context).pushNamed( '/puzzle/image-upload', arguments: {'category': puzzle.subject}, );
+                                    },
+                              ),
                             ]
                         ),
                       )
@@ -245,29 +252,35 @@ class _PuzzleRootState extends State<PuzzleRoot> {
 
 class EmotionTag extends StatelessWidget {
   final String label;
+  final VoidCallback? onclick;
 
   const EmotionTag({
     super.key,
     required this.label,
+    required this.onclick,
   });
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return Container(
-      width: screenWidth*0.4,
-      height: screenHeight*0.03,
-      decoration: BoxDecoration(
-        color: AppColors.plumu_green_main,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        label,
-        style: AppTextStyles.pretendard_medium.copyWith(
-          fontSize: 14,
-          color: AppColors.plumu_white,
+
+    return GestureDetector(
+      onTap: onclick,
+      child: Container(
+        width: screenWidth*0.4,
+        height: screenHeight*0.03,
+        decoration: BoxDecoration(
+          color: AppColors.plumu_green_main,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: AppTextStyles.pretendard_medium.copyWith(
+            fontSize: 14,
+            color: AppColors.plumu_white,
+          ),
         ),
       ),
     );

@@ -12,8 +12,7 @@ import 'package:image_picker/image_picker.dart';
 // 디자인 통일
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
-import 'package:artificialsw_frontend/shared/widgets/image_upload_comment_page.dart';
-
+import 'package:artificialsw_frontend/features/puzzle/weekly_upload/image_upload_comment_page.dart';
 class ImageUploadPage extends StatefulWidget {
   final List<String> category;
 
