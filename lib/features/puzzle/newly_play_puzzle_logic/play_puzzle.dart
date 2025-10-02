@@ -323,6 +323,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
 
     return Scaffold(
       appBar: CanGoBackTopBar('퍼즐ID: ${widget.puzzle.puzzleId.toString()}', context),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Scrollbar(
           thumbVisibility: true, // 항상 보이게 (필요없으면 false)
