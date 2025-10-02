@@ -8,6 +8,7 @@ class PersonalQuestionEntity {
   final String text;
   final VisibilityType visibility;
   final DateTime createdAt;
+  final bool isLiked;           // 좋아요 상태
 
   const PersonalQuestionEntity({
     required this.id,
@@ -16,6 +17,7 @@ class PersonalQuestionEntity {
     required this.text,
     required this.visibility,
     required this.createdAt,
+    required this.isLiked,
   });
 
   // 클라이언트 보조 필터(보안 아님) — 실제 권한은 서버에서 강제

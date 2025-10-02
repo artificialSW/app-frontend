@@ -5,6 +5,7 @@ class CommonQuestion {
   final String description;
   final int likes;
   final int comments;
+  final bool isLiked;     // 좋아요 상태
 
   const CommonQuestion({
     required this.id,
@@ -12,5 +13,6 @@ class CommonQuestion {
     required this.description,
     required this.likes,
     required this.comments,
+    required this.isLiked,
   });
 }

@@ -8,6 +8,8 @@ class ChatCommonDetailCommentDto {
   final String writer;
   final String content;
   final int likes;
+  @JsonKey(name: 'isLiked')
+  final bool isLiked;
   final List<String> reply;
 
   const ChatCommonDetailCommentDto({
@@ -15,6 +17,7 @@ class ChatCommonDetailCommentDto {
     required this.writer,
     required this.content,
     required this.likes,
+    required this.isLiked,
     required this.reply,
   });
 

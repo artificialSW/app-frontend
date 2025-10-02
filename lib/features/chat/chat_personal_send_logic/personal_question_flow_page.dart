@@ -3,6 +3,9 @@ import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+import 'package:artificialsw_frontend/services/chat/chat_service.dart';
+import 'package:artificialsw_frontend/services/chat/dto/chat_question_create/chat_question_create_request_dto.dart';
+import 'package:artificialsw_frontend/services/chat/dto/chat_question_create/chat_family_member_dto.dart';
 import 'state/personal_question_send.dart';
 import 'steps/step_family.dart';
 import 'steps/step_visibility.dart';
@@ -19,22 +22,63 @@ class PersonalQuestionFlowPage extends StatefulWidget {
 
 class _FlowState extends State<PersonalQuestionFlowPage> {
   final _state = PersonalQuestionState();
+  final ChatService _chatService = ChatService();
   int step = 0;
 
   late final TextEditingController _questionController;
 
-  final members = [
-    User(id: '1', name: '허준혁', role: '아빠'),
-    User(id: '2', name: '박태권', role: '엄마'),
-    User(id: '3', name: '신정환', role: '할아버지'),
-    User(id: '4', name: 'cozy', role: '할머니'),
-    User(id: '5', name: '김동욱', role: '둘째아들'),
-  ]; ///이거 서버로부터 GET으로 받아오기(API document에 추가해 놓음)
+  List<ChatFamilyMemberDto> _familyMembers = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _questionController = TextEditingController(text: _state.question);
+    _loadFamilyMembers();
+  }
+
+  Future<void> _loadFamilyMembers() async {
+    try {
+      final members = await _chatService.getFamilyMembers();
+      setState(() {
+        _familyMembers = members;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('가족 구성원 로드 실패: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _submitQuestion() async {
+    if (_state.target == null || _state.visibility == null || _state.question.trim().isEmpty) {
+      return;
+    }
+
+    try {
+      final request = ChatQuestionCreateRequestDto(
+        receiverId: int.parse(_state.target!.id),
+        isPublic: _state.visibility == VisibilityType.public,
+        content: _state.question.trim(),
+      );
+
+      final response = await _chatService.createQuestion(request);
+      
+      if (response.isSuccess) {
+        setState(() => step = 3); // 성공 페이지로 이동
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.message ?? '질문 전송에 실패했습니다.')),
+        );
+      }
+    } catch (e) {
+      print('질문 전송 실패: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('질문 전송에 실패했습니다.')),
+      );
+    }
   }
 
   @override
@@ -55,11 +99,24 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
     // 단계별 본문
     Widget body;
     if (step == 0) {
-      body = StepFamily(
-        members: members,
-        selected: _state.target,
-        onSelect: (m) => setState(() => _state.target = m),
-      );
+      if (_isLoading) {
+        body = const Center(child: CircularProgressIndicator());
+      } else if (_familyMembers.isEmpty) {
+        body = const Center(child: Text('가족 구성원을 불러올 수 없습니다.'));
+      } else {
+        // ChatFamilyMemberDto를 User로 변환 (기존 StepFamily와 호환)
+        final members = _familyMembers.map((dto) => User(
+          id: dto.id.toString(),
+          name: dto.role, // role을 name으로 사용
+          role: dto.role,
+        )).toList();
+        
+        body = StepFamily(
+          members: members,
+          selected: _state.target,
+          onSelect: (m) => setState(() => _state.target = m),
+        );
+      }
     } else if (step == 1) {
       body = StepVisibility(
         selected: _state.visibility,
@@ -97,8 +154,14 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: CustomButton(
-            text: step == 2 ? '다음' : '다음',
-            onPressed: canNext ? () => setState(() => step++) : null,
+            text: step == 2 ? '전송' : '다음',
+            onPressed: canNext ? () {
+              if (step == 2) {
+                _submitQuestion(); // 마지막 단계에서는 질문 전송
+              } else {
+                setState(() => step++); // 다른 단계에서는 다음으로
+              }
+            } : null,
             width: double.infinity,
             height: 52,
             fontSize: 16,

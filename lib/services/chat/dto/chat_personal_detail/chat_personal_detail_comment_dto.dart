@@ -9,6 +9,8 @@ class ChatPersonalDetailCommentDto {
   final String writer;
   final String content;
   final int likes;
+  @JsonKey(name: 'isLiked')
+  final bool isLiked;
   final List<String> reply;
 
   ChatPersonalDetailCommentDto({
@@ -16,6 +18,7 @@ class ChatPersonalDetailCommentDto {
     required this.writer,
     required this.content,
     required this.likes,
+    required this.isLiked,
     required this.reply,
   });
 

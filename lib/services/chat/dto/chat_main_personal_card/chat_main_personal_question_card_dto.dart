@@ -14,6 +14,9 @@ class ChatMainPersonalQuestionCardDto {
   final bool isPublic;
   final bool solved;
   final int likes;
+  final int comments;
+  @JsonKey(name: 'isLiked')
+  final bool isLiked;
   @JsonKey(name: 'createAt')
   final String createdAt;
 
@@ -25,6 +28,8 @@ class ChatMainPersonalQuestionCardDto {
     required this.isPublic,
     required this.solved,
     required this.likes,
+    required this.comments,
+    required this.isLiked,
     required this.createdAt,
   });
 

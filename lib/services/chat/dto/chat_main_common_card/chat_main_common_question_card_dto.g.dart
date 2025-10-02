@@ -13,6 +13,7 @@ ChatMainCommonQuestionCardDto _$ChatMainCommonQuestionCardDtoFromJson(
       content: json['content'] as String,
       likes: json['likes'] as int,
       comments: json['comments'] as int,
+      isLiked: json['isLiked'] as bool,
     );
 
 Map<String, dynamic> _$ChatMainCommonQuestionCardDtoToJson(
@@ -22,4 +23,5 @@ Map<String, dynamic> _$ChatMainCommonQuestionCardDtoToJson(
       'content': instance.content,
       'likes': instance.likes,
       'comments': instance.comments,
+      'isLiked': instance.isLiked,
     };

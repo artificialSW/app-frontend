@@ -1,7 +1,15 @@
 // lib/features/chat/widget/common_question_card.dart
+
+// Flutter/Dart 기본 라이브러리
 import 'package:flutter/material.dart';
+
+// 프로젝트 내부 (절대 경로)
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/services/chat/chat_service.dart';
+import 'package:artificialsw_frontend/services/chat/dto/chat_like/chat_like_request_dto.dart';
+
+// 프로젝트 내부 (상대 경로)
 import '../model/common_question.dart';
 
 class CommonQuestionCard extends StatefulWidget {
@@ -22,14 +30,57 @@ class CommonQuestionCard extends StatefulWidget {
 
 class _CommonQuestionCardState extends State<CommonQuestionCard> {
   late int _likes = widget.question.likes;
-  bool _liked = false;
+  late bool _liked = widget.question.isLiked;
   bool _pressed = false; // 누르는 동안만 true
+  bool _isLiking = false; // 좋아요 요청 중 상태
 
-  void _toggleLike() {
+  // API 호출을 위한 ChatService 인스턴스
+  final ChatService _chatService = ChatService();
+
+  /// 공통질문에 좋아요를 토글하는 메서드
+  /// API 호출 후 성공하면 UI를 업데이트하고, 실패하면 원래 상태로 복원
+  Future<void> _toggleLike() async {
+    if (_isLiking) return; // 이미 요청 중이면 무시
+
+    // UI를 먼저 업데이트 (낙관적 업데이트)
+    final previousLiked = _liked;
+    final previousLikes = _likes;
+    
     setState(() {
+      _isLiking = true;
       _liked = !_liked;
       _likes = _liked ? _likes + 1 : (_likes > 0 ? _likes - 1 : 0);
     });
+
+    try {
+      // API 호출
+      final request = ChatLikeRequestDto(
+        what: ChatLikeType.question, // 공통질문은 'question' 타입
+        id: int.parse(widget.question.id),
+      );
+      
+      await _chatService.postChatLike(request);
+      
+      // 성공 시 로딩 상태 해제
+      setState(() {
+        _isLiking = false;
+      });
+      
+    } catch (e) {
+      // 실패 시 원래 상태로 복원
+      setState(() {
+        _isLiking = false;
+        _liked = previousLiked;
+        _likes = previousLikes;
+      });
+      
+      // 에러 메시지 표시 (선택사항)
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('좋아요 요청에 실패했습니다. 다시 시도해주세요.')),
+        );
+      }
+    }
   }
 
   @override
@@ -115,15 +166,24 @@ class _CommonQuestionCardState extends State<CommonQuestionCard> {
                       children: [
                         // 좋아요
                         GestureDetector(
-                          onTap: _toggleLike,
+                          onTap: _isLiking ? null : _toggleLike, // 로딩 중이면 비활성화
                           behavior: HitTestBehavior.opaque,
                           child: Row(
                             children: [
-                              Icon(
-                                _liked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                                size: 18,
-                                color: statIcon,
-                              ),
+                              // 로딩 중이면 스피너, 아니면 하트 아이콘
+                              _isLiking 
+                                ? SizedBox(
+                                    width: 18, height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(statIcon),
+                                    ),
+                                  )
+                                : Icon(
+                                    _liked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                                    size: 18,
+                                    color: statIcon,
+                                  ),
                               const SizedBox(width: 4),
                               Text('$_likes', style: TextStyle(fontSize: 14, color: statText)),
                             ],

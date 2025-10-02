@@ -9,12 +9,15 @@ class ChatMainCommonQuestionCardDto {
   final String content;
   final int likes;
   final int comments;
+  @JsonKey(name: 'isLiked')
+  final bool isLiked;
 
   const ChatMainCommonQuestionCardDto({
     required this.questionId,
     required this.content,
     required this.likes,
     required this.comments,
+    required this.isLiked,
   });
 
   factory ChatMainCommonQuestionCardDto.fromJson(Map<String, dynamic> json) =>

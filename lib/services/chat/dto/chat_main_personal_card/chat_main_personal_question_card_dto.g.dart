@@ -16,6 +16,8 @@ ChatMainPersonalQuestionCardDto _$ChatMainPersonalQuestionCardDtoFromJson(
       isPublic: json['is_public'] as bool,
       solved: json['solved'] as bool,
       likes: json['likes'] as int,
+      comments: json['comments'] as int,
+      isLiked: json['isLiked'] as bool,
       createdAt: json['createAt'] as String,
     );
 
@@ -28,6 +30,8 @@ Map<String, dynamic> _$ChatMainPersonalQuestionCardDtoToJson(
       'receiver': instance.receiver,
       'is_public': instance.isPublic,
       'likes': instance.likes,
+      'comments': instance.comments,
+      'isLiked': instance.isLiked,
       'createAt': instance.createdAt,
       'solved': instance.solved,
     };

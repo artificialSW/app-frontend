@@ -14,11 +14,19 @@ import 'package:artificialsw_frontend/services/chat/dto/chat_like/chat_like_requ
 import 'package:artificialsw_frontend/services/chat/dto/chat_like/chat_like_response_dto.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_weekly_update/chat_weekly_update_response_dto.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_question_create/chat_family_member_dto.dart';
+import 'package:artificialsw_frontend/services/chat/dto/chat_weekly_common/chat_weekly_common_question_dto.dart';
+import 'package:artificialsw_frontend/services/chat/mock_data_manager.dart';
 
+/// 채팅 관련 API 호출을 담당하는 서비스 클래스
+/// 모든 API 호출이 실패할 경우 자동으로 MockDataManager에서 Mock 데이터를 반환
 class ChatService {
-  final Dio _dio = ApiClient.dio;
+  final Dio _dio = ApiClient.dio; // HTTP 클라이언트 인스턴스
 
-  // 소통방 홈 페이지 정보 가져오기 (GET)
+  /// 소통방 홈 페이지의 개인질문 목록과 미답변 질문 개수를 가져오는 API
+  /// GET /api/community/home
+  /// 
+  /// 반환값: 개인질문 목록과 미답변 질문 개수가 포함된 응답
+  /// 실패 시: MockDataManager에서 Mock 데이터 반환
   Future<ChatMainPersonalResponseDto> getChatMainPersonal() async {
     try {
       print('[ChatService] 소통방 홈 페이지 데이터 요청 중...');
@@ -32,13 +40,14 @@ class ChatService {
       
       return ChatMainPersonalResponseDto.fromJson(response.data);
     } on DioError catch (e) {
-      // Dio 예외 처리
+      // API 호출 실패 시 Mock 데이터로 폴백
+      print('❌ [ChatService] API 호출 실패, Mock 데이터 사용');
       if (e.response != null) {
         print('❌ [ChatService] 소통방 홈 페이지 조회 실패: ${e.response?.data}');
       } else {
         print('❌ [ChatService] 네트워크 에러: ${e.message}');
       }
-      rethrow;
+      return MockDataManager.getMainPersonalData();
     }
   }
 
@@ -55,13 +64,14 @@ class ChatService {
       
       return ChatPersonalDetailResponseDto.fromJson(response.data);
     } on DioError catch (e) {
-      // Dio 예외 처리
+      // API 실패 시 Mock 데이터 반환
+      print('❌ [ChatService] API 호출 실패, Mock 데이터 사용');
       if (e.response != null) {
         print('❌ [ChatService] 개인질문 상세 조회 실패: ${e.response?.data}');
       } else {
         print('❌ [ChatService] 네트워크 에러: ${e.message}');
       }
-      rethrow;
+      return MockDataManager.getPersonalDetailData(questionId);
     }
   }
 
@@ -80,13 +90,14 @@ class ChatService {
           .map((json) => ChatPersonalAnswerQuestionDto.fromJson(json))
           .toList();
     } on DioError catch (e) {
-      // Dio 예외 처리
+      // API 실패 시 Mock 데이터 반환
+      print('❌ [ChatService] API 호출 실패, Mock 데이터 사용');
       if (e.response != null) {
         print('❌ [ChatService] 나에게 온 질문 목록 조회 실패: ${e.response?.data}');
       } else {
         print('❌ [ChatService] 네트워크 에러: ${e.message}');
       }
-      rethrow;
+      return MockDataManager.getMyQuestionsData();
     }
   }
 
@@ -128,13 +139,14 @@ class ChatService {
       
       return ChatQuestionCreateResponseDto.fromJson(response.data);
     } on DioError catch (e) {
-      // Dio 예외 처리
+      // API 실패 시 Mock 데이터 반환
+      print('❌ [ChatService] API 호출 실패, Mock 데이터 사용');
       if (e.response != null) {
         print('❌ [ChatService] 개인질문 생성 실패: ${e.response?.data}');
       } else {
         print('❌ [ChatService] 네트워크 에러: ${e.message}');
       }
-      rethrow;
+      return MockDataManager.getQuestionCreateMockData();
     }
   }
 
@@ -153,13 +165,14 @@ class ChatService {
           .map((json) => ChatMainCommonQuestionCardDto.fromJson(json))
           .toList();
     } on DioError catch (e) {
-      // Dio 예외 처리
+      // API 실패 시 Mock 데이터 반환
+      print('❌ [ChatService] API 호출 실패, Mock 데이터 사용');
       if (e.response != null) {
         print('❌ [ChatService] 공통질문 홈 페이지 조회 실패: ${e.response?.data}');
       } else {
         print('❌ [ChatService] 네트워크 에러: ${e.message}');
       }
-      rethrow;
+      return MockDataManager.getMainCommonData();
     }
   }
 
@@ -176,17 +189,22 @@ class ChatService {
       
       return response.data;
     } on DioError catch (e) {
-      // Dio 예외 처리
+      // API 실패 시 Mock 데이터 반환
+      print('❌ [ChatService] API 호출 실패, Mock 데이터 사용');
       if (e.response != null) {
         print('❌ [ChatService] 공통질문 상세 조회 실패: ${e.response?.data}');
       } else {
         print('❌ [ChatService] 네트워크 에러: ${e.message}');
       }
-      rethrow;
+      return MockDataManager.getCommonDetailData(questionId);
     }
   }
 
-  // 좋아요 누르기 (POST)
+  /// 좋아요 누르기 API
+  /// POST /api/community/like
+  /// 
+  /// 반환값: 좋아요 요청 성공 여부
+  /// 실패 시: MockDataManager에서 Mock 응답 반환
   Future<ChatLikeResponseDto> postChatLike(ChatLikeRequestDto request) async {
     try {
       print('[ChatService] 좋아요 요청 중...');
@@ -200,13 +218,14 @@ class ChatService {
       
       return ChatLikeResponseDto.fromJson(response.data);
     } on DioError catch (e) {
-      // Dio 예외 처리
+      // API 호출 실패 시 Mock 데이터로 폴백
+      print('❌ [ChatService] API 호출 실패, Mock 데이터 사용');
       if (e.response != null) {
         print('❌ [ChatService] 좋아요 요청 실패: ${e.response?.data}');
       } else {
         print('❌ [ChatService] 네트워크 에러: ${e.message}');
       }
-      rethrow;
+      return MockDataManager.getLikeMockData();
     }
   }
 
@@ -249,12 +268,40 @@ class ChatService {
           .map((json) => ChatFamilyMemberDto.fromJson(json as Map<String, dynamic>))
           .toList();
     } on DioError catch (e) {
+      // API 실패 시 Mock 데이터 반환
+      print('❌ [ChatService] API 호출 실패, Mock 데이터 사용');
       if (e.response != null) {
         print('❌ [ChatService] 가족구성원 목록 조회 실패: ${e.response?.data}');
       } else {
         print('❌ [ChatService] 네트워크 에러: ${e.message}');
       }
-      rethrow;
+      return MockDataManager.getFamilyMembersData();
+    }
+  }
+
+  // 이번주 공통질문 가져오기 (GET) - 토큰 없음
+  Future<ChatWeeklyCommonQuestionDto> getWeeklyCommonQuestion() async {
+    try {
+      print('[ChatService] 이번주 공통질문 요청 중...');
+      final response = await _dio.get('/api/home/questions/common');
+      
+      if (response.statusCode == 200) {
+        print('[ChatService] 이번주 공통질문 조회 성공');
+        print('[ChatService] 질문 ID: ${response.data['questionId']}');
+        print('[ChatService] 좋아요 수: ${response.data['likes']}');
+        print('[ChatService] 댓글 수: ${response.data['posts']}');
+      }
+      
+      return ChatWeeklyCommonQuestionDto.fromJson(response.data);
+    } on DioError catch (e) {
+      // API 실패 시 Mock 데이터 반환
+      print('❌ [ChatService] API 호출 실패, Mock 데이터 사용');
+      if (e.response != null) {
+        print('❌ [ChatService] 이번주 공통질문 조회 실패: ${e.response?.data}');
+      } else {
+        print('❌ [ChatService] 네트워크 에러: ${e.message}');
+      }
+      return MockDataManager.getWeeklyCommonQuestionData();
     }
   }
 }

@@ -13,6 +13,7 @@ ChatPersonalDetailCommentDto _$ChatPersonalDetailCommentDtoFromJson(
       writer: json['writer'] as String,
       content: json['content'] as String,
       likes: json['likes'] as int,
+      isLiked: json['isLiked'] as bool,
       reply: (json['reply'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
@@ -23,5 +24,6 @@ Map<String, dynamic> _$ChatPersonalDetailCommentDtoToJson(
       'writer': instance.writer,
       'content': instance.content,
       'likes': instance.likes,
+      'isLiked': instance.isLiked,
       'reply': instance.reply,
     };
