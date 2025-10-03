@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginScreen extends StatefulWidget {
+  LoginScreen({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginScreenState extends State<LoginScreen> {
   // 사용자 입력을 받을 컨트롤러
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
               GestureDetector(
                 onTap: () {
                   // TODO: 회원가입 페이지로 이동
-                  // Navigator.pushNamed(context, '/register');
+                  Navigator.pushNamed(context, '/register');
                 },
                 child: const Text(
                   '아직 계정이 없으신가요? 회원가입',
@@ -79,6 +79,9 @@ class _LoginPageState extends State<LoginPage> {
 
     // TODO: 로그인 로직 (백엔드 연동 예정)
     print('Login Attempt: ID: $id, PW: $pw');
+
+    Navigator.pushNamed(context, '/shell');
+
   }
 
   @override

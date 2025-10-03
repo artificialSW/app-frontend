@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterScreenState extends State<RegisterScreen> {
   // 각 입력 필드를 위한 컨트롤러들
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
@@ -95,6 +95,8 @@ class _RegisterPageState extends State<RegisterPage> {
     print('PW: $pw');
     print('Age: $age');
     print('Birthday: $birthday');
+
+    Navigator.pushNamed(context, '/login');
   }
 
   @override
