@@ -116,9 +116,29 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                 children: [
                   Container(
                       width: screenWidth*0.92,
-                      decoration: BoxDecoration(
-                        color: AppColors.plumu_green_30per,
-                        borderRadius: BorderRadius.circular(8),
+                      decoration: ShapeDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white,                        // 위쪽은 완전 흰색
+                            Color(0xFFE5F4E6),                   // 아래는 연초록색 (거의 흰색과 섞임)
+                          ],
+                        ),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            color: Color(0xFF5CBD56),            // 초록 테두리
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: Color(0x26000000),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: screenHeight*0.02, horizontal: screenWidth*0.04),
@@ -127,7 +147,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '이번주의 퍼즐 카테고리',
+                                '이번주의 퍼즐 키워드',
                                 style: AppTextStyles.pretendard_bold.copyWith(
                                   fontSize: 16,
                                   color: AppColors.plumu_green_main,
@@ -138,17 +158,22 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                                   '키워드에 맞는 사진을 올려보세요! :)',
                                   style: AppTextStyles.pretendard_medium.copyWith(
                                     fontSize: 12,
-                                    color: AppColors.plumu_gray_6,
+                                    color: AppColors.plumu_gray_5,
                                   )
                               ),
                               SizedBox(height: screenHeight*0.01,),
-                              EmotionTag(
-                                  label: '사진 등록하러 가기',
-                                  onclick: puzzle.isFull
-                                      ? null
-                                      : () {
-                                    Navigator.of(context).pushNamed( '/puzzle/image-upload', arguments: {'category': puzzle.subject}, );
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  EmotionTag(
+                                    label: '사진 등록하러 가기',
+                                    onclick: puzzle.isFull
+                                        ? null
+                                        : () {
+                                      Navigator.of(context).pushNamed( '/puzzle/image-upload', arguments: {'category': puzzle.subject}, );
                                     },
+                                  )
+                                ]
                               ),
                             ]
                         ),
@@ -157,7 +182,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   SizedBox(height: screenHeight*0.01),
                   Row(
                     children: [
-                      SizedBox(width: screenWidth*0.03,),
+                      SizedBox(width: screenWidth*0.05,),
                       Text(
                         "이번 주 풀어진 퍼즐",
                         style: AppTextStyles.pretendard_bold.copyWith(
@@ -191,9 +216,9 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   ),
                   Row(
                     children: [
-                      SizedBox(width: screenWidth*0.03,),
+                      SizedBox(width: screenWidth*0.05,),
                       Text(
-                        "진행중",
+                        "진행중인 퍼즐",
                         style: AppTextStyles.pretendard_bold.copyWith(
                           fontSize: 17,
                           color: AppColors.plumu_gray_7,
@@ -272,7 +297,7 @@ class EmotionTag extends StatelessWidget {
         height: screenHeight*0.03,
         decoration: BoxDecoration(
           color: AppColors.plumu_green_main,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
         ),
         alignment: Alignment.center,
         child: Text(
