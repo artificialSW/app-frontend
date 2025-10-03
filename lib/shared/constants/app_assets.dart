@@ -6,6 +6,7 @@ class AppAssets {
   //사용 예시: Image.asset(AppAssets.logo);
   static const logo_withTypo1 = 'assets/images/logo_withTypo1.png';
   static const logo_withTypo2 = 'assets/images/logo_withTypo2.png';
+  static const account_background = 'assets/images/account_background.png';
 
   static const appicon_whiteBackground = 'assets/images/appicon_whiteBackground.png';
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -15,60 +16,69 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF335CB0), // 예소 앱 컬러에 맞춘 배경색
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // ID 입력 필드
-              TextField(
-                controller: _idController,
-                decoration: const InputDecoration(
-                  labelText: 'ID',
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // 비밀번호 입력 필드
-              TextField(
-                controller: _pwController,
-                obscureText: true, // 입력값 숨김 처리
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // 로그인 버튼
-              ElevatedButton(
-                onPressed: _login,
-                child: const Text('Login'),
-              ),
-              const SizedBox(height: 16),
-
-              // 회원가입 유도 텍스트
-              GestureDetector(
-                onTap: () {
-                  // TODO: 회원가입 페이지로 이동
-                  Navigator.pushNamed(context, '/register');
-                },
-                child: const Text(
-                  '아직 계정이 없으신가요? 회원가입',
-                  style: TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ],
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              AppAssets.account_background, // 실제 파일 경로에 맞게 수정!
+              fit: BoxFit.cover, // 화면 꽉 채움
+            ),
           ),
-        ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // ID 입력 필드
+                  TextField(
+                    controller: _idController,
+                    decoration: const InputDecoration(
+                      labelText: 'ID',
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // 비밀번호 입력 필드
+                  TextField(
+                    controller: _pwController,
+                    obscureText: true, // 입력값 숨김 처리
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // 로그인 버튼
+                  ElevatedButton(
+                    onPressed: _login,
+                    child: const Text('Login'),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // 회원가입 유도 텍스트
+                  GestureDetector(
+                    onTap: () {
+                      // TODO: 회원가입 페이지로 이동
+                      Navigator.pushNamed(context, '/register');
+                    },
+                    child: const Text(
+                      '아직 계정이 없으신가요? 회원가입',
+                      style: TextStyle(
+                        color: Colors.white,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
