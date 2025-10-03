@@ -82,6 +82,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
   @override
   Widget build(BuildContext context) {
     final canSubmit = selectedSize != null;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: CanGoBackTopBar('퍼즐 맞추기', context), // 화면 타이틀만 변경
@@ -116,12 +117,25 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
                 value: selectedSize,
                 decoration: InputDecoration(
                   hintText: '퍼즐 크기 선택',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                  filled: true, // background 적용
+                  fillColor: const Color(0xFFFFFFFF), // background: #FFF
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14), // border-radius: 14px
+                    borderSide: const BorderSide(
+                      color: Color(0xFFDEDEDE), // border: 1.2px solid #DEDEDE
+                      width: 1.2,
+                    ),
                   ),
-                  contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFDEDEDE),
+                      width: 1.2,
+                    ),
+                  ),
                 ),
+                dropdownColor: Colors.white,
                 items: sizeOptions
                     .map(
                       (size) => DropdownMenuItem(
