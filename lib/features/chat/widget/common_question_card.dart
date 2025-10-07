@@ -8,6 +8,7 @@ import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/services/chat/chat_service.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_like/chat_like_request_dto.dart';
+import 'package:artificialsw_frontend/services/chat/mock_data_manager.dart';
 
 // 프로젝트 내부 (상대 경로)
 import '../model/common_question.dart';
@@ -61,6 +62,9 @@ class _CommonQuestionCardState extends State<CommonQuestionCard> {
       
       await _chatService.postChatLike(request);
       
+      // MockDataManager 캐시도 함께 업데이트
+      MockDataManager.toggleCommonQuestionLike(int.parse(widget.question.id));
+      
       // 성공 시 로딩 상태 해제
       setState(() {
         _isLiking = false;
@@ -74,7 +78,7 @@ class _CommonQuestionCardState extends State<CommonQuestionCard> {
         _likes = previousLikes;
       });
       
-      // 에러 메시지 표시 (선택사항)
+      // 에러 메시지 표시
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('좋아요 요청에 실패했습니다. 다시 시도해주세요.')),

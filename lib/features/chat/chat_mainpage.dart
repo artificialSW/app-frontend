@@ -26,71 +26,128 @@ class ChatRoot extends StatefulWidget {
   State<ChatRoot> createState() => _ChatRootState();
 }
 
-class _ChatRootState extends State<ChatRoot> {
+class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
   int _selectedIndex = 0; // 탭 인덱스 (0: 개인질문, 1: 공통질문)
   
   // API 호출을 위한 ChatService 인스턴스
   final ChatService _chatService = ChatService();
-
+  
   // 개인질문 관련 데이터
   String? _selectedPersonalId; // 선택된 개인질문 ID
   ChatMainPersonalResponseDto? _personalData; // API에서 받은 개인질문 데이터
-
+  DateTime? _personalDataLastUpdated;
+  bool _isPersonalLoading = false;
+  
   // 공통질문 관련 데이터
   String? _selectedCommonId; // 선택된 공통질문 ID
   List<ChatMainCommonQuestionCardDto>? _commonData; // API에서 받은 공통질문 목록
-  ChatWeeklyCommonQuestionDto? _weeklyCommonData; // API에서 받은 이번주 공통질문 데이터
+  DateTime? _commonDataLastUpdated;
+  bool _isCommonLoading = false;
+  
+  // 이번주 공통질문 데이터
+  ChatWeeklyCommonQuestionDto? _weeklyData; // API에서 받은 이번주 공통질문 데이터
+  bool _isWeeklyLoading = false;
+  
+  // 스마트 새로고침을 위한 마지막 새로고침 시간
+  DateTime? _lastRefresh;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this); // 앱 생명주기 관찰 시작
     // 페이지 로드 시 세 가지 API를 동시에 호출
-    _loadPersonalData(); // 개인질문 목록 로드
-    _loadCommonData(); // 공통질문 목록 로드
-    _loadWeeklyCommonData(); // 이번주 공통질문 로드
+    _loadAllData();
+  }
+  
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // 관찰 종료
+    super.dispose();
+  }
+  
+  /// 앱이 포그라운드로 돌아올 때 스마트 새로고침
+  /// 5분 이상 지났을 때만 새로고침하여 배터리와 데이터 사용량 최적화
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final now = DateTime.now();
+      // 마지막 새로고침이 없거나 5분 이상 지났을 때만 새로고침
+      if (_lastRefresh == null || now.difference(_lastRefresh!).inMinutes >= 5) {
+        _loadAllData(forceRefresh: true);
+        _lastRefresh = now;
+      }
+    }
   }
 
-  /// 개인질문 목록을 API에서 가져오는 메서드
-  /// API 호출이 실패하면 ChatService에서 자동으로 Mock 데이터를 반환
-  Future<void> _loadPersonalData() async {
+  /// 모든 데이터를 병렬로 로드
+  Future<void> _loadAllData({bool forceRefresh = false}) async {
+    await Future.wait([
+      _loadPersonalData(forceRefresh: forceRefresh),
+      _loadCommonData(forceRefresh: forceRefresh),
+      _loadWeeklyData(),
+    ]);
+  }
+  
+  /// 개인질문 데이터 로드 (2분 캐싱)
+  Future<void> _loadPersonalData({bool forceRefresh = false}) async {
+    if (!forceRefresh && _isPersonalDataCacheValid()) return;
+    
+    setState(() => _isPersonalLoading = true);
+    
     try {
-      final data = await _chatService.getChatMainPersonal();
-      setState(() {
-        _personalData = data; // 개인질문 데이터 저장
-      });
+      _personalData = await _chatService.getChatMainPersonal();
+      _personalDataLastUpdated = DateTime.now();
     } catch (e) {
       print('개인질문 데이터 로드 실패: $e');
+    } finally {
+      setState(() => _isPersonalLoading = false);
     }
   }
-
-  /// 공통질문 목록을 API에서 가져오는 메서드
-  /// API 호출이 실패하면 ChatService에서 자동으로 Mock 데이터를 반환
-  Future<void> _loadCommonData() async {
+  
+  /// 공통질문 데이터 로드 (2분 캐싱)
+  Future<void> _loadCommonData({bool forceRefresh = false}) async {
+    if (!forceRefresh && _isCommonDataCacheValid()) return;
+    
+    setState(() => _isCommonLoading = true);
+    
     try {
-      final data = await _chatService.getChatMainCommon();
-      setState(() {
-        _commonData = data; // 공통질문 목록 저장
-      });
+      _commonData = await _chatService.getChatMainCommon();
+      _commonDataLastUpdated = DateTime.now();
     } catch (e) {
       print('공통질문 데이터 로드 실패: $e');
+    } finally {
+      setState(() => _isCommonLoading = false);
     }
   }
-
-  /// 이번주 공통질문을 API에서 가져오는 메서드
-  /// API 호출이 실패하면 ChatService에서 자동으로 Mock 데이터를 반환
-  Future<void> _loadWeeklyCommonData() async {
+  
+  /// 이번주 공통질문 데이터 로드
+  Future<void> _loadWeeklyData() async {
+    if (_weeklyData != null) return;
+    
+    setState(() => _isWeeklyLoading = true);
+    
     try {
-      final data = await _chatService.getWeeklyCommonQuestion();
-      setState(() {
-        _weeklyCommonData = data; // 이번주 공통질문 데이터 저장
-      });
+      _weeklyData = await _chatService.getWeeklyCommonQuestion();
     } catch (e) {
       print('이번주 공통질문 데이터 로드 실패: $e');
+    } finally {
+      setState(() => _isWeeklyLoading = false);
     }
   }
-
-  /// AppBar의 초록색 배지에 표시할 미답변 질문 개수를 반환하는 메서드
-  /// API에서 받은 unsolved 값을 사용하며, 데이터가 없으면 0을 반환
+  
+  /// 개인질문 캐시 유효성 검사 (2분 이내)
+  bool _isPersonalDataCacheValid() {
+    if (_personalData == null || _personalDataLastUpdated == null) return false;
+    return DateTime.now().difference(_personalDataLastUpdated!).inMinutes < 2;
+  }
+  
+  /// 공통질문 캐시 유효성 검사 (2분 이내)
+  bool _isCommonDataCacheValid() {
+    if (_commonData == null || _commonDataLastUpdated == null) return false;
+    return DateTime.now().difference(_commonDataLastUpdated!).inMinutes < 2;
+  }
+  
+  /// AppBar의 초록색 배지에 표시할 미답변 질문 개수
   int _getIncomingQuestionsCount() {
     return _personalData?.unsolved ?? 0;
   }
@@ -103,24 +160,34 @@ class _ChatRootState extends State<ChatRoot> {
       appBar: ChatCustomAppBar(incomingQuestionsCount: _getIncomingQuestionsCount()),
       body: Column(
         children: [
-          if (_weeklyCommonData != null)
-            WeeklyQuestionBanner(
+          if (_weeklyData != null)
+          WeeklyQuestionBanner(
               question: CommonQuestion(
-                id: _weeklyCommonData!.questionId.toString(),
+                id: _weeklyData!.questionId.toString(),
                 title: '이번주의 공통질문',
-                description: _weeklyCommonData!.questionContent,
-                likes: _weeklyCommonData!.likes,
-                comments: _weeklyCommonData!.posts,
+                description: _weeklyData!.questionContent,
+                likes: _weeklyData!.likes,
+                comments: _weeklyData!.posts,
                 isLiked: false, // 이번주 공통질문은 기본적으로 좋아요 안 누른 상태
               ),
               order: (_commonData?.length ?? 0) + 1,
-            ),
+          ),
           ChatTabBar(
             selectedIndex: _selectedIndex,
             onTabChanged: (index) => setState(() => _selectedIndex = index),
           ),
           Expanded(
-              child: _selectedIndex == 0 ? _buildPersonalQuestions() : _buildCommonQuestions()
+            child: RefreshIndicator(
+              onRefresh: () async {
+                // Pull-to-refresh 시 해당 탭의 데이터만 새로고침
+                if (_selectedIndex == 0) {
+                  await _loadPersonalData(forceRefresh: true);
+                } else {
+                  await _loadCommonData(forceRefresh: true);
+                }
+              },
+              child: _selectedIndex == 0 ? _buildPersonalQuestions() : _buildCommonQuestions(),
+            ),
           ),
         ],
       ),
@@ -135,13 +202,12 @@ class _ChatRootState extends State<ChatRoot> {
   }
 
   /// 개인질문 목록을 렌더링하는 위젯
-  /// API에서 받은 DTO를 UI 컴포넌트가 사용하는 Entity 형태로 변환
   Widget _buildPersonalQuestions() {
-    if (_personalData == null) {
+    if (_isPersonalLoading) {
       return const Center(child: CircularProgressIndicator()); // 로딩 중
     }
     
-    if (_personalData!.questions.isEmpty) {
+    if (_personalData == null || _personalData!.questions.isEmpty) {
       return const Center(child: Text('질문이 없어요.\n가족에게 궁금했던 점을 질문해보세요!', textAlign: TextAlign.center));
     }
     
@@ -151,26 +217,25 @@ class _ChatRootState extends State<ChatRoot> {
         final question = _personalData!.questions[i];
         
         // API DTO를 UI Entity로 변환
-        // PersonalQuestionCard는 PersonalQuestionEntity 타입을 기대합니다.
         final entity = PersonalQuestionEntity(
-          id: question.questionId.toString(), // 질문 ID
-          askerUserId: question.sender.toString(), // 질문자 ID
-          responderUserId: question.receiver.toString(), // 답변자 ID
-          text: question.content, // 질문 내용
-          visibility: question.isPublic ? VisibilityType.public : VisibilityType.private, // 공개/비공개
-          createdAt: DateTime.parse(question.createdAt), // 생성일시
-          isLiked: question.isLiked, // 좋아요 상태
+          id: question.questionId.toString(),
+          askerUserId: question.sender.toString(),
+          responderUserId: question.receiver.toString(),
+          text: question.content,
+          visibility: question.isPublic ? VisibilityType.public : VisibilityType.private,
+          createdAt: DateTime.parse(question.createdAt),
+          isLiked: question.isLiked,
         );
         
         return PersonalQuestionCard(
-          question: entity, // 변환된 Entity 전달
-          initialLikes: question.likes, // API에서 받은 좋아요 수
-          commentsCount: question.comments, // API에서 받은 댓글 수
-          selected: _selectedPersonalId == entity.id, // 선택 상태
+          question: entity,
+          initialLikes: question.likes,
+          commentsCount: question.comments,
+          selected: _selectedPersonalId == entity.id,
           onTap: () {
-            setState(() => _selectedPersonalId = entity.id); // 선택 상태 업데이트
+            setState(() => _selectedPersonalId = entity.id);
             Navigator.push(context, MaterialPageRoute(
-              builder: (_) => ChatPersonalThreadPage(questionId: entity.id), // 상세 페이지로 이동
+              builder: (_) => ChatPersonalThreadPage(questionId: entity.id),
             ));
           },
         );
@@ -179,13 +244,12 @@ class _ChatRootState extends State<ChatRoot> {
   }
 
   /// 공통질문 목록을 렌더링하는 위젯
-  /// API에서 받은 DTO를 UI 컴포넌트가 사용하는 CommonQuestion 형태로 변환
   Widget _buildCommonQuestions() {
-    if (_commonData == null) {
+    if (_isCommonLoading) {
       return const Center(child: CircularProgressIndicator()); // 로딩 중
     }
     
-    if (_commonData!.isEmpty) {
+    if (_commonData == null || _commonData!.isEmpty) {
       return const Center(child: Text('공통질문이 없어요.\n이번주의 공통질문을 확인해보세요!', textAlign: TextAlign.center));
     }
     
@@ -195,25 +259,24 @@ class _ChatRootState extends State<ChatRoot> {
         final question = _commonData![i];
         
         // API DTO를 UI CommonQuestion으로 변환
-        // CommonQuestionCard는 CommonQuestion 타입을 기대합니다.
         final commonQuestion = CommonQuestion(
-          id: question.questionId.toString(), // 질문 ID
-          title: '공통질문 ${_commonData!.length - i}', // 질문 순서 (역순으로 표시)
-          description: question.content, // 질문 내용
-          likes: question.likes, // API에서 받은 좋아요 수
-          comments: question.comments, // API에서 받은 댓글 수
-          isLiked: question.isLiked, // 좋아요 상태
+          id: question.questionId.toString(),
+          title: '공통질문 ${_commonData!.length - i}',
+          description: question.content,
+          likes: question.likes,
+          comments: question.comments,
+          isLiked: question.isLiked,
         );
         
         return CommonQuestionCard(
-          question: commonQuestion, // 변환된 CommonQuestion 전달
-          selected: _selectedCommonId == commonQuestion.id, // 선택 상태
+          question: commonQuestion,
+          selected: _selectedCommonId == commonQuestion.id,
           onTap: () {
-            setState(() => _selectedCommonId = commonQuestion.id); // 선택 상태 업데이트
+            setState(() => _selectedCommonId = commonQuestion.id);
             Navigator.push(context, MaterialPageRoute(
               builder: (_) => ChatCommonThreadPage(
                 questionId: commonQuestion.id, 
-                order: _commonData!.length - i // 질문 순서 전달
+                order: _commonData!.length - i
               ),
             ));
           },

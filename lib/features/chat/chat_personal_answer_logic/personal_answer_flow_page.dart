@@ -18,7 +18,7 @@ class PersonalAnswerFlowPage extends StatefulWidget {
   State<PersonalAnswerFlowPage> createState() => _PersonalAnswerFlowPageState();
 }
 
-class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
+class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with WidgetsBindingObserver {
   _Step step = _Step.list;
   ChatPersonalAnswerQuestionDto? _selectedQuestion;
   String answer = '';
@@ -29,6 +29,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
   
   // API에서 받아온 데이터를 저장하는 변수들
   List<ChatPersonalAnswerQuestionDto>? _questions; // 나에게 온 질문 목록
+  DateTime? _questionsLastUpdated; // 질문 데이터 마지막 업데이트 시간
   Map<int, String> _familyMemberMap = {}; // 가족 구성원 ID -> 이름(role) 매핑
   bool _isLoading = true; // 로딩 상태 관리
 
@@ -36,13 +37,39 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
   void initState() {
     super.initState();
     _answerController = TextEditingController(text: answer);
+    WidgetsBinding.instance.addObserver(this);
     _loadData();
   }
+  
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    try {
+      _answerController.dispose();
+    } catch (e) {
+      // 이미 dispose된 경우 무시
+    }
+    super.dispose();
+  }
+  
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // 앱이 다시 활성화될 때 데이터 새로고침
+      _loadData(forceRefresh: true);
+    }
+  }
 
-  /// API에서 데이터를 가져오는 메서드
+  /// API에서 데이터를 가져오는 메서드 (2분 캐싱 적용)
   /// 가족 구성원 정보와 나에게 온 질문 목록을 병렬로 로드
   /// API 호출이 실패하면 ChatService에서 자동으로 Mock 데이터를 반환
-  Future<void> _loadData() async {
+  Future<void> _loadData({bool forceRefresh = false}) async {
+    // 강제 새로고침이 아니고 캐시가 유효하면 스킵
+    if (!forceRefresh && _isQuestionsCacheValid()) return;
+    
+    setState(() => _isLoading = true);
+    
     try {
       // 두 개의 API를 동시에 호출하여 성능을 최적화
       final results = await Future.wait([
@@ -61,6 +88,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
           for (var member in familyMembers) member.id: member.role
         };
         _questions = questions; // 질문 목록 저장
+        _questionsLastUpdated = DateTime.now(); // 업데이트 시간 저장
         _isLoading = false; // 로딩 완료
       });
     } catch (e) {
@@ -71,6 +99,12 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
       });
     }
   }
+  
+  /// 질문 데이터 캐시가 유효한지 확인 (2분 이내)
+  bool _isQuestionsCacheValid() {
+    if (_questions == null || _questionsLastUpdated == null) return false;
+    return DateTime.now().difference(_questionsLastUpdated!).inMinutes < 2;
+  }
 
   /// 가족 구성원 ID를 이름으로 변환하는 헬퍼 메서드
   /// API에서 받은 가족 구성원 정보를 사용하여 ID를 실제 이름(role)으로 변환
@@ -79,18 +113,44 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
     return _familyMemberMap[senderId] ?? '$senderId번째';
   }
 
-  @override
-  void dispose() {
-    _answerController.dispose();
-    super.dispose();
-  }
-
   /// 성공 페이지에서 1.2초 후 자동으로 채팅 메인 페이지로 돌아가는 메서드
   void _scheduleReturnToChat() {
     Future.delayed(const Duration(milliseconds: 1200), () {
       if (!mounted) return; // 위젯이 아직 마운트되어 있는지 확인
-      Navigator.of(context).pop(); // 이전 페이지(채팅 메인)로 돌아가기
+      
+      try {
+        // Navigator 스택이 비어있지 않은지 확인
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop(); // 이전 페이지(채팅 메인)로 돌아가기
+        } else {
+          // 스택이 비어있으면 홈으로 이동
+          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+        }
+      } catch (e) {
+        // Navigator 오류 발생 시 로그만 출력하고 무시
+        print('Navigator 오류: $e');
+      }
     });
+  }
+
+  /// 답변을 전송하는 메서드
+  /// API 호출 후 성공 페이지로 이동
+  Future<void> _submitAnswer() async {
+    if (_selectedQuestion == null || answer.trim().isEmpty) return;
+    
+    try {
+      // TODO: 답변 전송 API 호출
+      // await _chatService.submitAnswer(_selectedQuestion!.questionId, answer);
+      
+      // 성공 페이지로 이동
+      setState(() => step = _Step.success);
+      
+      // 데이터 새로고침 (답변 완료된 질문 제거)
+      _loadData(forceRefresh: true);
+    } catch (e) {
+      print('답변 전송 실패: $e');
+      // 에러 처리 (스낵바 등)
+    }
   }
 
   /// 아직 답변하지 않은 질문의 개수를 계산하는 메서드
@@ -123,20 +183,26 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
           'isPublic': dto.isPublic.toString(), // 공개/비공개 여부
         }).toList();
         
-        body = StepAnswerList(
-          questions: questionMaps,
-          onSelect: (q) {
-            // 사용자가 선택한 질문의 원본 DTO를 찾아서 저장
-            final selectedDto = _questions!.firstWhere(
-              (dto) => dto.questionId.toString() == q['id'],
-            );
-            setState(() {
-              _selectedQuestion = selectedDto; // 선택된 질문 저장
-              answer = ''; // 답변 텍스트 초기화
-              _answerController.text = ''; // 텍스트 필드 초기화
-              step = _Step.write; // 답변 작성 단계로 이동
-            });
+        body = RefreshIndicator(
+          onRefresh: () async {
+            // Pull-to-refresh 시 강제 새로고침
+            await _loadData(forceRefresh: true);
           },
+          child: StepAnswerList(
+            questions: questionMaps,
+            onSelect: (q) {
+              // 사용자가 선택한 질문의 원본 DTO를 찾아서 저장
+              final selectedDto = _questions!.firstWhere(
+                (dto) => dto.questionId.toString() == q['id'],
+              );
+              setState(() {
+                _selectedQuestion = selectedDto; // 선택된 질문 저장
+                answer = ''; // 답변 텍스트 초기화
+                _answerController.text = ''; // 텍스트 필드 초기화
+                step = _Step.write; // 답변 작성 단계로 이동
+              });
+            },
+          ),
         );
       }
     } else if (step == _Step.write) {
@@ -202,7 +268,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> {
           padding: const EdgeInsets.all(16),
           child: CustomButton(
             text: '답변하기',
-            onPressed: canNext ? () => setState(() => step = _Step.success) : null,
+            onPressed: canNext ? _submitAnswer : null,
             width: double.infinity,
             height: 52,
             fontSize: 16,

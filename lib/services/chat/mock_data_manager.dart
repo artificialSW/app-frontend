@@ -13,11 +13,22 @@ import 'package:artificialsw_frontend/services/chat/dto/chat_like/chat_like_resp
 /// API 호출이 실패할 경우 사용할 Mock 데이터를 제공하는 매니저 클래스
 /// ChatService에서 API 호출이 실패하면 자동으로 이 클래스의 메서드들이 호출
 /// 실제 API 응답과 동일한 DTO 구조로 Mock 데이터를 제공
+/// 
+/// 성능 최적화: 모든 Mock 데이터는 싱글톤 캐시로 관리되며, 
+/// 좋아요/댓글 등 변경사항은 캐시에서 직접 수정하여 반영
 class MockDataManager {
-  /// 개인질문 메인 페이지용 Mock 데이터를 반환
+  // 싱글톤 캐시 인스턴스들
+  static ChatMainPersonalResponseDto? _mainPersonalCache;
+  static List<ChatMainCommonQuestionCardDto>? _mainCommonCache;
+  static List<ChatPersonalAnswerQuestionDto>? _myQuestionsCache;
+  static List<ChatFamilyMemberDto>? _familyMembersCache;
+  static ChatWeeklyCommonQuestionDto? _weeklyCommonCache;
+  /// 개인질문 메인 페이지용 Mock 데이터를 반환 (싱글톤 캐시)
   /// ChatService.getChatMainPersonal() API 호출 실패 시 사용
   static ChatMainPersonalResponseDto getMainPersonalData() {
-    return ChatMainPersonalResponseDto(
+    if (_mainPersonalCache != null) return _mainPersonalCache!;
+    
+    _mainPersonalCache = ChatMainPersonalResponseDto(
       questions: [
         ChatMainPersonalQuestionCardDto(
           questionId: 1,
@@ -58,11 +69,16 @@ class MockDataManager {
       ],
       unsolved: 2,
     );
+    
+    return _mainPersonalCache!;
   }
 
-  // 공통질문 메인 페이지 Mock 데이터
+  /// 공통질문 메인 페이지용 Mock 데이터를 반환 (싱글톤 캐시)
+  /// ChatService.getChatMainCommon() API 호출 실패 시 사용
   static List<ChatMainCommonQuestionCardDto> getMainCommonData() {
-    return [
+    if (_mainCommonCache != null) return _mainCommonCache!;
+    
+    _mainCommonCache = [
       ChatMainCommonQuestionCardDto(
         questionId: 1,
         content: '오랜만에 둘이서 게임이나 할까?',
@@ -99,6 +115,8 @@ class MockDataManager {
         isLiked: false,
       ),
     ];
+    
+    return _mainCommonCache!;
   }
 
   // 개인질문 상세 페이지 Mock 데이터
@@ -138,8 +156,12 @@ class MockDataManager {
   }
 
   // 나에게 온 질문 목록 Mock 데이터
+  /// 나에게 온 질문 목록용 Mock 데이터를 반환 (싱글톤 캐시)
+  /// ChatService.getChatMyQuestions() API 호출 실패 시 사용
   static List<ChatPersonalAnswerQuestionDto> getMyQuestionsData() {
-    return [
+    if (_myQuestionsCache != null) return _myQuestionsCache!;
+    
+    _myQuestionsCache = [
       ChatPersonalAnswerQuestionDto(
         questionId: 1,
         content: '아들 요즘 뭐하고 지내니?',
@@ -161,17 +183,24 @@ class MockDataManager {
         isPublic: false,
       ),
     ];
+    
+    return _myQuestionsCache!;
   }
 
-  // 가족구성원 목록 Mock 데이터
+  /// 가족구성원 목록용 Mock 데이터를 반환 (싱글톤 캐시)
+  /// ChatService.getFamilyMembers() API 호출 실패 시 사용
   static List<ChatFamilyMemberDto> getFamilyMembersData() {
-    return [
+    if (_familyMembersCache != null) return _familyMembersCache!;
+    
+    _familyMembersCache = [
       ChatFamilyMemberDto(id: 1, role: '아빠'),
       ChatFamilyMemberDto(id: 2, role: '엄마'),
       ChatFamilyMemberDto(id: 3, role: '할아버지'),
       ChatFamilyMemberDto(id: 4, role: '할머니'),
       ChatFamilyMemberDto(id: 5, role: '둘째아들'),
     ];
+    
+    return _familyMembersCache!;
   }
 
   // 주간 공통질문 업데이트 Mock 데이터
@@ -180,13 +209,76 @@ class MockDataManager {
   }
 
   // 이번주 공통질문 Mock 데이터
+  /// 이번주 공통질문용 Mock 데이터를 반환 (싱글톤 캐시)
+  /// ChatService.getWeeklyCommonQuestion() API 호출 실패 시 사용
   static ChatWeeklyCommonQuestionDto getWeeklyCommonQuestionData() {
-    return ChatWeeklyCommonQuestionDto(
+    if (_weeklyCommonCache != null) return _weeklyCommonCache!;
+    
+    _weeklyCommonCache = ChatWeeklyCommonQuestionDto(
       questionId: 123,
       questionContent: '이번주의 공통질문',
       likes: 10,
       posts: 5,
     );
+    
+    return _weeklyCommonCache!;
+  }
+
+  /// 개인질문 좋아요 상태를 토글하는 메서드
+  /// UI에서 좋아요 버튼 클릭 시 캐시 데이터도 함께 업데이트
+  static void togglePersonalQuestionLike(int questionId) {
+    if (_mainPersonalCache == null) return;
+    
+    final question = _mainPersonalCache!.questions.firstWhere(
+      (q) => q.questionId == questionId,
+      orElse: () => throw Exception('Question not found'),
+    );
+    
+    // 좋아요 상태 토글 및 개수 조정
+    final updatedQuestion = ChatMainPersonalQuestionCardDto(
+      questionId: question.questionId,
+      content: question.content,
+      sender: question.sender,
+      receiver: question.receiver,
+      isPublic: question.isPublic,
+      solved: question.solved,
+      likes: question.isLiked ? question.likes - 1 : question.likes + 1,
+      comments: question.comments,
+      isLiked: !question.isLiked,
+      createdAt: question.createdAt,
+    );
+    
+    // 캐시에서 해당 질문 교체
+    final index = _mainPersonalCache!.questions.indexWhere((q) => q.questionId == questionId);
+    if (index != -1) {
+      _mainPersonalCache!.questions[index] = updatedQuestion;
+    }
+  }
+
+  /// 공통질문 좋아요 상태를 토글하는 메서드
+  /// UI에서 좋아요 버튼 클릭 시 캐시 데이터도 함께 업데이트
+  static void toggleCommonQuestionLike(int questionId) {
+    if (_mainCommonCache == null) return;
+    
+    final question = _mainCommonCache!.firstWhere(
+      (q) => q.questionId == questionId,
+      orElse: () => throw Exception('Question not found'),
+    );
+    
+    // 좋아요 상태 토글 및 개수 조정
+    final updatedQuestion = ChatMainCommonQuestionCardDto(
+      questionId: question.questionId,
+      content: question.content,
+      likes: question.isLiked ? question.likes - 1 : question.likes + 1,
+      comments: question.comments,
+      isLiked: !question.isLiked,
+    );
+    
+    // 캐시에서 해당 질문 교체
+    final index = _mainCommonCache!.indexWhere((q) => q.questionId == questionId);
+    if (index != -1) {
+      _mainCommonCache![index] = updatedQuestion;
+    }
   }
 
   // 공통질문 상세 페이지 Mock 데이터
