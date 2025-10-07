@@ -44,12 +44,6 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
     super.initState();
     _loadDetailData();
   }
-  
-  @override
-  void dispose() {
-    _controller.dispose(); // TextEditingController 해제
-    super.dispose();
-  }
 
   Future<void> _loadDetailData() async {
     try {

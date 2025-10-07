@@ -47,9 +47,6 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
   // 이번주 공통질문 데이터
   ChatWeeklyCommonQuestionDto? _weeklyData; // API에서 받은 이번주 공통질문 데이터
   bool _isWeeklyLoading = false;
-  
-  // 스마트 새로고침을 위한 마지막 새로고침 시간
-  DateTime? _lastRefresh;
 
   @override
   void initState() {
@@ -65,17 +62,12 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
     super.dispose();
   }
   
-  /// 앱이 포그라운드로 돌아올 때 스마트 새로고침
-  /// 5분 이상 지났을 때만 새로고침하여 배터리와 데이터 사용량 최적화
+  /// 앱이 포그라운드로 돌아올 때 자동 새로고침
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      final now = DateTime.now();
-      // 마지막 새로고침이 없거나 5분 이상 지났을 때만 새로고침
-      if (_lastRefresh == null || now.difference(_lastRefresh!).inMinutes >= 5) {
-        _loadAllData(forceRefresh: true);
-        _lastRefresh = now;
-      }
+      // 앱이 다시 활성화되면 데이터 새로고침 (캐시 무시)
+      _loadAllData(forceRefresh: true);
     }
   }
 

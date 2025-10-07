@@ -19,13 +19,12 @@ import 'package:artificialsw_frontend/services/chat/mock_data_manager.dart';
 
 /// 채팅 관련 API 호출을 담당하는 서비스 클래스
 /// 모든 API 호출이 실패할 경우 자동으로 MockDataManager에서 Mock 데이터를 반환
-/// 
-/// 싱글톤 패턴으로 구현하여 메모리 효율성과 일관성 보장
 class ChatService {
+  // 싱글톤 인스턴스 (상용 서비스 기준: 네트워크 클라이언트는 재사용)
   static final ChatService _instance = ChatService._internal();
   factory ChatService() => _instance;
   ChatService._internal();
-  
+
   final Dio _dio = ApiClient.dio; // HTTP 클라이언트 인스턴스
 
   /// 소통방 홈 페이지의 개인질문 목록과 미답변 질문 개수를 가져오는 API
