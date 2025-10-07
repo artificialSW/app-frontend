@@ -42,15 +42,8 @@ AppBar PuzzlRootTopBar() => AppBar(
   automaticallyImplyLeading: false,   // 뒤로가기 자동 삽입 방지(중앙 정렬 깨짐 방지)
   centerTitle: true,
   title: const Text(
-    '퍼즐',
-    style: TextStyle(
-      color: Colors.black,
-      fontSize: 17,
-      fontFamily: 'Pretendard',
-      fontWeight: FontWeight.w700,
-      height: 1.50,
-      letterSpacing: -0.46,
-    ),
+    'plumu',
+    style: AppTextStyles.plumu,
   ),
 );
 

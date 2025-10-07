@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 import 'package:artificialsw_frontend/shell.dart';
+import 'package:artificialsw_frontend/account/login.dart';
+import 'package:artificialsw_frontend/account/register.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,9 +25,16 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Shell(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(), //나중에 스플래시 화면으로 바꾸기
+        '/login': (context) => LoginScreen(),
+        '/register': (context) => RegisterScreen(),
+        '/shell': (context) => Shell(),
+      },
+      //home: Shell(),
     );
   }
 }

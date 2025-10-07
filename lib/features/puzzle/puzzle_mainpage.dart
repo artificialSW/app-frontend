@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
+import 'dart:math';
+import 'package:intl/intl.dart';
 
 class PuzzleRoot extends StatefulWidget {
   const PuzzleRoot({super.key});
@@ -20,6 +22,19 @@ class PuzzleRoot extends StatefulWidget {
 
 class _PuzzleRootState extends State<PuzzleRoot> {
   late Future<PuzzleHomeGetDto> _puzzleFuture;
+
+  String formatUtcToDateString(String utcTimeString) {
+    // 1. UTC 문자열을 DateTime으로 파싱
+    DateTime utcTime = DateTime.parse(utcTimeString);
+
+    // 2. 로컬 시간대로 변환 (원하면 이 단계 생략 가능)
+    DateTime localTime = utcTime.toLocal();
+
+    // 3. 원하는 포맷으로 변환
+    final formatter = DateFormat('yyyy.MM.dd');
+    return formatter.format(localTime);
+  }
+
 
   @override
   void initState() {
@@ -38,35 +53,35 @@ class _PuzzleRootState extends State<PuzzleRoot> {
         inProgress: [PuzzleHomeOngoingPreviewDto(
           puzzleId: 1,
           imageUrl:
-              'https://picsum.photos/600/400',
+              'https://picsum.photos/400/400',
           size: 4,
           completedPiecesId: [1, 2],
-          lastSavedAt: "03:33",
+          lastSavedAt: "2025-09-29T04:44:00Z",
         ),
           PuzzleHomeOngoingPreviewDto(
             puzzleId: 1,
             imageUrl:
-            'https://picsum.photos/600/400',
+            'https://picsum.photos/400/400',
             size: 4,
             completedPiecesId: [1, 2],
-            lastSavedAt: "03:33",
+            lastSavedAt: "2025-09-30T04:44:00Z",
           ),
         ],
         completedThisWeek: [PuzzleHomeCompletedPreviewDto(
           puzzleId: 1,
           imageUrl:
-              'https://picsum.photos/600/400',
+              'https://picsum.photos/400/400',
           size: 9,
           title: "목데이터 title",
-          completedAt: "04:44",
+          completedAt: "2025-09-29T04:44:00Z",
         ),
           PuzzleHomeCompletedPreviewDto(
             puzzleId: 1,
             imageUrl:
-            'https://picsum.photos/600/400',
+            'https://picsum.photos/400/400',
             size: 9,
             title: "목데이터 title",
-            completedAt: "04:44",
+            completedAt: "2025-09-28T04:44:00Z",
           ),
         ],
         isFull: false,
@@ -101,10 +116,29 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                 children: [
                   Container(
                       width: screenWidth*0.92,
-                      height: screenHeight*0.22,
-                      decoration: BoxDecoration(
-                        color: AppColors.plumu_green_30per,
-                        borderRadius: BorderRadius.circular(8),
+                      decoration: ShapeDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white,                        // 위쪽은 완전 흰색
+                            Color(0xFFE5F4E6),                   // 아래는 연초록색 (거의 흰색과 섞임)
+                          ],
+                        ),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            color: Color(0xFF5CBD56),            // 초록 테두리
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: Color(0x26000000),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: screenHeight*0.02, horizontal: screenWidth*0.04),
@@ -113,7 +147,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '이번주의 퍼즐 카테고리',
+                                '이번주의 퍼즐 키워드',
                                 style: AppTextStyles.pretendard_bold.copyWith(
                                   fontSize: 16,
                                   color: AppColors.plumu_green_main,
@@ -124,15 +158,23 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                                   '키워드에 맞는 사진을 올려보세요! :)',
                                   style: AppTextStyles.pretendard_medium.copyWith(
                                     fontSize: 12,
-                                    color: AppColors.plumu_gray_6,
+                                    color: AppColors.plumu_gray_5,
                                   )
                               ),
                               SizedBox(height: screenHeight*0.01,),
-                              EmotionTag(label: puzzle.subject[0]),
-                              SizedBox(height: screenHeight*0.01,),
-                              EmotionTag(label: puzzle.subject[1]),
-                              SizedBox(height: screenHeight*0.01,),
-                              EmotionTag(label: puzzle.subject[2]),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  EmotionTag(
+                                    label: '사진 등록하러 가기',
+                                    onclick: puzzle.isFull
+                                        ? null
+                                        : () {
+                                      Navigator.of(context).pushNamed( '/puzzle/image-upload', arguments: {'category': puzzle.subject}, );
+                                    },
+                                  )
+                                ]
+                              ),
                             ]
                         ),
                       )
@@ -140,9 +182,43 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   SizedBox(height: screenHeight*0.01),
                   Row(
                     children: [
-                      SizedBox(width: screenWidth*0.03,),
+                      SizedBox(width: screenWidth*0.05,),
                       Text(
-                        "진행중",
+                        "이번 주 풀어진 퍼즐",
+                        style: AppTextStyles.pretendard_bold.copyWith(
+                          fontSize: 17,
+                          color: AppColors.plumu_gray_7,
+                        ),
+                      ),
+                      Spacer(), // 중간 공간 확보
+                      Padding(
+                        padding: EdgeInsets.only(right: screenWidth * 0.03), // (1 - 0.03 - 0.9 = 0.07)
+                        child: IconButton(
+                          icon: Image.asset(AppAssets.forward),
+                          iconSize: 28,
+                          color: AppColors.plumu_gray_7,
+                          tooltip: '이번 주 풀어진 퍼즐 목록으로 이동',
+                          onPressed: () => Navigator.of(context).pushNamed('/puzzle/completed-list'),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  PuzzleCardCarousel(
+                    imageUrls: [
+                      ...puzzle.completedThisWeek.map((item) => item.imageUrl),
+                      'https://picsum.photos/600/400',
+                    ],
+                    completedDates: [
+                      ...puzzle.completedThisWeek.map((item) => formatUtcToDateString(item.completedAt)),
+                      '2025.08.23',
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(width: screenWidth*0.05,),
+                      Text(
+                        "진행중인 퍼즐",
                         style: AppTextStyles.pretendard_bold.copyWith(
                           fontSize: 17,
                           color: AppColors.plumu_gray_7,
@@ -164,87 +240,28 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   Row(
                     children: [
                       SizedBox(width: screenWidth*0.06,),
-                      Container(
-                        width: screenWidth*0.4,
-                        height: screenWidth*0.4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          puzzle.inProgress[0].imageUrl,
-                          fit: BoxFit.cover,
-                        ),
+                      PuzzleCardWidget(
+                          imageUrl: puzzle.inProgress[0].imageUrl,
+                          dateInfo: formatUtcToDateString(puzzle.inProgress[0].lastSavedAt),
+                          imageSize: max(screenWidth*0.4, 150),
+                          dateFontSize: 10,
+                          text: '진행중인 퍼즐',
+                          textFontSize: 14,
+                          heightOffset: max(screenWidth*0.2, 100),
                       ),
                       SizedBox(width: screenWidth*0.06,),
-                      Container(
-                        width: screenWidth*0.4,
-                        height: screenWidth*0.4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          puzzle.inProgress[1].imageUrl,
-                          fit: BoxFit.cover,
-                        ),
+                      PuzzleCardWidget(
+                          imageUrl: puzzle.inProgress[1].imageUrl,
+                          dateInfo: formatUtcToDateString(puzzle.inProgress[1].lastSavedAt),
+                          imageSize: max(screenWidth*0.4, 150),
+                          dateFontSize: 10,
+                          textFontSize: 14,
+                          text: '진행중인 퍼즐',
+                          heightOffset: max(screenWidth*0.2, 100),
                       ),
                     ],
                   ),
                   SizedBox(height: screenHeight*0.02),
-                  Row(
-                    children: [
-                      SizedBox(width: screenWidth*0.03,),
-                      Text(
-                        "이번 주 풀어진 퍼즐",
-                        style: AppTextStyles.pretendard_bold.copyWith(
-                          fontSize: 17,
-                          color: AppColors.plumu_gray_7,
-                        ),
-                      ),
-                      Spacer(), // 중간 공간 확보
-                      Padding(
-                        padding: EdgeInsets.only(right: screenWidth * 0.03), // (1 - 0.03 - 0.9 = 0.07)
-                        child: IconButton(
-                          icon: Image.asset(AppAssets.forward),
-                          iconSize: 28,
-                          color: AppColors.plumu_gray_7,
-                          tooltip: '이번 주 풀어진 퍼즐 목록으로 이동',
-                          onPressed: () => Navigator.of(context).pushNamed('/puzzle/completed-list'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(width: screenWidth*0.06,),
-                      Container(
-                        width: screenWidth*0.4,
-                        height: screenWidth*0.4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          puzzle.completedThisWeek[0].imageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(width: screenWidth*0.06),
-                      Container(
-                        width: screenWidth*0.4,
-                        height: screenWidth*0.4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          puzzle.completedThisWeek[1].imageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
               PuzzleHomeButtonsPanel(isFull: puzzle.isFull, category: puzzle.subject),
@@ -260,29 +277,35 @@ class _PuzzleRootState extends State<PuzzleRoot> {
 
 class EmotionTag extends StatelessWidget {
   final String label;
+  final VoidCallback? onclick;
 
   const EmotionTag({
     super.key,
     required this.label,
+    required this.onclick,
   });
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return Container(
-      width: screenWidth*0.8,
-      height: screenHeight*0.03,
-      decoration: BoxDecoration(
-        color: AppColors.plumu_green_main,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        label,
-        style: AppTextStyles.pretendard_medium.copyWith(
-          fontSize: 14,
-          color: AppColors.plumu_white,
+
+    return GestureDetector(
+      onTap: onclick,
+      child: Container(
+        width: screenWidth*0.4,
+        height: screenHeight*0.03,
+        decoration: BoxDecoration(
+          color: AppColors.plumu_green_main,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: AppTextStyles.pretendard_medium.copyWith(
+            fontSize: 14,
+            color: AppColors.plumu_white,
+          ),
         ),
       ),
     );
@@ -483,6 +506,147 @@ class _RoundIconButton extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+
+class PuzzleCardWidget extends StatelessWidget {
+  final String imageUrl;
+  final String dateInfo;
+  double? imageSize;
+  final double dateFontSize;
+  final double textFontSize;
+  String? text;
+  double? heightOffset;
+
+  PuzzleCardWidget({
+    super.key,
+    required this.imageUrl,
+    required this.dateInfo,
+    this.imageSize,
+    required this.dateFontSize,
+    required this.textFontSize,
+    this.text,
+    this.heightOffset
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // 배경 이미지 (네트워크에서 가져옴)
+        SizedBox(
+          width: imageSize ?? 250,
+          height: imageSize ?? 250,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: Image.network(
+              imageUrl, // 백엔드에서 넘겨받은 이미지 URL
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(child: CircularProgressIndicator());
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Center(child: Icon(Icons.broken_image));
+              },
+            ),
+          ),
+        ),
+
+        // 아래 텍스트 (날짜 + 퍼즐 제목)
+        Positioned(
+          bottom: heightOffset ?? 12,
+          left: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(dateInfo, style: AppTextStyles.pretendard_medium.copyWith(fontSize: dateFontSize, color: AppColors.plumu_white)),
+              Text(text ?? '퍼즐 조각', style: AppTextStyles.pretendard_bold.copyWith(fontSize: textFontSize, color: AppColors.plumu_white)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class PuzzleCardCarousel extends StatefulWidget {
+  final List<String> imageUrls;
+  final List<String> completedDates;
+  const PuzzleCardCarousel({super.key, required this.imageUrls, required this.completedDates});
+
+  @override
+  State<PuzzleCardCarousel> createState() => _PuzzleCardCarouselState();
+}
+
+class _PuzzleCardCarouselState extends State<PuzzleCardCarousel> {
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(viewportFraction: 0.6);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    return SizedBox(
+      height: max(height*0.3, 200), //기기 사이즈에 맞게 적응적으로 가되 최소 이만큼은 차지해야
+      child: PageView.builder(
+        reverse: true, //카드를 오른쪽에서 왼쪽으로 넘길 수 있게
+        controller: _pageController,
+        itemCount: widget.imageUrls.length,
+        itemBuilder: (context, index) {
+          return AnimatedBuilder(
+            animation: _pageController,
+            builder: (context, child) {
+              double value = 0.0;
+              if (_pageController.position.haveDimensions) {
+                value = _pageController.page! - index;
+              }
+
+              // 🔢 1. Scale 계산 (중앙 1.0, 옆 0.8)
+              final scale = (1 - value.abs() * 0.2).clamp(0.8, 1.0);
+
+              // 🔄 2. Rotate 계산 (좌우 -5도 ~ +5도)
+              final rotation = (- value * 0.1).clamp(-0.1, 0.1); // 라디안
+
+              // 🌫️ 3. Opacity 계산 (중앙 1.0, 옆 0.5)
+              final opacity = (1 - value.abs() * 0.5).clamp(0.5, 1.0);
+
+              return Opacity(
+                opacity: opacity,
+                child: Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.identity()
+                    ..scale(scale)
+                    ..rotateZ(rotation),
+                  child: Transform.translate(
+                    offset: const Offset(0, 0),
+                      child: PuzzleCardWidget(
+                        imageUrl: widget.imageUrls[index],
+                        dateInfo: widget.completedDates[index],
+                        dateFontSize: 14,
+                        textFontSize: 17,
+                      ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

@@ -12,8 +12,7 @@ import 'package:image_picker/image_picker.dart';
 // 디자인 통일
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
-import 'package:artificialsw_frontend/shared/widgets/image_upload_dialog.dart';
-
+import 'package:artificialsw_frontend/features/puzzle/weekly_upload/image_upload_comment_page.dart';
 class ImageUploadPage extends StatefulWidget {
   final List<String> category;
 
@@ -54,7 +53,6 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
     return _uploads[foundIdx];
   }
 
-  // --- 기존 함수 유지(로직만 보강): 저장 ---
   void _saveCurrentEntry(int curridx) {
     // curridx 카테고리에 대한 기존 항목
     final existing = _getUploadForIndex(curridx);
@@ -84,34 +82,35 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
   }
 
   // 코멘트 입력 팝업
-  Future<void> _showCommentDialog(int idx, {String? initial}) async {
-    _commentController.text = initial ?? '';
-
-    final existing = _getUploadForIndex(idx); // 우리가 만든 헬퍼 (없으면 null)
-
-    await showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) {
-        return CommentDialog(
-          controller: _commentController,
-          currentImage: _currentImage,              // 새로 고른 이미지
-          existingImage: existing?.imageFile,       // 기존 이미지
-          onCancel: () {
-            setState(() {
-              _currentImage = null;
-              _commentController.clear();
-            });
-            Navigator.of(dialogContext).pop();      // ✅ 팝업만 닫기
-          },
-          onSave: () {
-            _saveCurrentEntry(idx);                 // 기존 로직 재사용
-            Navigator.of(dialogContext).pop();      // ✅ 팝업만 닫기
-          },
-        );
-      },
-    );
-  }
+  // Future<void> _showCommentDialog(int idx, {String? initial}) async {
+  //   _commentController.text = initial ?? '';
+  //
+  //   final existing = _getUploadForIndex(idx); // 우리가 만든 헬퍼 (없으면 null)
+  //
+  //   await showDialog<void>(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (dialogContext) {
+  //       return CommentPage(
+  //         controller: _commentController,
+  //         currentCategory: widget.category[idx],
+  //         currentImage: _currentImage,              // 새로 고른 이미지
+  //         existingImage: existing?.imageFile,       // 기존 이미지
+  //         onCancel: () {
+  //           setState(() {
+  //             _currentImage = null;
+  //             _commentController.clear();
+  //           });
+  //           Navigator.of(dialogContext).pop();      // ✅ 팝업만 닫기
+  //         },
+  //         onSave: () {
+  //           _saveCurrentEntry(idx);                 // 기존 로직 재사용
+  //           Navigator.of(dialogContext).pop();      // ✅ 팝업만 닫기
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
 
   // 타일 탭 → 이미지 선택 → 코멘트 팝업
@@ -122,10 +121,46 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
     await _pickImage();
 
     // 이미지 선택 취소했더라도, 기존 이미지가 있으면 코멘트만 수정 가능
-    await _showCommentDialog(idx, initial: existing?.comment);
+    //await _showCommentDialog(idx, initial: existing?.comment);
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CommentPage(
+          currentCategory: widget.category[idx],
+          currentImage: _currentImage,
+          existingImage: existing?.imageFile,
+          initialText: existing?.comment ?? '',
+        ),
+      ),
+    );
+
+    if (result is Map) {
+      final image = result['image'] as File?;
+      final comment = result['comment'] as String;
+
+      setState(() {
+        final newUnit = UploadUnit(
+          imageFile: image!,
+          comment: comment,
+          category: widget.category[idx],
+        );
+
+        final existIdx = _uploads.indexWhere((u) => u.category == widget.category[idx]);
+        if (existIdx >= 0) {
+          _uploads[existIdx] = newUnit;
+        } else {
+          _uploads.add(newUnit);
+        }
+
+        _currentImage = null;
+        _commentController.clear();
+      });
+    }
   }
 
-  // --- 기존 함수 유지: 업로드 제출 ---
+
+
+    // --- 기존 함수 유지: 업로드 제출 ---
   Future<void> _submitAll() async {
     final List<Map<String, dynamic>> pictureDataList = [];
 

@@ -20,41 +20,49 @@ class PuzzleCompleted extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Puzzle 완료 페이지')),
-      body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(fruitMessage),
-              SizedBox(height: 30),
-              Text("${contributors} 덕분에 ${fruitName} 열매가 자라났어요!"),
-              SizedBox(height: 30),
-              Text("메세지: ${message}"),
-              SizedBox(height: 30),
-              ElevatedButton(
-                  onPressed: () => null,
-                  child: const Text("퍼즐 아카이브에 저장")
-              ),
-              SizedBox(height: 300),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CustomButton(
+      body: Container(
+        decoration: ShapeDecoration(
+          gradient: LinearGradient(
+            begin: Alignment(0.50, -0.00),
+            end: Alignment(0.50, 1.00),
+            colors: [const Color(0xFFFFF5F9), const Color(0xFFFED4E2)],
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0),
+          ),
+        ),
+        child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset("assets/images/fruit/spring/cherry.png"),
+                Text(fruitMessage),
+                SizedBox(height: 30),
+                Text("${contributors} 덕분에 ${fruitName} 열매가 자라났어요!"),
+                SizedBox(height: 30),
+                Text("메세지: ${message}"),
+                SizedBox(height: 230),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomButton(
                       text: '퍼즐 홈으로',
                       onPressed: () => Navigator.of(context).pushNamed('/'),
                       width: 150,
                       fontSize: 15,
-                  ),
-                  SizedBox(width: 30),
-                  CustomButton(
-                    text: '열매 보러가기',
-                    onPressed: null, /// onPressed: () => null 이거랑 다른 것 주의.
-                    width: 150,
-                    fontSize: 15,
-                  ),
-                ],
-              )
-            ],
-          )
+                    ),
+                    SizedBox(width: 30),
+                    CustomButton(
+                      text: '열매 보러가기',
+                      onPressed: null, /// onPressed: () => null 이거랑 다른 것 주의.
+                      width: 150,
+                      fontSize: 15,
+                    ),
+                  ],
+                )
+              ],
+            )
+        ),
       ),
     );
   }
