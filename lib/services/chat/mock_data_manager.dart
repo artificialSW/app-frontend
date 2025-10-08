@@ -216,9 +216,9 @@ class MockDataManager {
     
     _weeklyCommonCache = ChatWeeklyCommonQuestionDto(
       questionId: 123,
-      questionContent: '이번주의 공통질문',
-      likes: 10,
-      posts: 5,
+      questionContent: '함께 시작하고 싶은\n취미 활동이 있나요?',
+      likes: 0,
+      posts: 0,
     );
     
     return _weeklyCommonCache!;

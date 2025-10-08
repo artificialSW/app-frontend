@@ -96,6 +96,12 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 성공 단계일 때는 별도의 전체화면 Scaffold 렌더링
+    if (step == 3) {
+      _scheduleReturnToChat();
+      return const StepSuccess();
+    }
+
     // 단계별 본문
     Widget body;
     if (step == 0) {
@@ -128,8 +134,8 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
         onChanged: (t) => setState(() => _state.question = t),
       );
     } else {
-      body = const StepSuccess();
-      _scheduleReturnToChat();
+      // step == 3인 경우는 이미 위에서 early return하므로 여기서는 처리하지 않음
+      body = const SizedBox.shrink();
     }
 
     // 다음 버튼 활성 조건
@@ -146,10 +152,7 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
         padding: const EdgeInsets.all(16),
         child: body,
       ),
-      // 성공 단계는 하단 버튼 없음
-      bottomNavigationBar: step == 3
-          ? null
-          : SafeArea(
+      bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.all(16),

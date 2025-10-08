@@ -162,6 +162,12 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
 
   @override
   Widget build(BuildContext context) {
+    // 성공 단계일 때는 별도의 전체화면 Scaffold 렌더링
+    if (step == _Step.success) {
+      _scheduleReturnToChat();
+      return StepAnswerSuccess(to: _selectedQuestion != null ? _getSenderName(_selectedQuestion!.sender) : '');
+    }
+
     Widget body;
     if (step == _Step.list) {
       if (_isLoading) {
@@ -212,8 +218,8 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
         onChanged: (v) => setState(() => answer = v),
       );
     } else {
-      body = StepAnswerSuccess(to: _selectedQuestion != null ? _getSenderName(_selectedQuestion!.sender) : '');
-      _scheduleReturnToChat();
+      // _Step.success인 경우는 이미 위에서 early return하므로 여기서는 처리하지 않음
+      body = const SizedBox.shrink();
     }
 
     final canNext = switch (step) {
@@ -260,7 +266,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
         padding: const EdgeInsets.all(16),
         child: body,
       ),
-      bottomNavigationBar: step == _Step.list || step == _Step.success
+      bottomNavigationBar: step == _Step.list
           ? null
           : SafeArea(
         top: false,

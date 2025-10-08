@@ -147,44 +147,76 @@ class QuestionSuccessScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor, // #5CBD56
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: const BoxDecoration(
-                color: AppColors.plumu_white,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                size: 32,
-                color: backgroundColor,
-              ),
+      // AppBar 완전 제거로 진짜 전체화면 구현
+      body: Stack(
+        children: [
+          Builder(
+            builder: (context) {
+              final size = MediaQuery.of(context).size;
+
+              // 디자인(스크린샷) 기준 캔버스
+              const double designW = 412.0;
+              const double designH = 917.0;
+
+              const double chickWDesign = 372.0 ;
+              const double rightDesign   = -4.0;
+              const double bottomDesign  = -2.0; // 맨 하단에 거의 붙도록 내림
+
+              final double scaleW = size.width / designW;
+              final double scaleH = size.height / designH;
+
+              final double chickW = chickWDesign * scaleW;
+              final double right  = rightDesign * scaleW;
+              final double bottom = bottomDesign * scaleH;
+
+              return Positioned(
+                right: right,
+                bottom: bottom,
+                width: chickW,
+                height: chickW,
+                child: IgnorePointer(
+                  child: Image.asset(
+                    'assets/images/app_character_smile.png',
+                    fit: BoxFit.contain, // 이미지 자체는 잘리지 않음
+                    alignment: Alignment.bottomRight,
+                  ),
+                ),
+              );
+            },
+          ),
+          // 중앙 성공 메시지
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: const BoxDecoration(
+                    color: AppColors.plumu_white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 32,
+                    color: backgroundColor,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.pretendard_bold.copyWith(
+                    color: AppColors.plumu_white,
+                    fontSize: 27,
+                    height: 1.33,
+                    letterSpacing: -0.05,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.pretendard_bold.copyWith(
-                color: AppColors.plumu_white,
-                fontSize: 27,
-                height: 1.33,
-                letterSpacing: -0.05,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

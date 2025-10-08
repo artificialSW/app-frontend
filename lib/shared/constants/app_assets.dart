@@ -38,6 +38,8 @@ class AppAssets {
   static const tree = 'assets/images/tree.png';
   static const wooden_sign = 'assets/images/wooden_sign.png';
   static const sprout = 'assets/images/sprout.png';
+  static const app_character = 'assets/images/app_character.png';
+  static const app_character_smile = 'assets/images/app_character_smile.png';
 
   static const String home    = 'assets/icons/home.png';
   static const String puzzle  = 'assets/icons/puzzle.png';
