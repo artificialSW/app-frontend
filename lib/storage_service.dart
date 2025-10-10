@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class StorageService {
-  // FlutterSecureStorage 인스턴스 (전역적으로 한 번만 생성)
+  /// FlutterSecureStorage 인스턴스 (전역적으로 한 번만 생성)
   static const _storage = FlutterSecureStorage();
 
   // 🔹 access token 저장
