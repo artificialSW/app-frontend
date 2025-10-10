@@ -18,3 +18,5 @@ Map<String, dynamic> _$ChatFamilyMemberDtoToJson(
       'id': instance.id,
       'role': instance.role,
     };
+
+

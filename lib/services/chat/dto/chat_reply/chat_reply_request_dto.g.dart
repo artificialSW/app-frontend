@@ -20,3 +20,5 @@ Map<String, dynamic> _$ChatReplyRequestDtoToJson(
       'content': instance.content,
       'replyTo': instance.replyTo,
     };
+
+

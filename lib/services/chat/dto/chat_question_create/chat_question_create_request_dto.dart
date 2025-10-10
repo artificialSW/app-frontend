@@ -19,3 +19,5 @@ class ChatQuestionCreateRequestDto {
       _$ChatQuestionCreateRequestDtoFromJson(json);
   Map<String, dynamic> toJson() => _$ChatQuestionCreateRequestDtoToJson(this);
 }
+
+

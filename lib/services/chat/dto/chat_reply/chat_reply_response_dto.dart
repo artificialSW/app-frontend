@@ -19,3 +19,5 @@ class ChatReplyResponseDto {
       _$ChatReplyResponseDtoFromJson(json);
   Map<String, dynamic> toJson() => _$ChatReplyResponseDtoToJson(this);
 }
+
+

@@ -15,3 +15,5 @@ class ChatWeeklyUpdateResponseDto {
 
   Map<String, dynamic> toJson() => _$ChatWeeklyUpdateResponseDtoToJson(this);
 }
+
+

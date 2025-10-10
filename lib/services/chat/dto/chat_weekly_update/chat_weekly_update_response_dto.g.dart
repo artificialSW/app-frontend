@@ -17,3 +17,5 @@ Map<String, dynamic> _$ChatWeeklyUpdateResponseDtoToJson(
     <String, dynamic>{
       'update': instance.update,
     };
+
+

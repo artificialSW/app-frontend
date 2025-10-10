@@ -25,3 +25,5 @@ Map<String, dynamic> _$ChatCommonDetailQuestionDtoToJson(
       'CreateAt': instance.createdAt,
       'count': instance.count,
     };
+
+

@@ -18,3 +18,5 @@ class ChatMainPersonalResponseDto {
       _$ChatMainPersonalResponseDtoFromJson(json);
   Map<String, dynamic> toJson() => _$ChatMainPersonalResponseDtoToJson(this);
 }
+
+

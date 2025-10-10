@@ -21,3 +21,5 @@ Map<String, dynamic> _$ChatQuestionCreateRequestDtoToJson(
       'isPublic': instance.isPublic,
       'content': instance.content,
     };
+
+

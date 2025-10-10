@@ -25,3 +25,5 @@ class ChatCommonDetailQuestionDto {
 
   Map<String, dynamic> toJson() => _$ChatCommonDetailQuestionDtoToJson(this);
 }
+
+

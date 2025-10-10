@@ -21,3 +21,5 @@ Map<String, dynamic> _$ChatMainPersonalResponseDtoToJson(
       'questions': instance.questions,
       'unsolved': instance.unsolved,
     };
+
+

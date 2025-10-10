@@ -22,3 +22,5 @@ class ChatQuestionCreateResponseDto {
   // 성공 여부 확인 메서드
   bool get isSuccess => questionId != null;
 }
+
+

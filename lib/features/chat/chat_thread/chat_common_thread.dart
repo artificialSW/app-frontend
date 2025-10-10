@@ -61,7 +61,7 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
             comment.writer,
             comment.content,
             likes: comment.likes,
-            liked: comment.isLiked,
+            liked: false, // 초기 상태를 빈 하트로 설정
             replies: comment.reply.map((r) => _Reply('나', r)).toList(),
           );
         }).toList();

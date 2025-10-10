@@ -21,3 +21,5 @@ Map<String, dynamic> _$ChatQuestionCreateResponseDtoToJson(
       'errorCode': instance.errorCode,
       'message': instance.message,
     };
+
+

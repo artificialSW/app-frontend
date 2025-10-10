@@ -31,7 +31,7 @@ class CommonQuestionCard extends StatefulWidget {
 
 class _CommonQuestionCardState extends State<CommonQuestionCard> {
   late int _likes = widget.question.likes;
-  late bool _liked = widget.question.isLiked;
+  late bool _liked = false; // 초기 상태를 빈 하트로 설정
   bool _pressed = false; // 누르는 동안만 true
   bool _isLiking = false; // 좋아요 요청 중 상태
 
@@ -186,7 +186,7 @@ class _CommonQuestionCardState extends State<CommonQuestionCard> {
                                 : Icon(
                                     _liked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
                                     size: 18,
-                                    color: statIcon,
+                                    color: _liked ? Colors.red : statIcon,
                                   ),
                               const SizedBox(width: 4),
                               Text('$_likes', style: TextStyle(fontSize: 14, color: statText)),
