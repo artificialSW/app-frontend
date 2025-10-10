@@ -3,6 +3,7 @@ import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:artificialsw_frontend/features/home/widget/progress_bar_with_icon.dart';
 import 'package:artificialsw_frontend/features/home/widget/home_bottom_buttons.dart';
+import 'package:artificialsw_frontend/features/home/widget/tree_loading_page.dart';
 import 'package:flutter/material.dart';
 
 /// 새로운 홈 화면의 메인 위젯
@@ -132,14 +133,95 @@ class _HomeRootState extends State<HomeRoot> {
                   fit: BoxFit.contain,
                 ),
               ),
-              child: Stack(
+                          child: Stack(
                 children: [
-                  // 여기에 나무 클릭 영역들을 추가할 예정
-                  // Positioned로 각 나무 위치에 투명한 Container 배치
-                ],
-              ),
-            ),
-          ),
+                              // 1번째 나무 (맨 왼쪽 꽃나무)
+                              Positioned(
+                                left: islandWidth * 0.15, // 섬 왼쪽에서 15% 지점
+                                top: islandHeight * 0.3,   // 섬 위쪽에서 30% 지점
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // 첫 번째 꽃나무 클릭 시 로딩 Dialog 표시
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) => TreeLoadingPage(treeType: 'flower-1'),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: islandWidth * 0.18,   // 나무 크기
+                                    height: islandHeight * 0.4,  // 나무 높이
+                                    color: Colors.transparent, // 투명하지만 클릭 가능
+                                  ),
+                                ),
+                              ),
+                              
+                              // 2번째 나무 (왼쪽에서 두 번째 꽃나무)
+                              Positioned(
+                                left: islandWidth * 0.35, // 섬 왼쪽에서 35% 지점
+                                top: islandHeight * 0.25,  // 섬 위쪽에서 25% 지점
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // 두 번째 꽃나무 클릭 시 로딩 Dialog 표시
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) => TreeLoadingPage(treeType: 'flower-2'),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: islandWidth * 0.18,
+                                    height: islandHeight * 0.4,
+                                    color: Colors.transparent,
+                                  ),
+                                ),
+                              ),
+                              
+                              // 3번째 나무 (오른쪽에서 두 번째 과일나무)
+                              Positioned(
+                                left: islandWidth * 0.55, // 섬 왼쪽에서 55% 지점
+                                top: islandHeight * 0.3,   // 섬 위쪽에서 30% 지점
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // 첫 번째 과일나무 클릭 시 로딩 Dialog 표시
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) => TreeLoadingPage(treeType: 'fruit-1'),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: islandWidth * 0.18,
+                                    height: islandHeight * 0.4,
+                                    color: Colors.transparent,
+                                  ),
+                                ),
+                              ),
+                              
+                              // 4번째 나무 (맨 오른쪽 과일나무)
+                              Positioned(
+                                left: islandWidth * 0.75, // 섬 왼쪽에서 75% 지점
+                                top: islandHeight * 0.25,  // 섬 위쪽에서 25% 지점
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // 두 번째 과일나무 클릭 시 로딩 Dialog 표시
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) => TreeLoadingPage(treeType: 'fruit-2'),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: islandWidth * 0.18,
+                                    height: islandHeight * 0.4,
+                                    color: Colors.transparent,
+                                  ),
+                                ),
+                            ),
+                          ],
+                        ),
+                      ),
+             ),
         ],
       ),
     );

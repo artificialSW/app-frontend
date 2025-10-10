@@ -38,6 +38,17 @@ class AppAssets {
   static const tree = 'assets/images/tree.png';
   static const wooden_sign = 'assets/images/wooden_sign.png';
   static const sprout = 'assets/images/sprout.png';
+  
+  // 나무 이미지들
+  static const flower_tree_1 = 'assets/images/flower_tree1.png';
+  static const flower_tree_2 = 'assets/images/flower_tree2.png';
+  static const fruit_tree_1 = 'assets/images/fruit_tree1.png';
+  static const fruit_tree_2 = 'assets/images/fruit_tree2.png';
+  static const tree_alone_background = 'assets/images/tree_alone_background.png';
+  
+  // 로딩 이미지들
+  static const progress_flower_tree = 'assets/images/progress_flower_tree.png';
+  static const progress_fruit_tree = 'assets/images/progress_fruit_tree.png';
   static const app_character = 'assets/images/app_character.png';
   static const app_character_smile = 'assets/images/app_character_smile.png';
 

@@ -110,7 +110,7 @@ class HomeBottomButtons extends StatelessWidget {
     // 아이콘 크기 (반응형) - 더 크게 증가
     final bookIconWidth = 130.0 * widthRatio; // 110.0에서 더 증가
     final bookIconHeight = 100.0 * heightRatio; // 비율 유지하면서 증가
-    final islandIconWidth = 140.0 * widthRatio; // 120.0에서 더 증가
+    final islandIconWidth = 140.0 * widthRatio; //  120.0에서 더 증가
     final islandIconHeight = 120.0 * heightRatio; // 비율 유지하면서 증가
     
     // 폰트 크기 (반응형) - 디버깅을 위해 크게 설정
