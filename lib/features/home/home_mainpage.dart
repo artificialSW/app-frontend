@@ -4,6 +4,7 @@ import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:artificialsw_frontend/features/home/widget/progress_bar_with_icon.dart';
 import 'package:artificialsw_frontend/features/home/widget/home_bottom_buttons.dart';
 import 'package:artificialsw_frontend/features/home/widget/tree_loading_page.dart';
+import 'package:artificialsw_frontend/features/home/widget/help_page.dart';
 import 'package:flutter/material.dart';
 
 /// 새로운 홈 화면의 메인 위젯
@@ -112,12 +113,38 @@ class _HomeRootState extends State<HomeRoot> {
           ),
           
           // 하단 버튼들 (도감, 섬 보관소)
-          Positioned(
-            left: 0,
-            right: 0,
-            top: bottomButtonsTopPadding,
-            child: HomeBottomButtons(),
-          ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        top: bottomButtonsTopPadding,
+                        child: HomeBottomButtons(),
+                      ),
+                      
+                      // Help 아이콘
+                      Positioned(
+                        left: 32 * widthRatio, // 좌측 패딩 32
+                        top: 670 * heightRatio, // 위쪽에서 670px 떨어진 위치 (10px 위로)
+                        child: GestureDetector(
+                          onTap: () {
+                            // Help 아이콘 클릭 시 도움말 Dialog 표시
+                            showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context) => const HelpPage(),
+                            );
+                          },
+                          child: Container(
+                            width: 40 * widthRatio, // help 아이콘 크기 40x40 (적응형)
+                            height: 40 * heightRatio,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(AppAssets.help),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
           
           // main_island 이미지 (정확한 위치 배치)
           Positioned(

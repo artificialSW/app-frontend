@@ -49,6 +49,26 @@ class AppAssets {
   // 로딩 이미지들
   static const progress_flower_tree = 'assets/images/progress_flower_tree.png';
   static const progress_fruit_tree = 'assets/images/progress_fruit_tree.png';
+  
+  // 도움말 아이콘
+  static const help = 'assets/icons/help.png';
+  static const next = 'assets/icons/next.png';
+  static const x = 'assets/icons/x.png';
+  
+  // 튜토리얼 벡터 이미지들
+  static const vector5 = 'assets/icons/Vector 5.png';
+  static const vector6 = 'assets/icons/Vector 6.png';
+  static const vector8 = 'assets/icons/Vector 8.png';
+  static const vector9 = 'assets/icons/Vector 9.png';
+  
+  // 섬 이미지
+  static const island_information = 'assets/images/island_information.png';
+  
+  // 튜토리얼 두 번째 페이지 이미지들
+  static const information_flower_tree1 = 'assets/images/information_flower_tree1.png';
+  static const information_flower_tree2 = 'assets/images/information_flower_tree2.png';
+  static const information_fruit_tree1 = 'assets/images/information_fruit_tree1.png';
+  static const information_fruit_tree2 = 'assets/images/information_fruit_tree2.png';
   static const app_character = 'assets/images/app_character.png';
   static const app_character_smile = 'assets/images/app_character_smile.png';
 
