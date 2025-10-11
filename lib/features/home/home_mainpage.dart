@@ -3,14 +3,23 @@ import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:artificialsw_frontend/features/home/widget/progress_bar_with_icon.dart';
 import 'package:artificialsw_frontend/features/home/widget/home_bottom_buttons.dart';
-import 'package:artificialsw_frontend/features/home/widget/tree_loading_page.dart';
-import 'package:artificialsw_frontend/features/home/widget/help_page.dart';
+import 'package:artificialsw_frontend/features/home/single_tree_logic/tree_loading_page.dart';
+import 'package:artificialsw_frontend/features/home/tutorial_logic/help_page.dart';
+import 'package:artificialsw_frontend/features/home/widget/island_save_indicator.dart';
 import 'package:flutter/material.dart';
 
-/// 새로운 홈 화면의 메인 위젯
-/// - 시간대별 배경 이미지
-/// - main_island 이미지 표시
-/// - 반응형 레이아웃
+/// 홈 메인 화면 위젯
+/// 
+/// 사용자가 앱을 처음 실행했을 때 보이는 메인 화면임
+/// 시간에 따라 배경이 바뀌고 섬 중앙에 4개의 나무가 배치되어 있음
+/// 각 나무를 클릭하면 해당 나무의 상세 페이지로 이동함
+/// 
+/// 주요 구성요소:
+/// - 시간대별 배경 이미지 (새벽/아침/오후/밤)
+/// - 섬 중앙의 4개 나무 (꽃나무 2개, 과일나무 2개)
+/// - 상단 진행률 바 (꽃과 과일 수확 진행도)
+/// - 하단 버튼들 (도감, 섬 보관소)
+/// - 도움말 아이콘
 class HomeRoot extends StatefulWidget {
   const HomeRoot({super.key});
   @override
@@ -19,7 +28,13 @@ class HomeRoot extends StatefulWidget {
 
 class _HomeRootState extends State<HomeRoot> {
   
-  /// 현재 시간에 따른 배경 이미지 반환
+  /// 현재 시간에 따라 배경 이미지를 선택하는 함수
+  /// 
+  /// 시간대별로 다른 배경 이미지를 보여줌:
+  /// - 새벽 (4시~8시): 새벽 배경
+  /// - 아침 (8시~16시): 아침 배경  
+  /// - 오후 (16시~20시): 오후 배경
+  /// - 밤 (20시~4시): 밤 배경
   String _getTimeBasedBackground() {
     final now = DateTime.now();
     final hour = now.hour;
@@ -35,7 +50,10 @@ class _HomeRootState extends State<HomeRoot> {
     }
   }
 
-  /// 현재 시간에 따른 main_island 이미지 반환
+  /// 현재 시간에 따라 섬 이미지를 선택하는 함수
+  /// 
+  /// 아침 시간대(8시~16시)에는 아침 섬 이미지를,
+  /// 그 외 시간에는 일반 섬 이미지를 표시함
   String _getTimeBasedIslandImage() {
     final now = DateTime.now();
     final hour = now.hour;
@@ -48,27 +66,39 @@ class _HomeRootState extends State<HomeRoot> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // 화면이 완전히 로드된 후 섬 저장 완료 인디케이터를 표시함
+    // (테스트용으로 현재는 항상 표시되도록 설정됨)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      IslandSaveIndicator.show(context: context);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     
     // 기준 화면 크기 (412x917)에 대한 비율 계산
+    // 다양한 화면 크기에 대응하기 위해 비율로 계산함
     final widthRatio = screenWidth / 412.0;
     final heightRatio = screenHeight / 917.0;
     
-    // 섬 컨테이너 크기 (338x302.46)를 반응형으로 계산
+    // 섬 컨테이너 크기를 반응형으로 계산
+    // 원본 디자인 크기에서 화면 비율만큼 곱해서 크기 조정
     final islandWidth = 338.0 * widthRatio;
     final islandHeight = 302.46 * heightRatio;
     
-    // 패딩을 반응형으로 계산
+    // 섬 이미지 패딩을 반응형으로 계산
     final horizontalPadding = 37.0 * widthRatio;
-    final topPadding = 276.0 * heightRatio; // 기준 화면 높이 비율에 맞춰 계산
+    final topPadding = 276.0 * heightRatio;
     
-    // Progress bar 위치 (양쪽 패딩 16, 화면 맨 위부터 98)
+    // Progress bar 위치를 반응형으로 계산
     final progressBarHorizontalPadding = 16.0 * widthRatio;
     final progressBarTopPadding = 98.0 * heightRatio;
     
-    // 하단 버튼 위치 (화면 맨 위부터 717)
+    // 하단 버튼 위치를 반응형으로 계산
     final bottomButtonsTopPadding = 717.0 * heightRatio;
 
     return Scaffold(
@@ -76,7 +106,8 @@ class _HomeRootState extends State<HomeRoot> {
       appBar: HomeTopBar(),
       body: Stack(
         children: [
-          // 시간대별 배경 이미지 (화면 가득 채우기)
+          // 시간대별 배경 이미지 (화면 전체를 채움)
+          // 새벽/아침/오후/밤에 따라 다른 배경 이미지가 표시됨
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -88,7 +119,8 @@ class _HomeRootState extends State<HomeRoot> {
             ),
           ),
           
-          // Progress Bar (꽃 + 과일)
+          // 상단 진행률 바 (꽃과 과일 수확 진행도 표시)
+          // 꽃 진행률과 과일 진행률을 나란히 배치함
           Positioned(
             left: progressBarHorizontalPadding,
             right: progressBarHorizontalPadding,
@@ -96,61 +128,64 @@ class _HomeRootState extends State<HomeRoot> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 꽃 Progress Bar
+                // 꽃 진행률 바 (왼쪽)
                 ProgressBarWithIcon(
                   isFlower: true,
-                  progress: 0.4, // 4개 세그먼트 채워짐
+                  progress: 0.4, // 현재 4개 세그먼트가 채워진 상태
                 ),
-                // 7px 간격 (반응형)
+                // 두 진행률 바 사이의 간격
                 SizedBox(width: 7.0 * widthRatio),
-                // 과일 Progress Bar
+                // 과일 진행률 바 (오른쪽)
                 ProgressBarWithIcon(
                   isFlower: false,
-                  progress: 0.5, // 5개 세그먼트 채워짐
+                  progress: 0.5, // 현재 5개 세그먼트가 채워진 상태
                 ),
               ],
             ),
           ),
           
-          // 하단 버튼들 (도감, 섬 보관소)
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        top: bottomButtonsTopPadding,
-                        child: HomeBottomButtons(),
-                      ),
-                      
-                      // Help 아이콘
-                      Positioned(
-                        left: 32 * widthRatio, // 좌측 패딩 32
-                        top: 670 * heightRatio, // 위쪽에서 670px 떨어진 위치 (10px 위로)
-                        child: GestureDetector(
-                          onTap: () {
-                            // Help 아이콘 클릭 시 도움말 Dialog 표시
-                            showDialog(
-                              context: context,
-                              barrierDismissible: true,
-                              builder: (context) => const HelpPage(),
-                            );
-                          },
-                          child: Container(
-                            width: 40 * widthRatio, // help 아이콘 크기 40x40 (적응형)
-                            height: 40 * heightRatio,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(AppAssets.help),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+          // 하단 버튼들 (도감과 섬 보관소 버튼)
+          // 도감 버튼은 꽃/열매 도감으로 이동하고, 섬 보관소는 아직 미구현
+          Positioned(
+            left: 0,
+            right: 0,
+            top: bottomButtonsTopPadding,
+            child: HomeBottomButtons(),
+          ),
           
-          // main_island 이미지 (정확한 위치 배치)
+          // 도움말 아이콘 (섬 왼쪽 하단에 위치)
+          // 클릭하면 도움말 페이지가 팝업으로 표시됨
+          Positioned(
+            left: 32 * widthRatio,
+            top: 670 * heightRatio,
+            child: GestureDetector(
+              onTap: () {
+                // 도움말 아이콘 클릭 시 도움말 다이얼로그 표시
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (context) => const HelpPage(),
+                );
+              },
+              child: Container(
+                width: 40 * widthRatio,
+                height: 40 * heightRatio,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(AppAssets.help),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          
+          // 섬 이미지 (화면 중앙에 배치)
+          // 시간대에 따라 아침 섬 이미지 또는 일반 섬 이미지가 표시됨
           Positioned(
             left: horizontalPadding,
             right: horizontalPadding,
-            top: topPadding, // 화면 최상단부터 276px (반응형)
+            top: topPadding,
             child: Container(
               width: islandWidth,
               height: islandHeight,
@@ -160,91 +195,95 @@ class _HomeRootState extends State<HomeRoot> {
                   fit: BoxFit.contain,
                 ),
               ),
-                          child: Stack(
+              child: Stack(
                 children: [
-                              // 1번째 나무 (맨 왼쪽 꽃나무)
-                              Positioned(
-                                left: islandWidth * 0.15, // 섬 왼쪽에서 15% 지점
-                                top: islandHeight * 0.3,   // 섬 위쪽에서 30% 지점
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // 첫 번째 꽃나무 클릭 시 로딩 Dialog 표시
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (context) => TreeLoadingPage(treeType: 'flower-1'),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: islandWidth * 0.18,   // 나무 크기
-                                    height: islandHeight * 0.4,  // 나무 높이
-                                    color: Colors.transparent, // 투명하지만 클릭 가능
-                                  ),
-                                ),
-                              ),
+                  // 1번째 나무 (맨 왼쪽 꽃나무)
+                  // 클릭하면 해당 꽃나무의 상세 페이지로 이동함
+                  Positioned(
+                    left: islandWidth * 0.15, // 섬 왼쪽에서 15% 지점에 배치
+                    top: islandHeight * 0.3,   // 섬 위쪽에서 30% 지점에 배치
+                    child: GestureDetector(
+                      onTap: () {
+                        // 첫 번째 꽃나무 클릭 시 로딩 화면을 거쳐 상세 페이지로 이동
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => TreeLoadingPage(treeType: 'flower-1'),
+                        );
+                      },
+                      child: Container(
+                        width: islandWidth * 0.18,   // 나무 클릭 영역 크기
+                        height: islandHeight * 0.4,  // 나무 클릭 영역 높이
+                        color: Colors.transparent, // 투명하지만 클릭 가능한 영역
+                      ),
+                    ),
+                  ),
                               
-                              // 2번째 나무 (왼쪽에서 두 번째 꽃나무)
-                              Positioned(
-                                left: islandWidth * 0.35, // 섬 왼쪽에서 35% 지점
-                                top: islandHeight * 0.25,  // 섬 위쪽에서 25% 지점
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // 두 번째 꽃나무 클릭 시 로딩 Dialog 표시
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (context) => TreeLoadingPage(treeType: 'flower-2'),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: islandWidth * 0.18,
-                                    height: islandHeight * 0.4,
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                              ),
-                              
-                              // 3번째 나무 (오른쪽에서 두 번째 과일나무)
-                              Positioned(
-                                left: islandWidth * 0.55, // 섬 왼쪽에서 55% 지점
-                                top: islandHeight * 0.3,   // 섬 위쪽에서 30% 지점
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // 첫 번째 과일나무 클릭 시 로딩 Dialog 표시
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (context) => TreeLoadingPage(treeType: 'fruit-1'),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: islandWidth * 0.18,
-                                    height: islandHeight * 0.4,
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                              ),
-                              
-                              // 4번째 나무 (맨 오른쪽 과일나무)
-                              Positioned(
-                                left: islandWidth * 0.75, // 섬 왼쪽에서 75% 지점
-                                top: islandHeight * 0.25,  // 섬 위쪽에서 25% 지점
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // 두 번째 과일나무 클릭 시 로딩 Dialog 표시
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (context) => TreeLoadingPage(treeType: 'fruit-2'),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: islandWidth * 0.18,
-                                    height: islandHeight * 0.4,
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                            ),
+                  // 2번째 나무 (왼쪽에서 두 번째 꽃나무)
+                  // 클릭하면 해당 꽃나무의 상세 페이지로 이동함
+                  Positioned(
+                    left: islandWidth * 0.35, // 섬 왼쪽에서 35% 지점에 배치
+                    top: islandHeight * 0.25,  // 섬 위쪽에서 25% 지점에 배치
+                    child: GestureDetector(
+                      onTap: () {
+                        // 두 번째 꽃나무 클릭 시 로딩 화면을 거쳐 상세 페이지로 이동
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => TreeLoadingPage(treeType: 'flower-2'),
+                        );
+                      },
+                      child: Container(
+                        width: islandWidth * 0.18,
+                        height: islandHeight * 0.4,
+                        color: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                  
+                  // 3번째 나무 (오른쪽에서 두 번째 과일나무)
+                  // 클릭하면 해당 과일나무의 상세 페이지로 이동함
+                  Positioned(
+                    left: islandWidth * 0.55, // 섬 왼쪽에서 55% 지점에 배치
+                    top: islandHeight * 0.3,   // 섬 위쪽에서 30% 지점에 배치
+                    child: GestureDetector(
+                      onTap: () {
+                        // 첫 번째 과일나무 클릭 시 로딩 화면을 거쳐 상세 페이지로 이동
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => TreeLoadingPage(treeType: 'fruit-1'),
+                        );
+                      },
+                      child: Container(
+                        width: islandWidth * 0.18,
+                        height: islandHeight * 0.4,
+                        color: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                  
+                  // 4번째 나무 (맨 오른쪽 과일나무)
+                  // 클릭하면 해당 과일나무의 상세 페이지로 이동함
+                  Positioned(
+                    left: islandWidth * 0.75, // 섬 왼쪽에서 75% 지점에 배치
+                    top: islandHeight * 0.25,  // 섬 위쪽에서 25% 지점에 배치
+                    child: GestureDetector(
+                      onTap: () {
+                        // 두 번째 과일나무 클릭 시 로딩 화면을 거쳐 상세 페이지로 이동
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => TreeLoadingPage(treeType: 'fruit-2'),
+                        );
+                      },
+                      child: Container(
+                        width: islandWidth * 0.18,
+                        height: islandHeight * 0.4,
+                        color: Colors.transparent,
+                      ),
+                    ),
+                  ),
                           ],
                         ),
                       ),

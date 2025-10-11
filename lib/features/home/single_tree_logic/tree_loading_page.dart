@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
-import 'package:artificialsw_frontend/features/home/tree_page.dart';
+import 'package:artificialsw_frontend/features/home/single_tree_logic/tree_page.dart';
 
 /// 나무 로딩 페이지 위젯
-/// 꽃나무/과일나무 클릭 시 표시되는 로딩 화면
+/// 
+/// 홈에서 나무를 클릭했을 때 나타나는 로딩 화면임
+/// 3초 동안 애니메이션을 보여주고 자동으로 해당 나무 페이지로 이동함
+/// 
+/// 주요 기능:
+/// - 나무 타입에 따라 다른 이미지와 텍스트 표시
+/// - 진행률 바 애니메이션 (3초 동안 0%에서 100%까지)
+/// - 로딩 중 텍스트와 도착 텍스트 자동 전환
+/// - 애니메이션 완료 후 해당 나무 페이지로 자동 이동
 class TreeLoadingPage extends StatefulWidget {
   final String treeType; // 'flower-1', 'flower-2', 'fruit-1', 'fruit-2'
   
@@ -25,25 +33,25 @@ class _TreeLoadingPageState extends State<TreeLoadingPage>
   void initState() {
     super.initState();
     
-    // 3초 동안 진행되는 애니메이션 컨트롤러
+    // 3초 동안 진행되는 애니메이션 컨트롤러 설정
     _animationController = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
     );
     
-    // 0.0에서 1.0까지 진행되는 프로그레스 애니메이션
+    // 0.0에서 1.0까지 진행되는 프로그레스 애니메이션 설정
     _progressAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _animationController,
-      curve: Curves.easeInOut,
+      curve: Curves.easeInOut, // 부드러운 시작과 끝
     ));
     
     // 애니메이션 시작
     _animationController.forward();
     
-    // 3초 후 TreePage로 이동
+    // 애니메이션 완료 시 해당 나무 페이지로 자동 이동
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _navigateToTreePage();
@@ -57,11 +65,12 @@ class _TreeLoadingPageState extends State<TreeLoadingPage>
     super.dispose();
   }
 
+  /// 로딩 완료 후 해당 나무 페이지로 이동하는 함수
   void _navigateToTreePage() {
-    // Dialog 닫기
+    // 현재 로딩 다이얼로그 닫기
     Navigator.of(context).pop();
     
-    // 각 나무에 맞는 tree_page로 이동
+    // 해당 나무 타입에 맞는 나무 페이지로 이동
     final route = MaterialPageRoute(
       builder: (context) => TreePage(treeType: widget.treeType),
     );

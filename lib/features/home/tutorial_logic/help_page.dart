@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/home/widget/explore_button.dart';
-import 'package:artificialsw_frontend/features/home/widget/tutorial_page.dart';
+import 'package:artificialsw_frontend/features/home/tutorial_logic/tutorial_page.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 
 /// 도움말 페이지 위젯
