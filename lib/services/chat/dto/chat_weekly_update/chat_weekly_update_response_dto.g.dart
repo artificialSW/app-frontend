@@ -20,3 +20,4 @@ Map<String, dynamic> _$ChatWeeklyUpdateResponseDtoToJson(
 
 
 
+

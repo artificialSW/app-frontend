@@ -27,6 +27,9 @@ class HomeRoot extends StatefulWidget {
 }
 
 class _HomeRootState extends State<HomeRoot> {
+  /// 섬 저장 인디케이터가 이미 표시되었는지 추적하는 정적 변수
+  /// 앱 실행 중 한 번만 표시되도록 보장함
+  static bool _hasShownSaveIndicator = false;
   
   /// 현재 시간에 따라 배경 이미지를 선택하는 함수
   /// 
@@ -69,9 +72,12 @@ class _HomeRootState extends State<HomeRoot> {
   void initState() {
     super.initState();
     // 화면이 완전히 로드된 후 섬 저장 완료 인디케이터를 표시함
-    // (테스트용으로 현재는 항상 표시되도록 설정됨)
+    // 단, 앱 실행 중 한 번만 표시됨
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      IslandSaveIndicator.show(context: context);
+      if (!_hasShownSaveIndicator) {
+        _hasShownSaveIndicator = true;
+        IslandSaveIndicator.show(context: context);
+      }
     });
   }
 

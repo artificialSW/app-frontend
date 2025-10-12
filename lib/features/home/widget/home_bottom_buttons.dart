@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/features/home/guidebook_logic/guidebook_main.dart';
+import 'package:artificialsw_frontend/features/home/island_archive_logic/island_archive_page.dart';
 
 /// 홈 화면 하단 버튼 위젯
 /// - 도감 버튼: 꽃/열매 도감으로 연결
@@ -83,11 +84,13 @@ class HomeBottomButtons extends StatelessWidget {
     );
   }
 
-  /// 섬 보관소 버튼 클릭 처리 (추후 구현)
+  /// 섬 보관소 버튼 클릭 처리
   void _onIslandStoragePressed(BuildContext context) {
-    // TODO: 섬 보관소 페이지로 이동
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('섬 보관소 기능은 추후 구현됩니다')),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const IslandArchivePage(),
+      ),
     );
   }
 

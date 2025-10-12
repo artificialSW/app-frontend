@@ -11,8 +11,10 @@ class AppAssets {
   static const appicon_whiteBackground = 'assets/images/appicon_whiteBackground.png';
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';
   static const back = 'assets/icons/back.png';
+  static const back_white = 'assets/icons/back_white.png';
   static const forward = 'assets/icons/forward.png';
   static const filter = 'assets/icons/filter.png';
+  static const toggle = 'assets/icons/toggle.png';
   static const archive = 'assets/icons/archive.png';
   static const lock = 'assets/icons/lock.png';
   static const lock_fill = 'assets/icons/lock_fill.png';
@@ -63,6 +65,7 @@ class AppAssets {
   
   // 섬 이미지
   static const island_information = 'assets/images/island_information.png';
+  static const island_archive = 'assets/images/island_archive.png';
   
   // 튜토리얼 두 번째 페이지 이미지들
   static const information_flower_tree1 = 'assets/images/information_flower_tree1.png';
