@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
+import 'package:artificialsw_frontend/services/storage_service.dart';
+import 'package:artificialsw_frontend/shared/constants/constants.dart';
+import 'package:dio/dio.dart';
+import 'dart:convert';
+
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -12,6 +17,73 @@ class _LoginScreenState extends State<LoginScreen> {
   // 사용자 입력을 받을 컨트롤러
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
+  final Dio _dio = Dio();
+
+  // Future<void> _checkLoginStatus() async {
+  //
+  //   final _accessToken = await StorageService.getAccessToken();
+  //   //final refreshToken = await StorageService.getRefreshToken();
+  //   //final userInfo = await StorageService().getUserInfo();
+  //
+  //   print("저장된 accessToken: $_accessToken");
+  //   if (!mounted) return;
+  //
+  //   // 토큰과 유저 정보가 모두 있을 경우, 토큰 재발급 시도
+  //   //if (accessToken != null && refreshToken != null && userInfo != null) {
+  //   if (accessToken != null) {
+  //     try {
+  //
+  //       final autoLoginResponse = await _dio.post(
+  //         'http://15.164.94.26:8080/api/autologin',
+  //         options: Options(
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //             'Authorization': 'Bearer $_accessToken'
+  //           },
+  //         ),
+  //       );
+  //
+  //       // 1. 토큰 재발급 성공
+  //       if (autoLoginResponse.statusCode == 200) {
+  //         if (data['isSuccess'] == true) {
+  //           final newAccessToken = data['result']['accessToken'];
+  //           print('access token is: $newAccessToken');
+  //
+  //           String? newRefreshToken;
+  //           final String? rawCookie = response.headers['set-cookie'];
+  //           if (rawCookie != null) {
+  //             final regExp = RegExp(r'refresh_token=([^;]+)');
+  //             final match = regExp.firstMatch(rawCookie);
+  //             if (match != null) {
+  //               newRefreshToken = match.group(1);
+  //             }
+  //           }
+  //           if (newRefreshToken == null) {
+  //             setState(() => _errorMessage = '로그인에 실패했습니다. (토큰 오류)');
+  //             return;
+  //           }
+  //
+  //           // 2. 토큰 저장
+  //           await StorageService.saveTokens(newAccessToken, newRefreshToken);
+  //           print('Access Token 재발급 성공');
+  //           await saveFcmTokenToServer(); // 로그인 후 다시 저장
+  //           _navigateToMainPage(userInfo); // 메인 페이지로 이동
+  //           return;
+  //         }
+  //       }
+  //       // 2. 토큰 재발급 실패 (리프레시 토큰 만료 등)
+  //       throw Exception('Failed to reissue token');
+  //     } catch (e) {
+  //       print('토큰 재발급 실패: $e');
+  //       // 실패 시 모든 정보를 지우고 로그인 화면으로 보냄
+  //       await StorageService().clearAllData();
+  //       Navigator.pushReplacementNamed(context, '/login');
+  //     }
+  //   } else {
+  //     // 3. 저장된 정보가 없으면 로그인 화면으로 이동
+  //     Navigator.pushReplacementNamed(context, '/login');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // 로그인 버튼
                   ElevatedButton(
                     onPressed: _login,
+                    //onPressed: () => Navigator.pushNamed(context, '/shell'),
                     child: const Text('Login'),
                   ),
                   const SizedBox(height: 16),
@@ -83,15 +156,130 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _login() {
+  void _login() async {
     final id = _idController.text.trim();
     final pw = _pwController.text.trim();
+    debugPrint('Login Attempt: ID: $id, PW: $pw');
 
-    // TODO: 로그인 로직 (백엔드 연동 예정)
-    print('Login Attempt: ID: $id, PW: $pw');
+    if (id.isEmpty || pw.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('아이디와 비밀번호를 모두 입력하세요.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
 
-    Navigator.pushNamed(context, '/shell');
+    try{
+      // 1. 로그인 API 호출
+      final loginUri = Uri.parse('$baseUrl/api/login').toString();
 
+      final loginResponse = await _dio.post(
+        '${loginUri}/api/login',
+        data: {'id': id, 'password': pw},
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      //print(loginResponse.data);
+
+      //final loginData = loginResponse.data is String
+       //   ? jsonDecode(loginResponse.data)
+        //  : loginResponse.data;
+
+      //if (loginData['isSuccess'] == true) {
+      if (true) {
+        //final loginResult = loginData['result'];
+        final accessToken = loginResponse.data.toString();
+        //final userType = loginResult['userType'];
+        //String? refreshToken;
+        //final String? rawCookie = loginResponse.headers['set-cookie'];
+        // if (rawCookie != null) {
+        //   final regExp = RegExp(r'refresh_token=([^;]+)');
+        //   final match = regExp.firstMatch(rawCookie);
+        //   if (match != null) {
+        //     refreshToken = match.group(1);
+        //   }
+        // }
+
+        // if (refreshToken == null) {
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(
+        //       content: Text('로그인에 실패했습니다. (토큰 오류)'),
+        //       duration: Duration(seconds: 2),
+        //     ),
+        //   );
+        //   return;
+        // }
+
+
+        // 2. 토큰 저장
+        //await StorageService.saveAccessToken(accessToken, refreshToken);
+        await StorageService.saveAccessToken(accessToken);
+
+        // 3. 유저 가치(Value) 정보 API 호출
+        // final userInfoUri = Uri.parse('$baseUrl/users/value');
+        // final userInfoResponse = await http.get(
+        //   userInfoUri,
+        //   headers: {'Authorization': 'Bearer $accessToken'},
+        // );
+        //
+        // if (userInfoResponse.statusCode != 200) {
+        //   setState(() => _errorMessage = '사용자 정보 로딩에 실패했습니다.');
+        //   return;
+        // }
+        //
+        // final userInfoData = jsonDecode(utf8.decode(userInfoResponse.bodyBytes));
+        // if (userInfoData['isSuccess'] != true) {
+        //   setState(() => _errorMessage = '사용자 정보 로딩에 실패했습니다.');
+        //   return;
+        // }
+        //
+        // final valueResult = userInfoData['result'];
+        //
+        // // 4. 두 API 응답을 합쳐서 하나의 UserInfo 객체 생성
+        // final UserInfo userInfo = UserInfo(
+        //   userId: valueResult['userId'],
+        //   userName: valueResult['userName'],
+        //   totalPoint: valueResult['totalPoint'],
+        //   totalDonation: valueResult['totalDonation'],
+        //   totalPurchasePrice: valueResult['totalPurchasePrice'],
+        //   totalPurchaseWeight: valueResult['totalPurchaseWeight'],
+        //   totalDiscountPrice: valueResult['totalDiscountPrice'],
+        //   email: loginResult['email'], // From login API
+        //   userType: userType, // From login API
+        // );
+        //
+        // // 5. 통합된 사용자 정보를 Storage Service에 저장
+        // await StorageService().saveUserInfo(userInfo);
+
+        //setState(() => _errorMessage = null);
+
+        Navigator.pushNamed(context, '/shell');
+        //String route = '';
+        //if(mounted) Navigator.pushReplacementNamed(context, route);
+
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('아이디 또는 비밀번호가 일치하지 않습니다.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('로그인 중 오류가 발생했습니다: $e'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      debugPrint('Login Error: $e');
+    }
   }
 
   @override

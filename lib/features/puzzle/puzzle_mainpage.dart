@@ -49,7 +49,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       // ✅ 목데이터 리턴
       return PuzzleHomeGetDto(
-        subject: ["복숭아 사진 자랑", "아보카도 사진 자랑", "자유주제: 원하는 사진을 올려보세요!"],
+        subject: ["운동하는 모습", "학교 가는 길", "퇴근 후의 모습"],
         inProgress: [PuzzleHomeOngoingPreviewDto(
           puzzleId: 1,
           imageUrl:

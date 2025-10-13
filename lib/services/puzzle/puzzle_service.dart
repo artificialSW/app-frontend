@@ -33,11 +33,24 @@ class PuzzleService {
       final formData = dto.toJson();
 
       // POST 요청
+      // final response = await _dio.post(
+      //   '/puzzle/images',
+      //   data: formData,
+      //   options: Options(contentType: 'application/json'),
+      // );
+
+      final _accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5IiwiZmFtaWx5SWQiOjEsImlhdCI6MTc1OTkwNjgwMn0.JTuUNb8aRBDJeErsIpffTpwQ58ItDV5PD9qb9oTlIlFjVgxMP24iJd7Epe-boS7QsGRta-mlktAsJgHLF1u19w';
+
       final response = await _dio.post(
-        '/puzzle/images',
+        'http://15.164.94.26:8080/api/puzzle/picture/upload',
         data: formData,
-        options: Options(contentType: 'application/json'),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $_accessToken', // ✅ 토큰 추가
+          },
+        ),
       );
+
 
       if (response.statusCode == 200) {
         print('✅ 여러 장 업로드 성공');

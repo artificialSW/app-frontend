@@ -8,6 +8,7 @@ import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:exif/exif.dart';
 
 // 디자인 통일
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
@@ -23,6 +24,20 @@ class ImageUploadPage extends StatefulWidget {
 }
 
 class _ImageUploadPageState extends State<ImageUploadPage> {
+
+  String? exifToIso8601(String? exifDate) {
+    if (exifDate == null) return null;
+
+    // "2025:10:10 21:05:47" → "2025-10-10T21:05:47Z"
+    final iso = exifDate
+        .replaceRange(4, 5, '-')   // 첫 번째 콜론 → '-'
+        .replaceRange(7, 8, '-')   // 두 번째 콜론 → '-'
+        .replaceFirst(' ', 'T')    // 공백 → 'T'
+        + 'Z';                     // UTC 표시
+
+    return iso;
+  }
+
   final List<UploadUnit> _uploads = [];
   File? _currentImage;
   final TextEditingController _commentController = TextEditingController();
@@ -39,6 +54,22 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked != null) {
+      final fileBytes = await File(picked.path).readAsBytes();
+      final tags = await readExifFromBytes(fileBytes);
+
+// 먼저 존재 여부 확인
+      print(tags.keys);
+
+// 찍은 날짜 가져오기
+      final date = tags['EXIF DateTimeOriginal'] ??
+          tags['Image DateTimeOriginal'] ??
+          tags['DateTimeOriginal'] ??
+          '날짜 정보 없음';
+
+      final isoDate = exifToIso8601(date?.toString());
+
+      print('📸 촬영일자: ${isoDate}');
+
       setState(() {
         _currentImage = File(picked.path);
       });
