@@ -19,6 +19,72 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _pwController = TextEditingController();
   final Dio _dio = Dio();
 
+  // Future<void> _checkLoginStatus() async {
+  //
+  //   final _accessToken = await StorageService.getAccessToken();
+  //   //final refreshToken = await StorageService.getRefreshToken();
+  //   //final userInfo = await StorageService().getUserInfo();
+  //
+  //   print("저장된 accessToken: $_accessToken");
+  //   if (!mounted) return;
+  //
+  //   // 토큰과 유저 정보가 모두 있을 경우, 토큰 재발급 시도
+  //   //if (accessToken != null && refreshToken != null && userInfo != null) {
+  //   if (accessToken != null) {
+  //     try {
+  //
+  //       final autoLoginResponse = await _dio.post(
+  //         'http://15.164.94.26:8080/api/autologin',
+  //         options: Options(
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //             'Authorization': 'Bearer $_accessToken'
+  //           },
+  //         ),
+  //       );
+  //
+  //       // 1. 토큰 재발급 성공
+  //       if (autoLoginResponse.statusCode == 200) {
+  //         if (data['isSuccess'] == true) {
+  //           final newAccessToken = data['result']['accessToken'];
+  //           print('access token is: $newAccessToken');
+  //
+  //           String? newRefreshToken;
+  //           final String? rawCookie = response.headers['set-cookie'];
+  //           if (rawCookie != null) {
+  //             final regExp = RegExp(r'refresh_token=([^;]+)');
+  //             final match = regExp.firstMatch(rawCookie);
+  //             if (match != null) {
+  //               newRefreshToken = match.group(1);
+  //             }
+  //           }
+  //           if (newRefreshToken == null) {
+  //             setState(() => _errorMessage = '로그인에 실패했습니다. (토큰 오류)');
+  //             return;
+  //           }
+  //
+  //           // 2. 토큰 저장
+  //           await StorageService.saveTokens(newAccessToken, newRefreshToken);
+  //           print('Access Token 재발급 성공');
+  //           await saveFcmTokenToServer(); // 로그인 후 다시 저장
+  //           _navigateToMainPage(userInfo); // 메인 페이지로 이동
+  //           return;
+  //         }
+  //       }
+  //       // 2. 토큰 재발급 실패 (리프레시 토큰 만료 등)
+  //       throw Exception('Failed to reissue token');
+  //     } catch (e) {
+  //       print('토큰 재발급 실패: $e');
+  //       // 실패 시 모든 정보를 지우고 로그인 화면으로 보냄
+  //       await StorageService().clearAllData();
+  //       Navigator.pushReplacementNamed(context, '/login');
+  //     }
+  //   } else {
+  //     // 3. 저장된 정보가 없으면 로그인 화면으로 이동
+  //     Navigator.pushReplacementNamed(context, '/login');
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final loginUri = Uri.parse('$baseUrl/api/login').toString();
 
       final loginResponse = await _dio.post(
-        'http://15.164.94.26:8080/api/login',
+        '${loginUri}/api/login',
         data: {'id': id, 'password': pw},
         options: Options(
           headers: {
