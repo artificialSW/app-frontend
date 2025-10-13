@@ -4,7 +4,7 @@ part 'chat_home_thisweek_comment_dto.g.dart';
 
 @JsonSerializable()
 class ChatHomeThisweekCommentDto {
-  final String writer;
+  final int writer;
   final String contents;
 
   ChatHomeThisweekCommentDto({
@@ -16,4 +16,5 @@ class ChatHomeThisweekCommentDto {
       _$ChatHomeThisweekCommentDtoFromJson(json);
   Map<String, dynamic> toJson() => _$ChatHomeThisweekCommentDtoToJson(this);
 }
+
 

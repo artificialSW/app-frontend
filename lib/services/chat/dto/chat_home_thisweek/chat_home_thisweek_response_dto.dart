@@ -23,3 +23,4 @@ class ChatHomeThisweekResponseDto {
   Map<String, dynamic> toJson() => _$ChatHomeThisweekResponseDtoToJson(this);
 }
 
+

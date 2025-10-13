@@ -20,3 +20,4 @@ class ChatCommonDetailResponseDto {
   Map<String, dynamic> toJson() => _$ChatCommonDetailResponseDtoToJson(this);
 }
 
+

@@ -28,3 +28,4 @@ class ChatPersonalDetailQuestionDto {
   Map<String, dynamic> toJson() => _$ChatPersonalDetailQuestionDtoToJson(this);
 }
 
+

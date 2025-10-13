@@ -26,3 +26,4 @@ Map<String, dynamic> _$ChatHomeThisweekResponseDtoToJson(
       'unsolved': instance.unsolved,
     };
 
+

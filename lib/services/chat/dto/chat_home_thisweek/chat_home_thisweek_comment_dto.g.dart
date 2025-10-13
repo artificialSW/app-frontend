@@ -9,7 +9,7 @@ part of 'chat_home_thisweek_comment_dto.dart';
 ChatHomeThisweekCommentDto _$ChatHomeThisweekCommentDtoFromJson(
         Map<String, dynamic> json) =>
     ChatHomeThisweekCommentDto(
-      writer: json['writer'] as String,
+      writer: json['writer'] as int,
       contents: json['contents'] as String,
     );
 
@@ -19,4 +19,5 @@ Map<String, dynamic> _$ChatHomeThisweekCommentDtoToJson(
       'writer': instance.writer,
       'contents': instance.contents,
     };
+
 

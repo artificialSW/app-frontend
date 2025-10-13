@@ -28,3 +28,4 @@ Map<String, dynamic> _$ChatPersonalDetailQuestionDtoToJson(
       'isLiked': instance.isLiked,
     };
 
+
