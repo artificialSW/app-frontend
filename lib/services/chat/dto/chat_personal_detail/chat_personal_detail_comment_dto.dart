@@ -6,19 +6,19 @@ part 'chat_personal_detail_comment_dto.g.dart';
 @JsonSerializable()
 class ChatPersonalDetailCommentDto {
   final int commentId;
-  final String writer;
+  final int writer;
   final String content;
   final int likes;
-  @JsonKey(name: 'isLiked')
+  @JsonKey(name: 'isLiked', defaultValue: false)
   final bool isLiked;
-  final List<String> reply;
+  final List<ChatPersonalDetailCommentDto> reply;
 
   ChatPersonalDetailCommentDto({
     required this.commentId,
     required this.writer,
     required this.content,
     required this.likes,
-    required this.isLiked,
+    this.isLiked = false,
     required this.reply,
   });
 

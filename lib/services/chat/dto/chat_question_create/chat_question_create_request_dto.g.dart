@@ -10,7 +10,7 @@ ChatQuestionCreateRequestDto _$ChatQuestionCreateRequestDtoFromJson(
         Map<String, dynamic> json) =>
     ChatQuestionCreateRequestDto(
       receiverId: json['receiverId'] as int,
-      isPublic: json['isPublic'] as bool,
+      visibility: json['visibility'] as int,
       content: json['content'] as String,
     );
 
@@ -18,9 +18,10 @@ Map<String, dynamic> _$ChatQuestionCreateRequestDtoToJson(
         ChatQuestionCreateRequestDto instance) =>
     <String, dynamic>{
       'receiverId': instance.receiverId,
-      'isPublic': instance.isPublic,
+      'visibility': instance.visibility,
       'content': instance.content,
     };
+
 
 
 

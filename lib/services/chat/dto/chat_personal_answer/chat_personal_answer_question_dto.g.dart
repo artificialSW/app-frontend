@@ -9,25 +9,17 @@ part of 'chat_personal_answer_question_dto.dart';
 ChatPersonalAnswerQuestionDto _$ChatPersonalAnswerQuestionDtoFromJson(
         Map<String, dynamic> json) =>
     ChatPersonalAnswerQuestionDto(
-      questionId: json['Q_id'] as int,
+      questionRefId: json['question_ref_id'] as int,
       content: json['content'] as String,
       sender: json['sender'] as int,
-      receiver: json['receiver'] as int,
-      likes: json['likes'] as int,
-      comments: json['comments'] as int,
-      solved: json['solved'] as bool,
-      isPublic: json['is_public'] as bool,
+      visibility: json['visibility'] as bool,
     );
 
 Map<String, dynamic> _$ChatPersonalAnswerQuestionDtoToJson(
         ChatPersonalAnswerQuestionDto instance) =>
     <String, dynamic>{
-      'Q_id': instance.questionId,
+      'question_ref_id': instance.questionRefId,
       'content': instance.content,
       'sender': instance.sender,
-      'receiver': instance.receiver,
-      'likes': instance.likes,
-      'comments': instance.comments,
-      'solved': instance.solved,
-      'is_public': instance.isPublic,
+      'visibility': instance.visibility,
     };

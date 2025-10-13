@@ -7,11 +7,13 @@ import '../model/common_question.dart';
 class WeeklyQuestionBanner extends StatefulWidget {
   final CommonQuestion question;
   final int order;
+  final VoidCallback? onTapThread; // 스레드 화면으로 이동하는 콜백
 
   const WeeklyQuestionBanner({
     super.key,
     required this.question,
     required this.order,
+    this.onTapThread,
   });
 
   @override
@@ -63,7 +65,7 @@ class _WeeklyQuestionBannerState extends State<WeeklyQuestionBanner>
                       content: widget.question.description,
                       order: widget.order,
                     )
-                  : _CollapsedContent(),
+                  : _CollapsedContent(onTapThread: widget.onTapThread),
             ),
           ),
         ),
@@ -73,6 +75,10 @@ class _WeeklyQuestionBannerState extends State<WeeklyQuestionBanner>
 }
 
 class _CollapsedContent extends StatelessWidget {
+  final VoidCallback? onTapThread;
+
+  const _CollapsedContent({this.onTapThread});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -81,14 +87,32 @@ class _CollapsedContent extends StatelessWidget {
         children: [
           const Text('🎉', style: TextStyle(fontSize: 24)),
           const SizedBox(width: 12),
-          Text(
-            '이번주의 공통질문',
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.pretendard_medium.copyWith(
-              fontSize: 16,
-              color: AppColors.plumu_green_main,
+          Expanded(
+            child: Text(
+              '이번주의 공통질문',
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.pretendard_medium.copyWith(
+                fontSize: 16,
+                color: AppColors.plumu_green_main,
+              ),
             ),
           ),
+          // 작은 화살표 버튼
+          if (onTapThread != null)
+            GestureDetector(
+              onTap: () {
+                // 스레드 화면으로 이동
+                onTapThread!();
+              },
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: AppColors.plumu_green_main,
+                ),
+              ),
+            ),
         ],
       ),
     );

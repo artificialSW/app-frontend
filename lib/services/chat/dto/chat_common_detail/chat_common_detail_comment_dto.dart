@@ -5,19 +5,19 @@ part 'chat_common_detail_comment_dto.g.dart';
 @JsonSerializable()
 class ChatCommonDetailCommentDto {
   final int commentId;
-  final String writer;
+  final int writer;
   final String content;
   final int likes;
-  @JsonKey(name: 'isLiked')
+  @JsonKey(name: 'isLiked', defaultValue: false)
   final bool isLiked;
-  final List<String> reply;
+  final List<ChatCommonDetailCommentDto> reply; // 대댓글 재귀 구조
 
   const ChatCommonDetailCommentDto({
     required this.commentId,
     required this.writer,
     required this.content,
     required this.likes,
-    required this.isLiked,
+    this.isLiked = false,
     required this.reply,
   });
 

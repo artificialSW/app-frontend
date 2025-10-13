@@ -66,15 +66,17 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
         id: int.parse(widget.question.id),
       );
       
-      await _chatService.postChatLike(request);
+      final response = await _chatService.postChatLike(request);
+      
+      // 서버 응답으로 실제 상태 업데이트
+      setState(() {
+        _isLiking = false;
+        _liked = response.isLiked;
+        _likes = response.totalLikes;
+      });
       
       // MockDataManager 캐시도 함께 업데이트
       MockDataManager.togglePersonalQuestionLike(int.parse(widget.question.id));
-      
-      // 성공 시 로딩 상태 해제
-      setState(() {
-        _isLiking = false;
-      });
       
     } catch (e) {
       // 실패 시 원래 상태로 복원

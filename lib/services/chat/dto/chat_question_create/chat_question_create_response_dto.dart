@@ -5,12 +5,13 @@ part 'chat_question_create_response_dto.g.dart';
 
 @JsonSerializable()
 class ChatQuestionCreateResponseDto {
-  final int? questionId;
+  @JsonKey(name: 'question_ref_id')
+  final int? questionRefId;
   final String? errorCode;
   final String? message;
 
   ChatQuestionCreateResponseDto({
-    this.questionId,
+    this.questionRefId,
     this.errorCode,
     this.message,
   });
@@ -20,8 +21,9 @@ class ChatQuestionCreateResponseDto {
   Map<String, dynamic> toJson() => _$ChatQuestionCreateResponseDtoToJson(this);
 
   // 성공 여부 확인 메서드
-  bool get isSuccess => questionId != null;
+  bool get isSuccess => questionRefId != null;
 }
+
 
 
 

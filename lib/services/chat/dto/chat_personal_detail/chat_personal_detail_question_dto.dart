@@ -1,35 +1,30 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'chat_common_detail_question_dto.g.dart';
+part 'chat_personal_detail_question_dto.g.dart';
 
 @JsonSerializable()
-class ChatCommonDetailQuestionDto {
+class ChatPersonalDetailQuestionDto {
   @JsonKey(name: 'question_ref_id')
   final int questionRefId;
   final String content;
+  final int sender;
   final int likes;
   @JsonKey(name: 'CreateAt')
   final String createdAt;
-  final int count;
   @JsonKey(name: 'isLiked', defaultValue: false)
   final bool isLiked;
 
-  const ChatCommonDetailQuestionDto({
+  ChatPersonalDetailQuestionDto({
     required this.questionRefId,
     required this.content,
+    required this.sender,
     required this.likes,
     required this.createdAt,
-    required this.count,
     this.isLiked = false,
   });
 
-  factory ChatCommonDetailQuestionDto.fromJson(Map<String, dynamic> json) =>
-      _$ChatCommonDetailQuestionDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ChatCommonDetailQuestionDtoToJson(this);
+  factory ChatPersonalDetailQuestionDto.fromJson(Map<String, dynamic> json) =>
+      _$ChatPersonalDetailQuestionDtoFromJson(json);
+  Map<String, dynamic> toJson() => _$ChatPersonalDetailQuestionDtoToJson(this);
 }
-
-
-
-
 

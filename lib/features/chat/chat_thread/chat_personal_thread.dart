@@ -52,11 +52,11 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
         _answers = data.comments.map((comment) {
           return _Answer(
             comment.commentId.toString(),
-            comment.writer,
+            comment.writer.toString(), // int를 String으로 변환
             comment.content,
             likes: comment.likes,
             liked: comment.isLiked,
-            replies: comment.reply.map((r) => _Reply('나', r)).toList(),
+            replies: comment.reply.map((r) => _Reply(r.writer.toString(), r.content)).toList(),
           );
         }).toList();
         _isLoading = false;
@@ -88,7 +88,13 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
         id: int.parse(answer.id),
       );
       
-      await _chatService.postChatLike(request);
+      final response = await _chatService.postChatLike(request);
+      
+      // 서버 응답으로 실제 상태 업데이트
+      setState(() {
+        answer.liked = response.isLiked;
+        answer.likes = response.totalLikes;
+      });
       
     } catch (e) {
       // 실패 시 원래 상태로 복원

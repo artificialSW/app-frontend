@@ -49,20 +49,17 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
     try {
       final data = await _chatService.getChatCommonDetail(widget.questionId);
       setState(() {
-        _questionData = ChatCommonDetailQuestionDto.fromJson(data['question']);
-        final commentsData = (data['comments'] as List)
-            .map((json) => ChatCommonDetailCommentDto.fromJson(json))
-            .toList();
+        _questionData = data.question;
         
         // DTO를 _Comment 리스트로 변환
-        _comments = commentsData.map((comment) {
+        _comments = data.comments.map((comment) {
           return _Comment(
             comment.commentId.toString(),
-            comment.writer,
+            comment.writer.toString(), // int를 String으로 변환
             comment.content,
             likes: comment.likes,
-            liked: false, // 초기 상태를 빈 하트로 설정
-            replies: comment.reply.map((r) => _Reply('나', r)).toList(),
+            liked: comment.isLiked,
+            replies: comment.reply.map((r) => _Reply(r.writer.toString(), r.content, likes: r.likes, liked: r.isLiked)).toList(),
           );
         }).toList();
         _isLoading = false;
@@ -94,7 +91,13 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
         id: int.parse(comment.id),
       );
       
-      await _chatService.postChatLike(request);
+      final response = await _chatService.postChatLike(request);
+      
+      // 서버 응답으로 실제 상태 업데이트
+      setState(() {
+        comment.liked = response.isLiked;
+        comment.likes = response.totalLikes;
+      });
       
     } catch (e) {
       // 실패 시 원래 상태로 복원

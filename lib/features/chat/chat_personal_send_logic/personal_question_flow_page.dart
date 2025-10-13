@@ -52,6 +52,32 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
     }
   }
 
+  /// 영어 role을 한국어로 변환하는 헬퍼 함수
+  String _getRoleInKorean(String role) {
+    switch (role.toLowerCase()) {
+      case 'father':
+        return '아빠';
+      case 'mother':
+        return '엄마';
+      case 'grandfather':
+        return '할아버지';
+      case 'grandmother':
+        return '할머니';
+      case 'sibling':
+        return '형제';
+      case 'brother':
+        return '형제';
+      case 'sister':
+        return '자매';
+      case 'son':
+        return '아들';
+      case 'daughter':
+        return '딸';
+      default:
+        return role; // 매핑이 없으면 원본 그대로 반환
+    }
+  }
+
   Future<void> _submitQuestion() async {
     if (_state.target == null || _state.visibility == null || _state.question.trim().isEmpty) {
       return;
@@ -60,7 +86,7 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
     try {
       final request = ChatQuestionCreateRequestDto(
         receiverId: int.parse(_state.target!.id),
-        isPublic: _state.visibility == VisibilityType.public,
+        visibility: _state.visibility == VisibilityType.public ? 1 : 0,
         content: _state.question.trim(),
       );
 
@@ -113,8 +139,8 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
         // ChatFamilyMemberDto를 User로 변환 (기존 StepFamily와 호환)
         final members = _familyMembers.map((dto) => User(
           id: dto.id.toString(),
-          name: dto.role, // role을 name으로 사용
-          role: dto.role,
+          name: _getRoleInKorean(dto.role), // 영어 role을 한국어로 변환
+          role: dto.role, // 원본 영어 role 유지
         )).toList();
         
         body = StepFamily(

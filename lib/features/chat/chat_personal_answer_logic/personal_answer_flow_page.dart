@@ -106,11 +106,39 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
     return DateTime.now().difference(_questionsLastUpdated!).inMinutes < 2;
   }
 
-  /// 가족 구성원 ID를 이름으로 변환하는 헬퍼 메서드
+  /// 가족 구성원 ID를 한국어 이름으로 변환하는 헬퍼 메서드
   /// API에서 받은 가족 구성원 정보를 사용하여 ID를 실제 이름(role)으로 변환
   /// 만약 매핑이 없으면 "X번째" 형태로 반환
   String _getSenderName(int senderId) {
-    return _familyMemberMap[senderId] ?? '$senderId번째';
+    final role = _familyMemberMap[senderId];
+    if (role == null) return '$senderId번째';
+    return _getRoleInKorean(role);
+  }
+
+  /// 영어 role을 한국어로 변환하는 헬퍼 함수
+  String _getRoleInKorean(String role) {
+    switch (role.toLowerCase()) {
+      case 'father':
+        return '아빠';
+      case 'mother':
+        return '엄마';
+      case 'grandfather':
+        return '할아버지';
+      case 'grandmother':
+        return '할머니';
+      case 'sibling':
+        return '형제';
+      case 'brother':
+        return '형제';
+      case 'sister':
+        return '자매';
+      case 'son':
+        return '아들';
+      case 'daughter':
+        return '딸';
+      default:
+        return role; // 매핑이 없으면 원본 그대로 반환
+    }
   }
 
   /// 성공 페이지에서 1.2초 후 자동으로 채팅 메인 페이지로 돌아가는 메서드
@@ -157,7 +185,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
   /// AppBar의 초록색 배지에 표시되는 숫자를 위해 사용
   int _getUnsolvedCount() {
     if (_questions == null) return 0;
-    return _questions!.where((q) => !q.solved).length; // solved가 false인 질문만 카운트
+    return _questions!.length; // 나에게 온 질문 개수
   }
 
   @override
@@ -183,10 +211,10 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
         // API에서 받은 DTO를 기존 UI 컴포넌트와 호환되는 Map 형태로 변환
         // StepAnswerList는 Map<String, String> 형태의 데이터를 기대합니다.
         final questionMaps = _questions!.map((dto) => {
-          'id': dto.questionId.toString(), // 질문 ID
+          'id': dto.questionRefId.toString(), // 질문 ID
           'from': _getSenderName(dto.sender), // 보낸 사람 이름 (ID -> 이름 변환)
           'text': dto.content, // 질문 내용
-          'isPublic': dto.isPublic.toString(), // 공개/비공개 여부
+          'isPublic': (dto.visibility == 1).toString(), // 공개/비공개 여부
         }).toList();
         
         body = RefreshIndicator(
@@ -199,7 +227,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
             onSelect: (q) {
               // 사용자가 선택한 질문의 원본 DTO를 찾아서 저장
               final selectedDto = _questions!.firstWhere(
-                (dto) => dto.questionId.toString() == q['id'],
+                (dto) => dto.questionRefId.toString() == q['id'],
               );
               setState(() {
                 _selectedQuestion = selectedDto; // 선택된 질문 저장

@@ -8,11 +8,13 @@ part of 'chat_like_response_dto.dart';
 
 ChatLikeResponseDto _$ChatLikeResponseDtoFromJson(Map<String, dynamic> json) =>
     ChatLikeResponseDto(
-      success: json['success'] as bool,
+      isLiked: json['isLiked'] as bool,
+      totalLikes: json['totalLikes'] as int,
     );
 
 Map<String, dynamic> _$ChatLikeResponseDtoToJson(
         ChatLikeResponseDto instance) =>
     <String, dynamic>{
-      'success': instance.success,
+      'isLiked': instance.isLiked,
+      'totalLikes': instance.totalLikes,
     };

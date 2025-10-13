@@ -10,11 +10,13 @@ ChatPersonalDetailCommentDto _$ChatPersonalDetailCommentDtoFromJson(
         Map<String, dynamic> json) =>
     ChatPersonalDetailCommentDto(
       commentId: json['commentId'] as int,
-      writer: json['writer'] as String,
+      writer: json['writer'] as int,
       content: json['content'] as String,
       likes: json['likes'] as int,
-      isLiked: json['isLiked'] as bool,
-      reply: (json['reply'] as List<dynamic>).map((e) => e as String).toList(),
+      isLiked: json['isLiked'] as bool? ?? false,
+      reply: (json['reply'] as List<dynamic>)
+          .map((e) => ChatPersonalDetailCommentDto.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ChatPersonalDetailCommentDtoToJson(

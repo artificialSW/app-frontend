@@ -5,6 +5,7 @@ part 'chat_reply_request_dto.g.dart';
 
 @JsonSerializable()
 class ChatReplyRequestDto {
+  @JsonKey(name: 'question_ref_id')
   final int questionRefId;
   final String content;
   final int? replyTo;
@@ -19,6 +20,7 @@ class ChatReplyRequestDto {
       _$ChatReplyRequestDtoFromJson(json);
   Map<String, dynamic> toJson() => _$ChatReplyRequestDtoToJson(this);
 }
+
 
 
 
