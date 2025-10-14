@@ -18,23 +18,11 @@ AppBar HomeTopBar() => AppBar(
       child: Text(
         'plumu',
         textAlign: TextAlign.center,
-        style: AppTextStyles.plumu
+        style: AppTextStyles.plumu.copyWith(color: Colors.white)
       ),
     ),
     actions: [
-      Builder(
-        builder: (context) => IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const GuidebookMainPage(),
-              ),
-            );
-          },
-          icon: Image.asset(AppAssets.dogaam),
-        ),
-      ),
+      // 기존 book 아이콘 제거 - 도감 기능을 하단 버튼으로 이동
     ],
   );
 

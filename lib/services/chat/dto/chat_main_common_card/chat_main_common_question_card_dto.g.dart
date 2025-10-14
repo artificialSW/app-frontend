@@ -9,7 +9,7 @@ part of 'chat_main_common_question_card_dto.dart';
 ChatMainCommonQuestionCardDto _$ChatMainCommonQuestionCardDtoFromJson(
         Map<String, dynamic> json) =>
     ChatMainCommonQuestionCardDto(
-      questionId: json['Q_id'] as int,
+      questionRefId: json['question_ref_id'] as int,
       content: json['content'] as String,
       likes: json['likes'] as int,
       comments: json['comments'] as int,
@@ -19,7 +19,7 @@ ChatMainCommonQuestionCardDto _$ChatMainCommonQuestionCardDtoFromJson(
 Map<String, dynamic> _$ChatMainCommonQuestionCardDtoToJson(
         ChatMainCommonQuestionCardDto instance) =>
     <String, dynamic>{
-      'Q_id': instance.questionId,
+      'question_ref_id': instance.questionRefId,
       'content': instance.content,
       'likes': instance.likes,
       'comments': instance.comments,

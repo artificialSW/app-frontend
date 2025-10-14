@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/features/home/widget/fruit_card.dart';
 import 'package:artificialsw_frontend/features/home/widget/flower_card.dart';
 import 'package:artificialsw_frontend/features/home/models/fruit_card_data.dart';
 import 'package:artificialsw_frontend/features/home/models/flower_card_data.dart';
 
 class TreeDecorateSheet extends StatefulWidget {
-  final int pageIndex;
+  final String treeType; // 'flower-1', 'flower-2', 'fruit-1', 'fruit-2'
   final Function(List<FruitCardData>, List<FlowerCardData>)? onSelectionChanged;
   
   const TreeDecorateSheet({
     super.key,
-    required this.pageIndex,
+    required this.treeType,
     this.onSelectionChanged,
   });
 
@@ -31,54 +32,51 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
   }
 
   void _loadTestData() {
-    // 테스트용 과일 카드들 (season은 date 기준으로 자동 계산됨)
+    // 테스트용 과일 카드들 (모든 과일 추가)
     final rawFruitCards = [
-      FruitCardData(
-        id: 'fruit_spring_001',
-        name: '딸기',
-        imagePath: 'assets/images/fruit/spring/strawberry.png',
-        date: '2024-04-15',  // 봄 날짜
-        puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png',
-        order: 0,  // 기본값: 안달림
-      ),
-      FruitCardData(
-        id: 'fruit_summer_001',
-        name: '복숭아',
-        imagePath: 'assets/images/fruit/summer/peach.png',
-        date: '2024-07-20',  // 여름 날짜
-        puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png',
-        order: 0,  // 기본값: 안달림
-      ),
-      FruitCardData(
-        id: 'fruit_winter_001',
-        name: '사과',
-        imagePath: 'assets/images/fruit/winter/apple.png',
-        date: '2024-12-15',  // 겨울 날짜
-        puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png',
-        order: 0,  // 기본값: 안달림
-      ),
+      // 봄 과일들
+      FruitCardData(id: 'fruit_spring_001', name: '딸기', imagePath: 'assets/images/fruit/spring/strawberry.png', date: '2024-04-15', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_spring_002', name: '체리', imagePath: 'assets/images/fruit/spring/cherry.png', date: '2024-04-20', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_spring_003', name: '키위', imagePath: 'assets/images/fruit/spring/kiwi.png', date: '2024-05-10', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_spring_004', name: '라즈베리', imagePath: 'assets/images/fruit/spring/raspberry.png', date: '2024-05-15', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_spring_005', name: '참외', imagePath: 'assets/images/fruit/spring/oriental_melon.png', date: '2024-06-01', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
+      
+      // 여름 과일들
+      FruitCardData(id: 'fruit_summer_001', name: '복숭아', imagePath: 'assets/images/fruit/summer/peach.png', date: '2024-07-20', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_summer_002', name: '블루베리', imagePath: 'assets/images/fruit/summer/blueberry.png', date: '2024-07-25', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_summer_003', name: '망고', imagePath: 'assets/images/fruit/summer/mango.png', date: '2024-08-05', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_summer_004', name: '자두', imagePath: 'assets/images/fruit/summer/plum.png', date: '2024-08-10', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_summer_005', name: '코코넛', imagePath: 'assets/images/fruit/summer/coconut.png', date: '2024-08-15', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
+      
+      // 가을 과일들
+      FruitCardData(id: 'fruit_fall_001', name: '무화과', imagePath: 'assets/images/fruit/fall/fig.png', date: '2024-09-20', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_fall_002', name: '포도', imagePath: 'assets/images/fruit/fall/grape.png', date: '2024-09-25', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_fall_003', name: '대추', imagePath: 'assets/images/fruit/fall/jujube.png', date: '2024-10-01', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_fall_004', name: '배', imagePath: 'assets/images/fruit/fall/pear.png', date: '2024-10-10', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_fall_005', name: '감', imagePath: 'assets/images/fruit/fall/persimmon.png', date: '2024-10-15', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
+      
+      // 겨울 과일들
+      FruitCardData(id: 'fruit_winter_001', name: '사과', imagePath: 'assets/images/fruit/winter/apple.png', date: '2024-12-15', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_winter_002', name: '아보카도', imagePath: 'assets/images/fruit/winter/avocado.png', date: '2024-12-20', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_winter_003', name: '귤', imagePath: 'assets/images/fruit/winter/mandarin.png', date: '2024-12-25', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_winter_004', name: '석류', imagePath: 'assets/images/fruit/winter/pomegranate.png', date: '2024-01-05', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_winter_005', name: '유자', imagePath: 'assets/images/fruit/winter/yuja.png', date: '2024-01-10', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
     ];
 
-    // 테스트용 꽃 카드들 (emotion은 백엔드에서 받아옴)
+    // 테스트용 꽃 카드들 (모든 꽃 추가)
     final rawFlowerCards = [
-      FlowerCardData(
-        id: 'flower_love_001',
-        name: '장미',
-        imagePath: 'assets/images/flower/rose.png',
-        emotion: 'love',
-        date: '2024-09-13',
-        communicationText: '사랑 관련 소통을 통해 획득',
-        order: 0,  // 기본값: 안달림
-      ),
-      FlowerCardData(
-        id: 'flower_comfort_001',
-        name: '아카시아',
-        imagePath: 'assets/images/flower/acacia.png',
-        emotion: 'comfort',
-        date: '2024-09-12',
-        communicationText: '위로 관련 소통을 통해 획득',
-        order: 0,  // 기본값: 안달림
-      ),
+      FlowerCardData(id: 'flower_001', name: '동백꽃', imagePath: 'assets/images/flower/camellia.png', emotion: 'love', date: '2024-09-13', communicationText: '사랑 관련 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_002', name: '장미', imagePath: 'assets/images/flower/rose.png', emotion: 'love', date: '2024-09-14', communicationText: '사랑 관련 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_003', name: '아카시아', imagePath: 'assets/images/flower/acacia.png', emotion: 'comfort', date: '2024-09-12', communicationText: '위로 관련 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_004', name: '수국', imagePath: 'assets/images/flower/hydrangea.png', emotion: 'comfort', date: '2024-09-15', communicationText: '위로 관련 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_005', name: '매화', imagePath: 'assets/images/flower/plum_blossom.png', emotion: 'special', date: '2024-09-16', communicationText: '특별한 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_006', name: '튤립', imagePath: 'assets/images/flower/tulip.png', emotion: 'special', date: '2024-09-17', communicationText: '특별한 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_007', name: '제비꽃', imagePath: 'assets/images/flower/violet.png', emotion: 'memory', date: '2024-09-18', communicationText: '추억 관련 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_008', name: '목련', imagePath: 'assets/images/flower/magnolia.png', emotion: 'memory', date: '2024-09-19', communicationText: '추억 관련 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_009', name: '벚꽃', imagePath: 'assets/images/flower/cherry_blossom.png', emotion: 'joy', date: '2024-09-20', communicationText: '기쁨 관련 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_010', name: '코스모스', imagePath: 'assets/images/flower/cosmos.png', emotion: 'joy', date: '2024-09-21', communicationText: '기쁨 관련 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_011', name: '해바라기', imagePath: 'assets/images/flower/sunflower.png', emotion: 'hobby', date: '2024-09-22', communicationText: '취미 관련 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_012', name: '팥배꽃', imagePath: 'assets/images/flower/patbae_flower.png', emotion: 'hobby', date: '2024-09-23', communicationText: '취미 관련 소통을 통해 획득', order: 0),
     ];
 
     // 날짜순으로 정렬 (최신순)
@@ -114,15 +112,30 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
     return 4; // 모든 위치가 사용 중 (더 이상 선택 불가)
   }
 
+  /// 나무 타입이 과일 나무인지 확인
+  bool _isFruitTree() {
+    return widget.treeType == 'fruit-1' || widget.treeType == 'fruit-2';
+  }
+
+  /// 나무 타입에 따라 표시할 카드 리스트 반환
+  List<dynamic> _getDisplayCards() {
+    if (_isFruitTree()) {
+      return fruitCards;
+    } else {
+      return flowerCards;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      minChildSize: 0.05,
-      initialChildSize: 0.08,
+      minChildSize: 0.3, // 최소 높이를 30%로 설정
+      initialChildSize: 0.4, // 초기 높이를 40%로 설정
       maxChildSize: 0.88,
       snap: true,
-      snapSizes: const [0.08, 0.4, 0.88],
-      builder: (context, controller) {
+      snapSizes: const [0.3, 0.4, 0.88], // 스냅 위치 조정
+      expand: true, // 시트가 전체 영역을 차지하도록
+      builder: (context, scrollController) {
         return Container(
           decoration: ShapeDecoration(
             color: Color(0xFFFFFFFF),
@@ -139,127 +152,86 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
               ),
             ],
           ),
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              Center(
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              // 드래그 핸들 영역 (적응형으로 조정)
+              SliverToBoxAdapter(
                 child: Container(
-                  width: 66,
-                  height: 4,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFD9D9D9),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+                  height: 40 * (MediaQuery.of(context).size.height / 917.0), // 적응형 높이
+                  child: Center(
+                    child: Container(
+                      width: 66 * (MediaQuery.of(context).size.width / 412.0), // 적응형 너비
+                      height: 4 * (MediaQuery.of(context).size.height / 917.0), // 적응형 높이
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFFD9D9D9),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(2 * (MediaQuery.of(context).size.width / 412.0)), // 적응형 둥근 모서리
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-              Expanded(
-                child: GridView.builder(
-                  controller: controller,
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              // 카드 그리드 (적응형 패딩과 간격)
+              SliverPadding(
+                padding: EdgeInsets.all(12 * (MediaQuery.of(context).size.width / 412.0)), // 적응형 패딩
+                sliver: SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3, // 좌우로 3개씩
-                    crossAxisSpacing: 12, // 좌우 간격
-                    mainAxisSpacing: 12, // 상하 간격
+                    crossAxisSpacing: 12 * (MediaQuery.of(context).size.width / 412.0), // 적응형 좌우 간격
+                    mainAxisSpacing: 12 * (MediaQuery.of(context).size.height / 917.0), // 적응형 상하 간격
                     childAspectRatio: 1, // 정사각형 비율
                   ),
-                  itemCount: widget.pageIndex == 1 ? fruitCards.length : flowerCards.length,
-                  itemBuilder: (context, index) {
-                    if (widget.pageIndex == 1) {
-                      // 2번째 페이지: 과일 카드들
-                      if (fruitCards.isEmpty) {
-                        // 카드가 없는 경우 빈 상태 표시
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final displayCards = _getDisplayCards();
+                      
+                      if (displayCards.isEmpty) {
+                        // 카드가 없는 경우 빈 상태 표시 (적응형)
                         return Container(
                           decoration: BoxDecoration(
                             color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(8 * (MediaQuery.of(context).size.width / 412.0)), // 적응형 둥근 모서리
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Text(
-                              '아직 획득한 과일이 없습니다',
+                              _isFruitTree() ? '아직 획득한 과일이 없습니다' : '아직 획득한 꽃이 없습니다',
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 14,
+                                fontSize: 14 * (MediaQuery.of(context).size.width / 412.0), // 적응형 폰트 크기
                               ),
                             ),
                           ),
                         );
                       }
                       
-                      final fruitCard = fruitCards[index];
+                      final card = displayCards[index];
                       
-                      return FruitCard(
-                        fruitName: fruitCard.name,
-                        fruitImagePath: fruitCard.imagePath,
-                        season: fruitCard.season,
-                        date: fruitCard.date,
-                        order: fruitCard.order, // order 값으로 체크표시 표시 (0: 안달림, 1-3: 위치)
-                        onTap: () {
-                          setState(() {
-                            // 1. 체크표시 클릭 시 상태 변경
-                            if (fruitCard.order > 0) {
-                              // 해제: order를 0으로 (나무에서 제거)
-                              fruitCards[index] = fruitCard.copyWith(order: 0);
-                            } else {
-                              // 선택: 다음 사용 가능한 order 할당 (나무에 추가)
-                              final nextOrder = _getNextAvailableOrder(fruitCards);
-                              if (nextOrder <= 3) {
-                                fruitCards[index] = fruitCard.copyWith(order: nextOrder);
-                              }
-                            }
-                          });
-                          // 2. 부모(HomeMainPage)에게 선택 상태 변경 알림
-                          widget.onSelectionChanged?.call(fruitCards, flowerCards);
-                        },
-                      );
-                    } else {
-                      // 3번째 페이지: 꽃 카드들
-                      if (flowerCards.isEmpty) {
-                        // 카드가 없는 경우 빈 상태 표시
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              '아직 획득한 꽃이 없습니다',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
+                      if (_isFruitTree()) {
+                        final fruitCard = card as FruitCardData;
+                        return FruitCard(
+                          fruitName: fruitCard.name,
+                          fruitImagePath: fruitCard.imagePath,
+                          season: fruitCard.season,
+                          date: fruitCard.date,
+                          order: fruitCard.order,
+                          onTap: null,
+                        );
+                      } else {
+                        final flowerCard = card as FlowerCardData;
+                        return FlowerCard(
+                          flowerName: flowerCard.name,
+                          flowerImagePath: flowerCard.imagePath,
+                          emotion: flowerCard.emotion,
+                          date: flowerCard.date,
+                          order: flowerCard.order,
+                          onTap: null,
                         );
                       }
-                      
-                      final flowerCard = flowerCards[index];
-                      
-                      return FlowerCard(
-                        flowerName: flowerCard.name,
-                        flowerImagePath: flowerCard.imagePath,
-                        emotion: flowerCard.emotion,
-                        date: flowerCard.date,
-                        order: flowerCard.order, // order 값으로 체크표시 표시 (0: 안달림, 1-3: 위치)
-                        onTap: () {
-                          setState(() {
-                            // 1. 체크표시 클릭 시 상태 변경
-                            if (flowerCard.order > 0) {
-                              // 해제: order를 0으로 (나무에서 제거)
-                              flowerCards[index] = flowerCard.copyWith(order: 0);
-                            } else {
-                              // 선택: 다음 사용 가능한 order 할당 (나무에 추가)
-                              final nextOrder = _getNextAvailableOrder(flowerCards);
-                              if (nextOrder <= 3) {
-                                flowerCards[index] = flowerCard.copyWith(order: nextOrder);
-                              }
-                            }
-                          });
-                          // 2. 부모(HomeMainPage)에게 선택 상태 변경 알림
-                          widget.onSelectionChanged?.call(fruitCards, flowerCards);
-                        },
-                      );
-                    }
-                  },
+                    },
+                    childCount: _getDisplayCards().length,
+                  ),
                 ),
               ),
             ],

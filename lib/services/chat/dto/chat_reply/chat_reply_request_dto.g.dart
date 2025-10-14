@@ -8,7 +8,7 @@ part of 'chat_reply_request_dto.dart';
 
 ChatReplyRequestDto _$ChatReplyRequestDtoFromJson(Map<String, dynamic> json) =>
     ChatReplyRequestDto(
-      questionRefId: json['questionRefId'] as int,
+      questionRefId: json['question_ref_id'] as int,
       content: json['content'] as String,
       replyTo: json['replyTo'] as int?,
     );
@@ -16,7 +16,12 @@ ChatReplyRequestDto _$ChatReplyRequestDtoFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ChatReplyRequestDtoToJson(
         ChatReplyRequestDto instance) =>
     <String, dynamic>{
-      'questionRefId': instance.questionRefId,
+      'question_ref_id': instance.questionRefId,
       'content': instance.content,
       'replyTo': instance.replyTo,
     };
+
+
+
+
+

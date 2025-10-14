@@ -54,35 +54,22 @@ class FruitCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: cardColors,  // 계절별 그라데이션 색상
-        ),
+        color: Color(0xFFF7F7F7), // 단일 색상으로 변경
       ),
       child: Stack(
         children: [
-          // 체크 아이콘 (클릭 가능) - 나무에 달렸는지 표시
+          // 과일 이미지 (카드 중앙에서 조금 위로)
           Positioned(
-            right: 6,
-            top: 6,
-            child: GestureDetector(
-              onTap: onTap,  // 클릭 시 나무에 달기/해제
-              child: Icon(
-                order > 0 ? Icons.check_circle : Icons.check_circle_outline,
-                color: checkColor,  // 계절별 체크 아이콘 색상
-                size: 20,
+            top: 15, // 위쪽에서 15px 떨어진 위치
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Image.asset(
+                fruitImagePath,
+                width: 60, // 크기를 50에서 60으로 증가
+                height: 60, // 크기를 50에서 60으로 증가
+                fit: BoxFit.contain,
               ),
-            ),
-          ),
-
-          // 과일 이미지 (카드 중앙)
-          Center(
-            child: Image.asset(
-              fruitImagePath,
-              width: 50,
-              height: 50,
-              fit: BoxFit.contain,
             ),
           ),
 

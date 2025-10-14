@@ -4,26 +4,20 @@ part 'chat_personal_answer_question_dto.g.dart';
 
 @JsonSerializable()
 class ChatPersonalAnswerQuestionDto {
-  @JsonKey(name: 'Q_id')
-  final int questionId;
+  @JsonKey(name: 'question_ref_id')
+  final int questionRefId;
   final String content;
   final int sender;
-  final int receiver;
-  final int likes;
-  final int comments;
-  final bool solved;
-  @JsonKey(name: 'is_public')
-  final bool isPublic;
+  @JsonKey(name: 'sender_role')
+  final String senderRole;
+  final bool visibility;
 
   const ChatPersonalAnswerQuestionDto({
-    required this.questionId,
+    required this.questionRefId,
     required this.content,
     required this.sender,
-    required this.receiver,
-    required this.likes,
-    required this.comments,
-    required this.solved,
-    required this.isPublic,
+    required this.senderRole,
+    required this.visibility,
   });
 
   factory ChatPersonalAnswerQuestionDto.fromJson(Map<String, dynamic> json) =>

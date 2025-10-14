@@ -23,3 +23,9 @@ Map<String, dynamic> _$ChatWeeklyCommonQuestionDtoToJson(
       'likes': instance.likes,
       'posts': instance.posts,
     };
+
+
+
+
+
+

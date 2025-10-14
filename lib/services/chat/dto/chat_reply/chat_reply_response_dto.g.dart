@@ -8,7 +8,6 @@ part of 'chat_reply_response_dto.dart';
 
 ChatReplyResponseDto _$ChatReplyResponseDtoFromJson(Map<String, dynamic> json) =>
     ChatReplyResponseDto(
-      success: json['success'] as bool,
       message: json['message'] as String,
       replyId: json['replyId'] as int?,
     );
@@ -16,7 +15,11 @@ ChatReplyResponseDto _$ChatReplyResponseDtoFromJson(Map<String, dynamic> json) =
 Map<String, dynamic> _$ChatReplyResponseDtoToJson(
         ChatReplyResponseDto instance) =>
     <String, dynamic>{
-      'success': instance.success,
       'message': instance.message,
       'replyId': instance.replyId,
     };
+
+
+
+
+

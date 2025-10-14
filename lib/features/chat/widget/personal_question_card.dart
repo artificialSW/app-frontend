@@ -10,6 +10,7 @@ import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/services/chat/chat_service.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_like/chat_like_request_dto.dart';
 import 'package:artificialsw_frontend/services/chat/mock_data_manager.dart';
+import 'package:artificialsw_frontend/services/chat/offline_like_queue.dart';
 
 // 프로젝트 내부 (상대 경로)
 import '../model/personal_question.dart';
@@ -37,65 +38,51 @@ class PersonalQuestionCard extends StatefulWidget {
 
 class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
   late int _likes = widget.initialLikes;
-  late bool _liked = widget.question.isLiked;
+  late bool _liked = widget.question.isLiked; // 초기 상태를 API에서 받은 값으로 설정
   bool _pressed = false;
   bool _isLiking = false; // 좋아요 요청 중 상태
 
-  // API 호출을 위한 ChatService 인스턴스
-  final ChatService _chatService = ChatService();
+  // 오프라인 좋아요 큐
+  final OfflineLikeQueue _likeQueue = OfflineLikeQueue();
 
-  /// 개인질문에 좋아요를 토글하는 메서드
-  /// API 호출 후 성공하면 UI를 업데이트하고, 실패하면 원래 상태로 복원
-  Future<void> _toggleLike() async {
+  /// 개인질문에 좋아요를 토글하는 메서드 (오프라인 큐 방식)
+  /// 인스타그램처럼 즉시 UI 업데이트 후, 백그라운드에서 서버 동기화
+  void _toggleLike() {
     if (_isLiking) return; // 이미 요청 중이면 무시
 
-    // UI를 먼저 업데이트 (낙관적 업데이트)
-    final previousLiked = _liked;
-    final previousLikes = _likes;
-    
     setState(() {
       _isLiking = true;
-      _liked = !_liked;
-      _likes = _liked ? _likes + 1 : (_likes > 0 ? _likes - 1 : 0);
     });
 
-    try {
-      // API 호출
-      final request = ChatLikeRequestDto(
-        what: ChatLikeType.personalQuestion,
-        id: int.parse(widget.question.id),
-      );
-      
-      await _chatService.postChatLike(request);
-      
-      // MockDataManager 캐시도 함께 업데이트
-      MockDataManager.togglePersonalQuestionLike(int.parse(widget.question.id));
-      
-      // 성공 시 로딩 상태 해제
-      setState(() {
-        _isLiking = false;
-      });
-      
-    } catch (e) {
-      // 실패 시 원래 상태로 복원
-      setState(() {
-        _isLiking = false;
-        _liked = previousLiked;
-        _likes = previousLikes;
-      });
-      
-      // 에러 메시지 표시
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('좋아요 요청에 실패했습니다. 다시 시도해주세요.')),
-        );
-      }
-    }
+    // 1단계: 즉시 UI 업데이트 (사용자는 바로 결과를 봄)
+    final newLikedState = !_liked;
+    setState(() {
+      _liked = newLikedState;
+      _likes = newLikedState ? _likes + 1 : (_likes > 0 ? _likes - 1 : 0);
+    });
+
+    // 2단계: 오프라인 큐에 추가 (백그라운드에서 서버 동기화)
+    _likeQueue.addToQueue(
+      id: widget.question.id,
+      type: ChatLikeType.personalQuestion,
+      action: newLikedState ? LikeAction.like : LikeAction.unlike,
+    );
+
+    // 3단계: MockDataManager 캐시도 즉시 업데이트
+    MockDataManager.togglePersonalQuestionLike(int.parse(widget.question.id));
+
+    setState(() {
+      _isLiking = false;
+    });
+
+    // UI는 절대 롤백되지 않음! (인스타그램 방식)
   }
 
   @override
   Widget build(BuildContext context) {
     final isPrivate = widget.question.visibility == VisibilityType.private;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = screenWidth - 32; // 좌우 margin 16씩
 
     final BoxDecoration bg = _pressed
         ? BoxDecoration(
@@ -128,15 +115,15 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
           highlightColor: Colors.transparent,
           child: Ink(
             decoration: bg,
-            width: 380,  // Figma W
-            height: 94,  // Figma H
+            width: cardWidth,  // 적응형
+            height: 94,
             child: Stack(
               children: [
                 // 제목: X=24, Y=16
                 Positioned(
                   left: 24, top: 16,
                   child: SizedBox(
-                    width: 350, // 텍스트 줄바꿈 여유(피그마 레드 마크 350)
+                    width: cardWidth - 48, // 좌우 패딩 24씩 제외
                     child: Text(
                       widget.question.text,
                       style: TextStyle(
@@ -195,7 +182,7 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
                                     valueColor: AlwaysStoppedAnimation<Color>(statIcon),
                                   ),
                                 )
-                              : Icon(_liked ? Icons.favorite : Icons.favorite_border, size: 18, color: statIcon),
+                              : Icon(_liked ? Icons.favorite : Icons.favorite_border, size: 18, color: _liked ? Colors.red : statIcon),
                             const SizedBox(width: 4),
                             Text('$_likes', style: TextStyle(fontSize: 14, color: statText)),
                           ]),

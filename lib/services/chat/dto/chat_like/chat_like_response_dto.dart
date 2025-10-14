@@ -4,10 +4,14 @@ part 'chat_like_response_dto.g.dart';
 
 @JsonSerializable()
 class ChatLikeResponseDto {
-  final bool success;
+  @JsonKey(name: 'isLiked')
+  final bool isLiked;
+  @JsonKey(name: 'totalLikes')
+  final int totalLikes;
 
   const ChatLikeResponseDto({
-    required this.success,
+    required this.isLiked,
+    required this.totalLikes,
   });
 
   factory ChatLikeResponseDto.fromJson(Map<String, dynamic> json) =>
