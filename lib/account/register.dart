@@ -310,6 +310,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // 기존 가족 가입인 경우에만 familyVerificationCode 추가
     if (_selectedFamilyType == '기존 가족 가입') {
       data["familyVerificationCode"] = _familyCodeController.text.trim();
+    } else {
+      data["familyVerificationCode"] = null; ///이거 백이랑 소통해서 null로할지 ""로할지
     }
 
     print('회원가입 데이터: $data');
