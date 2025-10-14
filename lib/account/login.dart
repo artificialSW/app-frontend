@@ -176,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final loginUri = Uri.parse('$baseUrl/api/login').toString();
 
       final loginResponse = await _dio.post(
-        '${loginUri}/api/login',
+        loginUri,
         data: {'id': id, 'password': pw},
         options: Options(
           headers: {
