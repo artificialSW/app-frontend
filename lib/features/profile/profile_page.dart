@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../shared/constants/app_colors.dart';
 import '../../shared/constants/app_text_styles.dart';
 import '../../shared/widgets/custom_bottom_bar.dart';
+import 'package:artificialsw_frontend/features/profile/logout.dart';
 
 class ProfileRoot extends StatelessWidget {
   const ProfileRoot({super.key});
@@ -25,12 +26,14 @@ class ProfileRoot extends StatelessWidget {
             _buildInviteCode(),
             const SizedBox(height: 32),
             Center(
-              child: Text(
-                '로그아웃',
-                style: AppTextStyles.pretendard_regular.copyWith(
-                  decoration: TextDecoration.underline,
-                  color: Colors.grey,
-                ),
+              child: TextButton(
+                child: const Text('로그아웃', style: TextStyle(color: Colors.red)),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => LogoutConfirmDialog(),
+                  );
+                },
               ),
             ),
           ],
