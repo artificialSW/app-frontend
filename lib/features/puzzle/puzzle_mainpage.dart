@@ -206,11 +206,11 @@ class _PuzzleRootState extends State<PuzzleRoot> {
 
                   PuzzleCardCarousel(
                     imageUrls: [
-                      ...puzzle.completedThisWeek.map((item) => item.imageUrl),
+                      ...puzzle.completedThisWeek.map((item) => item?.imageUrl ?? 'https://picsum.photos/600/400'),
                       'https://picsum.photos/600/400',
                     ],
                     completedDates: [
-                      ...puzzle.completedThisWeek.map((item) => formatUtcToDateString(item.completedAt)),
+                      ...puzzle.completedThisWeek.map((item) => formatUtcToDateString(item?.completedAt ?? '0000.00.00')),
                       '2025.08.23',
                     ],
                   ),
@@ -241,8 +241,8 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                     children: [
                       SizedBox(width: screenWidth*0.06,),
                       PuzzleCardWidget(
-                          imageUrl: puzzle.inProgress[0].imageUrl,
-                          dateInfo: formatUtcToDateString(puzzle.inProgress[0].lastSavedAt),
+                          imageUrl: puzzle.inProgress[0]?.imageUrl ?? 'https://picsum.photos/600/400',
+                          dateInfo: formatUtcToDateString(puzzle.inProgress[0]?.lastSavedAt ?? '0000.00.00'),
                           imageSize: max(screenWidth*0.4, 150),
                           dateFontSize: 10,
                           text: '진행중인 퍼즐',
@@ -251,8 +251,8 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                       ),
                       SizedBox(width: screenWidth*0.06,),
                       PuzzleCardWidget(
-                          imageUrl: puzzle.inProgress[1].imageUrl,
-                          dateInfo: formatUtcToDateString(puzzle.inProgress[1].lastSavedAt),
+                          imageUrl: puzzle.inProgress[1]?.imageUrl ?? 'https://picsum.photos/600/400',
+                          dateInfo: formatUtcToDateString(puzzle.inProgress[1]?.lastSavedAt ?? '0000.00.00'),
                           imageSize: max(screenWidth*0.4, 150),
                           dateFontSize: 10,
                           textFontSize: 14,
