@@ -10,6 +10,7 @@ ChatHomeThisweekCommentDto _$ChatHomeThisweekCommentDtoFromJson(
         Map<String, dynamic> json) =>
     ChatHomeThisweekCommentDto(
       writer: json['writer'] as int,
+      writerRole: json['writer_role'] as String,
       contents: json['contents'] as String,
     );
 
@@ -17,6 +18,7 @@ Map<String, dynamic> _$ChatHomeThisweekCommentDtoToJson(
         ChatHomeThisweekCommentDto instance) =>
     <String, dynamic>{
       'writer': instance.writer,
+      'writer_role': instance.writerRole,
       'contents': instance.contents,
     };
 

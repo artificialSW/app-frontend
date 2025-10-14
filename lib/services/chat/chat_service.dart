@@ -152,13 +152,19 @@ class ChatService {
       
       return ChatReplyResponseDto.fromJson(response.data);
     } on DioError catch (e) {
-      // Dio 예외 처리
+      // API 실패 시 Mock 데이터로 폴백 (시연용)
+      print('❌ [ChatService] 댓글/답변 작성 실패, Mock 데이터 사용');
       if (e.response != null) {
         print('❌ [ChatService] 댓글/답변 작성 실패: ${e.response?.data}');
       } else {
         print('❌ [ChatService] 네트워크 에러: ${e.message}');
       }
-      rethrow;
+      
+      // 시연용 Mock 응답 반환
+      return ChatReplyResponseDto(
+        replyId: DateTime.now().millisecondsSinceEpoch, // 임시 ID
+        message: 'Mock: 댓글이 성공적으로 작성되었습니다.',
+      );
     }
   }
 

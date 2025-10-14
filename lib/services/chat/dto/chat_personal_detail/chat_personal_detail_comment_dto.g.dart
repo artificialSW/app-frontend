@@ -11,6 +11,7 @@ ChatPersonalDetailCommentDto _$ChatPersonalDetailCommentDtoFromJson(
     ChatPersonalDetailCommentDto(
       commentId: json['commentId'] as int,
       writer: json['writer'] as int,
+      writerRole: json['writer_role'] as String,
       content: json['content'] as String,
       likes: json['likes'] as int,
       isLiked: json['isLiked'] as bool? ?? false,
@@ -24,6 +25,7 @@ Map<String, dynamic> _$ChatPersonalDetailCommentDtoToJson(
     <String, dynamic>{
       'commentId': instance.commentId,
       'writer': instance.writer,
+      'writer_role': instance.writerRole,
       'content': instance.content,
       'likes': instance.likes,
       'isLiked': instance.isLiked,

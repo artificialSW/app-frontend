@@ -9,6 +9,7 @@ import 'package:artificialsw_frontend/services/chat/dto/chat_main_personal_card/
 import 'package:artificialsw_frontend/services/chat/dto/chat_main_common_card/chat_main_common_question_card_dto.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_reply/chat_reply_request_dto.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_reply/chat_reply_response_dto.dart';
+import 'package:artificialsw_frontend/services/chat/mock_data_manager.dart';
 
 // 프로젝트 내부 (상대 경로)
 import 'widget/personal_question_card.dart';
@@ -49,9 +50,6 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
   // 이번주 공통질문 데이터 (상단 배너)
   ChatHomeThisweekResponseDto? _weeklyData; // API에서 받은 이번주 공통질문 데이터
   bool _isWeeklyLoading = false;
-  
-  // 가족 구성원 정보 (역할명 변환용)
-  Map<int, String> _familyMemberMap = {};
 
   @override
   void initState() {
@@ -84,7 +82,6 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
       _loadPersonalData(forceRefresh: forceRefresh),
       _loadCommonData(forceRefresh: forceRefresh),
       _loadWeeklyData(forceRefresh: forceRefresh),
-      _loadFamilyMembers(), // 가족 구성원 정보 로드
     ]);
   }
   
@@ -179,53 +176,6 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
     }
   }
   
-  /// 가족 구성원 정보 로드
-  Future<void> _loadFamilyMembers() async {
-    if (_familyMemberMap.isNotEmpty) return;
-    
-    try {
-      final familyMembers = await _chatService.getFamilyMembers();
-      _familyMemberMap = {
-        for (var member in familyMembers) member.id: member.role
-      };
-    } catch (e) {
-      print('가족 구성원 정보 로드 실패: $e');
-    }
-  }
-  
-  /// 영어 역할을 한국어로 변환
-  String _getRoleInKorean(String role) {
-    switch (role.toLowerCase()) {
-      case 'father':
-        return '아빠';
-      case 'mother':
-        return '엄마';
-      case 'grandfather':
-        return '할아버지';
-      case 'grandmother':
-        return '할머니';
-      case 'sibling':
-        return '형제';
-      case 'brother':
-        return '형제';
-      case 'sister':
-        return '자매';
-      case 'son':
-        return '아들';
-      case 'daughter':
-        return '딸';
-      default:
-        return role; // 매핑이 없으면 원본 그대로 반환
-    }
-  }
-  
-  /// 사용자 ID로 역할명 가져오기
-  String _getSenderName(int senderId) {
-    final role = _familyMemberMap[senderId];
-    if (role == null) return '$senderId번째';
-    return _getRoleInKorean(role);
-  }
-  
   /// 개인질문 캐시 유효성 검사 (2분 이내)
   bool _isPersonalDataCacheValid() {
     if (_personalData == null || _personalDataLastUpdated == null) return false;
@@ -252,18 +202,10 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
       body: Column(
         children: [
           if (_weeklyData != null)
-          GestureDetector(
-            onTap: () => _showWeeklyQuestionDialog(),
-            child: WeeklyQuestionBanner(
-              question: CommonQuestion(
-                id: _weeklyData!.questionRefId.toString(),
-                title: '이번주의 공통질문',
-                description: _weeklyData!.questions,
-                likes: 0,
-                comments: _weeklyData!.comments.length,
-                isLiked: false,
-              ),
+            WeeklyQuestionBanner(
+              data: _weeklyData!,
               order: (_commonData?.length ?? 0) + 1,
+              onAnswerSubmit: (answer) => _submitWeeklyAnswer(answer),
               onTapThread: () {
                 // 스레드 화면으로 이동
                 Navigator.push(context, MaterialPageRoute(
@@ -274,7 +216,6 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
                 ));
               },
             ),
-          ),
           ChatTabBar(
             selectedIndex: _selectedIndex,
             onTabChanged: (index) => setState(() => _selectedIndex = index),
@@ -285,7 +226,6 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
                 // Pull-to-refresh 시 해당 탭의 데이터만 새로고침
                 if (_selectedIndex == 0) {
                   await _loadPersonalData(forceRefresh: true);
-                  await _loadFamilyMembers(); // 가족 구성원 정보도 새로고침
                 } else {
                   await _loadCommonData(forceRefresh: true);
                   // 공통질문 탭일 때는 상단 배너 데이터도 새로고침
@@ -297,12 +237,8 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: _AnimatedFAB(
         onPressed: () => Navigator.pushNamed(context, '/personal-question'),
-        backgroundColor: AppColors.plumu_gray_4,
-        foregroundColor: Colors.white,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, size: 28),
       ),
     );
   }
@@ -325,8 +261,8 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
         // API DTO를 UI Entity로 변환
         final entity = PersonalQuestionEntity(
           id: question.questionRefId.toString(),
-            askerUserId: _getSenderName(question.sender), // 역할명으로 변환
-            responderUserId: _getSenderName(question.receiver), // 역할명으로 변환
+          askerUserId: question.sender.toString(), // UI에 표시되지 않음
+          responderUserId: question.receiver.toString(), // UI에 표시되지 않음
           text: question.content,
           visibility: question.visibility == 1 ? VisibilityType.public : VisibilityType.private,
           createdAt: DateTime.now(), // createdAt은 백엔드에서 제거됨
@@ -391,129 +327,85 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
     );
   }
 
-  /// 이번주 공통질문 다이얼로그 표시
-  void _showWeeklyQuestionDialog() {
-    if (_weeklyData == null) return;
-
-    final TextEditingController answerController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          '이번주의 공통질문',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 질문 내용
-              Text(
-                _weeklyData!.questions,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 20),
-              
-              // 다른 사람들의 답변
-              if (_weeklyData!.comments.isNotEmpty) ...[
-                const Text(
-                  '다른 가족들의 답변',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ...(_weeklyData!.comments.map((comment) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${comment.writer}: ',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          comment.contents,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ],
-                  ),
-                ))),
-                const SizedBox(height: 20),
-              ],
-              
-              // 답변 입력 필드
-              TextField(
-                controller: answerController,
-                decoration: const InputDecoration(
-                  hintText: '답변을 입력하세요',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('취소'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final answer = answerController.text.trim();
-              if (answer.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('답변을 입력해주세요')),
-                );
-                return;
-              }
-              
-              // chat_reply_dto 사용하여 답변 전송
-              await _submitWeeklyAnswer(answer);
-              Navigator.pop(context);
-            },
-            child: const Text('답변하기'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 이번주 공통질문에 답변 제출
+  /// 이번주 공통질문에 답변 제출 (상단 배너에서 직접 호출)
   Future<void> _submitWeeklyAnswer(String answer) async {
+    if (_weeklyData == null) return;
+    
     try {
+      // POST API 호출 (댓글 작성 API 사용)
       final request = ChatReplyRequestDto(
         questionRefId: _weeklyData!.questionRefId,
         content: answer,
-        replyTo: null, // 1차 답변
+        replyTo: null, // 1차 댓글
       );
       
-      await _chatService.postChatReply(request);
+      final response = await _chatService.postChatReply(request);
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('답변이 등록되었습니다')),
-      );
+      print('✅ [ChatMainPage] 답변 등록 성공: ${response.message}');
       
-      // 답변 후 데이터 새로고침
-      await _loadWeeklyData();
+      // ✅ API 성공 시 데이터 새로고침
+      await _loadWeeklyData(forceRefresh: true);
+      
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('답변 등록에 실패했습니다')),
+      // ✅ API 실패 시에만 Mock으로 폴백 (시연용)
+      print('❌ [ChatMainPage] 답변 등록 실패, Mock으로 처리: $e');
+      
+      // Mock 데이터에 내 답변 추가
+      MockDataManager.addMyAnswerToWeeklyQuestion(
+        questionRefId: _weeklyData!.questionRefId,
+        answer: answer,
       );
+      
+      // 캐시 강제 새로고침 (Mock 데이터 다시 불러오기)
+      await _loadWeeklyData(forceRefresh: true);
     }
+  }
+}
+
+/// 누를 때만 초록색으로 변하는 FloatingActionButton
+class _AnimatedFAB extends StatefulWidget {
+  final VoidCallback onPressed;
+
+  const _AnimatedFAB({required this.onPressed});
+
+  @override
+  State<_AnimatedFAB> createState() => _AnimatedFABState();
+}
+
+class _AnimatedFABState extends State<_AnimatedFAB> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onPressed();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: 56,
+        height: 56,
+        decoration: BoxDecoration(
+          color: _isPressed ? AppColors.plumu_green_main : AppColors.plumu_gray_4,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: const Icon(
+          Icons.add,
+          size: 28,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 }
 

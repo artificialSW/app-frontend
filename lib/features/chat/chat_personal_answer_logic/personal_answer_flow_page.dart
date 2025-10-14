@@ -5,6 +5,7 @@ import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/services/chat/chat_service.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_personal_answer/chat_personal_answer_question_dto.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_question_create/chat_family_member_dto.dart';
+import 'package:artificialsw_frontend/services/chat/mock_data_manager.dart';
 import 'steps/step_list.dart';
 import 'steps/step_write.dart';
 import 'steps/step_success.dart';
@@ -162,23 +163,54 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
   }
 
   /// 답변을 전송하는 메서드
-  /// API 호출 후 성공 페이지로 이동
+  /// API 호출 후 성공 페이지로 이동 (시연용: Mock으로 폴백)
   Future<void> _submitAnswer() async {
     if (_selectedQuestion == null || answer.trim().isEmpty) return;
     
     try {
       // TODO: 답변 전송 API 호출
-      // await _chatService.submitAnswer(_selectedQuestion!.questionId, answer);
+      // await _chatService.submitAnswer(_selectedQuestion!.questionRefId, answer);
       
-      // 성공 페이지로 이동
-      setState(() => step = _Step.success);
+      print('❌ API 미구현, Mock으로 처리');
+      throw Exception('API not implemented yet');
       
-      // 데이터 새로고침 (답변 완료된 질문 제거)
-      _loadData(forceRefresh: true);
     } catch (e) {
-      print('답변 전송 실패: $e');
-      // 에러 처리 (스낵바 등)
+      print('답변 전송 API 실패, Mock으로 처리: $e');
+      
+      // Mock 데이터로 답변 처리 (시연용)
+      MockDataManager.answerMyQuestion(
+        questionRefId: _selectedQuestion!.questionRefId,
+        answer: answer.trim(),
+      );
     }
+    
+    // 데이터 새로고침 (답변 완료된 질문 제거)
+    await _loadData(forceRefresh: true);
+    
+    // Success 화면을 rootNavigator로 표시 (Shell 하단바 완전히 가림)
+    final senderRole = _selectedQuestion?.senderRole ?? '';
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          backgroundColor: Colors.white,
+          body: StepAnswerSuccess(to: senderRole),
+        ),
+      ),
+    );
+    
+    // 1.5초 후 자동으로 Success 화면 닫고 채팅 메인으로 돌아가기
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (!mounted) return;
+      
+      try {
+        // Success 화면 닫기 (rootNavigator)
+        Navigator.of(context, rootNavigator: true).pop();
+        // 답변 플로우 페이지도 닫기 (채팅 메인으로 돌아감)
+        Navigator.of(context).pop();
+      } catch (e) {
+        print('Navigator 오류: $e');
+      }
+    });
   }
 
   /// 아직 답변하지 않은 질문의 개수를 계산하는 메서드
@@ -190,12 +222,6 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
 
   @override
   Widget build(BuildContext context) {
-    // 성공 단계일 때는 별도의 전체화면 Scaffold 렌더링
-    if (step == _Step.success) {
-      _scheduleReturnToChat();
-      return StepAnswerSuccess(to: _selectedQuestion != null ? _getSenderName(_selectedQuestion!.sender) : '');
-    }
-
     Widget body;
     if (step == _Step.list) {
       if (_isLoading) {
@@ -212,7 +238,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
         // StepAnswerList는 Map<String, String> 형태의 데이터를 기대합니다.
         final questionMaps = _questions!.map((dto) => {
           'id': dto.questionRefId.toString(), // 질문 ID
-          'from': _getSenderName(dto.sender), // 보낸 사람 이름 (ID -> 이름 변환)
+          'from': dto.senderRole, // 보낸 사람 이름 (한국어 role)
           'text': dto.content, // 질문 내용
           'isPublic': (dto.visibility == 1).toString(), // 공개/비공개 여부
         }).toList();
@@ -294,24 +320,24 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
         padding: const EdgeInsets.all(16),
         child: body,
       ),
-      bottomNavigationBar: step == _Step.list
+      bottomNavigationBar: step == _Step.list || step == _Step.success // 목록 & Success 단계에서는 하단바 숨김
           ? null
           : SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: CustomButton(
-            text: '답변하기',
-            onPressed: canNext ? _submitAnswer : null,
-            width: double.infinity,
-            height: 52,
-            fontSize: 16,
-            textColor: AppColors.plumu_white,
-            backgroundColor: AppColors.plumu_green_main,
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: CustomButton(
+                  text: '답변하기',
+                  onPressed: canNext ? _submitAnswer : null,
+                  width: double.infinity,
+                  height: 52,
+                  fontSize: 16,
+                  textColor: AppColors.plumu_white,
+                  backgroundColor: AppColors.plumu_green_main,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
     );
   }
 }

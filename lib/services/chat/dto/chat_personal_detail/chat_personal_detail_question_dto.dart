@@ -8,6 +8,8 @@ class ChatPersonalDetailQuestionDto {
   final int questionRefId;
   final String content;
   final int sender;
+  @JsonKey(name: 'sender_role')
+  final String senderRole;
   final int likes;
   @JsonKey(name: 'CreateAt')
   final String createdAt;
@@ -18,6 +20,7 @@ class ChatPersonalDetailQuestionDto {
     required this.questionRefId,
     required this.content,
     required this.sender,
+    required this.senderRole,
     required this.likes,
     required this.createdAt,
     this.isLiked = false,

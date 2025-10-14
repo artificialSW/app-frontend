@@ -52,32 +52,6 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
     }
   }
 
-  /// 영어 role을 한국어로 변환하는 헬퍼 함수
-  String _getRoleInKorean(String role) {
-    switch (role.toLowerCase()) {
-      case 'father':
-        return '아빠';
-      case 'mother':
-        return '엄마';
-      case 'grandfather':
-        return '할아버지';
-      case 'grandmother':
-        return '할머니';
-      case 'sibling':
-        return '형제';
-      case 'brother':
-        return '형제';
-      case 'sister':
-        return '자매';
-      case 'son':
-        return '아들';
-      case 'daughter':
-        return '딸';
-      default:
-        return role; // 매핑이 없으면 원본 그대로 반환
-    }
-  }
-
   Future<void> _submitQuestion() async {
     if (_state.target == null || _state.visibility == null || _state.question.trim().isEmpty) {
       return;
@@ -93,7 +67,29 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
       final response = await _chatService.createQuestion(request);
       
       if (response.isSuccess) {
-        setState(() => step = 3); // 성공 페이지로 이동
+        // Success 화면을 rootNavigator로 표시 (Shell 하단바 완전히 가림)
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+            builder: (_) => Scaffold(
+              backgroundColor: Colors.white,
+              body: const StepSuccess(),
+            ),
+          ),
+        );
+        
+        // 1.5초 후 자동으로 Success 화면 닫고 채팅 메인으로 돌아가기
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          if (!mounted) return;
+          
+          try {
+            // Success 화면 닫기 (rootNavigator)
+            Navigator.of(context, rootNavigator: true).pop();
+            // 질문 생성 페이지도 닫기 (채팅 메인으로 돌아감)
+            Navigator.of(context).pop();
+          } catch (e) {
+            print('Navigator 오류: $e');
+          }
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response.message ?? '질문 전송에 실패했습니다.')),
@@ -122,12 +118,6 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 성공 단계일 때는 별도의 전체화면 Scaffold 렌더링
-    if (step == 3) {
-      _scheduleReturnToChat();
-      return const StepSuccess();
-    }
-
     // 단계별 본문
     Widget body;
     if (step == 0) {
@@ -139,8 +129,8 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
         // ChatFamilyMemberDto를 User로 변환 (기존 StepFamily와 호환)
         final members = _familyMembers.map((dto) => User(
           id: dto.id.toString(),
-          name: _getRoleInKorean(dto.role), // 영어 role을 한국어로 변환
-          role: dto.role, // 원본 영어 role 유지
+          name: dto.role, // API에서 이미 한국어로 받아옴 (아버지, 어머니 등)
+          role: dto.role, // 한국어 role 그대로 사용
         )).toList();
         
         body = StepFamily(
@@ -178,28 +168,30 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
         padding: const EdgeInsets.all(16),
         child: body,
       ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: CustomButton(
-            text: step == 2 ? '전송' : '다음',
-            onPressed: canNext ? () {
-              if (step == 2) {
-                _submitQuestion(); // 마지막 단계에서는 질문 전송
-              } else {
-                setState(() => step++); // 다른 단계에서는 다음으로
-              }
-            } : null,
-            width: double.infinity,
-            height: 52,
-            fontSize: 16,
-            textColor: AppColors.plumu_white,
-            backgroundColor: AppColors.plumu_green_main,
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
+      bottomNavigationBar: step == 3 // Success 단계에서는 하단바 숨김
+          ? null
+          : SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: CustomButton(
+                  text: step == 2 ? '전송' : '다음',
+                  onPressed: canNext ? () {
+                    if (step == 2) {
+                      _submitQuestion(); // 마지막 단계에서는 질문 전송
+                    } else {
+                      setState(() => step++); // 다른 단계에서는 다음으로
+                    }
+                  } : null,
+                  width: double.infinity,
+                  height: 52,
+                  fontSize: 16,
+                  textColor: AppColors.plumu_white,
+                  backgroundColor: AppColors.plumu_green_main,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
     );
   }
 }

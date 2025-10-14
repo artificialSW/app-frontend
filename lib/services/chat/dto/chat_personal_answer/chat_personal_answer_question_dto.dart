@@ -8,12 +8,15 @@ class ChatPersonalAnswerQuestionDto {
   final int questionRefId;
   final String content;
   final int sender;
+  @JsonKey(name: 'sender_role')
+  final String senderRole;
   final bool visibility;
 
   const ChatPersonalAnswerQuestionDto({
     required this.questionRefId,
     required this.content,
     required this.sender,
+    required this.senderRole,
     required this.visibility,
   });
 

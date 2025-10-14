@@ -5,10 +5,13 @@ part 'chat_home_thisweek_comment_dto.g.dart';
 @JsonSerializable()
 class ChatHomeThisweekCommentDto {
   final int writer;
+  @JsonKey(name: 'writer_role')
+  final String writerRole;
   final String contents;
 
   ChatHomeThisweekCommentDto({
     required this.writer,
+    required this.writerRole,
     required this.contents,
   });
 

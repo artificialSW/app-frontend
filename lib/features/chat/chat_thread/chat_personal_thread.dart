@@ -9,6 +9,7 @@ import 'package:artificialsw_frontend/services/chat/chat_service.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_personal_detail/chat_personal_detail_response_dto.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_like/chat_like_request_dto.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_reply/chat_reply_request_dto.dart';
+import 'package:artificialsw_frontend/services/chat/offline_like_queue.dart';
 
 // 프로젝트 내부 (상대 경로)
 import '../widget/thread_widgets.dart';
@@ -52,11 +53,11 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
         _answers = data.comments.map((comment) {
           return _Answer(
             comment.commentId.toString(),
-            comment.writer.toString(), // int를 String으로 변환
+            comment.writerRole, // 한국어 role 사용
             comment.content,
             likes: comment.likes,
             liked: comment.isLiked,
-            replies: comment.reply.map((r) => _Reply(r.writer.toString(), r.content)).toList(),
+            replies: comment.reply.map((r) => _Reply(r.writerRole, r.content)).toList(),
           );
         }).toList();
         _isLoading = false;
@@ -69,47 +70,27 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
     }
   }
 
-  /// 댓글 좋아요를 토글하는 메서드
-  /// API 호출 후 성공하면 UI를 업데이트하고, 실패하면 원래 상태로 복원
-  Future<void> _toggleCommentLike(_Answer answer) async {
-    // UI를 먼저 업데이트 (낙관적 업데이트)
-    final previousLiked = answer.liked;
-    final previousLikes = answer.likes;
-    
+  // 오프라인 좋아요 큐
+  final OfflineLikeQueue _likeQueue = OfflineLikeQueue();
+
+  /// 댓글 좋아요를 토글하는 메서드 (오프라인 큐 방식)
+  /// 인스타그램처럼 즉시 UI 업데이트 후, 백그라운드에서 서버 동기화
+  void _toggleCommentLike(_Answer answer) {
+    // 즉시 UI 업데이트
+    final newLikedState = !answer.liked;
     setState(() {
-      answer.liked = !answer.liked;
-      answer.likes = answer.liked ? answer.likes + 1 : (answer.likes > 0 ? answer.likes - 1 : 0);
+      answer.liked = newLikedState;
+      answer.likes = newLikedState ? answer.likes + 1 : (answer.likes > 0 ? answer.likes - 1 : 0);
     });
 
-    try {
-      // API 호출
-      final request = ChatLikeRequestDto(
-        what: ChatLikeType.comment,
-        id: int.parse(answer.id),
-      );
-      
-      final response = await _chatService.postChatLike(request);
-      
-      // 서버 응답으로 실제 상태 업데이트
-      setState(() {
-        answer.liked = response.isLiked;
-        answer.likes = response.totalLikes;
-      });
-      
-    } catch (e) {
-      // 실패 시 원래 상태로 복원
-      setState(() {
-        answer.liked = previousLiked;
-        answer.likes = previousLikes;
-      });
-      
-      // 에러 메시지 표시
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('댓글 좋아요 요청에 실패했습니다. 다시 시도해주세요.')),
-        );
-      }
-    }
+    // 오프라인 큐에 추가 (백그라운드에서 서버 동기화)
+    _likeQueue.addToQueue(
+      id: answer.id,
+      type: ChatLikeType.comment,
+      action: newLikedState ? LikeAction.like : LikeAction.unlike,
+    );
+
+    // UI는 절대 롤백되지 않음! (인스타그램 방식)
   }
 
   /// 댓글/대댓글을 작성하는 메서드

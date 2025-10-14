@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
-import '../model/common_question.dart';
+import 'package:artificialsw_frontend/services/chat/dto/chat_home_thisweek/chat_home_thisweek_response_dto.dart';
 
 class WeeklyQuestionBanner extends StatefulWidget {
-  final CommonQuestion question;
+  final ChatHomeThisweekResponseDto data;
   final int order;
+  final Function(String answer)? onAnswerSubmit; // 답변 제출 콜백
   final VoidCallback? onTapThread; // 스레드 화면으로 이동하는 콜백
 
   const WeeklyQuestionBanner({
     super.key,
-    required this.question,
+    required this.data,
     required this.order,
+    this.onAnswerSubmit,
     this.onTapThread,
   });
 
@@ -23,6 +25,7 @@ class WeeklyQuestionBanner extends StatefulWidget {
 class _WeeklyQuestionBannerState extends State<WeeklyQuestionBanner>
     with TickerProviderStateMixin {
   bool _expanded = false;
+  String? _myLocalAnswer; // 로컬에서 입력한 내 답변 (탭 닫아도 유지)
 
   static const double _collapsedHeight = 56;
   static const double _expandedHeight = 348;
@@ -62,8 +65,13 @@ class _WeeklyQuestionBannerState extends State<WeeklyQuestionBanner>
               // 내부에서도 동일한 radius를 유지해 시각적 일치
               child: _expanded
                   ? _ExpandedContent(
-                      content: widget.question.description,
+                      data: widget.data,
                       order: widget.order,
+                      initialAnswer: _myLocalAnswer,
+                      onAnswerChanged: (answer) {
+                        setState(() => _myLocalAnswer = answer);
+                      },
+                      onAnswerSubmit: widget.onAnswerSubmit,
                     )
                   : _CollapsedContent(onTapThread: widget.onTapThread),
             ),
@@ -120,33 +128,62 @@ class _CollapsedContent extends StatelessWidget {
 }
 
 class _ExpandedContent extends StatefulWidget {
-  final String content;
+  final ChatHomeThisweekResponseDto data;
   final int order;
+  final String? initialAnswer; // 부모에서 전달받은 초기 답변
+  final Function(String? answer)? onAnswerChanged; // 답변 변경 시 부모에게 알림
+  final Function(String answer)? onAnswerSubmit;
 
-  const _ExpandedContent({required this.content, required this.order});
+  const _ExpandedContent({
+    required this.data,
+    required this.order,
+    this.initialAnswer,
+    this.onAnswerChanged,
+    this.onAnswerSubmit,
+  });
 
   @override
   State<_ExpandedContent> createState() => _ExpandedContentState();
 }
 
 class _ExpandedContentState extends State<_ExpandedContent> {
-  String? _answerText;
+  late String? _answerText = widget.initialAnswer; // 부모에서 전달받은 초기값
   bool _isEditing = false;
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   final PageController _pageController = PageController();
-  int _currentPage = 0; // 0: 내 카드/답변하기, 1: 엄마, 2: 아빠
+  int _currentPage = 0; // 0: 내 카드/답변하기, 1~N: 가족 답변들
 
-  List<Map<String, String>> get _dummyFamilyAnswers => const [
-        {'name': '엄마', 'content': '뜨개질, 커피'},
-        {'name': '아빠', 'content': '낚시, 골프'},
-        {'name': '할아버지', 'content': '장기, 산책'},
-      ];
+  // API에서 받아온 가족 답변들 (내 답변 제외, widget.data.comments 사용)
+  List<Map<String, String>> get _familyAnswers {
+    return widget.data.comments
+        .where((comment) => comment.writer != 127) // 내 답변(127) 제외
+        .map((comment) => {
+          'name': comment.writerRole,    // 한국어 role (할아버지, 어머니 등)
+          'content': comment.contents,   // 답변 내용
+        })
+        .toList();
+  }
+
+  // 내 답변 찾기 (API/Mock에서 온 내 답변)
+  String? get _myApiAnswer {
+    try {
+      final myComment = widget.data.comments.firstWhere(
+        (comment) => comment.writer == 127, // 내 답변 찾기
+      );
+      return myComment.contents;
+    } catch (e) {
+      return null; // 내 답변 없음
+    }
+  }
 
   // 공통 답변 카드 위젯
   Widget _answerCard({required String name, required String content}) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = (screenWidth * 0.78).clamp(250.0, 340.0); // 화면의 78%, 최소 250, 최대 340
+    
     return Container(
-      width: 290,
+      width: cardWidth,
       height: 40,
       decoration: ShapeDecoration(
         color: Colors.white.withOpacity(0.75),
@@ -241,6 +278,9 @@ class _ExpandedContentState extends State<_ExpandedContent> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final answerCardWidth = (screenWidth * 0.78).clamp(250.0, 340.0); // 화면의 78%
+    
     return Stack(
       children: [
         // 하단 병아리 캐릭터 이미지 — 비율 유지, 상단 178px만 보이도록 크롭 (항상 가장 아래에 렌더)
@@ -253,15 +293,13 @@ class _ExpandedContentState extends State<_ExpandedContent> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: SizedBox(
-                width: 357.7,
+                width: screenWidth * 0.96, // 화면의 96%
                 height: 178.0,
                 child: ClipRect(
                   child: Image.asset(
                     AppAssets.app_character,
-                    fit: BoxFit.cover, // 비율 유지하며 채우기
-                    alignment: Alignment.topCenter, // 위쪽 기준으로 크롭
-                    width: 357.7,
-                    height: 376.46,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
                   ),
                 ),
               ),
@@ -319,7 +357,7 @@ class _ExpandedContentState extends State<_ExpandedContent> {
           top: 110,
           right: 24,
           child: Text(
-            widget.content,
+            widget.data.questions,
             style: const TextStyle(
               color: Color(0xFF1B1D1B),
               fontSize: 24.42,
@@ -338,7 +376,7 @@ class _ExpandedContentState extends State<_ExpandedContent> {
           child: Center(
             child: _isEditing
                 ? Container(
-                    width: 290,
+                    width: answerCardWidth,
                     height: 40,
                     decoration: ShapeDecoration(
                       color: Colors.white.withOpacity(0.85),
@@ -370,33 +408,91 @@ class _ExpandedContentState extends State<_ExpandedContent> {
                       textInputAction: TextInputAction.done,
                       onEditingComplete: () {
                         final text = _controller.text.trim();
+                        if (text.isNotEmpty && widget.onAnswerSubmit != null) {
+                          widget.onAnswerSubmit!(text); // 답변 제출 콜백 호출
+                        }
                         setState(() {
                           _answerText = text.isEmpty ? null : text;
                           _isEditing = false;
                         });
+                        // 부모에게 답변 변경 알림 (탭 닫아도 유지)
+                        widget.onAnswerChanged?.call(_answerText);
                       },
                       onSubmitted: (_) {
                         final text = _controller.text.trim();
+                        if (text.isNotEmpty && widget.onAnswerSubmit != null) {
+                          widget.onAnswerSubmit!(text); // 답변 제출 콜백 호출
+                        }
                         setState(() {
                           _answerText = text.isEmpty ? null : text;
                           _isEditing = false;
                         });
+                        // 부모에게 답변 변경 알림 (탭 닫아도 유지)
+                        widget.onAnswerChanged?.call(_answerText);
                       },
                     ),
                   )
-                : SizedBox(
-                    width: 290,
+                : _familyAnswers.isEmpty
+                  // 답변이 없을 때: 답변하기 버튼만 표시 (PageView 없음)
+                  ? GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _isEditing = true;
+                          _controller.text = '';
+                        });
+                        Future.delayed(const Duration(milliseconds: 10), () {
+                          if (mounted) _focusNode.requestFocus();
+                        });
+                      },
+                      child: Container(
+                        width: answerCardWidth,
+                        height: 40,
+                        decoration: ShapeDecoration(
+                          color: Colors.white.withOpacity(0.55),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          shadows: const [
+                            BoxShadow(
+                              color: Color(0x193A0D10),
+                              blurRadius: 20,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          '답변하기',
+                          style: TextStyle(
+                            color: Color(0xFF3B3D3B),
+                            fontSize: 16,
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                    )
+                  // 답변이 있을 때: PageView로 여러 답변 표시
+                  : SizedBox(
+                    width: answerCardWidth,
                     height: 40,
                     child: Stack(
                       children: [
-                        // PageView: 답변하기/내 카드, 엄마, 아빠
+                        // PageView: 답변하기/내 카드, 가족 답변들
                         PageView(
                           controller: _pageController,
                           onPageChanged: (i) => setState(() => _currentPage = i),
                           physics: const BouncingScrollPhysics(),
                           children: [
-                            // 내 카드 또는 답변하기 버튼
-                            if (_answerText == null)
+                            // 내 답변 표시 (로컬 입력 또는 API에서 받아온 것)
+                            if (_answerText != null || _myApiAnswer != null)
+                              _answerCard(
+                                name: '나',
+                                content: _answerText ?? _myApiAnswer!, // 로컬 입력 우선, 없으면 API
+                              )
+                            else
+                              // 내 답변 없으면 답변하기 버튼
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -409,7 +505,7 @@ class _ExpandedContentState extends State<_ExpandedContent> {
                                 },
                                 child: Container(
                                   decoration: ShapeDecoration(
-                                    color: Colors.white.withOpacity(0.55), // 버튼 박스도 살짝 더 진하게
+                                    color: Colors.white.withOpacity(0.55),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16),
                                     ),
@@ -433,23 +529,12 @@ class _ExpandedContentState extends State<_ExpandedContent> {
                                     ),
                                   ),
                                 ),
-                              )
-                            else
-                              _answerCard(name: '나', content: _answerText!),
-                            // 엄마/아빠 더미
-                            _answerCard(
-                              name: _dummyFamilyAnswers[0]['name']!,
-                              content: _dummyFamilyAnswers[0]['content']!,
-                            ),
-                            _answerCard(
-                              name: _dummyFamilyAnswers[1]['name']!,
-                              content: _dummyFamilyAnswers[1]['content']!,
-                            ),
-                            // 추가: 할아버지
-                            _answerCard(
-                              name: _dummyFamilyAnswers[2]['name']!,
-                              content: _dummyFamilyAnswers[2]['content']!,
-                            ),
+                              ),
+                            // 다른 가족 답변들 (내 답변 제외)
+                            ..._familyAnswers.map((answer) => _answerCard(
+                              name: answer['name']!,
+                              content: answer['content']!,
+                            )),
                           ],
                         ),
                         // 왼쪽 페이드
@@ -501,30 +586,137 @@ class _ExpandedContentState extends State<_ExpandedContent> {
                   ),
           ),
         ),
-        // 인디케이터(항상 3개), 답변 박스 하단 중앙에 노출
-        Positioned(
-          left: 0,
-          right: 0,
-          top: 197 + 40 + 12,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(3, (i) {
-              final int groupIndex = _currentPage.clamp(0, 2); // 0: 첫 페이지, 1: 중간, 2: 마지막 그룹(3+ 페이지도 2로 고정)
-              final isActive = i == groupIndex;
-              final double size = isActive ? 8 : 6;
-              return Container(
-                width: size,
-                height: size,
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                decoration: BoxDecoration(
-                  color: isActive ? Colors.black : const Color(0xFFBDBDBD), // 검정/회색
-                  shape: BoxShape.circle,
-                ),
-              );
-            }),
+        // 인디케이터: 답변이 2개 이상일 때만 표시 (스와이프 가능할 때)
+        if ((_answerText != null || _myApiAnswer != null ? 1 : 0) + _familyAnswers.length >= 2)
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 197 + 40 + 12,
+            child: _buildDynamicIndicator(),
           ),
-        ),
       ],
+    );
+  }
+
+  /// 인스타그램 스타일의 동적 인디케이터
+  /// 답변이 아무리 많아져도 항상 4개의 점만 표시하고, 애니메이션으로 크기와 위치 변화
+  Widget _buildDynamicIndicator() {
+    // 전체 페이지 개수 계산
+    final hasMyAnswer = _answerText != null || _myApiAnswer != null;
+    final totalPages = (hasMyAnswer ? 1 : 0) + _familyAnswers.length; // 내 답변(있으면 1) + 다른 가족 답변들
+    
+    // 페이지가 4개 이하면 기존 방식 (모든 페이지를 점으로 표시)
+    if (totalPages <= 4) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(totalPages, (i) {
+          final isActive = i == _currentPage;
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            width: isActive ? 8 : 6,
+            height: isActive ? 8 : 6,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: isActive ? Colors.black : const Color(0xFFBDBDBD),
+              shape: BoxShape.circle,
+            ),
+          );
+        }),
+      );
+    }
+    
+    // 페이지가 5개 이상일 때: 인스타그램 스타일 (항상 4개 점)
+    // 각 점의 크기를 계산 (활성 점은 크게, 멀어질수록 작게)
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(4, (i) {
+        double size;
+        double opacity;
+        
+        if (_currentPage == 0) {
+          // 첫 번째 페이지: [●●●][○○][○][○]
+          if (i == 0) {
+            size = 8;
+            opacity = 1.0;
+          } else if (i == 1) {
+            size = 6.5;
+            opacity = 0.7;
+          } else if (i == 2) {
+            size = 5.5;
+            opacity = 0.5;
+          } else {
+            size = 5;
+            opacity = 0.3;
+          }
+        } else if (_currentPage == 1) {
+          // 두 번째 페이지: [○○][●●●][○○][○]
+          if (i == 1) {
+            size = 8;
+            opacity = 1.0;
+          } else if (i == 0 || i == 2) {
+            size = 6.5;
+            opacity = 0.7;
+          } else {
+            size = 5.5;
+            opacity = 0.5;
+          }
+        } else if (_currentPage == totalPages - 2) {
+          // 끝에서 두 번째 페이지: [○][○○][●●●][○○]
+          if (i == 2) {
+            size = 8;
+            opacity = 1.0;
+          } else if (i == 1 || i == 3) {
+            size = 6.5;
+            opacity = 0.7;
+          } else {
+            size = 5.5;
+            opacity = 0.5;
+          }
+        } else if (_currentPage == totalPages - 1) {
+          // 마지막 페이지: [○][○][○○][●●●]
+          if (i == 3) {
+            size = 8;
+            opacity = 1.0;
+          } else if (i == 2) {
+            size = 6.5;
+            opacity = 0.7;
+          } else if (i == 1) {
+            size = 5.5;
+            opacity = 0.5;
+          } else {
+            size = 5;
+            opacity = 0.3;
+          }
+        } else {
+          // 중간 페이지들: [○][○○][●●●][○○]
+          if (i == 1) {
+            size = 6.5;
+            opacity = 0.7;
+          } else if (i == 2) {
+            size = 8;
+            opacity = 1.0;
+          } else if (i == 3) {
+            size = 6.5;
+            opacity = 0.7;
+          } else {
+            size = 5.5;
+            opacity = 0.5;
+          }
+        }
+        
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          width: size,
+          height: size,
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(opacity),
+            shape: BoxShape.circle,
+          ),
+        );
+      }),
     );
   }
 }

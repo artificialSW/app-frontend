@@ -7,6 +7,8 @@ part 'chat_personal_detail_comment_dto.g.dart';
 class ChatPersonalDetailCommentDto {
   final int commentId;
   final int writer;
+  @JsonKey(name: 'writer_role')
+  final String writerRole;
   final String content;
   final int likes;
   @JsonKey(name: 'isLiked', defaultValue: false)
@@ -16,6 +18,7 @@ class ChatPersonalDetailCommentDto {
   ChatPersonalDetailCommentDto({
     required this.commentId,
     required this.writer,
+    required this.writerRole,
     required this.content,
     required this.likes,
     this.isLiked = false,
