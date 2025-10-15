@@ -5,6 +5,7 @@ import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/services/chat/chat_service.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_personal_answer/chat_personal_answer_question_dto.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_question_create/chat_family_member_dto.dart';
+import 'package:artificialsw_frontend/services/chat/dto/chat_reply/chat_reply_request_dto.dart';
 import 'package:artificialsw_frontend/services/chat/mock_data_manager.dart';
 import 'steps/step_list.dart';
 import 'steps/step_write.dart';
@@ -163,21 +164,31 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
   }
 
   /// 답변을 전송하는 메서드
-  /// API 호출 후 성공 페이지로 이동 (시연용: Mock으로 폴백)
+  /// API 호출 후 성공 페이지로 이동
   Future<void> _submitAnswer() async {
     if (_selectedQuestion == null || answer.trim().isEmpty) return;
     
     try {
-      // TODO: 답변 전송 API 호출
-      // await _chatService.submitAnswer(_selectedQuestion!.questionRefId, answer);
+      // 답변 전송 API 호출
+      print('🚀 [답변 전송] API 호출 시작...');
+      print('🚀 [답변 전송] 질문 ID: ${_selectedQuestion!.questionRefId}');
+      print('🚀 [답변 전송] 답변 내용: ${answer.trim()}');
       
-      print('❌ API 미구현, Mock으로 처리');
-      throw Exception('API not implemented yet');
+      final request = ChatReplyRequestDto(
+        questionRefId: _selectedQuestion!.questionRefId,
+        content: answer.trim(),
+      );
+      
+      final response = await _chatService.postChatReply(request);
+      
+      print('✅ [답변 전송] API 호출 성공!');
+      print('✅ [답변 전송] 응답: ${response.message}');
       
     } catch (e) {
-      print('답변 전송 API 실패, Mock으로 처리: $e');
+      print('❌ [답변 전송] API 호출 실패: $e');
       
-      // Mock 데이터로 답변 처리 (시연용)
+      // API 실패 시 Mock 데이터로 폴백 (시연용)
+      print('🔄 [답변 전송] Mock 데이터로 폴백 처리');
       MockDataManager.answerMyQuestion(
         questionRefId: _selectedQuestion!.questionRefId,
         answer: answer.trim(),

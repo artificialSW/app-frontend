@@ -68,8 +68,8 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
       action: newLikedState ? LikeAction.like : LikeAction.unlike,
     );
 
-    // 3단계: MockDataManager 캐시도 즉시 업데이트
-    MockDataManager.togglePersonalQuestionLike(int.parse(widget.question.id));
+    // 3단계: MockDataManager 캐시도 즉시 업데이트 (API 실패 시에만)
+    // MockDataManager.togglePersonalQuestionLike(int.parse(widget.question.id));
 
     setState(() {
       _isLiking = false;

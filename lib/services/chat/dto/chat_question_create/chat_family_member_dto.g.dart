@@ -8,18 +8,10 @@ part of 'chat_family_member_dto.dart';
 
 ChatFamilyMemberDto _$ChatFamilyMemberDtoFromJson(Map<String, dynamic> json) =>
     ChatFamilyMemberDto(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       role: json['role'] as String,
     );
 
 Map<String, dynamic> _$ChatFamilyMemberDtoToJson(
-        ChatFamilyMemberDto instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'role': instance.role,
-    };
-
-
-
-
-
+  ChatFamilyMemberDto instance,
+) => <String, dynamic>{'id': instance.id, 'role': instance.role};

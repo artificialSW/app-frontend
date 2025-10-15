@@ -6,26 +6,24 @@ part of 'flower_hanging_request_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-FlowerHangingRequestDto _$FlowerHangingRequestDtoFromJson(Map<String, dynamic> json) =>
-    FlowerHangingRequestDto(
-      flowerHanging: (json['flower-hanging'] as List<dynamic>)
+FlowerHangingRequestDto _$FlowerHangingRequestDtoFromJson(
+  Map<String, dynamic> json,
+) => FlowerHangingRequestDto(
+  flowerHanging:
+      (json['flower-hanging'] as List<dynamic>)
           .map((e) => FlowerHangingItem.fromJson(e as Map<String, dynamic>))
           .toList(),
-    );
+);
 
-Map<String, dynamic> _$FlowerHangingRequestDtoToJson(FlowerHangingRequestDto instance) =>
-    <String, dynamic>{
-      'flower-hanging': instance.flowerHanging,
-    };
+Map<String, dynamic> _$FlowerHangingRequestDtoToJson(
+  FlowerHangingRequestDto instance,
+) => <String, dynamic>{'flower-hanging': instance.flowerHanging};
 
 FlowerHangingItem _$FlowerHangingItemFromJson(Map<String, dynamic> json) =>
     FlowerHangingItem(
       id: json['id'] as String,
-      order: json['order'] as int,
+      order: (json['order'] as num).toInt(),
     );
 
 Map<String, dynamic> _$FlowerHangingItemToJson(FlowerHangingItem instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'order': instance.order,
-    };
+    <String, dynamic>{'id': instance.id, 'order': instance.order};

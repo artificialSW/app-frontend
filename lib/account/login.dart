@@ -220,6 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // 2. 토큰 저장
         //await StorageService.saveAccessToken(accessToken, refreshToken);
         await StorageService.saveAccessToken(accessToken);
+        print('🔑 [Login] 토큰 저장 완료: ${accessToken.substring(0, 20)}...');
 
         // 3. 유저 가치(Value) 정보 API 호출
         // final userInfoUri = Uri.parse('$baseUrl/users/value');

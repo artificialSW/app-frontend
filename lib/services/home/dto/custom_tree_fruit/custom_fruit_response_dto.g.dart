@@ -6,17 +6,18 @@ part of 'custom_fruit_response_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CustomFruitResponseDto _$CustomFruitResponseDtoFromJson(Map<String, dynamic> json) =>
-    CustomFruitResponseDto(
-      fruits: (json['fruits'] as List<dynamic>)
+CustomFruitResponseDto _$CustomFruitResponseDtoFromJson(
+  Map<String, dynamic> json,
+) => CustomFruitResponseDto(
+  fruits:
+      (json['fruits'] as List<dynamic>)
           .map((e) => CustomFruitItem.fromJson(e as Map<String, dynamic>))
           .toList(),
-    );
+);
 
-Map<String, dynamic> _$CustomFruitResponseDtoToJson(CustomFruitResponseDto instance) =>
-    <String, dynamic>{
-      'fruits': instance.fruits,
-    };
+Map<String, dynamic> _$CustomFruitResponseDtoToJson(
+  CustomFruitResponseDto instance,
+) => <String, dynamic>{'fruits': instance.fruits};
 
 CustomFruitItem _$CustomFruitItemFromJson(Map<String, dynamic> json) =>
     CustomFruitItem(
@@ -24,7 +25,7 @@ CustomFruitItem _$CustomFruitItemFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       imageUrl: json['imageUrl'] as String,
       category: json['category'] as String,
-      order: json['order'] as int,
+      order: (json['order'] as num).toInt(),
       date: json['date'] as String,
     );
 

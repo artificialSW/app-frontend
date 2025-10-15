@@ -62,8 +62,8 @@ class _CommonQuestionCardState extends State<CommonQuestionCard> {
       action: newLikedState ? LikeAction.like : LikeAction.unlike,
     );
 
-    // 3단계: MockDataManager 캐시도 즉시 업데이트
-    MockDataManager.toggleCommonQuestionLike(int.parse(widget.question.id));
+    // 3단계: MockDataManager 캐시도 즉시 업데이트 (API 실패 시에만)
+    // MockDataManager.toggleCommonQuestionLike(int.parse(widget.question.id));
 
     setState(() {
       _isLiking = false;
