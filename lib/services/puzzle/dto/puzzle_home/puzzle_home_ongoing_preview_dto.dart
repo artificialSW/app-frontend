@@ -10,7 +10,7 @@ class PuzzleHomeOngoingPreviewDto {
   final String imageUrl;
   final int size;
   final List<int> completedPiecesId;
-  final String lastSavedAt;
+  final String? lastSavedAt;
 
   //선언 시점은 꼭 사용자가 '퍼즐 풀기' 버튼을 눌렀을 때로!! 왜냐면 size도 선언할때 같이 적어야한다고 선언했기 때문
   PuzzleHomeOngoingPreviewDto({
@@ -18,7 +18,7 @@ class PuzzleHomeOngoingPreviewDto {
     required this.imageUrl,
     required this.size, //어쨌든 null 입력한것도 입력한거니까 에러 안 뜨는듯
     required this.completedPiecesId,
-    required this.lastSavedAt,
+    this.lastSavedAt,
   });
 
   factory PuzzleHomeOngoingPreviewDto.fromJson(Map<String, dynamic> json) =>

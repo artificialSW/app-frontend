@@ -16,7 +16,7 @@ PuzzleHomeOngoingPreviewDto _$PuzzleHomeOngoingPreviewDtoFromJson(
       (json['completedPiecesId'] as List<dynamic>)
           .map((e) => (e as num).toInt())
           .toList(),
-  lastSavedAt: json['lastSavedAt'] as String,
+  lastSavedAt: json['lastSavedAt'] as String?,
 );
 
 Map<String, dynamic> _$PuzzleHomeOngoingPreviewDtoToJson(

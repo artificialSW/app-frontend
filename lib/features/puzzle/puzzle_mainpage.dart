@@ -47,7 +47,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
       return await PuzzleService().getPuzzleHome(); // 실제 서버 호출
     } catch (e) {
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
-      throw Exception('에러!!');
+      throw Exception('에러!!${e}');
       // // ✅ 목데이터 리턴
       // return PuzzleHomeGetDto(
       //   subject: ["운동하는 모습", "학교 가는 길", "퇴근 후의 모습"],
