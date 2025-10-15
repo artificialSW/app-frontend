@@ -15,132 +15,132 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position
 /// 진행중인 퍼즐과 완료된 퍼즐을 모두 관리
 class PuzzleProvider with ChangeNotifier {
 
-  List<PuzzleGame> _puzzles = [
-    PuzzleGame(
-      puzzleId: '1',
-      imageWidget: ImageStore().imageWidgetList[0],
-      imageUrl: 'https://picsum.photos/600/400',
-      category: '우리 가족의 행복한 추억',
-      AIKeyword: ['만남', '사랑','이별','추억'],
-      size: 2,
-      piecesPosition: [],
-      gameState: GameState.Unplayed,
-      contributors: [User(name: 'Jaewook', id: '1', role: '아빠')],
-      isArchived: false,
-    ),
-    PuzzleGame(
-      puzzleId: '2',
-      imageWidget: ImageStore().imageWidgetList[1],
-      imageUrl: 'https://picsum.photos/600/400',
-      category: '우리 가족의 행복한 추억',
-      AIKeyword: ['만남', '사랑','이별','추억'],
-      size: 2,
-      piecesPosition: [],
-      gameState: GameState.Unplayed,
-      contributors: [User(name: 'JungHwan', id: '2', role: '아빠')],
-      isArchived: false,
-    ),
-
-    PuzzleGame(
-      puzzleId: '3',
-      imageWidget: ImageStore().imageWidgetList[2],
-      imageUrl: 'https://picsum.photos/600/400',
-      category: '우리 가족의 행복한 추억',
-      AIKeyword: ['만남', '사랑','이별','추억'],
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],
-      gameState: GameState.Ongoing,
-      contributors: [User(name: 'Jaewook', id: '1', role: '아빠'), User(name: 'JungHwan', id: '2', role: '아빠')],
-      isArchived: false,
-    ),
-    PuzzleGame(
-      puzzleId: '4',
-      imageWidget: ImageStore().imageWidgetList[2],
-      imageUrl: 'https://picsum.photos/600/400',
-      category: '우리 가족의 행복한 추억',
-      AIKeyword: ['만남', '사랑','이별','추억'],
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],
-      gameState: GameState.Ongoing,
-      contributors: [User(name: 'JungHwan', id: '2', role: '아빠')],
-      isArchived: false,
-    ),
-
-    PuzzleGame(
-      puzzleId: '5',
-      imageWidget: ImageStore().imageWidgetList[2],
-      imageUrl: 'https://picsum.photos/600/400',
-      category: '우리 가족의 행복한 추억',
-      AIKeyword: ['만남', '사랑','이별','추억'],
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],
-      gameState: GameState.Completed,
-      contributors: [User(name: 'Jaewook', id: '1', role: '아빠')],
-      isArchived: false,
-    ),
-    PuzzleGame(
-      puzzleId: '6',
-      imageWidget: ImageStore().imageWidgetList[2],
-      imageUrl: 'https://picsum.photos/600/400',
-      category: '우리 가족의 행복한 추억',
-      AIKeyword: ['만남', '사랑','이별','추억'],
-      size: 3,
-      piecesPosition: [
-        PiecePosition(x: 10.0, y: 10.0),
-        PiecePosition(x: 10.0, y: 50.0),
-        PiecePosition(x: 10.0, y: 90.0),
-        PiecePosition(x: 50.0, y: 10.0),
-        PiecePosition(x: 50.0, y: 50.0),
-        PiecePosition(x: 50.0, y: 90.0),
-        PiecePosition(x: 90.0, y: 10.0),
-        PiecePosition(x: 90.0, y: 50.0),
-        PiecePosition(x: 90.0, y: 90.0),
-      ],
-      gameState: GameState.Completed,
-      contributors: [User(name: 'JungHwan', id: '2', role: '아빠')],
-      isArchived: true,
-    ),
-  ];
-
-  List<PuzzleGame> get puzzles => _puzzles;
-  List<PuzzleGame> get ongoingPuzzles =>
-      _puzzles.where((p) => p.gameState == GameState.Ongoing).toList();
-  List<PuzzleGame> get completedPuzzles =>
-      _puzzles.where((p) => p.gameState == GameState.Completed && !p.isArchived).toList();
-  List<PuzzleGame> get unplayedPuzzles =>
-      _puzzles.where((p) => p.gameState == GameState.Unplayed).toList();
-  List<PuzzleGame> get archivedPuzzles =>
-      _puzzles.where((p) => p.gameState == GameState.Completed && p.isArchived).toList();
+  // List<PuzzleGame> _puzzles = [
+  //   PuzzleGame(
+  //     puzzleId: '1',
+  //     imageWidget: ImageStore().imageWidgetList[0],
+  //     imageUrl: 'https://picsum.photos/600/400',
+  //     category: '우리 가족의 행복한 추억',
+  //     AIKeyword: ['만남', '사랑','이별','추억'],
+  //     size: 2,
+  //     piecesPosition: [],
+  //     gameState: GameState.Unplayed,
+  //     contributors: [User(name: 'Jaewook', id: '1', role: '아빠')],
+  //     isArchived: false,
+  //   ),
+  //   PuzzleGame(
+  //     puzzleId: '2',
+  //     imageWidget: ImageStore().imageWidgetList[1],
+  //     imageUrl: 'https://picsum.photos/600/400',
+  //     category: '우리 가족의 행복한 추억',
+  //     AIKeyword: ['만남', '사랑','이별','추억'],
+  //     size: 2,
+  //     piecesPosition: [],
+  //     gameState: GameState.Unplayed,
+  //     contributors: [User(name: 'JungHwan', id: '2', role: '아빠')],
+  //     isArchived: false,
+  //   ),
+  //
+  //   PuzzleGame(
+  //     puzzleId: '3',
+  //     imageWidget: ImageStore().imageWidgetList[2],
+  //     imageUrl: 'https://picsum.photos/600/400',
+  //     category: '우리 가족의 행복한 추억',
+  //     AIKeyword: ['만남', '사랑','이별','추억'],
+  //     size: 3,
+  //     piecesPosition: [
+  //       PiecePosition(x: 10.0, y: 10.0),
+  //       PiecePosition(x: 10.0, y: 50.0),
+  //       PiecePosition(x: 10.0, y: 90.0),
+  //       PiecePosition(x: 50.0, y: 10.0),
+  //       PiecePosition(x: 50.0, y: 50.0),
+  //       PiecePosition(x: 50.0, y: 90.0),
+  //       PiecePosition(x: 90.0, y: 10.0),
+  //       PiecePosition(x: 90.0, y: 50.0),
+  //       PiecePosition(x: 90.0, y: 90.0),
+  //     ],
+  //     gameState: GameState.Ongoing,
+  //     contributors: [User(name: 'Jaewook', id: '1', role: '아빠'), User(name: 'JungHwan', id: '2', role: '아빠')],
+  //     isArchived: false,
+  //   ),
+  //   PuzzleGame(
+  //     puzzleId: '4',
+  //     imageWidget: ImageStore().imageWidgetList[2],
+  //     imageUrl: 'https://picsum.photos/600/400',
+  //     category: '우리 가족의 행복한 추억',
+  //     AIKeyword: ['만남', '사랑','이별','추억'],
+  //     size: 3,
+  //     piecesPosition: [
+  //       PiecePosition(x: 10.0, y: 10.0),
+  //       PiecePosition(x: 10.0, y: 50.0),
+  //       PiecePosition(x: 10.0, y: 90.0),
+  //       PiecePosition(x: 50.0, y: 10.0),
+  //       PiecePosition(x: 50.0, y: 50.0),
+  //       PiecePosition(x: 50.0, y: 90.0),
+  //       PiecePosition(x: 90.0, y: 10.0),
+  //       PiecePosition(x: 90.0, y: 50.0),
+  //       PiecePosition(x: 90.0, y: 90.0),
+  //     ],
+  //     gameState: GameState.Ongoing,
+  //     contributors: [User(name: 'JungHwan', id: '2', role: '아빠')],
+  //     isArchived: false,
+  //   ),
+  //
+  //   PuzzleGame(
+  //     puzzleId: '5',
+  //     imageWidget: ImageStore().imageWidgetList[2],
+  //     imageUrl: 'https://picsum.photos/600/400',
+  //     category: '우리 가족의 행복한 추억',
+  //     AIKeyword: ['만남', '사랑','이별','추억'],
+  //     size: 3,
+  //     piecesPosition: [
+  //       PiecePosition(x: 10.0, y: 10.0),
+  //       PiecePosition(x: 10.0, y: 50.0),
+  //       PiecePosition(x: 10.0, y: 90.0),
+  //       PiecePosition(x: 50.0, y: 10.0),
+  //       PiecePosition(x: 50.0, y: 50.0),
+  //       PiecePosition(x: 50.0, y: 90.0),
+  //       PiecePosition(x: 90.0, y: 10.0),
+  //       PiecePosition(x: 90.0, y: 50.0),
+  //       PiecePosition(x: 90.0, y: 90.0),
+  //     ],
+  //     gameState: GameState.Completed,
+  //     contributors: [User(name: 'Jaewook', id: '1', role: '아빠')],
+  //     isArchived: false,
+  //   ),
+  //   PuzzleGame(
+  //     puzzleId: '6',
+  //     imageWidget: ImageStore().imageWidgetList[2],
+  //     imageUrl: 'https://picsum.photos/600/400',
+  //     category: '우리 가족의 행복한 추억',
+  //     AIKeyword: ['만남', '사랑','이별','추억'],
+  //     size: 3,
+  //     piecesPosition: [
+  //       PiecePosition(x: 10.0, y: 10.0),
+  //       PiecePosition(x: 10.0, y: 50.0),
+  //       PiecePosition(x: 10.0, y: 90.0),
+  //       PiecePosition(x: 50.0, y: 10.0),
+  //       PiecePosition(x: 50.0, y: 50.0),
+  //       PiecePosition(x: 50.0, y: 90.0),
+  //       PiecePosition(x: 90.0, y: 10.0),
+  //       PiecePosition(x: 90.0, y: 50.0),
+  //       PiecePosition(x: 90.0, y: 90.0),
+  //     ],
+  //     gameState: GameState.Completed,
+  //     contributors: [User(name: 'JungHwan', id: '2', role: '아빠')],
+  //     isArchived: true,
+  //   ),
+  // ];
+  //
+  // List<PuzzleGame> get puzzles => _puzzles;
+  // List<PuzzleGame> get ongoingPuzzles =>
+  //     _puzzles.where((p) => p.gameState == GameState.Ongoing).toList();
+  // List<PuzzleGame> get completedPuzzles =>
+  //     _puzzles.where((p) => p.gameState == GameState.Completed && !p.isArchived).toList();
+  // List<PuzzleGame> get unplayedPuzzles =>
+  //     _puzzles.where((p) => p.gameState == GameState.Unplayed).toList();
+  // List<PuzzleGame> get archivedPuzzles =>
+  //     _puzzles.where((p) => p.gameState == GameState.Completed && p.isArchived).toList();
 
 
   void startPuzzle(PuzzleGame puzzle) {
@@ -150,7 +150,6 @@ class PuzzleProvider with ChangeNotifier {
 
   // 퍼즐 삭제
   void deletePuzzle(String id) {
-    puzzles.removeWhere((p) => p.puzzleId == id);
     notifyListeners();
   }
 
@@ -203,7 +202,7 @@ class PuzzleListItem extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         const SizedBox(height: 4),
-        Text('ai선정 키워드: ${puzzleDto.AIKeyword}',
+        Text('퍼즐 참여자: ${puzzleDto.contributors}',
             style: const TextStyle(color: Colors.grey, fontSize: 12)),
         const SizedBox(height: 8),
         Text('진행도: ${(puzzleDto.completedPiecesCount/puzzleDto.size*100).toDouble().toStringAsFixed(0)}%',
