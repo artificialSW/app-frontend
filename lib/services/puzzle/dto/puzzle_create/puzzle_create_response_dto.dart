@@ -5,19 +5,19 @@ part 'puzzle_create_response_dto.g.dart'; // 자동 생성 파일
 
 @JsonSerializable()
 class PuzzleCreateResponseDto {
-  final String puzzleId;
-  final String imageUrl;
+  final int puzzleId;
+  final String imageURL;
   final String category;
-  final List<String> AIKeyword;
-  final String createdAt;
+  //final List<String> AIKeyword;
+  //final String createdAt;
   final String message;
 
   PuzzleCreateResponseDto({
     required this.puzzleId,
-    required this.imageUrl,
+    required this.imageURL,
     required this.category,
-    required this.AIKeyword,
-    required this.createdAt,
+    //required this.AIKeyword,
+    //required this.createdAt,
     required this.message,
   });
 

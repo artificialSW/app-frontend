@@ -19,7 +19,6 @@ import 'package:artificialsw_frontend/shared/constants/constants.dart';
 import 'package:artificialsw_frontend/services/storage_service.dart';
 import 'dart:convert';
 
-
 class PuzzleService {
   final Dio _dio = ApiClient.dio;
 
@@ -83,10 +82,22 @@ class PuzzleService {
 
   // 🟡 퍼즐 생성 : POST
   Future<PuzzleCreateResponseDto> createPuzzle(PuzzleCreateRequestDto requestDto) async {
+
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    if (_accessToken == null) {
+      throw Exception('Access token not found. 로그인 상태를 확인하세요.');
+    }
+
     try {
       final response = await _dio.post(
-        '/puzzle/create',
-        data: requestDto.toJson(), // JSON 자동 직렬화
+        '${baseUrl}/api/puzzle/picture/create',
+        data: requestDto.toJson(),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $_accessToken', // ✅ 토큰 추가
+          },
+        ),
       );
 
       return PuzzleCreateResponseDto.fromJson(response.data); //그냥 .g 파일에 있는 함수임. 어렵게 생각 ㄴㄴ
@@ -99,12 +110,12 @@ class PuzzleService {
       }
     }
     return PuzzleCreateResponseDto(
-      puzzleId: '1',
+      puzzleId: 1,
       message: '🔥 서버 연결 실패 - 목데이터 사용 중',
-      createdAt: DateTime.now().toIso8601String(),
-      imageUrl: 'https://picsum.photos/400/400',
+      //createdAt: DateTime.now().toIso8601String(),
+      imageURL: 'https://picsum.photos/400/400',
       category: 'Mock 카테고리',
-      AIKeyword: ['Mock 키워드', 'Mock 키워드 2'],
+      //AIKeyword: ['Mock 키워드', 'Mock 키워드 2'],
     );
   }
 
