@@ -13,9 +13,6 @@ PuzzleGetInProgressDataDto _$PuzzleGetInProgressDataDtoFromJson(
   imageUrl: json['imageUrl'] as String,
   contributors:
       (json['contributors'] as List<dynamic>).map((e) => e as String).toList(),
-  lastSavedAt: json['lastSavedAt'] as String,
-  AIKeyword:
-      (json['AIKeyword'] as List<dynamic>).map((e) => e as String).toList(),
   category: json['category'] as String,
   completedPiecesCount: (json['completedPiecesCount'] as num).toInt(),
   size: (json['size'] as num).toInt(),
@@ -27,8 +24,6 @@ Map<String, dynamic> _$PuzzleGetInProgressDataDtoToJson(
   'puzzleId': instance.puzzleId,
   'imageUrl': instance.imageUrl,
   'contributors': instance.contributors,
-  'lastSavedAt': instance.lastSavedAt,
-  'AIKeyword': instance.AIKeyword,
   'category': instance.category,
   'completedPiecesCount': instance.completedPiecesCount,
   'size': instance.size,

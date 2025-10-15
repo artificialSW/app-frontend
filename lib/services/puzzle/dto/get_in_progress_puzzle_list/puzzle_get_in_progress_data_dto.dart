@@ -8,8 +8,8 @@ class PuzzleGetInProgressDataDto {
   final String puzzleId;
   final String imageUrl;
   final List<String> contributors;
-  final String lastSavedAt;
-  final List<String> AIKeyword;
+  //final String lastSavedAt;
+  //final List<String> AIKeyword;
   final String category;
   final int completedPiecesCount;
   final int size;
@@ -18,8 +18,8 @@ class PuzzleGetInProgressDataDto {
     required this.puzzleId,
     required this.imageUrl,
     required this.contributors,
-    required this.lastSavedAt,
-    required this.AIKeyword,
+    //required this.lastSavedAt,
+    //required this.AIKeyword,
     required this.category,
     required this.completedPiecesCount,
     required this.size,
