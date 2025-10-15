@@ -956,8 +956,10 @@ class MockDataManager {
 
   // 질문 생성 Mock 응답 데이터
   static ChatQuestionCreateResponseDto getQuestionCreateMockData() {
+    // 현재 시간 기반으로 고유한 ID 생성 (중복 방지)
+    final uniqueId = DateTime.now().millisecondsSinceEpoch;
     return ChatQuestionCreateResponseDto(
-      questionRefId: 999, // 가짜 질문 ID
+      questionRefId: uniqueId, // 고유한 질문 ID
       errorCode: null,
       message: null,
     );

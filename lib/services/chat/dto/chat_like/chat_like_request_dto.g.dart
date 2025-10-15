@@ -9,7 +9,7 @@ part of 'chat_like_request_dto.dart';
 ChatLikeRequestDto _$ChatLikeRequestDtoFromJson(Map<String, dynamic> json) =>
     ChatLikeRequestDto(
       what: $enumDecode(_$ChatLikeTypeEnumMap, json['what']),
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
     );
 
 Map<String, dynamic> _$ChatLikeRequestDtoToJson(ChatLikeRequestDto instance) =>
@@ -20,6 +20,6 @@ Map<String, dynamic> _$ChatLikeRequestDtoToJson(ChatLikeRequestDto instance) =>
 
 const _$ChatLikeTypeEnumMap = {
   ChatLikeType.question: 'question',
-  ChatLikeType.personalQuestion: 'PQ',
+  ChatLikeType.publicQuestion: 'public_question',
   ChatLikeType.comment: 'comment',
 };

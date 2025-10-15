@@ -13,7 +13,4 @@ TreeIdResponseDto _$TreeIdResponseDtoFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$TreeIdResponseDtoToJson(TreeIdResponseDto instance) =>
-    <String, dynamic>{
-      'treeId': instance.treeId,
-      'treeName': instance.treeName,
-    };
+    <String, dynamic>{'treeId': instance.treeId, 'treeName': instance.treeName};

@@ -7,11 +7,7 @@ part of 'tree_name_request_dto.dart';
 // **************************************************************************
 
 TreeNameRequestDto _$TreeNameRequestDtoFromJson(Map<String, dynamic> json) =>
-    TreeNameRequestDto(
-      treeName: json['treeName'] as String,
-    );
+    TreeNameRequestDto(treeName: json['treeName'] as String);
 
 Map<String, dynamic> _$TreeNameRequestDtoToJson(TreeNameRequestDto instance) =>
-    <String, dynamic>{
-      'treeName': instance.treeName,
-    };
+    <String, dynamic>{'treeName': instance.treeName};

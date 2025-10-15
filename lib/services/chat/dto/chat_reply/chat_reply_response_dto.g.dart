@@ -6,20 +6,16 @@ part of 'chat_reply_response_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ChatReplyResponseDto _$ChatReplyResponseDtoFromJson(Map<String, dynamic> json) =>
-    ChatReplyResponseDto(
-      message: json['message'] as String,
-      replyId: json['replyId'] as int?,
-    );
+ChatReplyResponseDto _$ChatReplyResponseDtoFromJson(
+  Map<String, dynamic> json,
+) => ChatReplyResponseDto(
+  message: json['message'] as String,
+  replyId: (json['replyId'] as num?)?.toInt(),
+);
 
 Map<String, dynamic> _$ChatReplyResponseDtoToJson(
-        ChatReplyResponseDto instance) =>
-    <String, dynamic>{
-      'message': instance.message,
-      'replyId': instance.replyId,
-    };
-
-
-
-
-
+  ChatReplyResponseDto instance,
+) => <String, dynamic>{
+  'message': instance.message,
+  'replyId': instance.replyId,
+};

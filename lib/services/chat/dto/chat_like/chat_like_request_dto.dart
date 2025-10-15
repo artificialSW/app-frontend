@@ -4,11 +4,11 @@ part 'chat_like_request_dto.g.dart';
 
 enum ChatLikeType {
   @JsonValue('question')
-  question,
-  @JsonValue('PQ')
-  personalQuestion,
+  question,           // 개인질문
+  @JsonValue('public_question')
+  publicQuestion,     // 공통질문
   @JsonValue('comment')
-  comment,
+  comment,            // 댓글
 }
 
 @JsonSerializable()

@@ -58,12 +58,12 @@ class _CommonQuestionCardState extends State<CommonQuestionCard> {
     // 2단계: 오프라인 큐에 추가 (백그라운드에서 서버 동기화)
     _likeQueue.addToQueue(
       id: widget.question.id,
-      type: ChatLikeType.question,
+      type: ChatLikeType.publicQuestion,
       action: newLikedState ? LikeAction.like : LikeAction.unlike,
     );
 
-    // 3단계: MockDataManager 캐시도 즉시 업데이트
-    MockDataManager.toggleCommonQuestionLike(int.parse(widget.question.id));
+    // 3단계: MockDataManager 캐시도 즉시 업데이트 (API 실패 시에만)
+    // MockDataManager.toggleCommonQuestionLike(int.parse(widget.question.id));
 
     setState(() {
       _isLiking = false;
