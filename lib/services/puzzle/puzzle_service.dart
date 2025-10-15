@@ -15,13 +15,29 @@ import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_save_progress/p
 import 'package:dio/dio.dart';
 import 'package:artificialsw_frontend/services/api_client.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home/puzzle_home_get_dto.dart';
+import 'package:artificialsw_frontend/shared/constants/constants.dart';
+import 'package:artificialsw_frontend/services/storage_service.dart';
 
 class PuzzleService {
   final Dio _dio = ApiClient.dio;
 
   // 🟢 퍼즐 홈 화면 정보 가져오기 (GET)
   Future<PuzzleHomeGetDto> getPuzzleHome() async {
-    final response = await _dio.get('/puzzle/home');
+    final accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    if (accessToken == null) {
+      throw Exception('Access token not found. 로그인 상태를 확인하세요.');
+    }
+
+    final response = await _dio.get(
+      '${baseUrl}/api/puzzle/home',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $accessToken', // 🔹 헤더에 토큰 추가
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
 
     return PuzzleHomeGetDto.fromJson(response.data);
   }

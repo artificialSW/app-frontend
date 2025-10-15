@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 class ApiClient {
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'http://15.164.94.26:8080', // 서버 주소
+      baseUrl: "http://15.164.94.26:8080",
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       contentType: 'application/json',

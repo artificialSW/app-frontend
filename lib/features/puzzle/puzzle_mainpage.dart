@@ -47,45 +47,46 @@ class _PuzzleRootState extends State<PuzzleRoot> {
       return await PuzzleService().getPuzzleHome(); // 실제 서버 호출
     } catch (e) {
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
-      // ✅ 목데이터 리턴
-      return PuzzleHomeGetDto(
-        subject: ["운동하는 모습", "학교 가는 길", "퇴근 후의 모습"],
-        inProgress: [PuzzleHomeOngoingPreviewDto(
-          puzzleId: 1,
-          imageUrl:
-              'https://picsum.photos/400/400',
-          size: 4,
-          completedPiecesId: [1, 2],
-          lastSavedAt: "2025-09-29T04:44:00Z",
-        ),
-          PuzzleHomeOngoingPreviewDto(
-            puzzleId: 1,
-            imageUrl:
-            'https://picsum.photos/400/400',
-            size: 4,
-            completedPiecesId: [1, 2],
-            lastSavedAt: "2025-09-30T04:44:00Z",
-          ),
-        ],
-        completedThisWeek: [PuzzleHomeCompletedPreviewDto(
-          puzzleId: 1,
-          imageUrl:
-              'https://picsum.photos/400/400',
-          size: 9,
-          title: "목데이터 title",
-          completedAt: "2025-09-29T04:44:00Z",
-        ),
-          PuzzleHomeCompletedPreviewDto(
-            puzzleId: 1,
-            imageUrl:
-            'https://picsum.photos/400/400',
-            size: 9,
-            title: "목데이터 title",
-            completedAt: "2025-09-28T04:44:00Z",
-          ),
-        ],
-        isFull: false,
-      );
+      throw Exception('에러!!');
+      // // ✅ 목데이터 리턴
+      // return PuzzleHomeGetDto(
+      //   subject: ["운동하는 모습", "학교 가는 길", "퇴근 후의 모습"],
+      //   inProgress: [PuzzleHomeOngoingPreviewDto(
+      //     puzzleId: 1,
+      //     imageUrl:
+      //         'https://picsum.photos/400/400',
+      //     size: 4,
+      //     completedPiecesId: [1, 2],
+      //     lastSavedAt: "2025-09-29T04:44:00Z",
+      //   ),
+      //     PuzzleHomeOngoingPreviewDto(
+      //       puzzleId: 1,
+      //       imageUrl:
+      //       'https://picsum.photos/400/400',
+      //       size: 4,
+      //       completedPiecesId: [1, 2],
+      //       lastSavedAt: "2025-09-30T04:44:00Z",
+      //     ),
+      //   ],
+      //   completedThisWeek: [PuzzleHomeCompletedPreviewDto(
+      //     puzzleId: 1,
+      //     imageUrl:
+      //         'https://picsum.photos/400/400',
+      //     size: 9,
+      //     title: "목데이터 title",
+      //     completedAt: "2025-09-29T04:44:00Z",
+      //   ),
+      //     PuzzleHomeCompletedPreviewDto(
+      //       puzzleId: 1,
+      //       imageUrl:
+      //       'https://picsum.photos/400/400',
+      //       size: 9,
+      //       title: "목데이터 title",
+      //       completedAt: "2025-09-28T04:44:00Z",
+      //     ),
+      //   ],
+      //   isFull: false,
+      // );
     }
   }
 
@@ -106,7 +107,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
           }
 
           if (snapshot.hasError) {
-            return const Center(child: Text('에러 발생'));
+            return Center(child: Text('에러 발생: ${snapshot.error}'));
           }
           final puzzle = snapshot.data!;
           return Stack(
@@ -167,10 +168,10 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                                 children: [
                                   EmotionTag(
                                     label: '사진 등록하러 가기',
-                                    onclick: puzzle.isFull
+                                    onclick: puzzle.full
                                         ? null
                                         : () {
-                                      Navigator.of(context).pushNamed( '/puzzle/image-upload', arguments: {'category': puzzle.subject}, );
+                                      Navigator.of(context).pushNamed( '/puzzle/image-upload', arguments: {'category': puzzle.category}, );
                                     },
                                   )
                                 ]
@@ -205,14 +206,15 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   ),
 
                   PuzzleCardCarousel(
-                    imageUrls: [
-                      ...puzzle.completedThisWeek.map((item) => item.imageUrl),
-                      'https://picsum.photos/600/400',
-                    ],
-                    completedDates: [
-                      ...puzzle.completedThisWeek.map((item) => formatUtcToDateString(item.completedAt)),
-                      '2025.08.23',
-                    ],
+                    imageUrls: (puzzle.completedThisWeek.isNotEmpty) ? puzzle.completedThisWeek
+                        .map((item) => item?.imageUrl ?? 'https://picsum.photos/600/400')
+                        .toList()
+                        : ['https://picsum.photos/600/400', 'https://picsum.photos/600/400', 'https://picsum.photos/600/400', 'https://picsum.photos/600/400'], // 기본 이미지 1장
+                    completedDates: (puzzle.completedThisWeek.isNotEmpty)
+                        ? puzzle.completedThisWeek
+                        .map((item) => formatUtcToDateString(item?.completedAt ?? '0000-00-00'))
+                        .toList()
+                        : ['1111-11-11', '1111-11-11', '1111-11-11', '1111-11-11'], // puzzle.completedThisWeek.isEmpty 일 때 1111-11-11
                   ),
                   Row(
                     children: [
@@ -241,30 +243,40 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                     children: [
                       SizedBox(width: screenWidth*0.06,),
                       PuzzleCardWidget(
-                          imageUrl: puzzle.inProgress[0].imageUrl,
-                          dateInfo: formatUtcToDateString(puzzle.inProgress[0].lastSavedAt),
-                          imageSize: max(screenWidth*0.4, 150),
-                          dateFontSize: 10,
-                          text: '진행중인 퍼즐',
-                          textFontSize: 14,
-                          heightOffset: max(screenWidth*0.2, 100),
+                        imageUrl: puzzle.inProgress.isNotEmpty
+                            ? puzzle.inProgress[0]?.imageUrl ?? 'https://picsum.photos/600/400'
+                            : 'https://picsum.photos/600/400',
+                        dateInfo: formatUtcToDateString(puzzle.inProgress.isNotEmpty
+                            ? puzzle.inProgress[0]?.lastSavedAt ?? '1111-11-11'
+                            : '2000-01-01'
+                        ),
+                        imageSize: max(screenWidth*0.4, 150),
+                        dateFontSize: 10,
+                        text: '진행중인 퍼즐',
+                        textFontSize: 14,
+                        heightOffset: max(screenWidth*0.2, 100),
                       ),
                       SizedBox(width: screenWidth*0.06,),
                       PuzzleCardWidget(
-                          imageUrl: puzzle.inProgress[1].imageUrl,
-                          dateInfo: formatUtcToDateString(puzzle.inProgress[1].lastSavedAt),
-                          imageSize: max(screenWidth*0.4, 150),
-                          dateFontSize: 10,
-                          textFontSize: 14,
-                          text: '진행중인 퍼즐',
-                          heightOffset: max(screenWidth*0.2, 100),
+                        imageUrl: puzzle.inProgress.length > 1 //진행중인 데이터 2개 이상 넘어와야.
+                          ? puzzle.inProgress[1]?.imageUrl ?? 'https://picsum.photos/600/400'
+                          : 'https://picsum.photos/600/400',
+                        dateInfo: formatUtcToDateString(puzzle.inProgress.isNotEmpty
+                          ? puzzle.inProgress[1]?.lastSavedAt ?? '0000-00-00'
+                          : '2000-01-01'
+                        ),
+                        imageSize: max(screenWidth*0.4, 150),
+                        dateFontSize: 10,
+                        textFontSize: 14,
+                        text: '진행중인 퍼즐',
+                        heightOffset: max(screenWidth*0.2, 100),
                       ),
                     ],
                   ),
                   SizedBox(height: screenHeight*0.02),
                 ],
               ),
-              PuzzleHomeButtonsPanel(isFull: puzzle.isFull, category: puzzle.subject),
+              PuzzleHomeButtonsPanel(isFull: puzzle.full, category: puzzle.category, isEmpty: puzzle.empty),
             ],
           );
         },
@@ -314,11 +326,13 @@ class EmotionTag extends StatelessWidget {
 
 class PuzzleHomeButtonsPanel extends StatefulWidget {
   final bool isFull;
+  final bool isEmpty;
   final List<String> category;
 
   const PuzzleHomeButtonsPanel({
     super.key,
     required this.isFull,
+    required this.isEmpty,
     required this.category,
   });
 
@@ -369,6 +383,7 @@ class _PuzzleHomeButtonsPanelState extends State<PuzzleHomeButtonsPanel> {
                     children: [
                       PuzzleHomeButtons(
                         isFull: widget.isFull,
+                        isEmpty: widget.isEmpty,
                         category: widget.category,
                       ),
                       const SizedBox(width: 12),
@@ -409,11 +424,13 @@ class _PuzzleHomeButtonsPanelState extends State<PuzzleHomeButtonsPanel> {
 
 class PuzzleHomeButtons extends StatelessWidget {
   final bool isFull;
+  final bool isEmpty;
   final List<String> category;
 
   const PuzzleHomeButtons({
     super.key,
     required this.isFull,
+    required this.isEmpty,
     required this.category,
   });
 
@@ -428,8 +445,8 @@ class PuzzleHomeButtons extends StatelessWidget {
         _RoundIconButton(
           icon: Icons.add,
           label: '사진 업로드',
-          backgroundColor: Colors.grey.shade300,
           isDisabled: isFull,
+          disabledMessage: '사진 업로드를 모두 완료했습니다!',
           onTap: isFull
               ? null
               : () {
@@ -441,7 +458,6 @@ class PuzzleHomeButtons extends StatelessWidget {
         _RoundIconButton(
           icon: Icons.archive_outlined,
           label: '퍼즐 아카이브',
-          backgroundColor: Colors.grey.shade300,
           onTap: () {
             Navigator.of(context).pushNamed('/puzzle/archive');
           },
@@ -452,10 +468,13 @@ class PuzzleHomeButtons extends StatelessWidget {
         _RoundIconButton(
           icon: Icons.extension,
           label: '퍼즐 맞추기',
-          backgroundColor: Colors.green,
           textColor: Colors.green,
+          isDisabled: isEmpty,
+          disabledMessage: '더 이상 풀 퍼즐이 없습니다!',
           onTap: () {
-            Navigator.of(context).pushNamed('/puzzle/write-puzzle-info');
+            isEmpty
+                ? null
+                : Navigator.of(context).pushNamed('/puzzle/write-puzzle-info');
           },
         ),
       ],
@@ -467,17 +486,17 @@ class _RoundIconButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback? onTap;
-  final Color backgroundColor;
   final Color? textColor;
   final bool isDisabled;
+  final String? disabledMessage;
 
   const _RoundIconButton({
     required this.icon,
     required this.label,
     required this.onTap,
-    required this.backgroundColor,
     this.textColor,
     this.isDisabled = false,
+    this.disabledMessage,
   });
 
   @override
@@ -485,7 +504,19 @@ class _RoundIconButton extends StatelessWidget {
     return Column(
       children: [
         GestureDetector(
-          onTap: isDisabled ? null : onTap,
+          onTap: () {
+            if (isDisabled) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(disabledMessage ?? '버튼을 클릭할 수 없습니다.'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            } else {
+              onTap?.call();
+            }
+          },
+
           child: CircleAvatar(
             radius: 28,
             backgroundColor:

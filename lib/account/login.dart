@@ -136,7 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   // 회원가입 유도 텍스트
                   GestureDetector(
                     onTap: () {
-                      // TODO: 회원가입 페이지로 이동
                       Navigator.pushNamed(context, '/register');
                     },
                     child: const Text(
@@ -154,6 +153,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+
+  void _fakeLogin() async {
+    Navigator.pushNamed(context, '/shell');
   }
 
   void _login() async {
@@ -220,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // 2. 토큰 저장
         //await StorageService.saveAccessToken(accessToken, refreshToken);
         await StorageService.saveAccessToken(accessToken);
-
+        print('발급받은 access Token: $accessToken');
         // 3. 유저 가치(Value) 정보 API 호출
         // final userInfoUri = Uri.parse('$baseUrl/users/value');
         // final userInfoResponse = await http.get(
