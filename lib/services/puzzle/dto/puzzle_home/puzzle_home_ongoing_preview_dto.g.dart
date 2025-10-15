@@ -11,7 +11,7 @@ PuzzleHomeOngoingPreviewDto _$PuzzleHomeOngoingPreviewDtoFromJson(
 ) => PuzzleHomeOngoingPreviewDto(
   puzzleId: (json['puzzleId'] as num).toInt(),
   imageUrl: json['imageUrl'] as String,
-  size: (json['size'] as num).toInt(),
+  size: (json['size'] as num?)?.toInt(),
   completedPiecesId:
       (json['completedPiecesId'] as List<dynamic>)
           .map((e) => (e as num).toInt())

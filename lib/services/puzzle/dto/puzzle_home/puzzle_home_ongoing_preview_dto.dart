@@ -8,7 +8,7 @@ part 'puzzle_home_ongoing_preview_dto.g.dart'; // 자동 생성 파일
 class PuzzleHomeOngoingPreviewDto {
   final int puzzleId;
   final String imageUrl;
-  final int size;
+  final int? size;
   final List<int> completedPiecesId;
   final String? lastSavedAt;
 
@@ -16,7 +16,7 @@ class PuzzleHomeOngoingPreviewDto {
   PuzzleHomeOngoingPreviewDto({
     required this.puzzleId,
     required this.imageUrl,
-    required this.size, //어쨌든 null 입력한것도 입력한거니까 에러 안 뜨는듯
+    this.size, //어쨌든 null 입력한것도 입력한거니까 에러 안 뜨는듯
     required this.completedPiecesId,
     this.lastSavedAt,
   });
