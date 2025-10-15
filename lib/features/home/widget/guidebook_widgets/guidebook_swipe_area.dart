@@ -245,7 +245,7 @@ class GuidebookSwipeArea extends StatelessWidget {
         child: _buildFlowerIcon(context, flowerIndex),
       );
     } else {
-      return _buildLockIcon(context);
+      return _buildLockIcon(context, pageIndex: pageIndex, rowIndex: rowIndex, colIndex: colIndex);
     }
   }
 
@@ -294,15 +294,148 @@ class GuidebookSwipeArea extends StatelessWidget {
     );
   }
 
-  /// 잠금 아이콘 위젯
-  Widget _buildLockIcon(BuildContext context) {
+  /// 잠금 아이콘 위젯 (커스텀 툴팁 포함)
+  Widget _buildLockIcon(BuildContext context, {required int pageIndex, required int rowIndex, required int colIndex}) {
     final screenWidth = MediaQuery.of(context).size.width;
     final widthRatio = screenWidth / 430;
+    final lockKey = GlobalKey();
     
-    return Image.asset(
-      AppAssets.lock,
-      width: 60 * widthRatio,
-      height: 60 * widthRatio,
+    return GestureDetector(
+      onTap: () {
+        final renderObject = lockKey.currentContext?.findRenderObject();
+        if (renderObject is RenderBox) {
+          final offset = renderObject.localToGlobal(Offset.zero);
+          final size = renderObject.size;
+          final targetRect = Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
+          _showLockTooltip(
+            context,
+            targetRect: targetRect,
+            isLeftPage: pageIndex == 0,
+            rowIndex: rowIndex,
+            colIndex: colIndex,
+          );
+        } else {
+          _showLockTooltip(
+            context,
+            targetRect: null,
+            isLeftPage: pageIndex == 0,
+            rowIndex: rowIndex,
+            colIndex: colIndex,
+          );
+        }
+      },
+      child: Container(
+        key: lockKey,
+        child: Image.asset(
+          AppAssets.lock,
+          width: 60 * widthRatio,
+          height: 60 * widthRatio,
+        ),
+      ),
+    );
+  }
+
+  /// 잠금장치 툴팁 표시 (잠금장치에 딱 붙어서 표시)
+  void _showLockTooltip(BuildContext context, {required Rect? targetRect, required bool isLeftPage, required int rowIndex, required int colIndex}) {
+    final message = selectedTab == 0 
+        ? "소통을 하고\n잠겨있는 꽃을\n획득해보세요!" 
+        : "퍼즐을 풀고\n잠겨있는 열매를\n획득해보세요!";
+    
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext dialogContext) {
+        final screenSize = MediaQuery.of(dialogContext).size;
+        const double gap = 8; // 잠금장치와 툴팁 사이 간격
+
+        // 기본 위치(중앙) - targetRect 없을 때 폴백
+        double top = screenSize.height * 0.4;
+        double? left;
+        double? right;
+
+        if (targetRect != null) {
+          // 수직 위치를 잠금장치 중앙에 맞춤
+          top = targetRect.top + targetRect.height / 2 - 30; // 툴팁 높이의 절반만큼 위로
+
+          if (isLeftPage) {
+            // 왼쪽 페이지: 잠금장치 왼쪽에 표시
+            right = screenSize.width - targetRect.left + gap;
+          } else {
+            // 오른쪽 페이지: 잠금장치 오른쪽에 표시
+            left = targetRect.right + gap;
+          }
+        } else {
+          // targetRect가 없을 때는 rowIndex, colIndex로 대략적 위치 계산
+          final screenWidth = MediaQuery.of(context).size.width;
+          final widthRatio = screenWidth / 430;
+          final itemSize = 60 * widthRatio;
+          final spacing = 25 * widthRatio;
+          
+          // 대략적인 위치 계산
+          final estimatedX = (colIndex * (itemSize + spacing)) + (isLeftPage ? 0 : screenWidth / 2);
+          final estimatedY = (rowIndex * (itemSize + spacing)) + 200; // 상단 여백 고려
+          
+          top = estimatedY;
+          if (isLeftPage) {
+            right = screenSize.width - estimatedX + gap;
+          } else {
+            left = estimatedX + gap;
+          }
+        }
+
+        // 화면 밖으로 나가지 않도록 보정
+        top = top.clamp(10.0, screenSize.height - 80.0);
+        if (left != null && left > screenSize.width - 200) left = screenSize.width - 200;
+        if (right != null && right > screenSize.width - 200) right = screenSize.width - 200;
+
+        return Material(
+          type: MaterialType.transparency,
+          child: Stack(
+            children: [
+              // 배경 탭 시 닫힘
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: () => Navigator.of(dialogContext).pop(),
+                  child: Container(color: Colors.transparent),
+                ),
+              ),
+              // 툴팁 메시지 (잠금장치 바로 옆에 붙여서 표시)
+              Positioned(
+                top: top,
+                left: left,
+                right: right,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 200),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.plumu_black.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      message,
+                      textAlign: TextAlign.left,
+                      style: AppTextStyles.pretendard_medium.copyWith(
+                        color: Colors.white,
+                        fontSize: 12,
+                        height: 1.35,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -323,7 +456,7 @@ class GuidebookSwipeArea extends StatelessWidget {
                 right: index < 2 ? 25 * widthRatio : 0,
                 bottom: 25 * widthRatio,
               ),
-              child: _buildLockIcon(context),
+              child: _buildLockIcon(context, pageIndex: pageIndex, rowIndex: 0, colIndex: index),
             ),
           ),
         ),
@@ -335,7 +468,7 @@ class GuidebookSwipeArea extends StatelessWidget {
               padding: EdgeInsets.only(
                 right: index < 1 ? 25 * widthRatio : 0,
               ),
-              child: _buildLockIcon(context),
+              child: _buildLockIcon(context, pageIndex: pageIndex, rowIndex: 1, colIndex: index + 1), // 중앙 정렬을 위해 colIndex + 1
             ),
           ),
         ),

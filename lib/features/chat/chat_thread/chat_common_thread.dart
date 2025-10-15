@@ -106,8 +106,11 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
     final tempId = DateTime.now().millisecondsSinceEpoch.toString();
     final tempAuthor = '나';
     
+    // replyToId를 먼저 저장 (스코프 문제 해결)
+    final replyToId = _replyToId;
+    
     setState(() {
-      if (_replyToId == null) {
+      if (replyToId == null) {
         // 새 댓글 추가
         _comments.add(
           _Comment(
@@ -118,15 +121,13 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
         );
       } else {
         // 대댓글 추가
-        final i = _comments.indexWhere((e) => e.id == _replyToId);
+        final i = _comments.indexWhere((e) => e.id == replyToId);
         if (i != -1) {
           _comments[i].replies.add(_Reply(tempAuthor, content));
           _comments[i].expanded = true;
         }
       }
       _controller.clear();
-      _replyToId = null;
-      _replyToAuthor = null;
     });
 
     try {
@@ -134,20 +135,26 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
       final request = ChatReplyRequestDto(
         questionRefId: int.parse(widget.questionId),
         content: content,
-        replyTo: _replyToId != null ? int.parse(_replyToId!) : null,
+        replyTo: replyToId != null ? int.parse(replyToId) : null,
       );
       
       await _chatService.postChatReply(request);
       
+      // API 성공 후 replyToId 초기화
+      setState(() {
+        _replyToId = null;
+        _replyToAuthor = null;
+      });
+      
     } catch (e) {
       // 실패 시 추가된 댓글/대댓글 제거
       setState(() {
-        if (_replyToId == null) {
+        if (replyToId == null) {
           // 새 댓글 제거
           _comments.removeWhere((comment) => comment.id == tempId);
         } else {
           // 대댓글 제거
-          final i = _comments.indexWhere((e) => e.id == _replyToId);
+          final i = _comments.indexWhere((e) => e.id == replyToId);
           if (i != -1) {
             _comments[i].replies.removeWhere((reply) => reply.text == content);
           }

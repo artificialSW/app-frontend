@@ -79,9 +79,19 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
       FlowerCardData(id: 'flower_012', name: '팥배꽃', imagePath: 'assets/images/flower/patbae_flower.png', emotion: 'hobby', date: '2024-09-23', communicationText: '취미 관련 소통을 통해 획득', order: 0),
     ];
 
-    // 날짜순으로 정렬 (최신순)
-    fruitCards = _sortCardsByDate(rawFruitCards);
-    flowerCards = _sortCardsByDate(rawFlowerCards);
+    // 날짜순으로 정렬 (최신순) 후 상태 업데이트
+    final sortedFruit = _sortCardsByDate(rawFruitCards);
+    final sortedFlower = _sortCardsByDate(rawFlowerCards);
+    setState(() {
+      fruitCards = sortedFruit;
+      flowerCards = sortedFlower;
+    });
+    // 초기 로드 시에도 부모에 알림 (시트의 현재 카드 개수 전달)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.onSelectionChanged != null) {
+        widget.onSelectionChanged!(fruitCards, flowerCards);
+      }
+    });
   }
 
   /// 카드들을 날짜순으로 정렬하는 메서드 (최신순)
