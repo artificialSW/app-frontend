@@ -28,20 +28,21 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
   final _user = User(name: 'MockUser', id: '123', role: '아빠');
   late Future<PuzzleGetInProgressListDto> _ongoingPuzzlesFuture;
 
-  Future<PuzzleGetInProgressListDto> _fetchOngoingPuzzles() async {
+  Future<List<PuzzleGetInProgressListDto>> _fetchOngoingPuzzles() async {
     try{
       return await PuzzleService().getInProgressList();
     } catch (e){
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       // ✅ 목데이터 리턴
+      throw Exception('서버 응답 실패!!!!');
       return PuzzleGetInProgressListDto(
         inProgressList: [
           PuzzleGetInProgressDataDto(
             puzzleId: '1',
             imageUrl: 'https://picsum.photos/400/400',
             contributors: ['진행중-mock1', 'mock', 'mock'],
-            lastSavedAt: 'mock 시간 데이터1',
-            AIKeyword: ['진행중인mock1', 'AI', 'keyword'],
+            //lastSavedAt: 'mock 시간 데이터1',
+            //AIKeyword: ['진행중인mock1', 'AI', 'keyword'],
             category: 'mock 카테고리1',
             completedPiecesCount: 3,
             size: 9,
@@ -50,8 +51,8 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
               puzzleId: '2',
               imageUrl: 'https://picsum.photos/400/400',
               contributors: ['mock2', 'mock', 'mock'],
-              lastSavedAt: 'mock2 시간 데이터2',
-              AIKeyword: ['mock2', 'AI', 'keyword'],
+              //lastSavedAt: 'mock2 시간 데이터2',
+              //AIKeyword: ['mock2', 'AI', 'keyword'],
               category: 'mock 카테고리2',
             completedPiecesCount: 3,
             size: 9,
@@ -60,8 +61,8 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
               puzzleId: '3',
               imageUrl: 'https://picsum.photos/400/400',
               contributors: ['mock3', 'mock', 'mock'],
-              lastSavedAt: 'mock3 시간 데이터3',
-              AIKeyword: ['mock3', 'AI', 'keyword'],
+              //lastSavedAt: 'mock3 시간 데이터3',
+              //AIKeyword: ['mock3', 'AI', 'keyword'],
               category: 'mock 카테고리3',
             completedPiecesCount: 3,
             size: 9,
@@ -137,7 +138,7 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                       await response, //이거 왜 await으로 해야 하는지 몰겠다 오류나면 빼자
                       _user,
                       puzzleDto.puzzleId,
-                      puzzleDto.AIKeyword,
+                      //puzzleDto.AIKeyword,
                       puzzleDto.category
                   );
                   ///받아온 퍼즐 인스턴스를 네비게이터에 넣기
