@@ -20,3 +20,9 @@ class ChatWeeklyCommonQuestionDto {
       _$ChatWeeklyCommonQuestionDtoFromJson(json);
   Map<String, dynamic> toJson() => _$ChatWeeklyCommonQuestionDtoToJson(this);
 }
+
+
+
+
+
+

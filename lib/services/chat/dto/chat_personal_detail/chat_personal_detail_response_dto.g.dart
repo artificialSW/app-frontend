@@ -9,7 +9,7 @@ part of 'chat_personal_detail_response_dto.dart';
 ChatPersonalDetailResponseDto _$ChatPersonalDetailResponseDtoFromJson(
         Map<String, dynamic> json) =>
     ChatPersonalDetailResponseDto(
-      question: ChatMainPersonalQuestionCardDto.fromJson(
+      question: ChatPersonalDetailQuestionDto.fromJson(
           json['question'] as Map<String, dynamic>),
       comments: (json['comments'] as List<dynamic>)
           .map((e) => ChatPersonalDetailCommentDto.fromJson(e as Map<String, dynamic>))

@@ -60,14 +60,36 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
     try {
       final request = ChatQuestionCreateRequestDto(
         receiverId: int.parse(_state.target!.id),
-        isPublic: _state.visibility == VisibilityType.public,
+        visibility: _state.visibility == VisibilityType.public ? 1 : 0,
         content: _state.question.trim(),
       );
 
       final response = await _chatService.createQuestion(request);
       
       if (response.isSuccess) {
-        setState(() => step = 3); // 성공 페이지로 이동
+        // Success 화면을 rootNavigator로 표시 (Shell 하단바 완전히 가림)
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+            builder: (_) => Scaffold(
+              backgroundColor: Colors.white,
+              body: const StepSuccess(),
+            ),
+          ),
+        );
+        
+        // 1.5초 후 자동으로 Success 화면 닫고 채팅 메인으로 돌아가기
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          if (!mounted) return;
+          
+          try {
+            // Success 화면 닫기 (rootNavigator)
+            Navigator.of(context, rootNavigator: true).pop();
+            // 질문 생성 페이지도 닫기 (채팅 메인으로 돌아감)
+            Navigator.of(context).pop();
+          } catch (e) {
+            print('Navigator 오류: $e');
+          }
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response.message ?? '질문 전송에 실패했습니다.')),
@@ -96,12 +118,6 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 성공 단계일 때는 별도의 전체화면 Scaffold 렌더링
-    if (step == 3) {
-      _scheduleReturnToChat();
-      return const StepSuccess();
-    }
-
     // 단계별 본문
     Widget body;
     if (step == 0) {
@@ -113,8 +129,8 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
         // ChatFamilyMemberDto를 User로 변환 (기존 StepFamily와 호환)
         final members = _familyMembers.map((dto) => User(
           id: dto.id.toString(),
-          name: dto.role, // role을 name으로 사용
-          role: dto.role,
+          name: dto.role, // API에서 이미 한국어로 받아옴 (아버지, 어머니 등)
+          role: dto.role, // 한국어 role 그대로 사용
         )).toList();
         
         body = StepFamily(
@@ -152,28 +168,30 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
         padding: const EdgeInsets.all(16),
         child: body,
       ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: CustomButton(
-            text: step == 2 ? '전송' : '다음',
-            onPressed: canNext ? () {
-              if (step == 2) {
-                _submitQuestion(); // 마지막 단계에서는 질문 전송
-              } else {
-                setState(() => step++); // 다른 단계에서는 다음으로
-              }
-            } : null,
-            width: double.infinity,
-            height: 52,
-            fontSize: 16,
-            textColor: AppColors.plumu_white,
-            backgroundColor: AppColors.plumu_green_main,
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
+      bottomNavigationBar: step == 3 // Success 단계에서는 하단바 숨김
+          ? null
+          : SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: CustomButton(
+                  text: step == 2 ? '전송' : '다음',
+                  onPressed: canNext ? () {
+                    if (step == 2) {
+                      _submitQuestion(); // 마지막 단계에서는 질문 전송
+                    } else {
+                      setState(() => step++); // 다른 단계에서는 다음으로
+                    }
+                  } : null,
+                  width: double.infinity,
+                  height: 52,
+                  fontSize: 16,
+                  textColor: AppColors.plumu_white,
+                  backgroundColor: AppColors.plumu_green_main,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
     );
   }
 }

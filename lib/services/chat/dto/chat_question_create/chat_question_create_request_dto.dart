@@ -6,12 +6,12 @@ part 'chat_question_create_request_dto.g.dart';
 @JsonSerializable()
 class ChatQuestionCreateRequestDto {
   final int receiverId;
-  final bool isPublic;
+  final int visibility;
   final String content;
 
   ChatQuestionCreateRequestDto({
     required this.receiverId,
-    required this.isPublic,
+    required this.visibility,
     required this.content,
   });
 
@@ -19,3 +19,8 @@ class ChatQuestionCreateRequestDto {
       _$ChatQuestionCreateRequestDtoFromJson(json);
   Map<String, dynamic> toJson() => _$ChatQuestionCreateRequestDtoToJson(this);
 }
+
+
+
+
+

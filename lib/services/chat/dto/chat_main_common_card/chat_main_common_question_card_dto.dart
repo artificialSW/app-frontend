@@ -4,8 +4,8 @@ part 'chat_main_common_question_card_dto.g.dart';
 
 @JsonSerializable()
 class ChatMainCommonQuestionCardDto {
-  @JsonKey(name: 'Q_id')
-  final int questionId;
+  @JsonKey(name: 'question_ref_id')
+  final int questionRefId;
   final String content;
   final int likes;
   final int comments;
@@ -13,7 +13,7 @@ class ChatMainCommonQuestionCardDto {
   final bool isLiked;
 
   const ChatMainCommonQuestionCardDto({
-    required this.questionId,
+    required this.questionRefId,
     required this.content,
     required this.likes,
     required this.comments,

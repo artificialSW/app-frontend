@@ -11,8 +11,10 @@ class AppAssets {
   static const appicon_whiteBackground = 'assets/images/appicon_whiteBackground.png';
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';
   static const back = 'assets/icons/back.png';
+  static const back_white = 'assets/icons/back_white.png';
   static const forward = 'assets/icons/forward.png';
   static const filter = 'assets/icons/filter.png';
+  static const toggle = 'assets/icons/toggle.png';
   static const archive = 'assets/icons/archive.png';
   static const lock = 'assets/icons/lock.png';
   static const lock_fill = 'assets/icons/lock_fill.png';
@@ -38,6 +40,38 @@ class AppAssets {
   static const tree = 'assets/images/tree.png';
   static const wooden_sign = 'assets/images/wooden_sign.png';
   static const sprout = 'assets/images/sprout.png';
+  
+  // 나무 이미지들
+  static const flower_tree_1 = 'assets/images/flower_tree1.png';
+  static const flower_tree_2 = 'assets/images/flower_tree2.png';
+  static const fruit_tree_1 = 'assets/images/fruit_tree1.png';
+  static const fruit_tree_2 = 'assets/images/fruit_tree2.png';
+  static const tree_alone_background = 'assets/images/tree_alone_background.png';
+  
+  // 로딩 이미지들
+  static const progress_flower_tree = 'assets/images/progress_flower_tree.png';
+  static const progress_fruit_tree = 'assets/images/progress_fruit_tree.png';
+  
+  // 도움말 아이콘
+  static const help = 'assets/icons/help.png';
+  static const next = 'assets/icons/next.png';
+  static const x = 'assets/icons/x.png';
+  
+  // 튜토리얼 벡터 이미지들
+  static const vector5 = 'assets/icons/Vector 5.png';
+  static const vector6 = 'assets/icons/Vector 6.png';
+  static const vector8 = 'assets/icons/Vector 8.png';
+  static const vector9 = 'assets/icons/Vector 9.png';
+  
+  // 섬 이미지
+  static const island_information = 'assets/images/island_information.png';
+  static const island_archive = 'assets/images/island_archive.png';
+  
+  // 튜토리얼 두 번째 페이지 이미지들
+  static const information_flower_tree1 = 'assets/images/information_flower_tree1.png';
+  static const information_flower_tree2 = 'assets/images/information_flower_tree2.png';
+  static const information_fruit_tree1 = 'assets/images/information_fruit_tree1.png';
+  static const information_fruit_tree2 = 'assets/images/information_fruit_tree2.png';
   static const app_character = 'assets/images/app_character.png';
   static const app_character_smile = 'assets/images/app_character_smile.png';
 
