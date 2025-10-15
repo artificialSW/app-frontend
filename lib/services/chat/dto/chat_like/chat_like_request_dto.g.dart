@@ -20,6 +20,6 @@ Map<String, dynamic> _$ChatLikeRequestDtoToJson(ChatLikeRequestDto instance) =>
 
 const _$ChatLikeTypeEnumMap = {
   ChatLikeType.question: 'question',
-  ChatLikeType.personalQuestion: 'PQ',
+  ChatLikeType.publicQuestion: 'public_question',
   ChatLikeType.comment: 'comment',
 };

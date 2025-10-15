@@ -64,7 +64,7 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
     // 2단계: 오프라인 큐에 추가 (백그라운드에서 서버 동기화)
     _likeQueue.addToQueue(
       id: widget.question.id,
-      type: ChatLikeType.personalQuestion,
+      type: ChatLikeType.question,
       action: newLikedState ? LikeAction.like : LikeAction.unlike,
     );
 
