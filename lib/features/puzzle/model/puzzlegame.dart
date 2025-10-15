@@ -14,7 +14,7 @@ class PuzzleGame {
   final Image? imageWidget; //JSON 직렬화 대상에서 제외. api통신용이 아니라 puzzleplay에서만 쓸거라
   int size;
   final String category;
-  final List<String> AIKeyword;
+  //final List<String> AIKeyword;
   List<PiecePosition> piecesPosition;
   List<int> completedPiecesId;
   GameState gameState;
@@ -28,7 +28,7 @@ class PuzzleGame {
     this.imageWidget,
     required this.size, //어쨌든 null 입력한것도 입력한거니까 에러 안 뜨는듯
     required this.category,
-    required this.AIKeyword,
+    //required this.AIKeyword,
     List<PiecePosition>? piecesPosition, // completedPiecesId를 옵셔널로 선언합니다.
     GameState? gameState, // gameState를 옵셔널로 선언합니다.
     isArchived = false,
@@ -45,7 +45,7 @@ class PuzzleGame {
       imageUrl: imageUrl,
       imageWidget: imageWidget, //유지
       category: category,
-      AIKeyword: AIKeyword,
+      //AIKeyword: AIKeyword,
       size: size,           //유지
       gameState: gameState,    //유지
       contributors: contributors //유지
@@ -71,14 +71,14 @@ class PuzzleGame {
       dynamic dto, //PlayPuzzleInProgressDto or PlayPuzzleCompletedDto
       User user,
       String puzzleId,
-      List<String> AIKeyword,
+      //List<String> AIKeyword,
       String category) {
     return PuzzleGame(
       puzzleId: puzzleId,
       imageUrl: dto.imageUrl,
       size: dto.size,
       category: category,
-      AIKeyword: AIKeyword,
+      //AIKeyword: AIKeyword,
     );
   }
 }

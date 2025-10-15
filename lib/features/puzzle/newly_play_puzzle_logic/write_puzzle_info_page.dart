@@ -42,7 +42,7 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
       imageWidget: ImageStore().imageWidgetList[0],
       imageUrl: dto.imageUrl,
       category: dto.category,
-      AIKeyword: dto.AIKeyword,
+      //AIKeyword: dto.AIKeyword,
       size: total,
       piecesPosition: [],
       gameState: GameState.Unplayed,
