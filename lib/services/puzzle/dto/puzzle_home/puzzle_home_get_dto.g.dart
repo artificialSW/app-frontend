@@ -6,32 +6,41 @@ part of 'puzzle_home_get_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PuzzleHomeGetDto _$PuzzleHomeGetDtoFromJson(
-  Map<String, dynamic> json,
-) => PuzzleHomeGetDto(
-  subject: (json['subject'] as List<dynamic>).map((e) => e as String).toList(),
-  inProgress:
-      (json['inProgress'] as List<dynamic>)
-          .map(
-            (e) =>
-                PuzzleHomeOngoingPreviewDto.fromJson(e as Map<String, dynamic>),
-          )
-          .toList(),
-  completedThisWeek:
-      (json['completedThisWeek'] as List<dynamic>)
-          .map(
-            (e) => PuzzleHomeCompletedPreviewDto.fromJson(
-              e as Map<String, dynamic>,
-            ),
-          )
-          .toList(),
-  isFull: json['isFull'] as bool,
-);
+PuzzleHomeGetDto _$PuzzleHomeGetDtoFromJson(Map<String, dynamic> json) =>
+    PuzzleHomeGetDto(
+      category:
+          (json['category'] as List<dynamic>).map((e) => e as String).toList(),
+      inProgress:
+          (json['inProgress'] as List<dynamic>)
+              .map(
+                (e) =>
+                    e == null
+                        ? null
+                        : PuzzleHomeOngoingPreviewDto.fromJson(
+                          e as Map<String, dynamic>,
+                        ),
+              )
+              .toList(),
+      completedThisWeek:
+          (json['completedThisWeek'] as List<dynamic>)
+              .map(
+                (e) =>
+                    e == null
+                        ? null
+                        : PuzzleHomeCompletedPreviewDto.fromJson(
+                          e as Map<String, dynamic>,
+                        ),
+              )
+              .toList(),
+      empty: json['empty'] as bool,
+      full: json['full'] as bool,
+    );
 
 Map<String, dynamic> _$PuzzleHomeGetDtoToJson(PuzzleHomeGetDto instance) =>
     <String, dynamic>{
-      'subject': instance.subject,
+      'category': instance.category,
       'inProgress': instance.inProgress,
       'completedThisWeek': instance.completedThisWeek,
-      'isFull': instance.isFull,
+      'empty': instance.empty,
+      'full': instance.full,
     };

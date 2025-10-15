@@ -136,7 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   // 회원가입 유도 텍스트
                   GestureDetector(
                     onTap: () {
-                      // TODO: 회원가입 페이지로 이동
                       Navigator.pushNamed(context, '/register');
                     },
                     child: const Text(
@@ -154,6 +153,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+
+  void _fakeLogin() async {
+    Navigator.pushNamed(context, '/shell');
   }
 
   void _login() async {
