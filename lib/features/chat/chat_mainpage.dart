@@ -386,10 +386,10 @@ class _AnimatedFABState extends State<_AnimatedFAB> {
       onTapCancel: () => setState(() => _isPressed = false),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        width: 56,
-        height: 56,
+        width: 48,
+        height: 48,
         decoration: BoxDecoration(
-          color: _isPressed ? AppColors.plumu_green_main : AppColors.plumu_gray_4,
+          color: _isPressed ? AppColors.plumu_green_main : AppColors.plumu_gray_2,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
