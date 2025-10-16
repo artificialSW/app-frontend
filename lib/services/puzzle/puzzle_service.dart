@@ -158,19 +158,38 @@ class PuzzleService {
   }
 
   // 퍼즐 완료
-  Future<PuzzleCompleteResponseDto> completePuzzle(PuzzleCompleteRequestDto request) async {
+  Future<PuzzleCompleteResponseDto> completePuzzle(PuzzleCompleteRequestDto request, String puzzleId) async {
+
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    if(_accessToken == null){
+      print('Access token not found. 로그인 상태를 확인하세요.');
+    }
 
     try {
+      final dtoJson = request.toJson();
+      const encoder = JsonEncoder.withIndent('  ');
+      final prettyJson = encoder.convert(dtoJson);
+      print('📦 PuzzleCompleteRequestDto: \n$prettyJson');
+
       final response = await _dio.post(
-        '/puzzles/${request.puzzleId}/complete',
+        '${baseUrl}/api/puzzle/${puzzleId}/complete',
         data: request.toJson(), // JSON 자동 직렬화
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${_accessToken}'
+          }
+        )
       );
+
+      final prettyJsonResponse = encoder.convert(response.data);
+      print('📦 PuzzleCompleteResponse: \n$prettyJsonResponse');
 
       return PuzzleCompleteResponseDto.fromJson(response.data); //그냥 .g 파일에 있는 함수임. 어렵게 생각 ㄴㄴ
     } catch (e) {
       print('❌ 퍼즐 완료 처리 실패: $e');
       return PuzzleCompleteResponseDto(
-        puzzleId: '123',
+        puzzleId: 123,
         message: '🔥 서버 연결 실패 - 목데이터 사용 중',
         fruitName: 'Mock 과일 이름',
         fruitMessage: 'Mock 과일 메시지',

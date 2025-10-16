@@ -5,7 +5,7 @@ part 'puzzle_complete_response_dto.g.dart'; // 자동 생성 파일
 
 @JsonSerializable()
 class PuzzleCompleteResponseDto {
-  final String puzzleId;
+  final int puzzleId;
   final String message;
   final String fruitName;
   final String fruitMessage;

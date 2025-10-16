@@ -261,10 +261,8 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     print("퍼즐 완성! 다음 페이지로 이동합니다.");
 
     final puzzleDto = await PuzzleService().completePuzzle(
-        PuzzleCompleteRequestDto(
-          puzzleId: widget.puzzle.puzzleId,
-          solverId: widget.user.id,
-        )
+      PuzzleCompleteRequestDto(month: DateTime.now().month),
+      widget.puzzle.puzzleId,
     );
     final message = puzzleDto.message;
     final fruitName = puzzleDto.fruitName;

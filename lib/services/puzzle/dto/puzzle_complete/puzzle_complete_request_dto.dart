@@ -5,12 +5,10 @@ part 'puzzle_complete_request_dto.g.dart'; // 자동 생성 파일
 
 @JsonSerializable()
 class PuzzleCompleteRequestDto {
-  final String puzzleId;
-  final String solverId;
+  final int month;
 
   PuzzleCompleteRequestDto({
-    required this.puzzleId,
-    required this.solverId,
+    required this.month
   });
 
   factory PuzzleCompleteRequestDto.fromJson(Map<String, dynamic> json) =>
