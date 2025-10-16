@@ -12,8 +12,15 @@ class PuzzlePiecePosition {
     required this.col,
   });
 
-  factory PuzzlePiecePosition.fromJson(Map<String, dynamic> json) =>
-      _$PuzzlePiecePositionFromJson(json);
+  factory PuzzlePiecePosition.fromJson(Map<String, dynamic> json) {
+    return PuzzlePiecePosition(
+      row: (json['x'] as num).toDouble(),
+      col: (json['y'] as num).toDouble(),
+    );
+  }
 
-  Map<String, dynamic> toJson() => _$PuzzlePiecePositionToJson(this);
+  Map<String, dynamic> toJson() => {
+    'x': row,
+    'y': col,
+  };
 }

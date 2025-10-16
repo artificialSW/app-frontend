@@ -121,30 +121,33 @@ class PuzzleService {
 
   // 퍼즐 중간 저장 : POST
   Future<void> savePuzzleProgress({
-    required String puzzleId,
+    required int puzzleId,
     required String imageFile,
     //required int puzzleSize,
     required Map<String, PuzzlePiecePosition> pieces,
     required List<int> completedPiecesId,
-    required String contributorId,
     required bool completed,
     required bool isPlayingPuzzle,
   }) async {
-    final formData = FormData.fromMap({
-      'puzzleId': puzzleId,
-      'imageFile': imageFile,
-      //'puzzleSize': puzzleSize,
-      'pieces': pieces,
+    final body = {
+      'captureImagePath': imageFile,
+      'pieces': pieces.map((k, v) => MapEntry(k, v.toJson())),
       'completedPiecesId': completedPiecesId,
-      'contributorId': contributorId,
       'completed': completed,
       'isPlayingPuzzle': isPlayingPuzzle,
-    });
+    };
+
+    const encoder = JsonEncoder.withIndent('  ');
+    final prettyJson = encoder.convert(body);
+    print('📦 SavePuzzleRequestJson: \n$prettyJson');
+
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
 
     try {
       final response = await _dio.post(
-        '/puzzles/$puzzleId/save-progress', //여기 경로 puzzle 아니고 puzzles 되어있다..
-        data: formData,
+        '$baseUrl/api/puzzle/$puzzleId/save-progress',
+        data: body,
+        options: Options(headers: {'Authorization': 'Bearer $_accessToken'}),
       );
 
       if (response.statusCode == 200) {
