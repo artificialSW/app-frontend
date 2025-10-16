@@ -31,26 +31,6 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
     "5 x 5",
   ];
 
-  PuzzleGame getPuzzle(PuzzleCreateResponseDto dto) {
-    // 안전가드: null일 리 없지만 혹시 몰라 fallback
-    final sizeToken = (selectedSize ?? "3 x 3").split(" ")[0];
-    final side = int.tryParse(sizeToken) ?? 3;
-    final total = side * side;
-
-    return PuzzleGame(
-      puzzleId: dto.puzzleId,
-      imageWidget: ImageStore().imageWidgetList[0],
-      imageUrl: dto.imageUrl,
-      category: dto.category,
-      AIKeyword: dto.AIKeyword,
-      size: total,
-      piecesPosition: [],
-      gameState: GameState.Unplayed,
-      contributors: [userInfo],
-      isArchived: false,
-    );
-  }
-
   Future<void> _createPuzzle() async {
     if (selectedSize == null) return; // 버튼 비활성이라 보통 안 옴. 2중 방어.
 
@@ -59,7 +39,6 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
 
     final puzzleDto = await PuzzleService().createPuzzle(
       PuzzleCreateRequestDto(
-        userId: "123",
         size: total,
       ),
     );
@@ -76,6 +55,26 @@ class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
     Navigator.of(context).pushNamed(
       '/puzzle/play',
       arguments: {'gameInstance': getPuzzle(puzzleDto)},
+    );
+  }
+
+  PuzzleGame getPuzzle(PuzzleCreateResponseDto dto) {
+    // 안전가드: null일 리 없지만 혹시 몰라 fallback
+    final sizeToken = (selectedSize ?? "3 x 3").split(" ")[0];
+    final side = int.tryParse(sizeToken) ?? 3;
+    final total = side * side;
+
+    return PuzzleGame(
+      puzzleId: dto.puzzleId.toString(),
+      imageWidget: Image.network(dto.imageURL),
+      imageUrl: dto.imageURL,
+      category: dto.category,
+      //AIKeyword: dto.AIKeyword,
+      size: total,
+      piecesPosition: [],
+      gameState: GameState.Unplayed,
+      contributors: [userInfo],
+      isArchived: false,
     );
   }
 

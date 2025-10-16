@@ -199,8 +199,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
           .endRecording()
           .toImage(width.toInt(), height.toInt());
 
-      final byteData =
-      await croppedImage.toByteData(format: ui.ImageByteFormat.png);
+      final byteData = await croppedImage.toByteData(format: ui.ImageByteFormat.png);
       final pngBytes = byteData!.buffer.asUint8List();
 
       // base64 저장
@@ -234,14 +233,13 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     }
 
     PuzzleService().savePuzzleProgress(
-        puzzleId: widget.puzzle.puzzleId,
+        puzzleId: int.parse(widget.puzzle.puzzleId),
         imageFile: base64String,
         //puzzleSize: widget.puzzle.size,
         pieces: map,
         completedPiecesId: completedPiecesId,
-        contributorId: widget.user.id,
         completed: false,
-        isPlayingPuzzle: true,
+        isPlayingPuzzle: false,
     );
     final piecesStr = map.entries
         .map((e) => '${e.key}: (row=${e.value.row}, col=${e.value.col})')
@@ -261,10 +259,8 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     print("퍼즐 완성! 다음 페이지로 이동합니다.");
 
     final puzzleDto = await PuzzleService().completePuzzle(
-        PuzzleCompleteRequestDto(
-          puzzleId: widget.puzzle.puzzleId,
-          solverId: widget.user.id,
-        )
+      PuzzleCompleteRequestDto(month: DateTime.now().month),
+      widget.puzzle.puzzleId,
     );
     final message = puzzleDto.message;
     final fruitName = puzzleDto.fruitName;

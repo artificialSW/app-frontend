@@ -17,6 +17,7 @@ import 'package:artificialsw_frontend/services/api_client.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_home/puzzle_home_get_dto.dart';
 import 'package:artificialsw_frontend/shared/constants/constants.dart';
 import 'package:artificialsw_frontend/services/storage_service.dart';
+import 'dart:convert';
 
 class PuzzleService {
   final Dio _dio = ApiClient.dio;
@@ -81,10 +82,22 @@ class PuzzleService {
 
   // 🟡 퍼즐 생성 : POST
   Future<PuzzleCreateResponseDto> createPuzzle(PuzzleCreateRequestDto requestDto) async {
+
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    if (_accessToken == null) {
+      throw Exception('Access token not found. 로그인 상태를 확인하세요.');
+    }
+
     try {
       final response = await _dio.post(
-        '/puzzle/create',
-        data: requestDto.toJson(), // JSON 자동 직렬화
+        '${baseUrl}/api/puzzle/picture/create',
+        data: requestDto.toJson(),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $_accessToken', // ✅ 토큰 추가
+          },
+        ),
       );
 
       return PuzzleCreateResponseDto.fromJson(response.data); //그냥 .g 파일에 있는 함수임. 어렵게 생각 ㄴㄴ
@@ -97,41 +110,44 @@ class PuzzleService {
       }
     }
     return PuzzleCreateResponseDto(
-      puzzleId: '1',
+      puzzleId: 1,
       message: '🔥 서버 연결 실패 - 목데이터 사용 중',
-      createdAt: DateTime.now().toIso8601String(),
-      imageUrl: 'https://picsum.photos/400/400',
+      //createdAt: DateTime.now().toIso8601String(),
+      imageURL: 'https://picsum.photos/400/400',
       category: 'Mock 카테고리',
-      AIKeyword: ['Mock 키워드', 'Mock 키워드 2'],
+      //AIKeyword: ['Mock 키워드', 'Mock 키워드 2'],
     );
   }
 
   // 퍼즐 중간 저장 : POST
   Future<void> savePuzzleProgress({
-    required String puzzleId,
+    required int puzzleId,
     required String imageFile,
     //required int puzzleSize,
     required Map<String, PuzzlePiecePosition> pieces,
     required List<int> completedPiecesId,
-    required String contributorId,
     required bool completed,
     required bool isPlayingPuzzle,
   }) async {
-    final formData = FormData.fromMap({
-      'puzzleId': puzzleId,
-      'imageFile': imageFile,
-      //'puzzleSize': puzzleSize,
-      'pieces': pieces,
+    final body = {
+      'captureImagePath': imageFile,
+      'pieces': pieces.map((k, v) => MapEntry(k, v.toJson())),
       'completedPiecesId': completedPiecesId,
-      'contributorId': contributorId,
       'completed': completed,
       'isPlayingPuzzle': isPlayingPuzzle,
-    });
+    };
+
+    const encoder = JsonEncoder.withIndent('  ');
+    final prettyJson = encoder.convert(body);
+    print('📦 SavePuzzleRequestJson: \n$prettyJson');
+
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
 
     try {
       final response = await _dio.post(
-        '/puzzles/$puzzleId/save-progress', //여기 경로 puzzle 아니고 puzzles 되어있다..
-        data: formData,
+        '$baseUrl/api/puzzle/$puzzleId/save-progress',
+        data: body,
+        options: Options(headers: {'Authorization': 'Bearer $_accessToken'}),
       );
 
       if (response.statusCode == 200) {
@@ -145,19 +161,38 @@ class PuzzleService {
   }
 
   // 퍼즐 완료
-  Future<PuzzleCompleteResponseDto> completePuzzle(PuzzleCompleteRequestDto request) async {
+  Future<PuzzleCompleteResponseDto> completePuzzle(PuzzleCompleteRequestDto request, String puzzleId) async {
+
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    if(_accessToken == null){
+      print('Access token not found. 로그인 상태를 확인하세요.');
+    }
 
     try {
+      final dtoJson = request.toJson();
+      const encoder = JsonEncoder.withIndent('  ');
+      final prettyJson = encoder.convert(dtoJson);
+      print('📦 PuzzleCompleteRequestDto: \n$prettyJson');
+
       final response = await _dio.post(
-        '/puzzles/${request.puzzleId}/complete',
+        '${baseUrl}/api/puzzle/${puzzleId}/complete',
         data: request.toJson(), // JSON 자동 직렬화
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${_accessToken}'
+          }
+        )
       );
+
+      final prettyJsonResponse = encoder.convert(response.data);
+      print('📦 PuzzleCompleteResponse: \n$prettyJsonResponse');
 
       return PuzzleCompleteResponseDto.fromJson(response.data); //그냥 .g 파일에 있는 함수임. 어렵게 생각 ㄴㄴ
     } catch (e) {
       print('❌ 퍼즐 완료 처리 실패: $e');
       return PuzzleCompleteResponseDto(
-        puzzleId: '123',
+        puzzleId: 123,
         message: '🔥 서버 연결 실패 - 목데이터 사용 중',
         fruitName: 'Mock 과일 이름',
         fruitMessage: 'Mock 과일 메시지',
@@ -167,9 +202,19 @@ class PuzzleService {
   }
 
   // 진행중인 퍼즐 목록 불러오기 (GET)
-  Future<PuzzleGetInProgressListDto> getInProgressList() async {
-    final response = await _dio.get('/puzzles/in-progress');
-    return PuzzleGetInProgressListDto.fromJson(response.data);
+  Future<List<PuzzleGetInProgressListDto>> getInProgressList() async {
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+    final response = await _dio.get(
+      '${baseUrl}/api/puzzle/in-progress',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $_accessToken',
+        },
+      ),
+    );
+    final prettyJson = const JsonEncoder.withIndent('  ').convert(response.data);
+    print('📦 Response Data:\n$prettyJson');
+    return PuzzleGetInProgressListDto.fromJsonList(response.data);
   }
 
   //진행중인 퍼즐 목록에서 퍼즐 풀기 (퍼즐 이어풀기) (GET)

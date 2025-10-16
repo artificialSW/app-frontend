@@ -9,7 +9,7 @@ part of 'puzzle_complete_response_dto.dart';
 PuzzleCompleteResponseDto _$PuzzleCompleteResponseDtoFromJson(
   Map<String, dynamic> json,
 ) => PuzzleCompleteResponseDto(
-  puzzleId: json['puzzleId'] as String,
+  puzzleId: (json['puzzleId'] as num).toInt(),
   message: json['message'] as String,
   fruitName: json['fruitName'] as String,
   fruitMessage: json['fruitMessage'] as String,

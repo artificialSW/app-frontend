@@ -9,12 +9,9 @@ part of 'puzzle_create_response_dto.dart';
 PuzzleCreateResponseDto _$PuzzleCreateResponseDtoFromJson(
   Map<String, dynamic> json,
 ) => PuzzleCreateResponseDto(
-  puzzleId: json['puzzleId'] as String,
-  imageUrl: json['imageUrl'] as String,
+  puzzleId: (json['puzzleId'] as num).toInt(),
+  imageURL: json['imageURL'] as String,
   category: json['category'] as String,
-  AIKeyword:
-      (json['AIKeyword'] as List<dynamic>).map((e) => e as String).toList(),
-  createdAt: json['createdAt'] as String,
   message: json['message'] as String,
 );
 
@@ -22,9 +19,7 @@ Map<String, dynamic> _$PuzzleCreateResponseDtoToJson(
   PuzzleCreateResponseDto instance,
 ) => <String, dynamic>{
   'puzzleId': instance.puzzleId,
-  'imageUrl': instance.imageUrl,
+  'imageURL': instance.imageURL,
   'category': instance.category,
-  'AIKeyword': instance.AIKeyword,
-  'createdAt': instance.createdAt,
   'message': instance.message,
 };
