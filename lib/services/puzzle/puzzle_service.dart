@@ -200,11 +200,12 @@ class PuzzleService {
 
   // 진행중인 퍼즐 목록 불러오기 (GET)
   Future<List<PuzzleGetInProgressListDto>> getInProgressList() async {
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
     final response = await _dio.get(
       '${baseUrl}/api/puzzle/in-progress',
       options: Options(
         headers: {
-          'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiZmFtaWx5SWQiOjEsImlhdCI6MTc2MDQ5NDYxMH0.1qzNq6jVv9UFlRZ_0iu2x9MobQh-fNI_zqyu-oUWUHbR5tcwRQQMggZYewiqpF-BHDEK3OimPkKxiIHoHagaxA',
+          'Authorization': 'Bearer $_accessToken',
         },
       ),
     );

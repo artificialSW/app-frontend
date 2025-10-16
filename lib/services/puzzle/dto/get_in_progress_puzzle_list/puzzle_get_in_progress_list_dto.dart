@@ -6,7 +6,7 @@ part 'puzzle_get_in_progress_list_dto.g.dart'; // 자동 생성 파일
 
 @JsonSerializable()
 class PuzzleGetInProgressListDto {
-  final String puzzleId;
+  final int puzzleId;
   final String imageUrl;
   final List<String> contributors;
   final String category;

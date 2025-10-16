@@ -9,7 +9,7 @@ part of 'puzzle_get_in_progress_list_dto.dart';
 PuzzleGetInProgressListDto _$PuzzleGetInProgressListDtoFromJson(
   Map<String, dynamic> json,
 ) => PuzzleGetInProgressListDto(
-  puzzleId: json['puzzleId'] as String,
+  puzzleId: (json['puzzleId'] as num).toInt(),
   imageUrl: json['imageUrl'] as String,
   contributors:
       (json['contributors'] as List<dynamic>).map((e) => e as String).toList(),

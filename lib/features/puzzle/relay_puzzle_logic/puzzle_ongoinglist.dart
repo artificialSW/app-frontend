@@ -106,13 +106,13 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
               return PuzzleListItem(
                 puzzleDto: puzzleDto,
                 onDelete: () {
-                  PuzzleService().deletePuzzle(puzzleDto.puzzleId);
+                  PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
                 },
                 onPressed: () async {
                   PlayPuzzleInProgressDto response;
                   ///api 호출하여 dto 받아옴( puzzleId => puzzle dto )
                   try{
-                    response = await PuzzleService().playInProgressPuzzle(puzzleDto.puzzleId);
+                    response = await PuzzleService().playInProgressPuzzle(puzzleDto.puzzleId.toString());
                   } catch(e) {
                     print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
                     response = PlayPuzzleInProgressDto(
@@ -137,7 +137,7 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                   final puzzleGame = PuzzleGame.fromDto(
                       await response, //이거 왜 await으로 해야 하는지 몰겠다 오류나면 빼자
                       _user,
-                      puzzleDto.puzzleId,
+                      puzzleDto.puzzleId.toString(),
                       //puzzleDto.AIKeyword,
                       puzzleDto.category
                   );
