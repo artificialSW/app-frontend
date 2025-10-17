@@ -6,13 +6,27 @@ part 'puzzle_get_completed_list_dto.g.dart'; // 자동 생성 파일
 
 @JsonSerializable()
 class PuzzleGetCompletedListDto {
-  final List<PuzzleGetCompletedDataDto> completedList;
+  final int puzzleId;
+  final String imageUrl;
+  final String category;
+  final List<String> contributors;
+  final String message;
 
   PuzzleGetCompletedListDto({
-    required this.completedList,
+    required this.puzzleId,
+    required this.imageUrl,
+    required this.category,
+    required this.contributors,
+    required this.message,
   });
 
   factory PuzzleGetCompletedListDto.fromJson(Map<String, dynamic> json) =>
       _$PuzzleGetCompletedListDtoFromJson(json);
   Map<String, dynamic> toJson() => _$PuzzleGetCompletedListDtoToJson(this);
+
+  static List<PuzzleGetCompletedListDto> fromJsonList(List<dynamic> jsonList) {
+    return jsonList
+        .map((json) => PuzzleGetCompletedListDto.fromJson(json))
+        .toList();
+  }
 }
