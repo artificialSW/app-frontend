@@ -40,6 +40,11 @@ class PuzzleService {
       ),
     );
 
+    final prettyJson = const JsonEncoder.withIndent('  ').convert(response.data);
+    print('📦 Response Data: $prettyJson');
+    print('len of inProgress Puzzle is: ${response.data['inProgress'].length}');
+
+
     return PuzzleHomeGetDto.fromJson(response.data);
   }
 
@@ -56,7 +61,7 @@ class PuzzleService {
       //   options: Options(contentType: 'application/json'),
       // );
 
-      final _accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5IiwiZmFtaWx5SWQiOjEsImlhdCI6MTc1OTkwNjgwMn0.JTuUNb8aRBDJeErsIpffTpwQ58ItDV5PD9qb9oTlIlFjVgxMP24iJd7Epe-boS7QsGRta-mlktAsJgHLF1u19w';
+      final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
 
       final response = await _dio.post(
         'http://15.164.94.26:8080/api/puzzle/picture/upload',

@@ -261,7 +261,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                         imageUrl: puzzle.inProgress.length > 1 //진행중인 데이터 2개 이상 넘어와야.
                           ? puzzle.inProgress[1]?.imageUrl ?? 'https://picsum.photos/600/400'
                           : 'https://picsum.photos/600/400',
-                        dateInfo: formatUtcToDateString(puzzle.inProgress.isNotEmpty
+                        dateInfo: formatUtcToDateString(puzzle.inProgress.length > 1
                           ? puzzle.inProgress[1]?.lastSavedAt ?? '0000-00-00'
                           : '2000-01-01'
                         ),
