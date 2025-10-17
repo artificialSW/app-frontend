@@ -69,6 +69,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CanGoBackTopBar('완료된 퍼즐 목록', context),
       body: FutureBuilder<List<PuzzleGetCompletedListDto>>(
         future: _fetchCompletedPuzzles(),

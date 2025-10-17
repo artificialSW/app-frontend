@@ -80,6 +80,7 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CanGoBackTopBar('진행중인 퍼즐 목록', context),
       body: FutureBuilder<List<PuzzleGetInProgressListDto>>(
         future: _fetchOngoingPuzzles(),

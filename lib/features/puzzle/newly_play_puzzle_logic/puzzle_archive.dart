@@ -69,6 +69,7 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CanGoBackTopBar('퍼즐 아카이브', context),
       body: FutureBuilder<PuzzleGetArchivedListDto>(
         future: _fetchArchivedPuzzles(),

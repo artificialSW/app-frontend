@@ -234,6 +234,10 @@ class PuzzleService {
         headers: {
           'Authorization': 'Bearer $_accessToken',
         },
+        validateStatus: (status) {
+          // 200~299 또는 423(잠금 상태)까지는 예외 던지지 않게
+          return status != null && (status < 500);
+        },
       ),
     );
 
