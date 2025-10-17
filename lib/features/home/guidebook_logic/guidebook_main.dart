@@ -21,6 +21,13 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
   int _currentPage = 0;
   int _selectedTab = 0; // 0: 꽃, 1: 열매
   final HomeService _homeService = HomeService();
+  late final Future<List<bool>> _flowerUnlockFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _flowerUnlockFuture = _getFlowerUnlockedStates();
+  }
 
   @override
   void dispose() {
@@ -46,6 +53,12 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
       true,  // 10: 코스모스
       false, // 11: 해바라기 (잠금)
     ];
+  }
+
+  /// 기본 열매 해금 상태 반환 (모두 해금)
+  List<bool> _getDefaultFruitUnlockStates() {
+    // 16개 열매 모두 해금 (1쪽: 봄, 2쪽: 여름, 3쪽: 가을, 4쪽: 겨울)
+    return List.generate(16, (index) => true);
   }
 
   /// 꽃 해금 상태 반환 (API 호출)
@@ -106,16 +119,18 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
                         onTabChanged: (tab) => setState(() => _selectedTab = tab),
                       ),
                       FutureBuilder<List<bool>>(
-                        future: _getFlowerUnlockedStates(),
+                        future: _flowerUnlockFuture,
                         initialData: _getDefaultUnlockStates(), // 즉시 표시할 기본값
                         builder: (context, snapshot) {
                           final flowerUnlockedStates = snapshot.data ?? _getDefaultUnlockStates();
+                          final fruitUnlockedStates = _getDefaultFruitUnlockStates(); // 열매는 모두 해금
                           return GuidebookSwipeArea(
                             pageController: _pageController,
                             currentPage: _currentPage,
                             selectedTab: _selectedTab,
                             onPageChanged: (page) => setState(() => _currentPage = page),
                             flowerUnlockedStates: flowerUnlockedStates,
+                            fruitUnlockedStates: fruitUnlockedStates,
                           );
                         },
                       ),
@@ -130,40 +145,57 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
                     ],
                   ),
 
-                  // 제목과 부제목
+                  // 제목과 부제목 (탭/해금상태에 따라 동적 변경)
                   Positioned(
                     top: 180,
                     left: 0,
                     right: 0,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 32),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '우리 가족의\n꽃 도감 확인하기',
-                            style: AppTextStyles.pretendard_bold.copyWith(
-                              color: AppColors.plumu_black,
-                              fontSize: 27,
-                              height: 1.33,
-                              letterSpacing: -0.32,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            width: 265,
-                            height: 25,
-                            child: Text(
-                              '꽃 생성 기준을 확인해보세요!',
-                              style: AppTextStyles.pretendard_medium.copyWith(
-                                color: AppColors.plumu_gray_8,
-                                fontSize: 15,
-                                height: 1.50,
-                                letterSpacing: -0.46,
+                      child: FutureBuilder<List<bool>>(
+                        future: _flowerUnlockFuture,
+                        initialData: _getDefaultUnlockStates(),
+                        builder: (context, snapshot) {
+                          final flowerUnlockedStates = snapshot.data ?? _getDefaultUnlockStates();
+                          final bool anyFlowerUnlocked = flowerUnlockedStates.any((e) => e);
+
+                          final String title = _selectedTab == 0
+                              ? '우리 가족의\n꽃 도감 확인하기'
+                              : '우리 가족의\n열매 도감 확인하기';
+
+                          final String subtitle = _selectedTab == 0
+                              ? (anyFlowerUnlocked ? '꽃 생성 기준을 확인해보세요!' : '아직 획득한 꽃이 없어요')
+                              : '열매 생성 기준을 확인해보세요!';
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                title,
+                                style: AppTextStyles.pretendard_bold.copyWith(
+                                  color: AppColors.plumu_black,
+                                  fontSize: 27,
+                                  height: 1.33,
+                                  letterSpacing: -0.32,
+                                ),
                               ),
-                            ),
-                          ),
-                        ],
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: 265,
+                                height: 25,
+                                child: Text(
+                                  subtitle,
+                                  style: AppTextStyles.pretendard_medium.copyWith(
+                                    color: AppColors.plumu_gray_8,
+                                    fontSize: 15,
+                                    height: 1.50,
+                                    letterSpacing: -0.46,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ),

@@ -6,10 +6,12 @@ import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 // DM 배지가 있는 커스텀 AppBar
 class ChatCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int incomingQuestionsCount;
+  final VoidCallback? onAfterReturn; // 개인답변 화면에서 복귀 시 콜백
 
   const ChatCustomAppBar({
     super.key,
     required this.incomingQuestionsCount,
+    this.onAfterReturn,
   });
 
   @override
@@ -30,7 +32,7 @@ class ChatCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         Stack(
           children: [
-            const HeaderSendIcon(),
+            HeaderSendIcon(onAfterReturn: onAfterReturn),
             if (incomingQuestionsCount > 0)
               Positioned(
                 right: 8,

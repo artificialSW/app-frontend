@@ -33,6 +33,31 @@ class AppAssets {
   static const flower_sunflower = 'assets/images/flower/sunflower.png'; // 해바라기
   static const flower_patbae = 'assets/images/flower/patbae_flower.png'; // 팥배꽃 (기타)
 
+  // 열매 이미지들 (assets/images/fruit/)
+  // 봄 열매 (1쪽)
+  static const fruit_cherry = 'assets/images/fruit/spring/cherry.png'; // 체리
+  static const fruit_strawberry = 'assets/images/fruit/spring/strawberry.png'; // 딸기
+  static const fruit_kiwi = 'assets/images/fruit/spring/kiwi.png'; // 키위
+  static const fruit_raspberry = 'assets/images/fruit/spring/raspberry.png'; // 라즈베리
+  
+  // 여름 열매 (2쪽)
+  static const fruit_peach = 'assets/images/fruit/summer/peach.png'; // 복숭아
+  static const fruit_plum = 'assets/images/fruit/summer/plum.png'; // 자두
+  static const fruit_mango = 'assets/images/fruit/summer/mango.png'; // 망고
+  static const fruit_blueberry = 'assets/images/fruit/summer/blueberry.png'; // 블루베리
+  
+  // 가을 열매 (3쪽)
+  static const fruit_grape = 'assets/images/fruit/fall/grape.png'; // 포도
+  static const fruit_pear = 'assets/images/fruit/fall/pear.png'; // 배
+  static const fruit_persimmon = 'assets/images/fruit/fall/persimmon.png'; // 감
+  static const fruit_jujube = 'assets/images/fruit/fall/jujube.png'; // 대추
+  
+  // 겨울 열매 (4쪽)
+  static const fruit_apple = 'assets/images/fruit/winter/apple.png'; // 사과
+  static const fruit_mandarin = 'assets/images/fruit/winter/mandarin.png'; // 귤
+  static const fruit_pomegranate = 'assets/images/fruit/winter/pomegranate.png'; // 석류
+  static const fruit_yuja = 'assets/images/fruit/winter/yuja.png'; // 유자
+
   static const dogaam = 'assets/images/book.png';
   static const guidebook = 'assets/images/guidebook.png';
   static const guidebook_1 = 'assets/images/guidebook_1.png';
@@ -84,5 +109,6 @@ class AppAssets {
   static const String paperplane = 'assets/icons/paperplane.png';
   static const String person_circle = 'assets/icons/person_circle.png';
   static const String message = 'assets/icons/message.png';
+  static const String show_replies = 'assets/icons/show_replies.png';
 
 }

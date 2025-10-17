@@ -163,35 +163,31 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
     };
 
     return Scaffold(
+      backgroundColor: Colors.white,
+      extendBody: true, // 하단바 영역까지 body 확장
       appBar: CreateQuestionTopBar(step),
-      body: Padding(
+      body: body,
+      bottomNavigationBar: null, // 하단바 완전히 제거
+      floatingActionButton: Padding(
         padding: const EdgeInsets.all(16),
-        child: body,
+        child: CustomButton(
+          text: step == 2 ? '전송' : '다음',
+          onPressed: canNext ? () {
+            if (step == 2) {
+              _submitQuestion(); // 마지막 단계에서는 질문 전송
+            } else {
+              setState(() => step++); // 다른 단계에서는 다음으로
+            }
+          } : null,
+          width: double.infinity,
+          height: 52,
+          fontSize: 16,
+          textColor: AppColors.plumu_white,
+          backgroundColor: AppColors.plumu_green_main,
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
-      bottomNavigationBar: step == 3 // Success 단계에서는 하단바 숨김
-          ? null
-          : SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: CustomButton(
-                  text: step == 2 ? '전송' : '다음',
-                  onPressed: canNext ? () {
-                    if (step == 2) {
-                      _submitQuestion(); // 마지막 단계에서는 질문 전송
-                    } else {
-                      setState(() => step++); // 다른 단계에서는 다음으로
-                    }
-                  } : null,
-                  width: double.infinity,
-                  height: 52,
-                  fontSize: 16,
-                  textColor: AppColors.plumu_white,
-                  backgroundColor: AppColors.plumu_green_main,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

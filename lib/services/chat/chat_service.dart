@@ -150,7 +150,12 @@ class ChatService {
         print('[ChatService] 응답: ${response.data}');
       }
       
-      return ChatReplyResponseDto.fromJson(response.data);
+      // 서버 응답에 message 필드가 없을 수 있으므로 안전하게 처리
+      final responseData = response.data as Map<String, dynamic>;
+      return ChatReplyResponseDto(
+        replyId: responseData['replyId'],
+        message: responseData['message'] ?? '댓글이 성공적으로 작성되었습니다.',
+      );
     } on DioError catch (e) {
       // API 실패 시 Mock 데이터로 폴백 (시연용)
       print('❌ [ChatService] 댓글/답변 작성 실패, Mock 데이터 사용');

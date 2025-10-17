@@ -32,35 +32,31 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
   }
 
   void _loadTestData() {
-    // 테스트용 과일 카드들 (모든 과일 추가)
+    // 테스트용 과일 카드들 (16개 과일)
     final rawFruitCards = [
-      // 봄 과일들
-      FruitCardData(id: 'fruit_spring_001', name: '딸기', imagePath: 'assets/images/fruit/spring/strawberry.png', date: '2024-04-15', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_spring_002', name: '체리', imagePath: 'assets/images/fruit/spring/cherry.png', date: '2024-04-20', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_spring_003', name: '키위', imagePath: 'assets/images/fruit/spring/kiwi.png', date: '2024-05-10', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_spring_004', name: '라즈베리', imagePath: 'assets/images/fruit/spring/raspberry.png', date: '2024-05-15', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_spring_005', name: '참외', imagePath: 'assets/images/fruit/spring/oriental_melon.png', date: '2024-06-01', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
+      // 봄 과일들 (4개)
+      FruitCardData(id: 'fruit_spring_001', name: '체리', imagePath: 'assets/images/fruit/spring/cherry.png', date: '2024-04-20', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_spring_002', name: '참외', imagePath: 'assets/images/fruit/spring/oriental_melon.png', date: '2024-06-01', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_spring_003', name: '산딸기', imagePath: 'assets/images/fruit/spring/raspberry.png', date: '2024-05-15', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_spring_004', name: '딸기', imagePath: 'assets/images/fruit/spring/strawberry.png', date: '2024-04-15', puzzleImagePath: 'assets/images/puzzle/spring_puzzle.png', order: 0),
       
-      // 여름 과일들
-      FruitCardData(id: 'fruit_summer_001', name: '복숭아', imagePath: 'assets/images/fruit/summer/peach.png', date: '2024-07-20', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_summer_002', name: '블루베리', imagePath: 'assets/images/fruit/summer/blueberry.png', date: '2024-07-25', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_summer_003', name: '망고', imagePath: 'assets/images/fruit/summer/mango.png', date: '2024-08-05', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
+      // 여름 과일들 (4개)
+      FruitCardData(id: 'fruit_summer_001', name: '블루베리', imagePath: 'assets/images/fruit/summer/blueberry.png', date: '2024-07-25', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_summer_002', name: '망고', imagePath: 'assets/images/fruit/summer/mango.png', date: '2024-08-05', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_summer_003', name: '복숭아', imagePath: 'assets/images/fruit/summer/peach.png', date: '2024-07-20', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
       FruitCardData(id: 'fruit_summer_004', name: '자두', imagePath: 'assets/images/fruit/summer/plum.png', date: '2024-08-10', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_summer_005', name: '코코넛', imagePath: 'assets/images/fruit/summer/coconut.png', date: '2024-08-15', puzzleImagePath: 'assets/images/puzzle/summer_puzzle.png', order: 0),
       
-      // 가을 과일들
+      // 가을 과일들 (4개)
       FruitCardData(id: 'fruit_fall_001', name: '무화과', imagePath: 'assets/images/fruit/fall/fig.png', date: '2024-09-20', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
       FruitCardData(id: 'fruit_fall_002', name: '포도', imagePath: 'assets/images/fruit/fall/grape.png', date: '2024-09-25', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_fall_003', name: '대추', imagePath: 'assets/images/fruit/fall/jujube.png', date: '2024-10-01', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_fall_004', name: '배', imagePath: 'assets/images/fruit/fall/pear.png', date: '2024-10-10', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_fall_005', name: '감', imagePath: 'assets/images/fruit/fall/persimmon.png', date: '2024-10-15', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_fall_003', name: '배', imagePath: 'assets/images/fruit/fall/pear.png', date: '2024-10-10', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_fall_004', name: '감', imagePath: 'assets/images/fruit/fall/persimmon.png', date: '2024-10-15', puzzleImagePath: 'assets/images/puzzle/fall_puzzle.png', order: 0),
       
-      // 겨울 과일들
+      // 겨울 과일들 (4개)
       FruitCardData(id: 'fruit_winter_001', name: '사과', imagePath: 'assets/images/fruit/winter/apple.png', date: '2024-12-15', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_winter_002', name: '아보카도', imagePath: 'assets/images/fruit/winter/avocado.png', date: '2024-12-20', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_winter_003', name: '귤', imagePath: 'assets/images/fruit/winter/mandarin.png', date: '2024-12-25', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_winter_004', name: '석류', imagePath: 'assets/images/fruit/winter/pomegranate.png', date: '2024-01-05', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
-      FruitCardData(id: 'fruit_winter_005', name: '유자', imagePath: 'assets/images/fruit/winter/yuja.png', date: '2024-01-10', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_winter_002', name: '귤', imagePath: 'assets/images/fruit/winter/mandarin.png', date: '2024-12-25', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_winter_003', name: '석류', imagePath: 'assets/images/fruit/winter/pomegranate.png', date: '2024-01-05', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
+      FruitCardData(id: 'fruit_winter_004', name: '유자', imagePath: 'assets/images/fruit/winter/yuja.png', date: '2024-01-10', puzzleImagePath: 'assets/images/puzzle/winter_puzzle.png', order: 0),
     ];
 
     // 테스트용 꽃 카드들 (모든 꽃 추가)
@@ -79,9 +75,19 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
       FlowerCardData(id: 'flower_012', name: '팥배꽃', imagePath: 'assets/images/flower/patbae_flower.png', emotion: 'hobby', date: '2024-09-23', communicationText: '취미 관련 소통을 통해 획득', order: 0),
     ];
 
-    // 날짜순으로 정렬 (최신순)
-    fruitCards = _sortCardsByDate(rawFruitCards);
-    flowerCards = _sortCardsByDate(rawFlowerCards);
+    // 날짜순으로 정렬 (최신순) 후 상태 업데이트
+    final sortedFruit = _sortCardsByDate(rawFruitCards);
+    final sortedFlower = _sortCardsByDate(rawFlowerCards);
+    setState(() {
+      fruitCards = sortedFruit;
+      flowerCards = sortedFlower;
+    });
+    // 초기 로드 시에도 부모에 알림 (시트의 현재 카드 개수 전달)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.onSelectionChanged != null) {
+        widget.onSelectionChanged!(fruitCards, flowerCards);
+      }
+    });
   }
 
   /// 카드들을 날짜순으로 정렬하는 메서드 (최신순)

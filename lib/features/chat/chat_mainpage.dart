@@ -13,6 +13,7 @@ import 'package:artificialsw_frontend/services/chat/mock_data_manager.dart';
 
 // 프로젝트 내부 (상대 경로)
 import 'widget/personal_question_card.dart';
+import 'chat_personal_send_logic/personal_question_flow_page.dart';
 import 'widget/common_question_card.dart';
 import 'widget/weekly_question_banner.dart';
 import 'widget/tab_bar.dart';
@@ -57,7 +58,7 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this); // 앱 생명주기 관찰 시작
     // 주간 업데이트 확인 후 데이터 로드
     _checkAndUpdateWeeklyQuestion().then((_) {
-      _loadAllData();
+      _loadAllData(forceRefresh: true);
     });
   }
   
@@ -198,7 +199,13 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: ChatCustomAppBar(incomingQuestionsCount: _getIncomingQuestionsCount()),
+      appBar: ChatCustomAppBar(
+        incomingQuestionsCount: _getIncomingQuestionsCount(), // 채팅홈에서는 알림 개수 표시
+        onAfterReturn: () async {
+          // 내게 온 질문에 답변하고 돌아올 때도 전체 강제 새로고침
+          await _loadAllData(forceRefresh: true);
+        },
+      ),
       body: Column(
         children: [
           if (_weeklyData != null)
@@ -206,19 +213,29 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
               data: _weeklyData!,
               order: (_commonData?.length ?? 0) + 1,
               onAnswerSubmit: (answer) => _submitWeeklyAnswer(answer),
-              onTapThread: () {
-                // 스레드 화면으로 이동
-                Navigator.push(context, MaterialPageRoute(
+              onTapThread: () async {
+                // 스레드 화면으로 이동 후 복귀 시 강제 새로고침
+                await Navigator.push(context, MaterialPageRoute(
                   builder: (_) => ChatCommonThreadPage(
                     questionId: _weeklyData!.questionRefId.toString(),
                     order: (_commonData?.length ?? 0) + 1
                   ),
                 ));
+                await _loadAllData(forceRefresh: true);
               },
             ),
           ChatTabBar(
             selectedIndex: _selectedIndex,
-            onTabChanged: (index) => setState(() => _selectedIndex = index),
+            onTabChanged: (index) async {
+              setState(() => _selectedIndex = index);
+              // 탭 전환 직후 해당 탭 데이터 강제 새로고침
+              if (index == 0) {
+                await _loadPersonalData(forceRefresh: true);
+              } else {
+                await _loadCommonData(forceRefresh: true);
+                await _loadWeeklyData(forceRefresh: true);
+              }
+            },
           ),
           Expanded(
             child: RefreshIndicator(
@@ -237,8 +254,15 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
           ),
         ],
       ),
-      floatingActionButton: _AnimatedFAB(
-        onPressed: () => Navigator.pushNamed(context, '/personal-question'),
+          floatingActionButton: _AnimatedFAB(
+        onPressed: () async {
+          await Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(
+              builder: (_) => const PersonalQuestionFlowPage(),
+            ),
+          );
+          await _loadAllData(forceRefresh: true);
+        },
       ),
     );
   }
@@ -274,11 +298,12 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
           initialLikes: question.likes,
           commentsCount: question.comments,
           selected: _selectedPersonalId == entity.id,
-          onTap: () {
+          onTap: () async {
             setState(() => _selectedPersonalId = entity.id);
-            Navigator.push(context, MaterialPageRoute(
+            await Navigator.push(context, MaterialPageRoute(
               builder: (_) => ChatPersonalThreadPage(questionId: entity.id),
             ));
+            await _loadAllData(forceRefresh: true);
           },
         );
       },
@@ -313,14 +338,15 @@ class _ChatRootState extends State<ChatRoot> with WidgetsBindingObserver {
         return CommonQuestionCard(
           question: commonQuestion,
           selected: _selectedCommonId == commonQuestion.id,
-          onTap: () {
+          onTap: () async {
             setState(() => _selectedCommonId = commonQuestion.id);
-            Navigator.push(context, MaterialPageRoute(
+            await Navigator.push(context, MaterialPageRoute(
               builder: (_) => ChatCommonThreadPage(
                 questionId: commonQuestion.id,
                 order: _commonData!.length - i
               ),
             ));
+            await _loadAllData(forceRefresh: true);
           },
         );
       },
