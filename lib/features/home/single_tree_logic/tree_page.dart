@@ -45,13 +45,12 @@ class _TreePageState extends State<TreePage> {
     AppAssets.flower_patbae,   // 4
   ];
 
-  // 첫 5개 과일 아이콘 (세 번째 나무용 임시 매핑 - 시즌 혼합)
-  final List<String> _firstFiveFruitIconAssets = [
-    'assets/images/fruit/spring/strawberry.png', // 1
-    'assets/images/fruit/summer/peach.png',      // 2
-    'assets/images/fruit/fall/grape.png',        // 3
+  // 첫 4개 과일 아이콘 (세 번째 나무용 임시 매핑 - 시즌 혼합)
+  final List<String> _firstFourFruitIconAssets = [
+    'assets/images/fruit/spring/cherry.png',     // 1
+    'assets/images/fruit/summer/blueberry.png',  // 2
+    'assets/images/fruit/fall/fig.png',          // 3
     'assets/images/fruit/winter/apple.png',      // 4
-    'assets/images/fruit/summer/mango.png',      // 5
   ];
 
   // 기준 나무 크기 (디자인 스펙)
@@ -91,13 +90,12 @@ class _TreePageState extends State<TreePage> {
   ];
 
   // 세 번째 나무(과일) 기준 좌표계에서의 과일 위치 (왼쪽/위쪽 패딩)
-  // 1~5번째 카드가 열릴 위치 (세 번째 나무 내부 기준)
+  // 1~4번째 카드가 열릴 위치 (세 번째 나무 내부 기준)
   final List<Offset> _baseFruit1Positions = const [
     Offset(105, 59),  // 1번째 과일
     Offset(162, 130), // 2번째 과일
     Offset(74, 169),  // 3번째 과일
     Offset(168, 232), // 4번째 과일
-    Offset(43, 265),  // 5번째 과일
   ];
   
   // 네 번째 나무(과일) 기준 좌표계에서의 과일 위치 (왼쪽/위쪽 패딩)
@@ -245,9 +243,9 @@ class _TreePageState extends State<TreePage> {
                     for (int i = 0; i < _visibleFlowerCount && i < 4; i++)
                       _buildOverlayFlower2(i, layout['width']!, layout['height']!),
                   ],
-                  // 과일 오버레이: fruit-1 타입일 때 (최대 5개)
+                  // 과일 오버레이: fruit-1 타입일 때 (최대 4개)
                   if (widget.treeType == 'fruit-1') ...[
-                    for (int i = 0; i < _visibleFruitCount && i < 5; i++)
+                    for (int i = 0; i < _visibleFruitCount && i < 4; i++)
                       _buildOverlayFruit1(i, layout['width']!, layout['height']!),
                   ],
                   // 과일 오버레이: fruit-2 타입일 때 (최대 3개)
@@ -277,7 +275,7 @@ class _TreePageState extends State<TreePage> {
                   } else if (widget.treeType == 'flower-2') {
                     _visibleFlowerCount = flowerCards.length.clamp(0, 4);
                   } else if (widget.treeType == 'fruit-1') {
-                    _visibleFruitCount = fruitCards.length.clamp(0, 5);
+                    _visibleFruitCount = fruitCards.length.clamp(0, 4);
                   } else if (widget.treeType == 'fruit-2') {
                     _visibleFruitCount2 = fruitCards.length.clamp(0, 3);
                   }
@@ -355,7 +353,7 @@ class _TreePageState extends State<TreePage> {
       left: left,
       top: top,
       child: Image.asset(
-        _firstFiveFruitIconAssets[index],
+        _firstFourFruitIconAssets[index],
         width: width,
         height: height,
         fit: BoxFit.contain,
@@ -380,7 +378,7 @@ class _TreePageState extends State<TreePage> {
       left: left,
       top: top,
       child: Image.asset(
-        _firstFiveFruitIconAssets[index],
+        _firstFourFruitIconAssets[index],
         width: width,
         height: height,
         fit: BoxFit.contain,
