@@ -4,7 +4,6 @@ import 'package:artificialsw_frontend/services/puzzle/dto/get_archived_puzzle_li
 import 'package:artificialsw_frontend/services/puzzle/dto/play_completed_puzzle/play_puzzle_completed_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_completed_puzzle_list/puzzle_get_completed_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/play_in_progress_puzzle/play_puzzle_in_progress_dto.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_data_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/image_upload/image_upload_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_request_dto.dart';
@@ -40,6 +39,10 @@ class PuzzleService {
       ),
     );
 
+    final prettyJson = const JsonEncoder.withIndent('  ').convert(response.data);
+    print('📦 Rㄱㄱㄱㄱesponse Data: $prettyJson');
+    print('len of inProgress Puzzle is: ${response.data['inProgress'].length}');
+
     return PuzzleHomeGetDto.fromJson(response.data);
   }
 
@@ -56,7 +59,7 @@ class PuzzleService {
       //   options: Options(contentType: 'application/json'),
       // );
 
-      final _accessToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5IiwiZmFtaWx5SWQiOjEsImlhdCI6MTc1OTkwNjgwMn0.JTuUNb8aRBDJeErsIpffTpwQ58ItDV5PD9qb9oTlIlFjVgxMP24iJd7Epe-boS7QsGRta-mlktAsJgHLF1u19w';
+      final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
 
       final response = await _dio.post(
         'http://15.164.94.26:8080/api/puzzle/picture/upload',
@@ -219,32 +222,68 @@ class PuzzleService {
 
   //진행중인 퍼즐 목록에서 퍼즐 풀기 (퍼즐 이어풀기) (GET)
   Future<PlayPuzzleInProgressDto> playInProgressPuzzle(String puzzleId) async {
-    final response = await _dio.get('/puzzles/$puzzleId/progress');
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    if(_accessToken == null){
+      print('_accessToken is null!!!!!');
+    }
+
+    final response = await _dio.get(
+      '$baseUrl/api/puzzle/$puzzleId/progress',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $_accessToken',
+        },
+        validateStatus: (status) {
+          // 200~299 또는 423(잠금 상태)까지는 예외 던지지 않게
+          return status != null && (status < 500);
+        },
+      ),
+    );
+
+    final prettyJson = const JsonEncoder.withIndent('  ').convert(response.data);
+    print('📦 Response Data: $prettyJson');
+
     return PlayPuzzleInProgressDto.fromJson(response.data);
   }
 
   // 완료된 퍼즐 목록 불러오기 (GET)
-  Future<PuzzleGetCompletedListDto> getCompletedList() async {
-    final response = await _dio.get('/puzzles/completed');
-    return PuzzleGetCompletedListDto.fromJson(response.data);
+  Future<List<PuzzleGetCompletedListDto>> getCompletedList() async {
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    if(_accessToken == null){
+      print('$_accessToken is null!!!');
+    }
+
+    final response = await _dio.get(
+        '$baseUrl/api/puzzle/completed',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $_accessToken',
+        },
+      ),
+    );
+    final prettyJson = const JsonEncoder.withIndent('  ').convert(response.data);
+    print('📦 Response Data:\n$prettyJson');
+    return PuzzleGetCompletedListDto.fromJsonList(response.data);
   }
 
   //완료된 퍼즐 목록에서 퍼즐 풀기 (퍼즐 다시풀기) (GET)
   Future<PlayPuzzleCompletedDto> playCompletedPuzzle(String puzzleId) async {
-    final response = await _dio.get('/puzzles/$puzzleId/retry');
+    final response = await _dio.get('/puzzle/$puzzleId/retry');
     return PlayPuzzleCompletedDto.fromJson(response.data);
   }
 
   // 아카이브된 퍼즐 불러오기 (GET)
   Future<PuzzleGetArchivedListDto> getArchivedList() async {
-    final response = await _dio.get('/puzzles/archive');
+    final response = await _dio.get('/puzzle/archive');
     return PuzzleGetArchivedListDto.fromJson(response.data);
   }
 
   // 완료된 퍼즐을 아카이브로 이동 (POST)
   Future<void> archiveCompletedPuzzle(String puzzleId) async {
     try {
-      final response = await _dio.post('/puzzles/$puzzleId/archive');
+      final response = await _dio.post('/puzzle/$puzzleId/archive');
 
       if (response.statusCode == 200) {
         final message = response.data['message'];
@@ -262,7 +301,7 @@ class PuzzleService {
 
 // 🔵 퍼즐 삭제
   Future<void> deletePuzzle(String puzzleId) async {
-    final response = await _dio.delete('/puzzles/$puzzleId');
+    final response = await _dio.delete('/puzzle/$puzzleId');
     if (response.statusCode == 200) {
       print('✅ 퍼즐 삭제 성공');
     } else {

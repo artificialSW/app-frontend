@@ -2,7 +2,6 @@ import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
 import 'package:artificialsw_frontend/services/api_client.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/play_in_progress_puzzle/play_puzzle_in_progress_dto.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_data_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_in_progress_puzzle_list/puzzle_get_in_progress_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
@@ -25,7 +24,7 @@ class OngoingPuzzlesPage extends StatefulWidget {
 
 class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
 
-  final _user = User(name: 'MockUser', id: '123', role: '아빠');
+  final _user = User(name: 'MockUser', id: 123, role: '아빠');
   late Future<List<PuzzleGetInProgressListDto>> _ongoingPuzzlesFuture;
 
   Future<List<PuzzleGetInProgressListDto>> _fetchOngoingPuzzles() async {
@@ -81,6 +80,7 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CanGoBackTopBar('진행중인 퍼즐 목록', context),
       body: FutureBuilder<List<PuzzleGetInProgressListDto>>(
         future: _fetchOngoingPuzzles(),
@@ -115,22 +115,23 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                     response = await PuzzleService().playInProgressPuzzle(puzzleDto.puzzleId.toString());
                   } catch(e) {
                     print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
-                    response = PlayPuzzleInProgressDto(
-                      imageUrl: 'https://picsum.photos/600/400',
-                      size: 9,
-                      youCanPlayPuzzle: true,
-                      piecesPosition: {
-                          '0': PiecePosition(x: 0.0, y: 0.0),
-                          '1': PiecePosition(x: 0.0, y: 0.0),
-                          '2': PiecePosition(x: 371.9866817679033, y: -78.11811366169445),
-                          '3': PiecePosition(x: 412.19363719162334, y: 129.82030758795253),
-                          '4': PiecePosition(x: 336.10010644817953, y: -66.03152805582121),
-                          '5': PiecePosition(x: 403.20028666529834, y: -79.03794413986476),
-                          '6': PiecePosition(x: 348.9157830790029, y: 75.53067899585587),
-                          '7': PiecePosition(x: 281.8794948201076, y: 36.361730600130926),
-                          '8': PiecePosition(x: 328.8932872972411, y: -66.43651951182676),
-                        }
-                    );
+                    throw Exception('error!!');
+                    // response = PlayPuzzleInProgressDto(
+                    //   imageUrl: 'https://picsum.photos/600/400',
+                    //   size: 9,
+                    //   youCanPlayPuzzle: true,
+                    //   piecesPosition: {
+                    //       '0': PiecePosition(x: 0.0, y: 0.0),
+                    //       '1': PiecePosition(x: 0.0, y: 0.0),
+                    //       '2': PiecePosition(x: 371.9866817679033, y: -78.11811366169445),
+                    //       '3': PiecePosition(x: 412.19363719162334, y: 129.82030758795253),
+                    //       '4': PiecePosition(x: 336.10010644817953, y: -66.03152805582121),
+                    //       '5': PiecePosition(x: 403.20028666529834, y: -79.03794413986476),
+                    //       '6': PiecePosition(x: 348.9157830790029, y: 75.53067899585587),
+                    //       '7': PiecePosition(x: 281.8794948201076, y: 36.361730600130926),
+                    //       '8': PiecePosition(x: 328.8932872972411, y: -66.43651951182676),
+                    //     }
+                    // );
                   }
 
                   ///받아온 puzzle dto를 puzzlegame의 fromDto에 넣어서 퍼즐 인스턴스 받아옴

@@ -21,47 +21,42 @@ class CompletedPuzzlesPage extends StatefulWidget {
 }
 
 class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
-  final _user = User(name: 'MockUser', id: '123', role: '아빠');
+  final _user = User(name: 'MockUser', id: 123, role: '아빠');
 
-  late Future<PuzzleGetCompletedListDto> _completedPuzzlesFuture;
+  late Future<List<PuzzleGetCompletedListDto>> _completedPuzzlesFuture;
 
-  Future<PuzzleGetCompletedListDto> _fetchCompletedPuzzles() async {
+  Future<List<PuzzleGetCompletedListDto>> _fetchCompletedPuzzles() async {
     try{
       return await PuzzleService().getCompletedList();
     } catch (e){
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       // ✅ 목데이터 리턴
-      return PuzzleGetCompletedListDto(
-          completedList: [
-            PuzzleGetCompletedDataDto(
-                puzzleId: '1',
-                imageUrl: 'https://picsum.photos/400/400',
-                contributors: ['완료-mock1', 'mock', 'mock'],
-                completedAt: 'mock 시간 데이터1',
-                AIKeyword: ['완료-mock1', 'AI', 'keyword'],
-                category: 'mock 카테고리1',
-              message: 'mock1 우리 할아버지 신나셨던거 기억나?'
-            ),
-            PuzzleGetCompletedDataDto(
-                puzzleId: '2',
-                imageUrl: 'https://picsum.photos/400/400',
-                contributors: ['mock2', 'mock', 'mock'],
-                completedAt: 'mock2 시간 데이터2',
-                AIKeyword: ['mock2', 'AI', 'keyword'],
-                category: 'mock 카테고리2',
-                message: 'mock1 우리 할아버지 신나셨던거 기억나?'
-            ),
-            PuzzleGetCompletedDataDto(
-                puzzleId: '3',
-                imageUrl: 'https://picsum.photos/400/400',
-                contributors: ['mock3', 'mock', 'mock'],
-                completedAt: 'mock3 시간 데이터3',
-                AIKeyword: ['mock3', 'AI', 'keyword'],
-                category: 'mock 카테고리3',
-                message: 'mock1 우리 할아버지 신나셨던거 기억나?'
-            ),
-          ]
-      );
+      throw Exception('error!!!!!!!!!!');
+      // return PuzzleGetCompletedListDto(
+      //     completedList: [
+      //       PuzzleGetCompletedDataDto(
+      //           puzzleId: 1,
+      //           imageUrl: 'https://picsum.photos/400/400',
+      //           contributors: ['완료-mock1', 'mock', 'mock'],
+      //           category: 'mock 카테고리1',
+      //         message: 'mock1 우리 할아버지 신나셨던거 기억나?'
+      //       ),
+      //       PuzzleGetCompletedDataDto(
+      //           puzzleId: 2,
+      //           imageUrl: 'https://picsum.photos/400/400',
+      //           contributors: ['mock2', 'mock', 'mock'],
+      //           category: 'mock 카테고리2',
+      //           message: 'mock1 우리 할아버지 신나셨던거 기억나?'
+      //       ),
+      //       PuzzleGetCompletedDataDto(
+      //           puzzleId: 3,
+      //           imageUrl: 'https://picsum.photos/400/400',
+      //           contributors: ['mock3', 'mock', 'mock'],
+      //           category: 'mock 카테고리3',
+      //           message: 'mock1 우리 할아버지 신나셨던거 기억나?'
+      //       ),
+      //     ]
+      // );
     }
   }
 
@@ -74,8 +69,9 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CanGoBackTopBar('완료된 퍼즐 목록', context),
-      body: FutureBuilder<PuzzleGetCompletedListDto>(
+      body: FutureBuilder<List<PuzzleGetCompletedListDto>>(
         future: _fetchCompletedPuzzles(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -85,7 +81,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
             return const Center(child: Text('데이터 불러오기 실패'));
           }
 
-          final puzzles = snapshot.data!.completedList;
+          final puzzles = snapshot.data!;
 
           if (puzzles.isEmpty) {
             return const Center(child: Text('완료된 퍼즐이 없습니다.'));
@@ -105,7 +101,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                   PlayPuzzleCompletedDto response;
                   ///api 호출하여 dto 받아옴( puzzleId => puzzle dto )
                   try{
-                    response = await PuzzleService().playCompletedPuzzle(puzzleDto.puzzleId);
+                    response = await PuzzleService().playCompletedPuzzle(puzzleDto.puzzleId.toString());
                   } catch(e){
                     print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
                     response = PlayPuzzleCompletedDto(
@@ -118,7 +114,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                   final puzzleGame = PuzzleGame.fromDto(
                       response, //이거 왜 await으로 해야 하는지 몰겠다 오류나면 빼자
                       _user,
-                      puzzleDto.puzzleId,
+                      puzzleDto.puzzleId.toString(),
                       //puzzleDto.AIKeyword,
                       puzzleDto.category
                   );
@@ -129,7 +125,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                   );
                 },
                 onSave: () async {
-                  await PuzzleService().archiveCompletedPuzzle(puzzleDto.puzzleId);
+                  await PuzzleService().archiveCompletedPuzzle(puzzleDto.puzzleId.toString());
                   setState(() {
                     _completedPuzzlesFuture = _fetchCompletedPuzzles(); //새로운 future로 업데이트
                   });

@@ -8,14 +8,14 @@ part 'play_puzzle_in_progress_dto.g.dart'; // 자동 생성 파일
 class PlayPuzzleInProgressDto {
   final String imageUrl;
   final int size;
-  final bool youCanPlayPuzzle;
-  final Map<String, PiecePosition> piecesPosition;
+  final String message;
+  final Map<String, PiecePosition> pieces;
 
   PlayPuzzleInProgressDto({
     required this.imageUrl,
     required this.size,
-    required this.youCanPlayPuzzle,
-    required this.piecesPosition,
+    required this.message,
+    required this.pieces,
   });
 
   factory PlayPuzzleInProgressDto.fromJson(Map<String, dynamic> json) =>

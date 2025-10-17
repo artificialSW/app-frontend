@@ -232,7 +232,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
       map[pieces[i].id] = PuzzlePiecePosition(row: pieces[i].position!.y, col: pieces[i].position!.x);
     }
 
-    PuzzleService().savePuzzleProgress(
+    await PuzzleService().savePuzzleProgress(
         puzzleId: int.parse(widget.puzzle.puzzleId),
         imageFile: base64String,
         //puzzleSize: widget.puzzle.size,
@@ -241,17 +241,17 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
         completed: false,
         isPlayingPuzzle: false,
     );
-    final piecesStr = map.entries
-        .map((e) => '${e.key}: (row=${e.value.row}, col=${e.value.col})')
-        .join(', ');
-
-    debugPrint('서버에 풀던 퍼즐 데이터 전송 완료: \n'
-        ' ├─ puzzleId: ${widget.puzzle.puzzleId}\n'
-        ' ├─ imageFile: ${base64String}\n'
-        ' ├─ pieces: {$piecesStr}\n'
-        ' ├─ completedPiecesId: $completedPiecesId\n'
-        ' └─ contributorId: ${widget.user.id}');
-
+    // final piecesStr = map.entries
+    //     .map((e) => '${e.key}: (row=${e.value.row}, col=${e.value.col})')
+    //     .join(', ');
+    //
+    // debugPrint('서버에 풀던 퍼즐 데이터 전송 완료: \n'
+    //     ' ├─ puzzleId: ${widget.puzzle.puzzleId}\n'
+    //     ' ├─ imageFile: ${base64String}\n'
+    //     ' ├─ pieces: {$piecesStr}\n'
+    //     ' ├─ completedPiecesId: $completedPiecesId\n'
+    //     ' └─ contributorId: ${widget.user.id}');
+    if (!mounted) return;
     Navigator.of(context).pushReplacementNamed('/');
   }
 

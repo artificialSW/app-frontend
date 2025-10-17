@@ -11,8 +11,8 @@ PlayPuzzleInProgressDto _$PlayPuzzleInProgressDtoFromJson(
 ) => PlayPuzzleInProgressDto(
   imageUrl: json['imageUrl'] as String,
   size: (json['size'] as num).toInt(),
-  youCanPlayPuzzle: json['youCanPlayPuzzle'] as bool,
-  piecesPosition: (json['piecesPosition'] as Map<String, dynamic>).map(
+  message: json['message'] as String,
+  pieces: (json['pieces'] as Map<String, dynamic>).map(
     (k, e) => MapEntry(k, PiecePosition.fromJson(e as Map<String, dynamic>)),
   ),
 );
@@ -22,6 +22,6 @@ Map<String, dynamic> _$PlayPuzzleInProgressDtoToJson(
 ) => <String, dynamic>{
   'imageUrl': instance.imageUrl,
   'size': instance.size,
-  'youCanPlayPuzzle': instance.youCanPlayPuzzle,
-  'piecesPosition': instance.piecesPosition,
+  'message': instance.message,
+  'pieces': instance.pieces,
 };

@@ -19,7 +19,7 @@ class PuzzleArchive extends StatefulWidget {
 }
 
 class _PuzzleArchiveState extends State<PuzzleArchive> {
-  final _user = User(name: 'MockUser', id: '123', role: '아빠');
+  final _user = User(name: 'MockUser', id: 123, role: '아빠');
 
   late Future<PuzzleGetArchivedListDto> _archivedPuzzlesFuture;
 
@@ -69,6 +69,7 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CanGoBackTopBar('퍼즐 아카이브', context),
       body: FutureBuilder<PuzzleGetArchivedListDto>(
         future: _fetchArchivedPuzzles(),

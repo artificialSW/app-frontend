@@ -36,6 +36,7 @@ AppBar PuzzlRootTopBar() => AppBar(
 );
 
 AppBar ProfileRootTopBar() => AppBar(
+  backgroundColor: Colors.white,
   automaticallyImplyLeading: false,   // 뒤로가기 자동 삽입 방지(중앙 정렬 깨짐 방지)
   centerTitle: true,
   title: const Text(
