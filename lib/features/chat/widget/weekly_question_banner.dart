@@ -598,122 +598,62 @@ class _ExpandedContentState extends State<_ExpandedContent> {
     );
   }
 
-  /// 인스타그램 스타일의 동적 인디케이터
-  /// 답변이 아무리 많아져도 항상 4개의 점만 표시하고, 애니메이션으로 크기와 위치 변화
+  /// 인디케이터: 최대 4개 점, 스와이프 시 자연스럽게 이동
   Widget _buildDynamicIndicator() {
-    // 전체 페이지 개수 계산
     final hasMyAnswer = _answerText != null || _myApiAnswer != null;
-    final totalPages = (hasMyAnswer ? 1 : 0) + _familyAnswers.length; // 내 답변(있으면 1) + 다른 가족 답변들
+    final totalPages = (hasMyAnswer ? 1 : 0) + _familyAnswers.length;
+    if (totalPages == 0) return const SizedBox.shrink();
+
+    // 최대 4개 점으로 제한
+    final maxDots = 4;
+    final visibleDots = totalPages <= maxDots ? totalPages : maxDots;
     
-    // 페이지가 4개 이하면 기존 방식 (모든 페이지를 점으로 표시)
-    if (totalPages <= 4) {
+    // 가시 윈도우 계산 (현재 페이지를 중심으로)
+    int windowStart = _currentPage - (visibleDots ~/ 2);
+    if (windowStart < 0) windowStart = 0;
+    if (windowStart + visibleDots > totalPages) windowStart = totalPages - visibleDots;
+
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(totalPages, (i) {
-          final isActive = i == _currentPage;
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            width: isActive ? 8 : 6,
-            height: isActive ? 8 : 6,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-              color: isActive ? Colors.black : const Color(0xFFBDBDBD),
-              shape: BoxShape.circle,
-            ),
-          );
-        }),
-      );
-    }
-    
-    // 페이지가 5개 이상일 때: 인스타그램 스타일 (항상 4개 점)
-    // 각 점의 크기를 계산 (활성 점은 크게, 멀어질수록 작게)
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(4, (i) {
+      children: List.generate(visibleDots, (i) {
+        final pageIndex = windowStart + i;
+        final isActive = pageIndex == _currentPage;
+        final distance = (pageIndex - _currentPage).abs();
+        
+        // 크기와 투명도 계산 (더 부드러운 그라데이션)
         double size;
         double opacity;
         
-        if (_currentPage == 0) {
-          // 첫 번째 페이지: [●●●][○○][○][○]
-          if (i == 0) {
-            size = 8;
+        if (isActive) {
+          size = 8.0;
             opacity = 1.0;
-          } else if (i == 1) {
+        } else if (distance == 1) {
             size = 6.5;
-            opacity = 0.7;
-          } else if (i == 2) {
+          opacity = 0.8;
+        } else if (distance == 2) {
             size = 5.5;
-            opacity = 0.5;
+          opacity = 0.6;
           } else {
-            size = 5;
-            opacity = 0.3;
-          }
-        } else if (_currentPage == 1) {
-          // 두 번째 페이지: [○○][●●●][○○][○]
-          if (i == 1) {
-            size = 8;
-            opacity = 1.0;
-          } else if (i == 0 || i == 2) {
-            size = 6.5;
-            opacity = 0.7;
-          } else {
-            size = 5.5;
-            opacity = 0.5;
-          }
-        } else if (_currentPage == totalPages - 2) {
-          // 끝에서 두 번째 페이지: [○][○○][●●●][○○]
-          if (i == 2) {
-            size = 8;
-            opacity = 1.0;
-          } else if (i == 1 || i == 3) {
-            size = 6.5;
-            opacity = 0.7;
-          } else {
-            size = 5.5;
-            opacity = 0.5;
-          }
-        } else if (_currentPage == totalPages - 1) {
-          // 마지막 페이지: [○][○][○○][●●●]
-          if (i == 3) {
-            size = 8;
-            opacity = 1.0;
-          } else if (i == 2) {
-            size = 6.5;
-            opacity = 0.7;
-          } else if (i == 1) {
-            size = 5.5;
-            opacity = 0.5;
-          } else {
-            size = 5;
-            opacity = 0.3;
-          }
-        } else {
-          // 중간 페이지들: [○][○○][●●●][○○]
-          if (i == 1) {
-            size = 6.5;
-            opacity = 0.7;
-          } else if (i == 2) {
-            size = 8;
-            opacity = 1.0;
-          } else if (i == 3) {
-            size = 6.5;
-            opacity = 0.7;
-          } else {
-            size = 5.5;
-            opacity = 0.5;
-          }
+          size = 5.0;
+          opacity = 0.4;
         }
         
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
+          curve: Curves.easeInOutCubic,
           width: size,
           height: size,
-          margin: const EdgeInsets.symmetric(horizontal: 4),
+          margin: const EdgeInsets.symmetric(horizontal: 3),
           decoration: BoxDecoration(
             color: Colors.black.withOpacity(opacity),
             shape: BoxShape.circle,
+            boxShadow: isActive ? [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
+              ),
+            ] : null,
           ),
         );
       }),

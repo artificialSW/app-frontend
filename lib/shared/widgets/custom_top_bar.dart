@@ -60,13 +60,13 @@ const chatTopBarStyle = TextStyle(
   letterSpacing: -0.46,
 );
 
-AppBar ChatRootTopBar() => AppBar(
+AppBar ChatRootTopBar({VoidCallback? onAfterReturn}) => AppBar(
   elevation: 0,
   backgroundColor: Colors.white,
   centerTitle: true,
   title: const Text('소통방', style: chatTopBarStyle),
   iconTheme: const IconThemeData(color: Colors.black87),
-  actions: const [HeaderSendIcon()],
+  actions: [HeaderSendIcon(onAfterReturn: onAfterReturn)],
 );
 
 AppBar CanGoBackTopBar(String title, context) => AppBar(
@@ -90,14 +90,19 @@ AppBar CanGoBackTopBar(String title, context) => AppBar(
   elevation: 0,
 );
 class HeaderSendIcon extends StatelessWidget {
-  const HeaderSendIcon({super.key});
+  const HeaderSendIcon({super.key, this.onAfterReturn});
+
+  final VoidCallback? onAfterReturn;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: Image.asset(AppAssets.paperplane),
       tooltip: '답변하기',
-      onPressed: () => Navigator.pushNamed(context, '/personal-answer'),
+      onPressed: () async {
+        await Navigator.pushNamed(context, '/personal-answer');
+        if (onAfterReturn != null) onAfterReturn!();
+      },
     );
   }
 }
@@ -119,7 +124,7 @@ AppBar CreateQuestionTopBar(int step) => AppBar(
     child: Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: SizedBox(
-        height: 4,
+        height: 2,
         child: Row(
           children: [
             Expanded(

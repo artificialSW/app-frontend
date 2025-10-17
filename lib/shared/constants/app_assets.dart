@@ -84,5 +84,6 @@ class AppAssets {
   static const String paperplane = 'assets/icons/paperplane.png';
   static const String person_circle = 'assets/icons/person_circle.png';
   static const String message = 'assets/icons/message.png';
+  static const String show_replies = 'assets/icons/show_replies.png';
 
 }

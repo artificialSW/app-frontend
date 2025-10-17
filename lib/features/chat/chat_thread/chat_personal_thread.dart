@@ -196,108 +196,188 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
     final dateStr = '${months[createdAt.month - 1]} ${createdAt.day}. ${createdAt.year}';
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CanGoBackTopBar('개인질문', context),
-      body: Column(
-        children: [
-          // 헤더: 내가 작성 태그/큰 제목/날짜
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 내가 작성 태그
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.plumu_green_main,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    '내가 작성',
-                    style: AppTextStyles.pretendard_medium.copyWith(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // 질문 텍스트
-                Text(
-                  _detailData!.question.content,
-                  style: AppTextStyles.pretendard_bold.copyWith(
-                    fontSize: 20,
-                    color: AppColors.plumu_black,
-                    height: 1.3,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                // 날짜
-                Text(
-                  dateStr,
-                  style: AppTextStyles.pretendard_regular.copyWith(
-                    fontSize: 12,
-                    color: AppColors.plumu_gray_5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1, color: AppColors.plumu_gray_2),
+       body: Column(
+         children: [
+           // 스크롤 가능한 전체 콘텐츠
+           Expanded(
+             child: SingleChildScrollView(
+               child: LayoutBuilder(
+                 builder: (context, constraints) {
+                   final screenWidth = MediaQuery.of(context).size.width;
+                   final screenHeight = MediaQuery.of(context).size.height;
+                   final widthRatio = screenWidth / 412.0;
+                   final heightRatio = screenHeight / 917.0;
 
-          // 1차답변(상위 댓글) 리스트
-          Expanded(
-            child: ListView.builder(
-              itemCount: _answers.length,
-              itemBuilder: (_, i) {
-                final a = _answers[i];
-                final replies = a.replies
-                    .map(
-                      (r) => ThreadReplyView(
-                        author: r.author,
-                        text: r.text,
-                        likes: r.likes,
-                        liked: r.liked,
-                      ),
-                    )
-                    .toList();
+                   return Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: [
+                       // 헤더 영역
+                       Container(
+                         padding: EdgeInsets.fromLTRB(
+                           32 * widthRatio,
+                           15 * heightRatio,
+                           16 * widthRatio,
+                           16 * heightRatio,
+                         ),
+                         child: Column(
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+                             // 작성자 박스: topbar로부터 15px
+                             Container(
+                               height: 32 * heightRatio,
+                               padding: EdgeInsets.symmetric(horizontal: 15 * widthRatio, vertical: 6 * heightRatio),
+                               decoration: ShapeDecoration(
+                                 color: const Color(0xFF5CBD56),
+                                 shape: RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.circular(20 * widthRatio),
+                                 ),
+                               ),
+                               child: IntrinsicWidth(
+                                 child: Center(
+                                   child: Text(
+                                     '${_detailData!.question.senderRole} 작성',
+                                     textAlign: TextAlign.center,
+                                     style: TextStyle(
+                                       color: Colors.white,
+                                       fontSize: 14 * widthRatio,
+                                       fontFamily: 'Pretendard',
+                                       fontWeight: FontWeight.w500,
+                                       height: 1.43,
+                                     ),
+                                   ),
+                                 ),
+                               ),
+                             ),
 
-                return ThreadCommentTile(
-                  author: a.author,
-                  text: a.text,
-                  likes: a.likes,
-                  liked: a.liked,
-                  replies: replies,
-                  expanded: a.expanded,
-                  onToggleLike: () => _toggleCommentLike(a),
-                  onToggleExpand: () =>
-                      setState(() => a.expanded = !a.expanded),
-                  onTapReply: () => setState(() {
-                    _replyToId = a.id;
-                    _replyToAuthor = a.author;
-                  }),
-                  onToggleReplyLike: (rIdx) => setState(() {
-                    final r = a.replies[rIdx];
-                    r.liked = !r.liked;
-                    r.likes += r.liked ? 1 : (r.likes > 0 ? -1 : 0);
-                  }),
-                );
-              },
-            ),
-          ),
+                             SizedBox(height: 13 * heightRatio), // 60 - 15 - 32 = 13
 
-          // 입력 바 (새 1차답변 or 대댓글)
-          ThreadInputBar(
-            controller: _controller,
-            hintText: _replyToAuthor == null
-                ? '답변을 입력하세요'
-                : '$_replyToAuthor 님에게 답글',
-            onSubmit: () => _submitComment(),
-          ),
-        ],
-      ),
+                            // 질문 텍스트: topbar로부터 60px
+                            SizedBox(
+                              width: screenWidth * 0.5, // 화면 절반 너비
+                              child: Text(
+                                _detailData!.question.content,
+                                style: TextStyle(
+                                  color: const Color(0xFF1B1D1B),
+                                  fontSize: 27 * widthRatio,
+                                  fontFamily: 'Pretendard',
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.33,
+                                  letterSpacing: -0.32 * widthRatio,
+                                ),
+                                maxLines: null,
+                                overflow: TextOverflow.visible,
+                                softWrap: true,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+
+                             SizedBox(height: 8 * heightRatio), // 100 - 60 - 32 = 8
+
+                             // 날짜: topbar로부터 100px
+                             SizedBox(
+                               width: 265 * widthRatio,
+                               height: 25 * heightRatio,
+                               child: Text(
+                                 dateStr,
+                                 style: TextStyle(
+                                   color: const Color(0xFF333333),
+                                   fontSize: 15 * widthRatio,
+                                   fontFamily: 'Pretendard',
+                                   fontWeight: FontWeight.w400,
+                                   height: 1.50,
+                                   letterSpacing: -0.46 * widthRatio,
+                                 ),
+                               ),
+                             ),
+
+                             SizedBox(height: 17 * heightRatio), // 142 - 100 - 25 = 17
+
+                             // 구분선: topbar로부터 142px, width 380
+                             Center(
+                               child: Container(
+                                 width: 380 * widthRatio,
+                                 height: 1,
+                                 color: AppColors.plumu_gray_4,
+                               ),
+                             ),
+
+                             SizedBox(height: 0), // 첫 댓글과의 간격 제거
+                           ],
+                         ),
+                       ),
+
+                       // 댓글 리스트
+                       if (_answers.isNotEmpty)
+                         ListView.separated(
+                           shrinkWrap: true,
+                           physics: const NeverScrollableScrollPhysics(),
+                           itemCount: _answers.length,
+                           separatorBuilder: (context, index) {
+                             return Container(
+                               margin: EdgeInsets.symmetric(vertical: 0),
+                               child: Center(
+                                 child: Container(
+                                   width: 380 * widthRatio,
+                                   height: 1,
+                                   color: AppColors.plumu_gray_4,
+                                 ),
+                               ),
+                             );
+                           },
+                           itemBuilder: (_, i) {
+                             final a = _answers[i];
+                             final replies = a.replies
+                                 .map(
+                                   (r) => ThreadReplyView(
+                                     author: r.author,
+                                     text: r.text,
+                                     likes: r.likes,
+                                     liked: r.liked,
+                                   ),
+                                 )
+                                 .toList();
+
+                             return ThreadCommentTile(
+                               author: a.author,
+                               text: a.text,
+                               likes: a.likes,
+                               liked: a.liked,
+                               replies: replies,
+                               expanded: a.expanded,
+                               onToggleLike: () => _toggleCommentLike(a),
+                               onToggleExpand: () =>
+                                   setState(() => a.expanded = !a.expanded),
+                               onTapReply: () => setState(() {
+                                 _replyToId = a.id;
+                                 _replyToAuthor = a.author;
+                               }),
+                               onToggleReplyLike: (rIdx) => setState(() {
+                                 final r = a.replies[rIdx];
+                                 r.liked = !r.liked;
+                                 r.likes += r.liked ? 1 : (r.likes > 0 ? -1 : 0);
+                               }),
+                             );
+                           },
+                         ),
+                     ],
+                   );
+                 },
+               ),
+             ),
+           ),
+           
+           // 입력 바 (새 1차답변 or 대댓글)
+           ThreadInputBar(
+             controller: _controller,
+             hintText: _replyToAuthor == null
+                 ? '답변을 입력하세요'
+                 : '$_replyToAuthor 님에게 답글',
+             onSubmit: () => _submitComment(),
+           ),
+         ],
+       ),
     );
   }
 }

@@ -13,6 +13,7 @@ enum ChatLikeType {
 
 @JsonSerializable()
 class ChatLikeRequestDto {
+  @JsonKey(name: 'type')
   final ChatLikeType what;
   final int id;
 
@@ -23,6 +24,7 @@ class ChatLikeRequestDto {
 
   factory ChatLikeRequestDto.fromJson(Map<String, dynamic> json) =>
       _$ChatLikeRequestDtoFromJson(json);
+
 
   Map<String, dynamic> toJson() => _$ChatLikeRequestDtoToJson(this);
 }

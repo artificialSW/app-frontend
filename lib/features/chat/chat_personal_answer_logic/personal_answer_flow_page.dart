@@ -306,26 +306,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
         backgroundColor: AppColors.plumu_white,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.plumu_gray_7),
-        actions: [
-          Container(
-            width: 16,
-            height: 16,
-            margin: const EdgeInsets.only(right: 8),
-            decoration: BoxDecoration(
-              color: AppColors.plumu_green_main,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                '${_getUnsolvedCount()}',
-                style: AppTextStyles.pretendard_medium.copyWith(
-                  fontSize: 9,
-                  color: AppColors.plumu_white,
-                ),
-              ),
-            ),
-          ),
-        ],
+        // actions 제거 - DM방에서는 우측상단 초록색 원 표시 안함
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
