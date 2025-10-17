@@ -40,9 +40,8 @@ class PuzzleService {
     );
 
     final prettyJson = const JsonEncoder.withIndent('  ').convert(response.data);
-    print('📦 Response Data: $prettyJson');
+    print('📦 Rㄱㄱㄱㄱesponse Data: $prettyJson');
     print('len of inProgress Puzzle is: ${response.data['inProgress'].length}');
-
 
     return PuzzleHomeGetDto.fromJson(response.data);
   }
@@ -223,7 +222,24 @@ class PuzzleService {
 
   //진행중인 퍼즐 목록에서 퍼즐 풀기 (퍼즐 이어풀기) (GET)
   Future<PlayPuzzleInProgressDto> playInProgressPuzzle(String puzzleId) async {
-    final response = await _dio.get('/puzzles/$puzzleId/progress');
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    if(_accessToken == null){
+      print('_accessToken is null!!!!!');
+    }
+
+    final response = await _dio.get(
+      '$baseUrl/api/puzzle/$puzzleId/progress',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $_accessToken',
+        },
+      ),
+    );
+
+    final prettyJson = const JsonEncoder.withIndent('  ').convert(response.data);
+    print('📦 Response Data: $prettyJson');
+
     return PlayPuzzleInProgressDto.fromJson(response.data);
   }
 
@@ -263,7 +279,7 @@ class PuzzleService {
   // 완료된 퍼즐을 아카이브로 이동 (POST)
   Future<void> archiveCompletedPuzzle(String puzzleId) async {
     try {
-      final response = await _dio.post('/puzzles/$puzzleId/archive');
+      final response = await _dio.post('/puzzle/$puzzleId/archive');
 
       if (response.statusCode == 200) {
         final message = response.data['message'];
@@ -281,7 +297,7 @@ class PuzzleService {
 
 // 🔵 퍼즐 삭제
   Future<void> deletePuzzle(String puzzleId) async {
-    final response = await _dio.delete('/puzzles/$puzzleId');
+    final response = await _dio.delete('/puzzle/$puzzleId');
     if (response.statusCode == 200) {
       print('✅ 퍼즐 삭제 성공');
     } else {

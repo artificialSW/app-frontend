@@ -23,7 +23,7 @@ class WritePuzzleInfoPage extends StatefulWidget {
 class _WritePuzzleInfoPageState extends State<WritePuzzleInfoPage> {
   String? selectedSize; // ← 힌트 표시/버튼 비활성화를 위해 nullable
   int unplayedPuzzleIndex = 0;
-  User userInfo = User(name: 'Jaewook', id: '123', role: '아빠');
+  User userInfo = User(name: 'Jaewook', id: 123, role: '아빠');
 
   final List<String> sizeOptions = [
     "3 x 3",

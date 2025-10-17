@@ -21,7 +21,7 @@ class CompletedPuzzlesPage extends StatefulWidget {
 }
 
 class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
-  final _user = User(name: 'MockUser', id: '123', role: '아빠');
+  final _user = User(name: 'MockUser', id: 123, role: '아빠');
 
   late Future<List<PuzzleGetCompletedListDto>> _completedPuzzlesFuture;
 

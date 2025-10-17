@@ -5,7 +5,7 @@ part 'usermodel.g.dart'; // 자동 생성 파일
 @JsonSerializable()
 class User{
   final String name;
-  final String id;
+  final int id;
   final String role;
 
   User({

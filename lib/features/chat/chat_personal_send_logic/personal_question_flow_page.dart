@@ -59,7 +59,7 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
 
     try {
       final request = ChatQuestionCreateRequestDto(
-        receiverId: int.parse(_state.target!.id),
+        receiverId: _state.target!.id,
         visibility: _state.visibility == VisibilityType.public ? 1 : 0,
         content: _state.question.trim(),
       );
@@ -128,7 +128,7 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
       } else {
         // ChatFamilyMemberDto를 User로 변환 (기존 StepFamily와 호환)
         final members = _familyMembers.map((dto) => User(
-          id: dto.id.toString(),
+          id: dto.id,
           name: dto.role, // API에서 이미 한국어로 받아옴 (아버지, 어머니 등)
           role: dto.role, // 한국어 role 그대로 사용
         )).toList();

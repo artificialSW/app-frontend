@@ -621,6 +621,11 @@ class _PuzzleCardCarouselState extends State<PuzzleCardCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.6);
+
+    // 🔹 빌드 직후 한 번 강제로 재빌드 (기울기/스케일 초기 적용)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {});
+    });
   }
 
   @override
