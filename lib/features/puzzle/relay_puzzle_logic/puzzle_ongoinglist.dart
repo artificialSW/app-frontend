@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 
 class OngoingPuzzlesPage extends StatefulWidget {
   const OngoingPuzzlesPage({Key? key}) : super(key: key);
@@ -34,40 +35,6 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       // ✅ 목데이터 리턴
       throw Exception('서버 응답 실패!!!!');
-      // return PuzzleGetInProgressListDto(
-      //   inProgressList: [
-      //     PuzzleGetInProgressDataDto(
-      //       puzzleId: '1',
-      //       imageUrl: 'https://picsum.photos/400/400',
-      //       contributors: ['진행중-mock1', 'mock', 'mock'],
-      //       //lastSavedAt: 'mock 시간 데이터1',
-      //       //AIKeyword: ['진행중인mock1', 'AI', 'keyword'],
-      //       category: 'mock 카테고리1',
-      //       completedPiecesCount: 3,
-      //       size: 9,
-      //     ),
-      //     PuzzleGetInProgressDataDto(
-      //         puzzleId: '2',
-      //         imageUrl: 'https://picsum.photos/400/400',
-      //         contributors: ['mock2', 'mock', 'mock'],
-      //         //lastSavedAt: 'mock2 시간 데이터2',
-      //         //AIKeyword: ['mock2', 'AI', 'keyword'],
-      //         category: 'mock 카테고리2',
-      //       completedPiecesCount: 3,
-      //       size: 9,
-      //     ),
-      //     PuzzleGetInProgressDataDto(
-      //         puzzleId: '3',
-      //         imageUrl: 'https://picsum.photos/400/400',
-      //         contributors: ['mock3', 'mock', 'mock'],
-      //         //lastSavedAt: 'mock3 시간 데이터3',
-      //         //AIKeyword: ['mock3', 'AI', 'keyword'],
-      //         category: 'mock 카테고리3',
-      //       completedPiecesCount: 3,
-      //       size: 9,
-      //     ),
-      //   ]
-      // );
     }
   }
 
@@ -105,9 +72,99 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
               final puzzleDto = puzzles[index];
               return PuzzleListItem(
                 puzzleDto: puzzleDto,
-                onDelete: () {
-                  PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
+                onDelete: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        backgroundColor: Colors.white.withValues(alpha: 0.85),
+                        insetPadding: const EdgeInsets.symmetric(horizontal: 45),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16, top: 28, bottom: 8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '진행중인 퍼즐을 삭제하시겠습니까?',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.pretendard_bold.copyWith(
+                                  fontSize: 15
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '퍼즐 진행상황이 모두 삭제됩니다.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.plumu_gray_7,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: () => Navigator.of(context).pop(false),
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: AppColors.plumu_white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        '아니오',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: () => Navigator.of(context).pop(true),
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: AppColors.plumu_white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        '예',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+
+                  if (confirm == true) {
+                    await PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
+                    setState(() {
+                      puzzles.removeWhere((p) => p.puzzleId == puzzleDto.puzzleId);
+                    });
+                  }
                 },
+
                 onPressed: () async {
                   PlayPuzzleInProgressDto response;
                   ///api 호출하여 dto 받아옴( puzzleId => puzzle dto )
@@ -116,22 +173,6 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                   } catch(e) {
                     print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
                     throw Exception('error!!');
-                    // response = PlayPuzzleInProgressDto(
-                    //   imageUrl: 'https://picsum.photos/600/400',
-                    //   size: 9,
-                    //   youCanPlayPuzzle: true,
-                    //   piecesPosition: {
-                    //       '0': PiecePosition(x: 0.0, y: 0.0),
-                    //       '1': PiecePosition(x: 0.0, y: 0.0),
-                    //       '2': PiecePosition(x: 371.9866817679033, y: -78.11811366169445),
-                    //       '3': PiecePosition(x: 412.19363719162334, y: 129.82030758795253),
-                    //       '4': PiecePosition(x: 336.10010644817953, y: -66.03152805582121),
-                    //       '5': PiecePosition(x: 403.20028666529834, y: -79.03794413986476),
-                    //       '6': PiecePosition(x: 348.9157830790029, y: 75.53067899585587),
-                    //       '7': PiecePosition(x: 281.8794948201076, y: 36.361730600130926),
-                    //       '8': PiecePosition(x: 328.8932872972411, y: -66.43651951182676),
-                    //     }
-                    // );
                   }
 
                   ///받아온 puzzle dto를 puzzlegame의 fromDto에 넣어서 퍼즐 인스턴스 받아옴
@@ -140,7 +181,6 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                       _user,
                       puzzleDto.puzzleId.toString(),
                       puzzleDto.category,
-                      GameState.Ongoing,
                   );
                   ///받아온 퍼즐 인스턴스를 네비게이터에 넣기
                   Navigator.of(context).pushNamed(

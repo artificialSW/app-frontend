@@ -60,102 +60,116 @@ class _CommentPageState extends State<CommentPage> {
     return Scaffold(
       appBar: CanGoBackTopBar('코멘트', context),
       backgroundColor: AppColors.plumu_white,
-      body: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // 카테고리 라벨
-            Container( //주제(카테고리)
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.plumu_green_main,
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
-              ),
-              child: Text(
-                widget.currentCategory,
-                style: AppTextStyles.pretendard_bold.copyWith(
-                  fontSize: 14,
-                  color: AppColors.plumu_white,
-                ),
-              ),
+      resizeToAvoidBottomInset: true, // ✅ 키보드 피하기 활성화
+      body: SafeArea(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: SingleChildScrollView( // ✅ 스크롤로 감싸기 (overflow 방지 핵심)
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20, // ✅ 키보드 높이만큼 여유
+              top: 16,
             ),
-            const SizedBox(height: 12),
-            // 이미지 미리보기
-            if (_previewImage != null) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  _previewImage!,
-                  height: min(screenHeight*0.3, screenWidth*0.8),
-                  width: min(screenHeight*0.3, screenWidth*0.8),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-            // 텍스트 입력
-            Container(
-              width: screenWidth*0.8,
-              height: screenHeight*0.1,
-              child: TextField(
-                controller: _controller,
-                autofocus: true,
-                maxLines: null,
-                decoration: InputDecoration(
-                  hintText: '코멘트를 남겨주세요.',
-                  filled: true,
-                  fillColor: const Color(0xFFFFFFFF), // background: #FFF
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Color(0xFFAAAAAA), // border: 1px solid #AAA
-                      width: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(width: double.infinity,), ///이거 중요!
+                // 카테고리 라벨
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.plumu_green_main,
+                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                  ),
+                  child: Text(
+                    widget.currentCategory,
+                    style: AppTextStyles.pretendard_bold.copyWith(
+                      fontSize: 14,
+                      color: AppColors.plumu_white,
                     ),
-                    borderRadius: BorderRadius.circular(16), // border-radius: 16px
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Color(0xFFAAAAAA),
-                      width: 1,
+                ),
+                const SizedBox(height: 12),
+
+                // 이미지 미리보기
+                if (_previewImage != null) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.file(
+                      _previewImage!,
+                      height: min(screenHeight * 0.3, screenWidth * 0.8),
+                      width: min(screenHeight * 0.3, screenWidth * 0.8),
+                      fit: BoxFit.cover,
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+
+                // 텍스트 입력
+                Container(
+                  width: screenWidth * 0.8,
+                  height: screenHeight * 0.1,
+                  child: TextField(
+                    controller: _controller,
+                    autofocus: true,
+                    maxLines: null,
+                    textInputAction: TextInputAction.done, // ✅ 엔터 누르면 완료
+                    onSubmitted: (_) => FocusScope.of(context).unfocus(), // ✅ 엔터 시 키보드 닫기
+                    decoration: InputDecoration(
+                      hintText: '코멘트를 남겨주세요.',
+                      filled: true,
+                      fillColor: const Color(0xFFFFFFFF),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFFAAAAAA),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFFAAAAAA),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const Spacer(),
-            // 저장 버튼
-            SizedBox(width: double.infinity,), ///이거 중앙정렬 위해 필요함.(지우지말기)
-            SizedBox(
-              width: screenWidth*0.7,
-              child: TextButton(
-                onPressed: _canSave
-                    ? () => Navigator.pop(context, {
-                  'image': _previewImage,
-                  'comment': _controller.text.trim(),
-                })
-                    : null,
-                style: TextButton.styleFrom(
-                  backgroundColor: _canSave
-                      ? AppColors.plumu_green_main
-                      : AppColors.plumu_gray_3,
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                child: Text(
-                  '코멘트 남기기',
-                  style: AppTextStyles.pretendard_bold.copyWith(
-                    color: AppColors.plumu_white,
-                    fontSize: 14,
+                const SizedBox(height: 24),
+
+                // 저장 버튼
+                SizedBox(
+                  width: screenWidth * 0.7,
+                  child: TextButton(
+                    onPressed: _canSave
+                        ? () => Navigator.pop(context, {
+                      'image': _previewImage,
+                      'comment': _controller.text.trim(),
+                    })
+                        : null,
+                    style: TextButton.styleFrom(
+                      backgroundColor: _canSave
+                          ? AppColors.plumu_green_main
+                          : AppColors.plumu_gray_3,
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: Text(
+                      '코멘트 남기기',
+                      style: AppTextStyles.pretendard_bold.copyWith(
+                        color: AppColors.plumu_white,
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 10),
+              ],
             ),
-            SizedBox(height: 10,),
-          ],
-        ),
+          ),
+        )
       ),
     );
   }

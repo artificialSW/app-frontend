@@ -3,13 +3,19 @@ import 'dart:typed_data';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 import 'package:artificialsw_frontend/services/image_server_custom.dart';
-import 'package:artificialsw_frontend/services/puzzle/dto/get_archived_puzzle_list/puzzle_get_archived_data_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/dto/get_archived_puzzle_list/puzzle_get_archived_list_dto.dart';
 import 'package:artificialsw_frontend/services/puzzle/puzzle_service.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'dart:typed_data';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
+
 
 class PuzzleArchive extends StatefulWidget {
   const PuzzleArchive({super.key});
@@ -21,42 +27,15 @@ class PuzzleArchive extends StatefulWidget {
 class _PuzzleArchiveState extends State<PuzzleArchive> {
   final _user = User(name: 'MockUser', id: 123, role: '아빠');
 
-  late Future<PuzzleGetArchivedListDto> _archivedPuzzlesFuture;
+  late Future<List<PuzzleGetArchivedListDto>> _archivedPuzzlesFuture;
 
-  Future<PuzzleGetArchivedListDto> _fetchArchivedPuzzles() async {
+  Future<List<PuzzleGetArchivedListDto>> _fetchArchivedPuzzles() async {
     try{
       return await PuzzleService().getArchivedList();
     } catch (e){
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       // ✅ 목데이터 리턴
-      return PuzzleGetArchivedListDto(
-          archivedList: [
-            PuzzleGetArchivedDataDto(
-                puzzleId: '1',
-                imageUrl: 'https://picsum.photos/600/400',
-                contributors: ['아카이브의mock1', 'mock', 'mock'],
-                archivedAt: 'mock 시간 데이터1',
-                AIKeyword: ['아카이브의mock1', 'AI', 'keyword'],
-                category: 'mock 카테고리1'
-            ),
-            PuzzleGetArchivedDataDto(
-                puzzleId: '2',
-                imageUrl: 'https://picsum.photos/600/400',
-                contributors: ['mock2', 'mock', 'mock'],
-                archivedAt: 'mock2 시간 데이터2',
-                AIKeyword: ['mock2', 'AI', 'keyword'],
-                category: 'mock 카테고리2'
-            ),
-            PuzzleGetArchivedDataDto(
-                puzzleId: '3',
-                imageUrl: 'https://picsum.photos/600/400',
-                contributors: ['mock3', 'mock', 'mock'],
-                archivedAt: 'mock3 시간 데이터3',
-                AIKeyword: ['mock3', 'AI', 'keyword'],
-                category: 'mock 카테고리3'
-            ),
-          ]
-      );
+      throw Exception('err!!!!');
     }
   }
 
@@ -66,12 +45,37 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
     _archivedPuzzlesFuture = _fetchArchivedPuzzles();
   }
 
+  static Future<void> saveImage(String imageUrl) async {
+    // 🔹 권한 요청
+    if (!await Permission.photos.request().isGranted &&
+        !await Permission.storage.request().isGranted) {
+      throw Exception('저장 권한이 없습니다.');
+    }
+
+    // 🔹 이미지 다운로드
+    final response = await Dio().get(
+      imageUrl,
+      options: Options(responseType: ResponseType.bytes),
+    );
+
+    final Uint8List imageBytes = Uint8List.fromList(response.data);
+
+    // 🔹 갤러리에 저장
+    final result = await ImageGallerySaverPlus.saveImage(
+      imageBytes,
+      quality: 100,
+      name: "puzzle_${DateTime.now().millisecondsSinceEpoch}",
+    );
+
+    if (result['isSuccess'] != true) throw Exception('이미지 저장 실패');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CanGoBackTopBar('퍼즐 아카이브', context),
-      body: FutureBuilder<PuzzleGetArchivedListDto>(
+      body: FutureBuilder<List<PuzzleGetArchivedListDto>>(
         future: _fetchArchivedPuzzles(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -81,7 +85,7 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
             return const Center(child: Text('데이터 불러오기 실패'));
           }
 
-          final puzzles = snapshot.data!.archivedList;
+          final puzzles = snapshot.data!;
 
           if (puzzles.isEmpty) {
             return const Center(child: Text('아카이브에 퍼즐이 없습니다.'));
@@ -94,17 +98,110 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
               final puzzleDto = puzzles[index];
               return PuzzleListItem(
                 puzzleDto: puzzleDto,
-                onDelete: () {
-                  PuzzleService().deletePuzzle(puzzleDto.puzzleId);
+                // onDelete: () {
+                //   PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
+                // },
+                onDelete: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        backgroundColor: Colors.white.withValues(alpha: 0.85),
+                        insetPadding: const EdgeInsets.symmetric(horizontal: 45),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16, top: 28, bottom: 8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '아카이브에서 퍼즐을 삭제하시겠습니까?',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.pretendard_bold.copyWith(
+                                    fontSize: 15
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '퍼즐 관련 데이터가 모두 삭제됩니다.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.plumu_gray_7,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: () => Navigator.of(context).pop(false),
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: AppColors.plumu_white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        '아니오',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: () => Navigator.of(context).pop(true),
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: AppColors.plumu_white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        '예',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+
+                  if (confirm == true) {
+                    await PuzzleService().deletePuzzleFromArchive(puzzleDto.puzzleId.toString());
+                    setState(() {
+                      puzzles.removeWhere((p) => p.puzzleId == puzzleDto.puzzleId);
+                    });
+                  }
                 },
                 onPressed: () {
 
                 },
                 onSave: () async {
                   try {
-                    await ImageSaverCustom.saveImage("https://i1.sndcdn.com/artworks-000218997483-xdgm10-t500x500.jpg");
+                    await ImageSaverCustom.saveImage(puzzleDto.imageUrl);
+
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("이미지 저장 완료")),
+                      const SnackBar(content: Text("이미지 저장 완료")),
                     );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -112,6 +209,7 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
                     );
                   }
                 },
+
                 gameState: GameState.Completed,
                 isArchived: true,
               );

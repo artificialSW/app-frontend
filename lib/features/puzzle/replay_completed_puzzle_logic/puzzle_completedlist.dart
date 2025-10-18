@@ -111,17 +111,16 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                     );
                   }
                   ///받아온 puzzle dto를 puzzlegame의 fromDto에 넣어서 퍼즐 인스턴스 받아옴
-                  final puzzleGame = PuzzleGame.fromDto(
+                  final puzzleGame = PuzzleGame.completedFromDto(
                       response, //이거 왜 await으로 해야 하는지 몰겠다 오류나면 빼자
                       _user,
                       puzzleDto.puzzleId.toString(),
                       puzzleDto.category,
-                    GameState.Ongoing,
                   );
                   ///받아온 퍼즐 인스턴스를 네비게이터에 넣기
                   Navigator.of(context).pushNamed(
                     '/puzzle/play',
-                    arguments: {'gameInstance': puzzleGame, 'message': response.message},
+                    arguments: {'gameInstance': puzzleGame, 'message': puzzleDto.message},
                   );
                 },
                 onSave: () async {
@@ -130,7 +129,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                     _completedPuzzlesFuture = _fetchCompletedPuzzles(); //새로운 future로 업데이트
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('아카이브 요청 완료 (성공 여부는 콘솔 참고)')),
+                    const SnackBar(content: Text('아카이브로 이동 완료!')),
                   );
                 },
                 gameState: GameState.Completed,

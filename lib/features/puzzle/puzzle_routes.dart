@@ -10,7 +10,6 @@ import 'package:artificialsw_frontend/features/puzzle/weekly_upload/image_upload
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_response_dto.dart';
 import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:flutter/material.dart';
-import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_recompleted.dart';
 
 Route<dynamic> puzzleRoutes(RouteSettings s) {
   switch (s.name) {
@@ -53,8 +52,6 @@ Route<dynamic> puzzleRoutes(RouteSettings s) {
       final original = args['gameInstance'] as PuzzleGame;
       final puzzleInstance = original.copyForReplaying();
       return MaterialPageRoute(builder: (_) => PlayPuzzle(puzzle: puzzleInstance, user: User(id: 123, name: 'Jaewook', role: '아빠')));
-    case '/puzzle/re-completed':
-      return MaterialPageRoute(builder: (_) => PuzzleRecompleted());
     case '/puzzle/archive':
       return MaterialPageRoute(builder: (_) => PuzzleArchive());
 

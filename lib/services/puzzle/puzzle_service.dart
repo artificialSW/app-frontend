@@ -270,20 +270,33 @@ class PuzzleService {
 
   //완료된 퍼즐 목록에서 퍼즐 풀기 (퍼즐 다시풀기) (GET)
   Future<PlayPuzzleCompletedDto> playCompletedPuzzle(String puzzleId) async {
-    final response = await _dio.get('/puzzle/$puzzleId/retry');
+    final _accessToken = StorageService.getAccessToken();
+
+    if(_accessToken == null){
+      print('access token is null!!!!');
+    }
+
+    final response = await _dio.post('$baseUrl/api/puzzle/$puzzleId/retry');
     return PlayPuzzleCompletedDto.fromJson(response.data);
   }
 
   // 아카이브된 퍼즐 불러오기 (GET)
-  Future<PuzzleGetArchivedListDto> getArchivedList() async {
-    final response = await _dio.get('/puzzle/archive');
-    return PuzzleGetArchivedListDto.fromJson(response.data);
+  Future<List<PuzzleGetArchivedListDto>> getArchivedList() async {
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    final response = await _dio.get('$baseUrl/api/puzzle/archive');
+    return PuzzleGetArchivedListDto.fromJsonList(response.data);
   }
 
   // 완료된 퍼즐을 아카이브로 이동 (POST)
   Future<void> archiveCompletedPuzzle(String puzzleId) async {
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+    if(_accessToken == null){
+      print('access token is null!!!!');
+    }
+
     try {
-      final response = await _dio.post('/puzzle/$puzzleId/archive');
+      final response = await _dio.post('$baseUrl/api/puzzle/$puzzleId/archive');
 
       if (response.statusCode == 200) {
         final message = response.data['message'];
@@ -301,7 +314,27 @@ class PuzzleService {
 
 // 🔵 퍼즐 삭제
   Future<void> deletePuzzle(String puzzleId) async {
-    final response = await _dio.delete('/puzzle/$puzzleId');
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    if(_accessToken == null){
+      print('access token is null!!!!');
+    }
+
+    final response = await _dio.delete('$baseUrl/api/puzzle/$puzzleId');
+    if (response.statusCode == 200) {
+      print('✅ 퍼즐 삭제 성공');
+    } else {
+      print('⚠️ 퍼즐 삭제 실패(Puzzle_Service): ${response.statusCode}');
+    }
+  }
+
+  Future<void>deletePuzzleFromArchive(String puzzleId) async {
+    final _accessToken = await StorageService.getAccessToken();
+    if(_accessToken == null){
+      print('access token is null!!!!');
+    }
+
+    final response = await _dio.delete('$baseUrl/api/puzzle/$puzzleId/archive');
     if (response.statusCode == 200) {
       print('✅ 퍼즐 삭제 성공');
     } else {
