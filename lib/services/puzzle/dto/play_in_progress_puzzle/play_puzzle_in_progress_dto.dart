@@ -9,11 +9,13 @@ class PlayPuzzleInProgressDto {
   final String imageUrl;
   final int size;
   final Map<String, PiecePosition> pieces;
+  final List<int>? completedPiecesId;
 
   PlayPuzzleInProgressDto({
     required this.imageUrl,
     required this.size,
     required this.pieces,
+    this.completedPiecesId,
   });
 
   factory PlayPuzzleInProgressDto.fromJson(Map<String, dynamic> json) =>

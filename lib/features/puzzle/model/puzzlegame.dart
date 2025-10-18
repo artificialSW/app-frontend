@@ -30,11 +30,12 @@ class PuzzleGame {
     //required this.AIKeyword,
     List<PiecePosition>? piecesPosition, // completedPiecesId를 옵셔널로 선언합니다.
     GameState? gameState, // gameState를 옵셔널로 선언합니다.
+    List<int>? completedPiecesId,
     isArchived = false,
     List<User>? contributors, // contributors를 옵셔널로 선언합니다.
   })  : this.piecesPosition = piecesPosition ?? [],
-        this.completedPiecesId = [],
         this.gameState = gameState ?? GameState.Unplayed,
+        this.completedPiecesId = completedPiecesId ?? [],
         this.contributors = contributors ?? [],
         this.isArchived  = isArchived ?? false;
 
@@ -65,20 +66,78 @@ class PuzzleGame {
   // 		7: (0.0, 0.0),
   // 		8: (0.0, 0.0)
   // 	},
+  //
+  // static PuzzleGame fromDto(
+  //     dynamic dto, //PlayPuzzleInProgressDto or PlayPuzzleCompletedDto
+  //     User user,
+  //     String puzzleId,
+  //     String category) {
+  //   return PuzzleGame(
+  //     puzzleId: puzzleId,
+  //     imageUrl: dto.imageUrl,
+  //     size: dto.size,
+  //     category: category,
+  //   );
+  // }
 
   static PuzzleGame fromDto(
-      dynamic dto, //PlayPuzzleInProgressDto or PlayPuzzleCompletedDto
+      dynamic dto, // PlayPuzzleInProgressDto or PlayPuzzleCompletedDto
       User user,
       String puzzleId,
-      //List<String> AIKeyword,
-      String category) {
+      String category,
+      GameState gameState,
+      ) {
+    final rawPieces = dto.pieces;
+
+    // pieces가 이미 PiecePosition인 경우와 Map<String, dynamic>인 경우 모두 처리
+    final List<PiecePosition> positions = List.generate(dto.size, (i) {
+      final pieceData = rawPieces['$i'];
+
+      if (pieceData == null) {
+        return PiecePosition(x: 0.0, y: 0.0);
+      }
+
+      if (pieceData is PiecePosition) {
+        // 이미 DTO 내부에서 fromJson으로 변환된 상태
+        return pieceData;
+      } else if (pieceData is Map<String, dynamic>) {
+        // 아직 단순 Map일 경우
+        return PiecePosition(
+          x: (pieceData['x'] ?? 0.0).toDouble(),
+          y: (pieceData['y'] ?? 0.0).toDouble(),
+        );
+      } else {
+        // 예상치 못한 타입 fallback
+        print('⚠️ Unexpected type for pieceData[$i]: ${pieceData.runtimeType}');
+        return PiecePosition(x: 0.0, y: 0.0);
+      }
+    });
+
+    // final List<int> completed = [];
+    // if (dto.completedPiecesId != null && gameState == GameState.Ongoing) {
+    //   completed.addAll(List<int>.from(dto.completedPiecesId));
+    // } ///만약에 완료된 퍼즐 다시풀기라면 이거 실행 안되도록
+
+    // ✅ 1순위: 서버가 준 completedPiecesId 사용 (Ongoing일 때만)
+    List<int> completed = [];
+    if (gameState == GameState.Ongoing && dto.completedPiecesId is List) {
+      completed = List<int>.from(dto.completedPiecesId);
+    } else {
+      // ✅ 2순위: 서버가 안 줬으면 좌표로 계산 (0,0 이면 맞춘 조각)
+      completed = [
+        for (var i = 0; i < positions.length; i++)
+          if (positions[i].x == 0.0 && positions[i].y == 0.0) i
+      ];
+    }
+
     return PuzzleGame(
       puzzleId: puzzleId,
       imageUrl: dto.imageUrl,
       size: dto.size,
       category: category,
-      //AIKeyword: AIKeyword,
+      completedPiecesId: completed,
+      piecesPosition: positions,
+      gameState: gameState,
     );
   }
 }
-//다시 풀기 할때 DB에서 가져와서 퍼즐 다시 생성해야할수도 있으니까.

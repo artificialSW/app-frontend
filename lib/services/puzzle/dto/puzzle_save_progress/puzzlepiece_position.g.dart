@@ -8,10 +8,10 @@ part of 'puzzlepiece_position.dart';
 
 PuzzlePiecePosition _$PuzzlePiecePositionFromJson(Map<String, dynamic> json) =>
     PuzzlePiecePosition(
-      row: (json['row'] as num).toDouble(),
-      col: (json['col'] as num).toDouble(),
+      x: (json['x'] as num).toDouble(),
+      y: (json['y'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$PuzzlePiecePositionToJson(
   PuzzlePiecePosition instance,
-) => <String, dynamic>{'row': instance.row, 'col': instance.col};
+) => <String, dynamic>{'x': instance.x, 'y': instance.y};

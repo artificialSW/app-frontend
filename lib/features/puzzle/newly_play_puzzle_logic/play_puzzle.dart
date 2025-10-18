@@ -108,8 +108,9 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
           ));
         });
         if(pieces[x * cols + y].position == null) print("${x * cols + y}번째 조각의 위치가 null 입니다.");
-        widget.puzzle.piecesPosition.add(pieces[x * cols + y].position ?? PiecePosition(x: 0, y: 0)); ///bulid time에 랜덤 값을 어떻게든 부여받기에
-        ///null이 아닐 확률이 높지만 비동기 함수임을 감안해서 안전하게 로직을 짜기
+        widget.puzzle.piecesPosition.add(
+            pieces[x * cols + y].position ?? PiecePosition(x: 0, y: 0)
+        ); ///bulid time에 랜덤 값을 어떻게든 부여받기에 null이 아닐 확률이 높지만 비동기 함수임을 감안해서 안전하게 로직을 짜기
       }
     }
     if(widget.puzzle.gameState == GameState.Unplayed){
@@ -139,7 +140,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
   void _onCompleted(int id, PiecePosition pos) { //퍼즐 piece 하나가 맞춰졌을 떄
     setState(() {
       if(!completedPiecesId.contains(id)){
-        widget.puzzle.completedPiecesId.add(id); //맞춰진 조각 목록에 추가
+        completedPiecesId.add(id); //맞춰진 조각 목록에 추가
         print("num of completedPieces: ${completedPiecesId.length}");
       }
       //widget.puzzle.piecesPosition[id] = pos; //게임 범위에서 조각의 위치를 업데이트(이건 이렇게 코드로 써 줘야 함)
@@ -229,7 +230,10 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
     });
 
     for (var i = 0; i < widget.puzzle.size && i < pieces.length; i++) {
-      map[pieces[i].id] = PuzzlePiecePosition(row: pieces[i].position!.y, col: pieces[i].position!.x);
+      map[pieces[i].id] = PuzzlePiecePosition(
+          x: pieces[i].position!.x,
+          y: pieces[i].position!.y
+      );
     }
 
     await PuzzleService().savePuzzleProgress(

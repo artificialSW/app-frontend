@@ -14,6 +14,10 @@ PlayPuzzleInProgressDto _$PlayPuzzleInProgressDtoFromJson(
   pieces: (json['pieces'] as Map<String, dynamic>).map(
     (k, e) => MapEntry(k, PiecePosition.fromJson(e as Map<String, dynamic>)),
   ),
+  completedPiecesId:
+      (json['completedPiecesId'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList(),
 );
 
 Map<String, dynamic> _$PlayPuzzleInProgressDtoToJson(
@@ -22,4 +26,5 @@ Map<String, dynamic> _$PlayPuzzleInProgressDtoToJson(
   'imageUrl': instance.imageUrl,
   'size': instance.size,
   'pieces': instance.pieces,
+  'completedPiecesId': instance.completedPiecesId,
 };
