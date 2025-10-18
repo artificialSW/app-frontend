@@ -1,6 +1,7 @@
 import 'package:artificialsw_frontend/services/puzzle/dto/puzzle_complete/puzzle_complete_response_dto.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/fruit.dart';
 
 class PuzzleCompleted extends StatelessWidget {
   final String message;

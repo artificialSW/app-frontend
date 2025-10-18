@@ -11,9 +11,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
-import 'package:dio/dio.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'dart:typed_data';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
+
 
 class PuzzleArchive extends StatefulWidget {
   const PuzzleArchive({super.key});
@@ -44,28 +46,28 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
   }
 
   static Future<void> saveImage(String imageUrl) async {
-    try {
-      // 1️⃣ 네트워크에서 이미지 다운로드
-      final response = await Dio().get(
-        imageUrl,
-        options: Options(responseType: ResponseType.bytes),
-      );
-
-      final Uint8List bytes = Uint8List.fromList(response.data);
-
-      // 2️⃣ 갤러리에 저장
-      final result = await ImageGallerySaver.saveImage(
-        bytes,
-        quality: 100,
-        name: "puzzle_${DateTime.now().millisecondsSinceEpoch}",
-      );
-
-      if (result['isSuccess'] == false) {
-        throw Exception('갤러리 저장 실패');
-      }
-    } catch (e) {
-      throw Exception('이미지 저장 실패: $e');
+    // 🔹 권한 요청
+    if (!await Permission.photos.request().isGranted &&
+        !await Permission.storage.request().isGranted) {
+      throw Exception('저장 권한이 없습니다.');
     }
+
+    // 🔹 이미지 다운로드
+    final response = await Dio().get(
+      imageUrl,
+      options: Options(responseType: ResponseType.bytes),
+    );
+
+    final Uint8List imageBytes = Uint8List.fromList(response.data);
+
+    // 🔹 갤러리에 저장
+    final result = await ImageGallerySaverPlus.saveImage(
+      imageBytes,
+      quality: 100,
+      name: "puzzle_${DateTime.now().millisecondsSinceEpoch}",
+    );
+
+    if (result['isSuccess'] != true) throw Exception('이미지 저장 실패');
   }
 
   @override
