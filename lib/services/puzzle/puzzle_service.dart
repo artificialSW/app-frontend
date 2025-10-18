@@ -281,13 +281,11 @@ class PuzzleService {
   }
 
   // 아카이브된 퍼즐 불러오기 (GET)
-  Future<PuzzleGetArchivedListDto> getArchivedList() async {
+  Future<List<PuzzleGetArchivedListDto>> getArchivedList() async {
     final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
 
-
-
-    final response = await _dio.get('/puzzle/archive');
-    return PuzzleGetArchivedListDto.fromJson(response.data);
+    final response = await _dio.get('$baseUrl/api/puzzle/archive');
+    return PuzzleGetArchivedListDto.fromJsonList(response.data);
   }
 
   // 완료된 퍼즐을 아카이브로 이동 (POST)
