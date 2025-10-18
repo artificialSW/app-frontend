@@ -68,6 +68,7 @@ class PuzzlePieceState extends State<PuzzlePiece> {
 
     // Initialize top and left if they are null (퍼즐 시작하면 조각들을 랜덤 위치에 흩뿌리기)
     if(widget.position == null){
+      print(widget.id + "의 위치가 null입니다.");
       final double trayMinY = trayTop - offsetY;
       final double trayMaxY = maxY;
       widget.position = PiecePosition(

@@ -139,8 +139,8 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                       await response, //이거 왜 await으로 해야 하는지 몰겠다 오류나면 빼자
                       _user,
                       puzzleDto.puzzleId.toString(),
-                      //puzzleDto.AIKeyword,
-                      puzzleDto.category
+                      puzzleDto.category,
+                      GameState.Ongoing,
                   );
                   ///받아온 퍼즐 인스턴스를 네비게이터에 넣기
                   Navigator.of(context).pushNamed(
