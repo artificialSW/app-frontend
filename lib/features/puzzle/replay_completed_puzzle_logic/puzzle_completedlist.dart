@@ -129,7 +129,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                     _completedPuzzlesFuture = _fetchCompletedPuzzles(); //새로운 future로 업데이트
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('아카이브 요청 완료 (성공 여부는 콘솔 참고)')),
+                    const SnackBar(content: Text('아카이브로 이동 완료!')),
                   );
                 },
                 gameState: GameState.Completed,

@@ -290,8 +290,13 @@ class PuzzleService {
 
   // 완료된 퍼즐을 아카이브로 이동 (POST)
   Future<void> archiveCompletedPuzzle(String puzzleId) async {
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+    if(_accessToken == null){
+      print('access token is null!!!!');
+    }
+
     try {
-      final response = await _dio.post('/puzzle/$puzzleId/archive');
+      final response = await _dio.post('$baseUrl/api/puzzle/$puzzleId/archive');
 
       if (response.statusCode == 200) {
         final message = response.data['message'];
