@@ -34,40 +34,6 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       // ✅ 목데이터 리턴
       throw Exception('서버 응답 실패!!!!');
-      // return PuzzleGetInProgressListDto(
-      //   inProgressList: [
-      //     PuzzleGetInProgressDataDto(
-      //       puzzleId: '1',
-      //       imageUrl: 'https://picsum.photos/400/400',
-      //       contributors: ['진행중-mock1', 'mock', 'mock'],
-      //       //lastSavedAt: 'mock 시간 데이터1',
-      //       //AIKeyword: ['진행중인mock1', 'AI', 'keyword'],
-      //       category: 'mock 카테고리1',
-      //       completedPiecesCount: 3,
-      //       size: 9,
-      //     ),
-      //     PuzzleGetInProgressDataDto(
-      //         puzzleId: '2',
-      //         imageUrl: 'https://picsum.photos/400/400',
-      //         contributors: ['mock2', 'mock', 'mock'],
-      //         //lastSavedAt: 'mock2 시간 데이터2',
-      //         //AIKeyword: ['mock2', 'AI', 'keyword'],
-      //         category: 'mock 카테고리2',
-      //       completedPiecesCount: 3,
-      //       size: 9,
-      //     ),
-      //     PuzzleGetInProgressDataDto(
-      //         puzzleId: '3',
-      //         imageUrl: 'https://picsum.photos/400/400',
-      //         contributors: ['mock3', 'mock', 'mock'],
-      //         //lastSavedAt: 'mock3 시간 데이터3',
-      //         //AIKeyword: ['mock3', 'AI', 'keyword'],
-      //         category: 'mock 카테고리3',
-      //       completedPiecesCount: 3,
-      //       size: 9,
-      //     ),
-      //   ]
-      // );
     }
   }
 
@@ -105,9 +71,44 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
               final puzzleDto = puzzles[index];
               return PuzzleListItem(
                 puzzleDto: puzzleDto,
-                onDelete: () {
-                  PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
+                onDelete: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        title: const Text(
+                          '퍼즐 삭제',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        content: const Text('정말로 이 퍼즐을 삭제하시겠습니까?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false), // 취소
+                            child: const Text('취소'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true), // 확인
+                            child: const Text(
+                              '삭제',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
+                  if (confirm == true) {
+                    // ✅ 사용자가 '삭제' 눌렀을 때만 실행
+                    setState(() {
+                      PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
+                    });
+                  }
                 },
+
                 onPressed: () async {
                   PlayPuzzleInProgressDto response;
                   ///api 호출하여 dto 받아옴( puzzleId => puzzle dto )
@@ -116,22 +117,6 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                   } catch(e) {
                     print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
                     throw Exception('error!!');
-                    // response = PlayPuzzleInProgressDto(
-                    //   imageUrl: 'https://picsum.photos/600/400',
-                    //   size: 9,
-                    //   youCanPlayPuzzle: true,
-                    //   piecesPosition: {
-                    //       '0': PiecePosition(x: 0.0, y: 0.0),
-                    //       '1': PiecePosition(x: 0.0, y: 0.0),
-                    //       '2': PiecePosition(x: 371.9866817679033, y: -78.11811366169445),
-                    //       '3': PiecePosition(x: 412.19363719162334, y: 129.82030758795253),
-                    //       '4': PiecePosition(x: 336.10010644817953, y: -66.03152805582121),
-                    //       '5': PiecePosition(x: 403.20028666529834, y: -79.03794413986476),
-                    //       '6': PiecePosition(x: 348.9157830790029, y: 75.53067899585587),
-                    //       '7': PiecePosition(x: 281.8794948201076, y: 36.361730600130926),
-                    //       '8': PiecePosition(x: 328.8932872972411, y: -66.43651951182676),
-                    //     }
-                    // );
                   }
 
                   ///받아온 puzzle dto를 puzzlegame의 fromDto에 넣어서 퍼즐 인스턴스 받아옴

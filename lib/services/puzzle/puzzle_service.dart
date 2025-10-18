@@ -311,7 +311,13 @@ class PuzzleService {
 
 // 🔵 퍼즐 삭제
   Future<void> deletePuzzle(String puzzleId) async {
-    final response = await _dio.delete('/puzzle/$puzzleId');
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+    if(_accessToken == null){
+      print('access token is null!!!!');
+    }
+
+    final response = await _dio.delete('$baseUrl/api/puzzle/$puzzleId');
     if (response.statusCode == 200) {
       print('✅ 퍼즐 삭제 성공');
     } else {
