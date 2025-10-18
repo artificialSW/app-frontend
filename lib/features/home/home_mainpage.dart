@@ -4,6 +4,7 @@ import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:artificialsw_frontend/features/home/widget/progress_bar_with_icon.dart';
 import 'package:artificialsw_frontend/features/home/widget/home_bottom_buttons.dart';
 import 'package:artificialsw_frontend/features/home/single_tree_logic/tree_loading_page.dart';
+import 'package:artificialsw_frontend/features/home/single_tree_logic/archive_tree_loading_page.dart';
 import 'package:artificialsw_frontend/features/home/tutorial_logic/help_page.dart';
 import 'package:artificialsw_frontend/features/home/widget/island_save_indicator.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +67,29 @@ class _HomeRootState extends State<HomeRoot> {
     } else {
       return 'assets/images/main_island.png';
     }
+  }
+
+  /// 나무 클릭 시 아카이브 로딩 페이지로 이동
+  void _onTreeTap(int treeIndex) {
+    // 현재 날짜 기준으로 period 결정 (1: ~15일, 2: 16~말일)
+    final now = DateTime.now();
+    final period = now.day <= 15 ? 1 : 2;
+    
+    // 나무 타입 결정 (1,2: 꽃, 3,4: 열매)
+    final treeType = treeIndex <= 2 ? 'flower-$treeIndex' : 'fruit-${treeIndex - 2}';
+    
+    // 아카이브 로딩 페이지 표시
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ArchiveTreeLoadingPage(
+        treeType: treeType,
+        year: now.year,
+        month: now.month,
+        period: period,
+        treeIndex: treeIndex,
+      ),
+    );
   }
 
   @override
@@ -209,14 +233,7 @@ class _HomeRootState extends State<HomeRoot> {
                     left: islandWidth * 0.15, // 섬 왼쪽에서 15% 지점에 배치
                     top: islandHeight * 0.3,   // 섬 위쪽에서 30% 지점에 배치
                     child: GestureDetector(
-                      onTap: () {
-                        // 첫 번째 꽃나무 클릭 시 로딩 화면을 거쳐 상세 페이지로 이동
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => TreeLoadingPage(treeType: 'flower-1'),
-                        );
-                      },
+                      onTap: () => _onTreeTap(1),
                       child: Container(
                         width: islandWidth * 0.18,   // 나무 클릭 영역 크기
                         height: islandHeight * 0.4,  // 나무 클릭 영역 높이
@@ -231,14 +248,7 @@ class _HomeRootState extends State<HomeRoot> {
                     left: islandWidth * 0.35, // 섬 왼쪽에서 35% 지점에 배치
                     top: islandHeight * 0.25,  // 섬 위쪽에서 25% 지점에 배치
                     child: GestureDetector(
-                      onTap: () {
-                        // 두 번째 꽃나무 클릭 시 로딩 화면을 거쳐 상세 페이지로 이동
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => TreeLoadingPage(treeType: 'flower-2'),
-                        );
-                      },
+                      onTap: () => _onTreeTap(2),
                       child: Container(
                         width: islandWidth * 0.18,
                         height: islandHeight * 0.4,
@@ -253,14 +263,7 @@ class _HomeRootState extends State<HomeRoot> {
                     left: islandWidth * 0.55, // 섬 왼쪽에서 55% 지점에 배치
                     top: islandHeight * 0.3,   // 섬 위쪽에서 30% 지점에 배치
                     child: GestureDetector(
-                      onTap: () {
-                        // 첫 번째 과일나무 클릭 시 로딩 화면을 거쳐 상세 페이지로 이동
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => TreeLoadingPage(treeType: 'fruit-1'),
-                        );
-                      },
+                      onTap: () => _onTreeTap(3),
                       child: Container(
                         width: islandWidth * 0.18,
                         height: islandHeight * 0.4,
@@ -275,14 +278,7 @@ class _HomeRootState extends State<HomeRoot> {
                     left: islandWidth * 0.75, // 섬 왼쪽에서 75% 지점에 배치
                     top: islandHeight * 0.25,  // 섬 위쪽에서 25% 지점에 배치
                     child: GestureDetector(
-                      onTap: () {
-                        // 두 번째 과일나무 클릭 시 로딩 화면을 거쳐 상세 페이지로 이동
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => TreeLoadingPage(treeType: 'fruit-2'),
-                        );
-                      },
+                      onTap: () => _onTreeTap(4),
                       child: Container(
                         width: islandWidth * 0.18,
                         height: islandHeight * 0.4,

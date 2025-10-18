@@ -4,14 +4,28 @@ import 'package:artificialsw_frontend/features/home/widget/fruit_card.dart';
 import 'package:artificialsw_frontend/features/home/widget/flower_card.dart';
 import 'package:artificialsw_frontend/features/home/models/fruit_card_data.dart';
 import 'package:artificialsw_frontend/features/home/models/flower_card_data.dart';
+import 'package:artificialsw_frontend/services/home/home_service.dart';
+import 'package:artificialsw_frontend/services/home/dto/archive/archive_flower_response_dto.dart';
+import 'package:artificialsw_frontend/services/home/dto/archive/archive_fruit_response_dto.dart';
+import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 
 class TreeDecorateSheet extends StatefulWidget {
   final String treeType; // 'flower-1', 'flower-2', 'fruit-1', 'fruit-2'
+  final bool isArchiveMode; // 아카이브 모드 여부
+  final int? archiveYear; // 아카이브 연도
+  final int? archiveMonth; // 아카이브 월
+  final int? archivePeriod; // 아카이브 기간 (1: ~15일, 2: 16~말일)
+  final int? archiveTreeIndex; // 아카이브 나무 인덱스 (1,2,3,4)
   final Function(List<FruitCardData>, List<FlowerCardData>)? onSelectionChanged;
   
   const TreeDecorateSheet({
     super.key,
     required this.treeType,
+    this.isArchiveMode = false,
+    this.archiveYear,
+    this.archiveMonth,
+    this.archivePeriod,
+    this.archiveTreeIndex,
     this.onSelectionChanged,
   });
 
@@ -23,12 +37,17 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
   // 실제 카드 데이터들 (서버에서 받아올 예정)
   List<FruitCardData> fruitCards = [];
   List<FlowerCardData> flowerCards = [];
+  final HomeService _homeService = HomeService();
 
   @override
   void initState() {
     super.initState();
-    // 테스트용 데이터 (나중에 서버에서 받아올 예정)
-    _loadTestData();
+    if (widget.isArchiveMode) {
+      _loadArchiveData();
+    } else {
+      // 테스트용 데이터 (나중에 서버에서 받아올 예정)
+      _loadTestData();
+    }
   }
 
   void _loadTestData() {
@@ -61,18 +80,18 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
 
     // 테스트용 꽃 카드들 (모든 꽃 추가)
     final rawFlowerCards = [
-      FlowerCardData(id: 'flower_001', name: '동백꽃', imagePath: 'assets/images/flower/camellia.png', emotion: 'love', date: '2024-09-13', communicationText: '사랑 관련 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_002', name: '장미', imagePath: 'assets/images/flower/rose.png', emotion: 'love', date: '2024-09-14', communicationText: '사랑 관련 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_003', name: '아카시아', imagePath: 'assets/images/flower/acacia.png', emotion: 'comfort', date: '2024-09-12', communicationText: '위로 관련 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_004', name: '수국', imagePath: 'assets/images/flower/hydrangea.png', emotion: 'comfort', date: '2024-09-15', communicationText: '위로 관련 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_005', name: '매화', imagePath: 'assets/images/flower/plum_blossom.png', emotion: 'special', date: '2024-09-16', communicationText: '특별한 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_006', name: '튤립', imagePath: 'assets/images/flower/tulip.png', emotion: 'special', date: '2024-09-17', communicationText: '특별한 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_007', name: '제비꽃', imagePath: 'assets/images/flower/violet.png', emotion: 'memory', date: '2024-09-18', communicationText: '추억 관련 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_008', name: '목련', imagePath: 'assets/images/flower/magnolia.png', emotion: 'memory', date: '2024-09-19', communicationText: '추억 관련 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_009', name: '벚꽃', imagePath: 'assets/images/flower/cherry_blossom.png', emotion: 'joy', date: '2024-09-20', communicationText: '기쁨 관련 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_010', name: '코스모스', imagePath: 'assets/images/flower/cosmos.png', emotion: 'joy', date: '2024-09-21', communicationText: '기쁨 관련 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_011', name: '해바라기', imagePath: 'assets/images/flower/sunflower.png', emotion: 'hobby', date: '2024-09-22', communicationText: '취미 관련 소통을 통해 획득', order: 0),
-      FlowerCardData(id: 'flower_012', name: '팥배꽃', imagePath: 'assets/images/flower/patbae_flower.png', emotion: 'hobby', date: '2024-09-23', communicationText: '취미 관련 소통을 통해 획득', order: 0),
+      FlowerCardData(id: 'flower_001', name: '동백꽃', imagePath: 'assets/images/flower/camellia.png', date: '2024-09-13', order: 0),
+      FlowerCardData(id: 'flower_002', name: '장미', imagePath: 'assets/images/flower/rose.png', date: '2024-09-14', order: 0),
+      FlowerCardData(id: 'flower_003', name: '아카시아', imagePath: 'assets/images/flower/acacia.png', date: '2024-09-12', order: 0),
+      FlowerCardData(id: 'flower_004', name: '수국', imagePath: 'assets/images/flower/hydrangea.png', date: '2024-09-15', order: 0),
+      FlowerCardData(id: 'flower_005', name: '매화', imagePath: 'assets/images/flower/plum_blossom.png', date: '2024-09-16', order: 0),
+      FlowerCardData(id: 'flower_006', name: '튤립', imagePath: 'assets/images/flower/tulip.png', date: '2024-09-17', order: 0),
+      FlowerCardData(id: 'flower_007', name: '제비꽃', imagePath: 'assets/images/flower/violet.png', date: '2024-09-18', order: 0),
+      FlowerCardData(id: 'flower_008', name: '목련', imagePath: 'assets/images/flower/magnolia.png', date: '2024-09-19', order: 0),
+      FlowerCardData(id: 'flower_009', name: '벚꽃', imagePath: 'assets/images/flower/cherry_blossom.png', date: '2024-09-20', order: 0),
+      FlowerCardData(id: 'flower_010', name: '코스모스', imagePath: 'assets/images/flower/cosmos.png', date: '2024-09-21', order: 0),
+      FlowerCardData(id: 'flower_011', name: '해바라기', imagePath: 'assets/images/flower/sunflower.png', date: '2024-09-22', order: 0),
+      FlowerCardData(id: 'flower_012', name: '팥배꽃', imagePath: 'assets/images/flower/patbae_flower.png', date: '2024-09-23', order: 0),
     ];
 
     // 날짜순으로 정렬 (최신순) 후 상태 업데이트
@@ -88,6 +107,143 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
         widget.onSelectionChanged!(fruitCards, flowerCards);
       }
     });
+  }
+
+  /// 아카이브 데이터를 API에서 로드하는 메서드
+  Future<void> _loadArchiveData() async {
+    try {
+      if (widget.archiveYear == null || 
+          widget.archiveMonth == null || 
+          widget.archivePeriod == null || 
+          widget.archiveTreeIndex == null) {
+        print('❌ 아카이브 파라미터가 누락되었습니다.');
+        return;
+      }
+
+      final List<FruitCardData> archiveFruitCards = [];
+      final List<FlowerCardData> archiveFlowerCards = [];
+
+      // 나무 타입에 따라 적절한 API 호출
+      if (widget.treeType == 'flower-1' || widget.treeType == 'flower-2') {
+        // 꽃 나무
+        final flowerData = await _homeService.getArchiveFlowerData(
+          year: widget.archiveYear!,
+          month: widget.archiveMonth!,
+          period: widget.archivePeriod!,
+          treeIndex: widget.archiveTreeIndex!,
+        );
+
+        for (final data in flowerData) {
+          final flowerCard = FlowerCardData(
+            id: 'archive_flower_${data.flowerId}',
+            name: data.flowerName,
+            imagePath: _getFlowerImagePathByName(data.flowerName),
+            date: _formatArchiveDate(data.archivedAt),
+            order: 0,
+          );
+          archiveFlowerCards.add(flowerCard);
+        }
+      } else if (widget.treeType == 'fruit-1' || widget.treeType == 'fruit-2') {
+        // 열매 나무
+        final fruitData = await _homeService.getArchiveFruitData(
+          year: widget.archiveYear!,
+          month: widget.archiveMonth!,
+          period: widget.archivePeriod!,
+          treeIndex: widget.archiveTreeIndex!,
+        );
+
+        for (final data in fruitData) {
+          final fruitCard = FruitCardData(
+            id: 'archive_fruit_${data.fruitId}',
+            name: data.fruitName,
+            imagePath: _getFruitImagePathByName(data.fruitName),
+            date: _formatArchiveDate(data.archivedAt),
+            puzzleImagePath: '', // 아카이브에서는 필요없음
+            order: 0,
+          );
+          archiveFruitCards.add(fruitCard);
+        }
+      }
+
+      // 날짜순으로 정렬 (최신순)
+      final sortedFruit = _sortCardsByDate(archiveFruitCards);
+      final sortedFlower = _sortCardsByDate(archiveFlowerCards);
+
+      setState(() {
+        fruitCards = sortedFruit;
+        flowerCards = sortedFlower;
+      });
+
+      // 초기 로드 시에도 부모에 알림
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (widget.onSelectionChanged != null) {
+          widget.onSelectionChanged!(fruitCards, flowerCards);
+        }
+      });
+
+    } catch (e) {
+      print('❌ 아카이브 데이터 로드 오류: $e');
+      // 에러 발생 시 빈 리스트로 설정
+      setState(() {
+        fruitCards = [];
+        flowerCards = [];
+      });
+    }
+  }
+
+  /// 과일 이름으로 이미지 경로를 찾는 메서드
+  String _getFruitImagePathByName(String fruitName) {
+    // 과일 이름 매핑 (AppAssets와 일치하도록 수정)
+    final fruitImageMap = {
+      '체리': AppAssets.fruit_cherry,
+      '딸기': AppAssets.fruit_strawberry,
+      '키위': AppAssets.fruit_kiwi,
+      '산딸기': AppAssets.fruit_raspberry,
+      '복숭아': AppAssets.fruit_peach,
+      '자두': AppAssets.fruit_plum,
+      '망고': AppAssets.fruit_mango,
+      '블루베리': AppAssets.fruit_blueberry,
+      '포도': AppAssets.fruit_grape,
+      '배': AppAssets.fruit_pear,
+      '감': AppAssets.fruit_persimmon,
+      '대추': AppAssets.fruit_jujube,
+      '사과': AppAssets.fruit_apple,
+      '귤': AppAssets.fruit_mandarin,
+      '석류': AppAssets.fruit_pomegranate,
+      '유자': AppAssets.fruit_yuja,
+    };
+    return fruitImageMap[fruitName] ?? AppAssets.fruit_cherry; // 기본값
+  }
+
+  /// 꽃 이름으로 이미지 경로를 찾는 메서드
+  String _getFlowerImagePathByName(String flowerName) {
+    // 꽃 이름 매핑 (도감에 있는 꽃들만 사용)
+    final flowerImageMap = {
+      '동백꽃': AppAssets.flower_camellia,
+      '아카시아': AppAssets.flower_acacia,
+      '매화': AppAssets.flower_plum,
+      '팥배꽃': AppAssets.flower_patbae,
+      '벚꽃': AppAssets.flower_cherry,
+      '목련': AppAssets.flower_magnolia,
+      '장미': AppAssets.flower_rose,
+      '수국': AppAssets.flower_hydrangea,
+      '튤립': AppAssets.flower_tulip,
+      '제비꽃': AppAssets.flower_violet,
+      '코스모스': AppAssets.flower_cosmos,
+      '해바라기': AppAssets.flower_sunflower,
+    };
+    return flowerImageMap[flowerName] ?? AppAssets.flower_camellia; // 기본값
+  }
+
+  /// 아카이브 날짜를 포맷하는 메서드
+  String _formatArchiveDate(String archivedAt) {
+    try {
+      // ISO 8601 형식에서 날짜 부분만 추출 (YYYY-MM-DD)
+      return archivedAt.split('T')[0];
+    } catch (e) {
+      print('❌ 날짜 포맷 오류: $e');
+      return '2024-01-01'; // 기본값
+    }
   }
 
   /// 카드들을 날짜순으로 정렬하는 메서드 (최신순)
@@ -229,7 +385,6 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
                         return FlowerCard(
                           flowerName: flowerCard.name,
                           flowerImagePath: flowerCard.imagePath,
-                          emotion: flowerCard.emotion,
                           date: flowerCard.date,
                           order: flowerCard.order,
                           onTap: null,
