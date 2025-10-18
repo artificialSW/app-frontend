@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 
 class OngoingPuzzlesPage extends StatefulWidget {
   const OngoingPuzzlesPage({Key? key}) : super(key: key);
@@ -75,34 +76,89 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                   final confirm = await showDialog<bool>(
                     context: context,
                     builder: (context) {
-                      return AlertDialog(
+                      return Dialog(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        title: const Text(
-                          '퍼즐 삭제',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        backgroundColor: Colors.white.withValues(alpha: 0.85),
+                        insetPadding: const EdgeInsets.symmetric(horizontal: 45),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16, top: 28, bottom: 8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '진행중인 퍼즐을 삭제하시겠습니까?',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.pretendard_bold.copyWith(
+                                  fontSize: 15
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '퍼즐 진행상황이 모두 삭제됩니다.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.plumu_gray_7,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: () => Navigator.of(context).pop(false),
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: AppColors.plumu_white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        '아니오',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: () => Navigator.of(context).pop(true),
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: AppColors.plumu_white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        '예',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                        content: const Text('정말로 이 퍼즐을 삭제하시겠습니까?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(false), // 취소
-                            child: const Text('취소'),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(true), // 확인
-                            child: const Text(
-                              '삭제',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ],
                       );
                     },
                   );
 
                   if (confirm == true) {
-                    // ✅ 사용자가 '삭제' 눌렀을 때만 실행
+                    // ✅ 기능은 그대로 유지
                     setState(() {
                       PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
                     });

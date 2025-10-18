@@ -22,73 +22,28 @@ class DeleteConfirm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
+    return AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12), // 모서리 둥글게
+        borderRadius: BorderRadius.circular(16),
       ),
-      backgroundColor: AppColors.alart_background,
-      child: SizedBox(
-        width: 280,   // 원하는 너비 지정
-        height: 150,  // 원하는 높이 지정 (AlertDialog보다 줄임)
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 15),
-              Text(
-                title,
-                style: TextStyle(
-                  color: AppColors.plumu_gray_7,
-                  fontSize: 16,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w700,
-                  height: 1.41,
-                ),
-              ),
-              Text(
-                content,
-                style: TextStyle(
-                  color: AppColors.plumu_gray_7,
-                  fontSize: 14,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                  height: 1.71,
-                ),
-              ),
-              SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CustomButton(
-                    text: no_Button,
-                    onPressed: () => Navigator.of(context).pop(),
-                    height: 40,
-                    width: 111,
-                    backgroundColor: AppColors.plumu_white,
-                    textColor: AppColors.plumu_gray_7,
-                  ),
-                  CustomButton(
-                    text: yes_Button,
-                    onPressed: () {
-                      Provider.of<PuzzleProvider>(
-                        context,
-                        listen: false,
-                      ).deletePuzzle(puzzleId);
-                      Navigator.of(context).pop();
-                    },
-                    height: 40,
-                    width: 111,
-                    backgroundColor: AppColors.plumu_white,
-                    textColor: AppColors.plumu_gray_7,
-                  ),
-                ],
-              ),
-            ],
+      title: Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      content: Text(content),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false), // 취소
+          child: Text(no_Button),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true), // 확인
+          child: Text(
+            yes_Button,
+            style: TextStyle(color: Colors.red),
           ),
         ),
-      ),
+      ],
     );
   }
 }
