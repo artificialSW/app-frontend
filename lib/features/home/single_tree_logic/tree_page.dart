@@ -318,7 +318,9 @@ class _TreePageState extends State<TreePage> {
     final scaleX = treeWidth / _baseTree2Width;
     final scaleY = treeHeight / _baseTree2Height;
     // 아이콘 크기: 60x60을 기준으로 너비 스케일에 맞춰 균등 스케일링
-    final size = 60.0 * scaleX;
+    // 아카시아(index 1)만 크기를 1.2배로 키움
+    final baseSize = 60.0 * scaleX;
+    final size = index == 1 ? baseSize * 1.2 : baseSize; // 아카시아만 크기 증가
 
     final basePos = _baseFlower2Positions[index];
     final left = basePos.dx * scaleX;

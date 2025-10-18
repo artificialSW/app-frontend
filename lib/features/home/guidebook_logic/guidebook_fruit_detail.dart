@@ -13,26 +13,115 @@ class GuidebookFruitDetailPage extends StatelessWidget {
 
   Map<String, dynamic> _getFruitData(int index) {
     switch (index) {
-      // 봄 (1쪽)
+      // 봄 (1쪽) - 생성기준 01
       case 0:
         return {
           'name': '체리', 'number': '01', 'icon': AppAssets.fruit_cherry,
+          'season': '봄', 'months': '3월/4월/5월', 'criteria': '01',
+          'primary': const Color(0xFFD91D58), 'bgSoft': const Color(0xFFFFD6E3),
         };
       case 1:
         return {
           'name': '딸기', 'number': '02', 'icon': AppAssets.fruit_strawberry,
+          'season': '봄', 'months': '3월/4월/5월', 'criteria': '01',
+          'primary': const Color(0xFFD91D58), 'bgSoft': const Color(0xFFFFD6E3),
         };
       case 2:
         return {
           'name': '키위', 'number': '03', 'icon': AppAssets.fruit_kiwi,
+          'season': '봄', 'months': '3월/4월/5월', 'criteria': '01',
+          'primary': const Color(0xFFD91D58), 'bgSoft': const Color(0xFFFFD6E3),
         };
       case 3:
         return {
           'name': '산딸기', 'number': '04', 'icon': AppAssets.fruit_raspberry,
+          'season': '봄', 'months': '3월/4월/5월', 'criteria': '01',
+          'primary': const Color(0xFFD91D58), 'bgSoft': const Color(0xFFFFD6E3),
         };
+      
+      // 여름 (2쪽) - 생성기준 02
+      case 4:
+        return {
+          'name': '복숭아', 'number': '05', 'icon': AppAssets.fruit_peach,
+          'season': '여름', 'months': '6월/7월/8월', 'criteria': '02',
+          'primary': const Color(0xFF5CBD56), 'bgSoft': const Color(0xFFE7FFE6),
+        };
+      case 5:
+        return {
+          'name': '자두', 'number': '06', 'icon': AppAssets.fruit_plum,
+          'season': '여름', 'months': '6월/7월/8월', 'criteria': '02',
+          'primary': const Color(0xFF5CBD56), 'bgSoft': const Color(0xFFE7FFE6),
+        };
+      case 6:
+        return {
+          'name': '망고', 'number': '07', 'icon': AppAssets.fruit_mango,
+          'season': '여름', 'months': '6월/7월/8월', 'criteria': '02',
+          'primary': const Color(0xFF5CBD56), 'bgSoft': const Color(0xFFE7FFE6),
+        };
+      case 7:
+        return {
+          'name': '블루베리', 'number': '08', 'icon': AppAssets.fruit_blueberry,
+          'season': '여름', 'months': '6월/7월/8월', 'criteria': '02',
+          'primary': const Color(0xFF5CBD56), 'bgSoft': const Color(0xFFE7FFE6),
+        };
+      
+      // 가을 (3쪽) - 생성기준 03
+      case 8:
+        return {
+          'name': '포도', 'number': '09', 'icon': AppAssets.fruit_grape,
+          'season': '가을', 'months': '9월/10월/11월', 'criteria': '03',
+          'primary': const Color(0xFFD55619), 'bgSoft': const Color(0xFFFFDCCA),
+        };
+      case 9:
+        return {
+          'name': '배', 'number': '10', 'icon': AppAssets.fruit_pear,
+          'season': '가을', 'months': '9월/10월/11월', 'criteria': '03',
+          'primary': const Color(0xFFD55619), 'bgSoft': const Color(0xFFFFDCCA),
+        };
+      case 10:
+        return {
+          'name': '감', 'number': '11', 'icon': AppAssets.fruit_persimmon,
+          'season': '가을', 'months': '9월/10월/11월', 'criteria': '03',
+          'primary': const Color(0xFFD55619), 'bgSoft': const Color(0xFFFFDCCA),
+        };
+      case 11:
+        return {
+          'name': '대추', 'number': '12', 'icon': AppAssets.fruit_jujube,
+          'season': '가을', 'months': '9월/10월/11월', 'criteria': '03',
+          'primary': const Color(0xFFD55619), 'bgSoft': const Color(0xFFFFDCCA),
+        };
+      
+      // 겨울 (4쪽) - 생성기준 04
+      case 12:
+        return {
+          'name': '사과', 'number': '13', 'icon': AppAssets.fruit_apple,
+          'season': '겨울', 'months': '12월/1월/2월', 'criteria': '04',
+          'primary': const Color(0xFF00BBE0), 'bgSoft': const Color(0xFFD9FCFF),
+        };
+      case 13:
+        return {
+          'name': '귤', 'number': '14', 'icon': AppAssets.fruit_mandarin,
+          'season': '겨울', 'months': '12월/1월/2월', 'criteria': '04',
+          'primary': const Color(0xFF00BBE0), 'bgSoft': const Color(0xFFD9FCFF),
+        };
+      case 14:
+        return {
+          'name': '석류', 'number': '15', 'icon': AppAssets.fruit_pomegranate,
+          'season': '겨울', 'months': '12월/1월/2월', 'criteria': '04',
+          'primary': const Color(0xFF00BBE0), 'bgSoft': const Color(0xFFD9FCFF),
+        };
+      case 15:
+        return {
+          'name': '유자', 'number': '16', 'icon': AppAssets.fruit_yuja,
+          'season': '겨울', 'months': '12월/1월/2월', 'criteria': '04',
+          'primary': const Color(0xFF00BBE0), 'bgSoft': const Color(0xFFD9FCFF),
+        };
+      
       default:
         return {
           'name': '체리', 'number': '01', 'icon': AppAssets.fruit_cherry,
+          'season': '봄', 'months': '3월/4월/5월', 'criteria': '01',
+          'primary': const Color(0xFFD91D58), 'bgSoft': const Color(0xFFFFD6E3),
         };
     }
   }
@@ -45,9 +134,9 @@ class GuidebookFruitDetailPage extends StatelessWidget {
     final widthRatio = screenWidth / 412; // 기준 화면 412px
     final heightRatio = screenHeight / 917; // 기준 화면 917px
 
-    // 봄 과일 컬러/배경 정의
-    const Color primary = Color(0xFFD91D58);
-    const Color bgSoft = Color(0xFFFFD6E3);
+    // 계절별 컬러/배경 정의 (동적)
+    final Color primary = data['primary'] as Color;
+    final Color bgSoft = data['bgSoft'] as Color;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -198,7 +287,7 @@ class GuidebookFruitDetailPage extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text: data['number'] as String,
+                            text: data['criteria'] as String,
                             style: TextStyle(
                               color: const Color(0xFF1B1D1B),
                               fontSize: 8.10 * widthRatio,
@@ -212,7 +301,7 @@ class GuidebookFruitDetailPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // #봄 배지 - 책 내부 기준 (우측 53.28, 위쪽 92) - 높이 27.84 고정(적응형)
+                  // 계절 배지 - 책 내부 기준 (우측 53.28, 위쪽 92) - 높이 27.84 고정(적응형)
                   Positioned(
                     right: 53.28 * widthRatio,
                     top: 92 * heightRatio,
@@ -231,7 +320,7 @@ class GuidebookFruitDetailPage extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          '#봄',
+                          '#${data['season']}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: primary,
@@ -243,7 +332,7 @@ class GuidebookFruitDetailPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // #3월/4월/5월 배지 - 책 내부 기준 (우측 53.28, 위쪽 126) - 높이 27.84 고정(적응형)
+                  // 월 배지 - 책 내부 기준 (우측 53.28, 위쪽 126) - 높이 27.84 고정(적응형)
                   Positioned(
                     right: 53.28 * widthRatio,
                     top: 126 * heightRatio,
@@ -262,7 +351,7 @@ class GuidebookFruitDetailPage extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          '#3월/4월/5월',
+                          '#${data['months']}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: primary,
