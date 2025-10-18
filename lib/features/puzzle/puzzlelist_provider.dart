@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlegame.dart';
 import 'package:artificialsw_frontend/features/puzzle/model/puzzlepiece_position.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 
 /// 퍼즐 리스트 상태 관리
 /// 진행중인 퍼즐과 완료된 퍼즐을 모두 관리
@@ -196,17 +197,28 @@ class PuzzleListItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '주제: ${puzzleDto.category}',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(
+            color: AppColors.plumu_green_main,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            puzzleDto.category,
+            style: AppTextStyles.pretendard_medium.copyWith(
+              color: AppColors.plumu_white,
+              fontSize: 13,
+            ),
+          ),
         ),
-        const SizedBox(height: 4),
-        Text('퍼즐 참여자: ${puzzleDto.contributors}',
+        SizedBox(height: 10,),
+        Text(
+            '${puzzleDto.contributors.join(", ")}(이)가 풀고 있어요!',
             style: const TextStyle(color: Colors.grey, fontSize: 12)),
-        const SizedBox(height: 8),
+        SizedBox(height: 5,),
         Text('진행도: ${(puzzleDto.completedPiecesCount/puzzleDto.size*100).toDouble().toStringAsFixed(0)}%',
             style: TextStyle(color: Colors.grey, fontSize: 12)),
-        const SizedBox(height: 12),
+        SizedBox(height: 18,),
         Row(
           children: [
             Expanded(
@@ -357,7 +369,7 @@ class PuzzleListItem extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
