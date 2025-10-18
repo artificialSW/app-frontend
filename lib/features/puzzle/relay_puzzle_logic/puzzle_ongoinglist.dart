@@ -158,9 +158,9 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                   );
 
                   if (confirm == true) {
-                    // ✅ 기능은 그대로 유지
+                    await PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
                     setState(() {
-                      PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
+                      puzzles.removeWhere((p) => p.puzzleId == puzzleDto.puzzleId);
                     });
                   }
                 },
