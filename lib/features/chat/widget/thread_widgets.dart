@@ -209,7 +209,7 @@ class ThreadCommentTile extends StatelessWidget {
           if (expanded && replies.isNotEmpty)
             Container(
               width: 380 * widthRatio,
-              padding: EdgeInsets.only(top: 8 * heightRatio, left: 20 * widthRatio),
+              padding: EdgeInsets.only(top: 8 * heightRatio, left: 28 * widthRatio),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(replies.length, (i) {

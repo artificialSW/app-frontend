@@ -3,6 +3,8 @@ import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/features/home/widget/tree_decorate_sheet.dart';
+import 'package:artificialsw_frontend/features/home/models/flower_card_data.dart';
+import 'package:artificialsw_frontend/features/home/models/fruit_card_data.dart';
 
 /// 나무 단독 페이지
 /// 
@@ -16,10 +18,20 @@ import 'package:artificialsw_frontend/features/home/widget/tree_decorate_sheet.d
 /// - 뒤로가기 버튼과 plumu 로고
 class TreePage extends StatefulWidget {
   final String treeType; // 'flower-1', 'flower-2', 'fruit-1', 'fruit-2'
+  final bool isArchiveMode; // 아카이브 모드 여부
+  final int? archiveYear; // 아카이브 연도
+  final int? archiveMonth; // 아카이브 월
+  final int? archivePeriod; // 아카이브 기간 (1: ~15일, 2: 16~말일)
+  final int? archiveTreeIndex; // 아카이브 나무 인덱스 (1,2,3,4)
   
   const TreePage({
     super.key,
     required this.treeType,
+    this.isArchiveMode = false,
+    this.archiveYear,
+    this.archiveMonth,
+    this.archivePeriod,
+    this.archiveTreeIndex,
   });
 
   @override
@@ -27,31 +39,6 @@ class TreePage extends StatefulWidget {
 }
 
 class _TreePageState extends State<TreePage> {
-  // 첫 6개 꽃 아이콘 (카드 순서 기준)
-  final List<String> _firstSixFlowerIconAssets = [
-    AppAssets.flower_camellia, // 1
-    AppAssets.flower_acacia,   // 2
-    AppAssets.flower_plum,     // 3
-    AppAssets.flower_patbae,   // 4
-    AppAssets.flower_cherry,   // 5
-    AppAssets.flower_magnolia, // 6
-  ];
-
-  // 첫 4개 꽃 아이콘 (두 번째 나무용)
-  final List<String> _firstFourFlowerIconAssets = [
-    AppAssets.flower_camellia, // 1
-    AppAssets.flower_acacia,   // 2
-    AppAssets.flower_plum,     // 3
-    AppAssets.flower_patbae,   // 4
-  ];
-
-  // 첫 4개 과일 아이콘 (세 번째 나무용 임시 매핑 - 시즌 혼합)
-  final List<String> _firstFourFruitIconAssets = [
-    'assets/images/fruit/spring/cherry.png',     // 1
-    'assets/images/fruit/summer/blueberry.png',  // 2
-    'assets/images/fruit/fall/fig.png',          // 3
-    'assets/images/fruit/winter/apple.png',      // 4
-  ];
 
   // 기준 나무 크기 (디자인 스펙)
   static const double _baseTreeWidth = 306.97;
@@ -106,10 +93,9 @@ class _TreePageState extends State<TreePage> {
     Offset(105, 167), // 3번째 과일
   ];
 
-  // 현재 표시할 꽃 개수 (시트의 카드 개수에 따라 갱신, 최대 6개)
-  int _visibleFlowerCount = 0;
-  int _visibleFruitCount = 0;
-  int _visibleFruitCount2 = 0;
+  // 현재 표시할 꽃/열매 카드 데이터 (실제 카드 데이터 사용)
+  List<FlowerCardData> _currentFlowerCards = [];
+  List<FruitCardData> _currentFruitCards = [];
 
   /// 나무 타입에 따라 해당하는 나무 이미지 경로를 반환하는 함수
   String _getTreeImagePath() {
@@ -235,22 +221,22 @@ class _TreePageState extends State<TreePage> {
                   ),
                   // 꽃 오버레이: flower-1 타입일 때 (최대 6개)
                   if (widget.treeType == 'flower-1') ...[
-                    for (int i = 0; i < _visibleFlowerCount && i < 6; i++)
+                    for (int i = 0; i < _currentFlowerCards.length && i < 6; i++)
                       _buildOverlayFlower(i, layout['width']!, layout['height']!),
                   ],
                   // 꽃 오버레이: flower-2 타입일 때 (최대 4개)
                   if (widget.treeType == 'flower-2') ...[
-                    for (int i = 0; i < _visibleFlowerCount && i < 4; i++)
+                    for (int i = 0; i < _currentFlowerCards.length && i < 4; i++)
                       _buildOverlayFlower2(i, layout['width']!, layout['height']!),
                   ],
                   // 과일 오버레이: fruit-1 타입일 때 (최대 4개)
                   if (widget.treeType == 'fruit-1') ...[
-                    for (int i = 0; i < _visibleFruitCount && i < 4; i++)
+                    for (int i = 0; i < _currentFruitCards.length && i < 4; i++)
                       _buildOverlayFruit1(i, layout['width']!, layout['height']!),
                   ],
                   // 과일 오버레이: fruit-2 타입일 때 (최대 3개)
                   if (widget.treeType == 'fruit-2') ...[
-                    for (int i = 0; i < _visibleFruitCount2 && i < 3; i++)
+                    for (int i = 0; i < _currentFruitCards.length && i < 3; i++)
                       _buildOverlayFruit2(i, layout['width']!, layout['height']!),
                   ],
                 ],
@@ -267,18 +253,16 @@ class _TreePageState extends State<TreePage> {
             height: screenHeight * 0.75, // 화면 높이의 75% 차지
             child: TreeDecorateSheet(
               treeType: widget.treeType,
+              isArchiveMode: widget.isArchiveMode,
+              archiveYear: widget.archiveYear,
+              archiveMonth: widget.archiveMonth,
+              archivePeriod: widget.archivePeriod,
+              archiveTreeIndex: widget.archiveTreeIndex,
               onSelectionChanged: (fruitCards, flowerCards) {
-                // 시트의 카드 개수에 맞춰 표시 개수 갱신
+                // 실제 카드 데이터를 저장하여 나무에 표시
                 setState(() {
-                  if (widget.treeType == 'flower-1') {
-                    _visibleFlowerCount = flowerCards.length.clamp(0, 6);
-                  } else if (widget.treeType == 'flower-2') {
-                    _visibleFlowerCount = flowerCards.length.clamp(0, 4);
-                  } else if (widget.treeType == 'fruit-1') {
-                    _visibleFruitCount = fruitCards.length.clamp(0, 4);
-                  } else if (widget.treeType == 'fruit-2') {
-                    _visibleFruitCount2 = fruitCards.length.clamp(0, 3);
-                  }
+                  _currentFlowerCards = flowerCards;
+                  _currentFruitCards = fruitCards;
                 });
               },
             ),
@@ -290,6 +274,11 @@ class _TreePageState extends State<TreePage> {
 
   // 나무 위 꽃 하나를 그리는 위젯 (적응형 좌표/크기) - 첫 번째 나무용
   Widget _buildOverlayFlower(int index, double treeWidth, double treeHeight) {
+    // 카드 데이터가 없으면 표시하지 않음
+    if (index >= _currentFlowerCards.length) {
+      return const SizedBox.shrink();
+    }
+
     // 스케일 계산 (기준 나무 크기 대비)
     final scaleX = treeWidth / _baseTreeWidth;
     final scaleY = treeHeight / _baseTreeHeight;
@@ -304,7 +293,7 @@ class _TreePageState extends State<TreePage> {
       left: left,
       top: top,
       child: Image.asset(
-        _firstSixFlowerIconAssets[index],
+        _currentFlowerCards[index].imagePath, // 실제 카드의 이미지 사용
         width: size,
         height: size,
         fit: BoxFit.contain,
@@ -314,11 +303,19 @@ class _TreePageState extends State<TreePage> {
 
   // 나무 위 꽃 하나를 그리는 위젯 (적응형 좌표/크기) - 두 번째 나무용
   Widget _buildOverlayFlower2(int index, double treeWidth, double treeHeight) {
+    // 카드 데이터가 없으면 표시하지 않음
+    if (index >= _currentFlowerCards.length) {
+      return const SizedBox.shrink();
+    }
+
     // 스케일 계산 (두 번째 나무 기준 크기 대비)
     final scaleX = treeWidth / _baseTree2Width;
     final scaleY = treeHeight / _baseTree2Height;
     // 아이콘 크기: 60x60을 기준으로 너비 스케일에 맞춰 균등 스케일링
-    final size = 60.0 * scaleX;
+    // 아카시아만 크기를 1.2배로 키움 (이름으로 확인)
+    final baseSize = 60.0 * scaleX;
+    final isAcacia = _currentFlowerCards[index].name == '아카시아';
+    final size = isAcacia ? baseSize * 1.2 : baseSize; // 아카시아만 크기 증가
 
     final basePos = _baseFlower2Positions[index];
     final left = basePos.dx * scaleX;
@@ -328,7 +325,7 @@ class _TreePageState extends State<TreePage> {
       left: left,
       top: top,
       child: Image.asset(
-        _firstFourFlowerIconAssets[index],
+        _currentFlowerCards[index].imagePath, // 실제 카드의 이미지 사용
         width: size,
         height: size,
         fit: BoxFit.contain,
@@ -338,6 +335,11 @@ class _TreePageState extends State<TreePage> {
 
   // 나무 위 과일 하나를 그리는 위젯 (적응형 좌표/크기) - 세 번째 나무용
   Widget _buildOverlayFruit1(int index, double treeWidth, double treeHeight) {
+    // 카드 데이터가 없으면 표시하지 않음
+    if (index >= _currentFruitCards.length) {
+      return const SizedBox.shrink();
+    }
+
     // 스케일 계산 (세 번째 나무 기준 크기 대비)
     final scaleX = treeWidth / _baseTree3Width;
     final scaleY = treeHeight / _baseTree3Height;
@@ -353,7 +355,7 @@ class _TreePageState extends State<TreePage> {
       left: left,
       top: top,
       child: Image.asset(
-        _firstFourFruitIconAssets[index],
+        _currentFruitCards[index].imagePath, // 실제 카드의 이미지 사용
         width: width,
         height: height,
         fit: BoxFit.contain,
@@ -363,6 +365,11 @@ class _TreePageState extends State<TreePage> {
  
   // 나무 위 과일 하나를 그리는 위젯 (적응형 좌표/크기) - 네 번째 나무용
   Widget _buildOverlayFruit2(int index, double treeWidth, double treeHeight) {
+    // 카드 데이터가 없으면 표시하지 않음
+    if (index >= _currentFruitCards.length) {
+      return const SizedBox.shrink();
+    }
+
     // 스케일 계산 (네 번째 나무 기준 크기 대비)
     final scaleX = treeWidth / _baseTree4Width;
     final scaleY = treeHeight / _baseTree4Height;
@@ -378,7 +385,7 @@ class _TreePageState extends State<TreePage> {
       left: left,
       top: top,
       child: Image.asset(
-        _firstFourFruitIconAssets[index],
+        _currentFruitCards[index].imagePath, // 실제 카드의 이미지 사용
         width: width,
         height: height,
         fit: BoxFit.contain,

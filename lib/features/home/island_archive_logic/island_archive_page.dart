@@ -3,6 +3,7 @@ import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/features/home/widget/island_archive_filter_dropdown.dart';
+import 'package:artificialsw_frontend/features/home/single_tree_logic/archive_tree_loading_page.dart';
 
 /// 섬 아카이브 페이지
 /// 
@@ -54,15 +55,38 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     });
   }
 
-  /// 다음 월로 이동 (12월에서는 더 이상 이동 불가)
+  /// 다음 월로 이동 가능한지 확인
+  bool _canGoToNextMonth() {
+    final now = DateTime.now();
+    final currentYear = now.year;
+    final currentMonth = now.month;
+    
+    // 12월에서는 더 이상 이동 불가
+    if (_currentMonth >= 12) {
+      return false;
+    }
+    
+    // 현재 년도에서 현재 월보다 미래로는 이동 불가
+    if (_selectedYear == currentYear && _currentMonth >= currentMonth) {
+      return false;
+    }
+    
+    // 현재 년도보다 미래 년도로는 이동 불가
+    if (_selectedYear > currentYear) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  /// 다음 월로 이동 (12월 또는 현재 시간 기준 미래 월에서는 더 이상 이동 불가)
   void _nextMonth() {
+    if (!_canGoToNextMonth()) {
+      return;
+    }
+    
     setState(() {
-      if (_currentMonth < 12) {
-        _currentMonth++;
-      } else {
-        // 12월에서는 더 이상 이동하지 않음
-        return;
-      }
+      _currentMonth++;
     });
   }
 
@@ -79,6 +103,69 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
       _selectedYear = year;
       _isFilterVisible = false;
     });
+  }
+
+  /// 현재 선택된 월/년도의 나무가 클릭 가능한지 확인
+  bool _isTreeClickable() {
+    final now = DateTime.now();
+    final currentYear = now.year;
+    final currentMonth = now.month;
+    final currentDay = now.day;
+    
+    // 현재 년도보다 미래는 클릭 불가
+    if (_selectedYear > currentYear) {
+      return false;
+    }
+    
+    // 현재 년도이지만 현재 월보다 미래는 클릭 불가
+    if (_selectedYear == currentYear && _currentMonth > currentMonth) {
+      return false;
+    }
+    
+    // 현재 년도, 현재 월인 경우
+    if (_selectedYear == currentYear && _currentMonth == currentMonth) {
+      // 현재 페이지가 첫 번째 섬(1~15일)인 경우
+      if (_currentPage == 0) {
+        // 첫 번째 섬은 항상 클릭 가능 (과거이므로)
+        return true;
+      }
+      // 현재 페이지가 두 번째 섬(16~말일)인 경우
+      else {
+        // 현재 날짜가 16일 이후여야 두 번째 섬 클릭 가능
+        return currentDay >= 16;
+      }
+    }
+    
+    // 과거 년도/월은 모두 클릭 가능
+    return true;
+  }
+
+  /// 나무 클릭 시 아카이브 로딩 페이지로 이동
+  void _onTreeTap(int treeIndex) {
+    // 클릭 가능한지 확인
+    if (!_isTreeClickable()) {
+      return; // 클릭 불가능하면 아무것도 하지 않음
+    }
+    
+    // 현재 날짜 기준으로 period 결정 (1: ~15일, 2: 16~말일)
+    final now = DateTime.now();
+    final period = now.day <= 15 ? 1 : 2;
+    
+    // 나무 타입 결정 (1,2: 꽃, 3,4: 열매)
+    final treeType = treeIndex <= 2 ? 'flower-$treeIndex' : 'fruit-${treeIndex - 2}';
+    
+    // 아카이브 로딩 페이지 표시
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ArchiveTreeLoadingPage(
+        treeType: treeType,
+        year: _selectedYear,
+        month: _currentMonth,
+        period: period,
+        treeIndex: treeIndex,
+      ),
+    );
   }
 
   @override
@@ -187,9 +274,9 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
             left: 290 * widthRatio,
             top: 189 * heightRatio,
             child: GestureDetector(
-              onTap: _currentMonth < 12 ? _nextMonth : null,
+              onTap: _canGoToNextMonth() ? _nextMonth : null,
               child: Opacity(
-                opacity: _currentMonth < 12 ? 1.0 : 0.3, // 12월에서는 반투명
+                opacity: _canGoToNextMonth() ? 1.0 : 0.3, // 미래 월에서는 반투명
                 child: Container(
                   width: 24 * widthRatio,
                   height: 24 * heightRatio,
@@ -217,9 +304,67 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
                 },
                 itemCount: 2, // 2개 페이지
                 itemBuilder: (context, index) {
-                  return Image.asset(
-                    AppAssets.island_archive,
-                    fit: BoxFit.contain,
+                  return Stack(
+                    children: [
+                      // 섬 아카이브 이미지
+                      Image.asset(
+                        AppAssets.island_archive,
+                        fit: BoxFit.contain,
+                      ),
+                      // 나무 클릭 영역들 (4개 나무) - 354×317px 기준, (0,0)이 왼쪽 아래
+                      // 첫번째 나무: 왼쪽아래(45,149) → 오른쪽위(120,245) → w=75, h=96
+                      Positioned(
+                        left: 45 * widthRatio,
+                        bottom: 149 * heightRatio,
+                        child: GestureDetector(
+                          onTap: _isTreeClickable() ? () => _onTreeTap(1) : null,
+                          child: Container(
+                            width: 75 * widthRatio,
+                            height: 96 * heightRatio,
+                            color: Colors.transparent,
+                          ),
+                        ),
+                      ),
+                      // 두번째 나무: 왼쪽아래(139,205) → 오른쪽위(203,307) → w=64, h=102
+                      Positioned(
+                        left: 139 * widthRatio,
+                        bottom: 205 * heightRatio,
+                        child: GestureDetector(
+                          onTap: _isTreeClickable() ? () => _onTreeTap(2) : null,
+                          child: Container(
+                            width: 64 * widthRatio,
+                            height: 102 * heightRatio,
+                            color: Colors.transparent,
+                          ),
+                        ),
+                      ),
+                      // 세번째 나무: 왼쪽아래(205,138) → 오른쪽위(273,245) → w=68, h=107
+                      Positioned(
+                        left: 205 * widthRatio,
+                        bottom: 138 * heightRatio,
+                        child: GestureDetector(
+                          onTap: _isTreeClickable() ? () => _onTreeTap(3) : null,
+                          child: Container(
+                            width: 68 * widthRatio,
+                            height: 107 * heightRatio,
+                            color: Colors.transparent,
+                          ),
+                        ),
+                      ),
+                      // 네번째 나무: 왼쪽아래(265,118) → 오른쪽위(296,170) → w=31, h=52
+                      Positioned(
+                        left: 265 * widthRatio,
+                        bottom: 118 * heightRatio,
+                        child: GestureDetector(
+                          onTap: _isTreeClickable() ? () => _onTreeTap(4) : null,
+                          child: Container(
+                            width: 31 * widthRatio,
+                            height: 52 * heightRatio,
+                            color: Colors.transparent,
+                          ),
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),

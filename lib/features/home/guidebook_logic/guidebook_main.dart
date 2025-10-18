@@ -22,11 +22,13 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
   int _selectedTab = 0; // 0: 꽃, 1: 열매
   final HomeService _homeService = HomeService();
   late final Future<List<bool>> _flowerUnlockFuture;
+  late final Future<List<bool>> _fruitUnlockFuture;
 
   @override
   void initState() {
     super.initState();
     _flowerUnlockFuture = _getFlowerUnlockedStates();
+    _fruitUnlockFuture = _getFruitUnlockedStates();
   }
 
   @override
@@ -55,10 +57,45 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
     ];
   }
 
-  /// 기본 열매 해금 상태 반환 (모두 해금)
+  /// 기본 열매 해금 상태 반환 (각 계절별 2개씩만 해금)
   List<bool> _getDefaultFruitUnlockStates() {
-    // 16개 열매 모두 해금 (1쪽: 봄, 2쪽: 여름, 3쪽: 가을, 4쪽: 겨울)
-    return List.generate(16, (index) => true);
+    // 16개 열매 중 각 계절별로 2개씩만 해금
+    // 봄(0-3): 체리, 딸기 해금 / 키위, 산딸기 잠금
+    // 여름(4-7): 복숭아, 자두 해금 / 망고, 블루베리 잠금  
+    // 가을(8-11): 포도, 배 해금 / 감, 대추 잠금
+    // 겨울(12-15): 사과, 귤 해금 / 석류, 유자 잠금
+    return [
+      true,  // 0: 체리 (봄)
+      true,  // 1: 딸기 (봄)
+      false, // 2: 키위 (봄) - 잠금
+      false, // 3: 산딸기 (봄) - 잠금
+      true,  // 4: 복숭아 (여름)
+      true,  // 5: 자두 (여름)
+      false, // 6: 망고 (여름) - 잠금
+      false, // 7: 블루베리 (여름) - 잠금
+      true,  // 8: 포도 (가을)
+      true,  // 9: 배 (가을)
+      false, // 10: 감 (가을) - 잠금
+      false, // 11: 대추 (가을) - 잠금
+      true,  // 12: 사과 (겨울)
+      true,  // 13: 귤 (겨울)
+      false, // 14: 석류 (겨울) - 잠금
+      false, // 15: 유자 (겨울) - 잠금
+    ];
+  }
+
+  /// 과일 해금 상태 반환 (API 호출)
+  Future<List<bool>> _getFruitUnlockedStates() async {
+    try {
+      final response = await _homeService.getFruitUnlockStatus();
+      final unlockedIds = response.resolvedFruits;
+      
+      // 16개 과일의 해금 상태 (true: 해금됨, false: 잠금)
+      return List.generate(16, (index) => unlockedIds.contains(index));
+    } catch (e) {
+      print('❌ 과일 해금 상태 조회 실패, 기본값 사용: $e');
+      return _getDefaultFruitUnlockStates();
+    }
   }
 
   /// 꽃 해금 상태 반환 (API 호출)
@@ -121,16 +158,22 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
                       FutureBuilder<List<bool>>(
                         future: _flowerUnlockFuture,
                         initialData: _getDefaultUnlockStates(), // 즉시 표시할 기본값
-                        builder: (context, snapshot) {
-                          final flowerUnlockedStates = snapshot.data ?? _getDefaultUnlockStates();
-                          final fruitUnlockedStates = _getDefaultFruitUnlockStates(); // 열매는 모두 해금
-                          return GuidebookSwipeArea(
-                            pageController: _pageController,
-                            currentPage: _currentPage,
-                            selectedTab: _selectedTab,
-                            onPageChanged: (page) => setState(() => _currentPage = page),
-                            flowerUnlockedStates: flowerUnlockedStates,
-                            fruitUnlockedStates: fruitUnlockedStates,
+                        builder: (context, flowerSnapshot) {
+                          final flowerUnlockedStates = flowerSnapshot.data ?? _getDefaultUnlockStates();
+                          return FutureBuilder<List<bool>>(
+                            future: _fruitUnlockFuture,
+                            initialData: _getDefaultFruitUnlockStates(), // 즉시 표시할 기본값
+                            builder: (context, fruitSnapshot) {
+                              final fruitUnlockedStates = fruitSnapshot.data ?? _getDefaultFruitUnlockStates();
+                              return GuidebookSwipeArea(
+                                pageController: _pageController,
+                                currentPage: _currentPage,
+                                selectedTab: _selectedTab,
+                                onPageChanged: (page) => setState(() => _currentPage = page),
+                                flowerUnlockedStates: flowerUnlockedStates,
+                                fruitUnlockedStates: fruitUnlockedStates,
+                              );
+                            },
                           );
                         },
                       ),
