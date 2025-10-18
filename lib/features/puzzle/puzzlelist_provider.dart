@@ -254,17 +254,28 @@ class PuzzleListItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '주제: ${puzzleDto.category}',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(
+            color: AppColors.plumu_green_main,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            puzzleDto.category,
+            style: AppTextStyles.pretendard_medium.copyWith(
+              color: AppColors.plumu_white,
+              fontSize: 13,
+            ),
+          ),
         ),
-        const SizedBox(height: 4),
-        Text('퍼즐 푼 사람: ${puzzleDto.contributors}',
-            style: TextStyle(color: Colors.grey, fontSize: 12)),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
+        Text(
+            '${puzzleDto.contributors.join(", ")}(이)가 풀었어요!',
+            style: const TextStyle(color: Colors.grey, fontSize: 12)),
+        const SizedBox(height: 5),
         Text('메세지: ${puzzleDto.message}',
             style: TextStyle(color: Colors.grey, fontSize: 12)),
-        const SizedBox(height: 12),
+        const SizedBox(height: 18),
         Row(
           children: [
             Expanded(
