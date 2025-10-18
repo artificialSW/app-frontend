@@ -327,4 +327,18 @@ class PuzzleService {
       print('⚠️ 퍼즐 삭제 실패(Puzzle_Service): ${response.statusCode}');
     }
   }
+
+  Future<void>deletePuzzleFromArchive(String puzzleId) async {
+    final _accessToken = await StorageService.getAccessToken();
+    if(_accessToken == null){
+      print('access token is null!!!!');
+    }
+
+    final response = await _dio.delete('$baseUrl/api/puzzle/$puzzleId/archive');
+    if (response.statusCode == 200) {
+      print('✅ 퍼즐 삭제 성공');
+    } else {
+      print('⚠️ 퍼즐 삭제 실패(Puzzle_Service): ${response.statusCode}');
+    }
+  }
 }

@@ -9,6 +9,8 @@ import 'package:artificialsw_frontend/shared/models/usermodel.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 
 class PuzzleArchive extends StatefulWidget {
   const PuzzleArchive({super.key});
@@ -29,34 +31,6 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       // ✅ 목데이터 리턴
       throw Exception('err!!!!');
-      // return PuzzleGetArchivedListDto(
-      //     archivedList: [
-      //       PuzzleGetArchivedDataDto(
-      //           puzzleId: '1',
-      //           imageUrl: 'https://picsum.photos/600/400',
-      //           contributors: ['아카이브의mock1', 'mock', 'mock'],
-      //           archivedAt: 'mock 시간 데이터1',
-      //           AIKeyword: ['아카이브의mock1', 'AI', 'keyword'],
-      //           category: 'mock 카테고리1'
-      //       ),
-      //       PuzzleGetArchivedDataDto(
-      //           puzzleId: '2',
-      //           imageUrl: 'https://picsum.photos/600/400',
-      //           contributors: ['mock2', 'mock', 'mock'],
-      //           archivedAt: 'mock2 시간 데이터2',
-      //           AIKeyword: ['mock2', 'AI', 'keyword'],
-      //           category: 'mock 카테고리2'
-      //       ),
-      //       PuzzleGetArchivedDataDto(
-      //           puzzleId: '3',
-      //           imageUrl: 'https://picsum.photos/600/400',
-      //           contributors: ['mock3', 'mock', 'mock'],
-      //           archivedAt: 'mock3 시간 데이터3',
-      //           AIKeyword: ['mock3', 'AI', 'keyword'],
-      //           category: 'mock 카테고리3'
-      //       ),
-      //     ]
-      // );
     }
   }
 
@@ -94,8 +68,100 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
               final puzzleDto = puzzles[index];
               return PuzzleListItem(
                 puzzleDto: puzzleDto,
-                onDelete: () {
-                  PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
+                // onDelete: () {
+                //   PuzzleService().deletePuzzle(puzzleDto.puzzleId.toString());
+                // },
+                onDelete: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        backgroundColor: Colors.white.withValues(alpha: 0.85),
+                        insetPadding: const EdgeInsets.symmetric(horizontal: 45),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16, top: 28, bottom: 8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '아카이브에서 퍼즐을 삭제하시겠습니까?',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.pretendard_bold.copyWith(
+                                    fontSize: 15
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '퍼즐 관련 데이터가 모두 삭제됩니다.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.plumu_gray_7,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: () => Navigator.of(context).pop(false),
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: AppColors.plumu_white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        '아니오',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: () => Navigator.of(context).pop(true),
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: AppColors.plumu_white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        '예',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+
+                  if (confirm == true) {
+                    await PuzzleService().deletePuzzleFromArchive(puzzleDto.puzzleId.toString());
+                    setState(() {
+                      puzzles.removeWhere((p) => p.puzzleId == puzzleDto.puzzleId);
+                    });
+                  }
                 },
                 onPressed: () {
 
