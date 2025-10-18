@@ -11,6 +11,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:dio/dio.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'dart:typed_data';
 
 class PuzzleArchive extends StatefulWidget {
   const PuzzleArchive({super.key});
@@ -38,6 +41,31 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
   void initState() {
     super.initState();
     _archivedPuzzlesFuture = _fetchArchivedPuzzles();
+  }
+
+  static Future<void> saveImage(String imageUrl) async {
+    try {
+      // 1️⃣ 네트워크에서 이미지 다운로드
+      final response = await Dio().get(
+        imageUrl,
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      final Uint8List bytes = Uint8List.fromList(response.data);
+
+      // 2️⃣ 갤러리에 저장
+      final result = await ImageGallerySaver.saveImage(
+        bytes,
+        quality: 100,
+        name: "puzzle_${DateTime.now().millisecondsSinceEpoch}",
+      );
+
+      if (result['isSuccess'] == false) {
+        throw Exception('갤러리 저장 실패');
+      }
+    } catch (e) {
+      throw Exception('이미지 저장 실패: $e');
+    }
   }
 
   @override
@@ -168,9 +196,10 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
                 },
                 onSave: () async {
                   try {
-                    await ImageSaverCustom.saveImage("https://i1.sndcdn.com/artworks-000218997483-xdgm10-t500x500.jpg");
+                    await ImageSaverCustom.saveImage(puzzleDto.imageUrl);
+
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("이미지 저장 완료")),
+                      const SnackBar(content: Text("이미지 저장 완료")),
                     );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -178,6 +207,7 @@ class _PuzzleArchiveState extends State<PuzzleArchive> {
                     );
                   }
                 },
+
                 gameState: GameState.Completed,
                 isArchived: true,
               );
