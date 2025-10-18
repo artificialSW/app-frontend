@@ -140,7 +140,6 @@ class _OngoingPuzzlesPageState extends State<OngoingPuzzlesPage> {
                       _user,
                       puzzleDto.puzzleId.toString(),
                       puzzleDto.category,
-                      GameState.Ongoing,
                   );
                   ///받아온 퍼즐 인스턴스를 네비게이터에 넣기
                   Navigator.of(context).pushNamed(

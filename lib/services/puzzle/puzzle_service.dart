@@ -270,12 +270,22 @@ class PuzzleService {
 
   //완료된 퍼즐 목록에서 퍼즐 풀기 (퍼즐 다시풀기) (GET)
   Future<PlayPuzzleCompletedDto> playCompletedPuzzle(String puzzleId) async {
-    final response = await _dio.get('/puzzle/$puzzleId/retry');
+    final _accessToken = StorageService.getAccessToken();
+
+    if(_accessToken == null){
+      print('access token is null!!!!');
+    }
+
+    final response = await _dio.post('$baseUrl/api/puzzle/$puzzleId/retry');
     return PlayPuzzleCompletedDto.fromJson(response.data);
   }
 
   // 아카이브된 퍼즐 불러오기 (GET)
   Future<PuzzleGetArchivedListDto> getArchivedList() async {
+    final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+
+
+
     final response = await _dio.get('/puzzle/archive');
     return PuzzleGetArchivedListDto.fromJson(response.data);
   }

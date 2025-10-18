@@ -111,17 +111,16 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                     );
                   }
                   ///받아온 puzzle dto를 puzzlegame의 fromDto에 넣어서 퍼즐 인스턴스 받아옴
-                  final puzzleGame = PuzzleGame.fromDto(
+                  final puzzleGame = PuzzleGame.completedFromDto(
                       response, //이거 왜 await으로 해야 하는지 몰겠다 오류나면 빼자
                       _user,
                       puzzleDto.puzzleId.toString(),
                       puzzleDto.category,
-                    GameState.Ongoing,
                   );
                   ///받아온 퍼즐 인스턴스를 네비게이터에 넣기
                   Navigator.of(context).pushNamed(
                     '/puzzle/play',
-                    arguments: {'gameInstance': puzzleGame, 'message': response.message},
+                    arguments: {'gameInstance': puzzleGame, 'message': puzzleDto.message},
                   );
                 },
                 onSave: () async {

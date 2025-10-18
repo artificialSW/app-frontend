@@ -85,7 +85,6 @@ class PuzzleGame {
       User user,
       String puzzleId,
       String category,
-      GameState gameState,
       ) {
     final rawPieces = dto.pieces;
 
@@ -113,14 +112,9 @@ class PuzzleGame {
       }
     });
 
-    // final List<int> completed = [];
-    // if (dto.completedPiecesId != null && gameState == GameState.Ongoing) {
-    //   completed.addAll(List<int>.from(dto.completedPiecesId));
-    // } ///만약에 완료된 퍼즐 다시풀기라면 이거 실행 안되도록
-
     // ✅ 1순위: 서버가 준 completedPiecesId 사용 (Ongoing일 때만)
     List<int> completed = [];
-    if (gameState == GameState.Ongoing && dto.completedPiecesId is List) {
+    if (dto.completedPiecesId is List) {
       completed = List<int>.from(dto.completedPiecesId);
     } else {
       // ✅ 2순위: 서버가 안 줬으면 좌표로 계산 (0,0 이면 맞춘 조각)
@@ -137,7 +131,23 @@ class PuzzleGame {
       category: category,
       completedPiecesId: completed,
       piecesPosition: positions,
-      gameState: gameState,
+      gameState: GameState.Ongoing,
+    );
+  }
+
+  static PuzzleGame completedFromDto(
+      dynamic dto, // PlayPuzzleInProgressDto or PlayPuzzleCompletedDto
+      User user,
+      String puzzleId,
+      String category,
+      ) {
+
+    return PuzzleGame(
+      puzzleId: puzzleId,
+      imageUrl: dto.imageUrl,
+      size: dto.size,
+      category: category,
+      gameState: GameState.Completed,
     );
   }
 }
