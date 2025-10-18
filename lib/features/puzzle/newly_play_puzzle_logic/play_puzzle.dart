@@ -24,6 +24,7 @@ import 'package:flutter/rendering.dart'; // RenderRepaintBoundary 정의되어 �
 import 'package:path_provider/path_provider.dart';
 import 'dart:io'; // File, Directory 클래스 등 포함
 import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/puzzle_complete_dialog.dart';
+import 'package:artificialsw_frontend/features/puzzle/replay_completed_puzzle_logic/puzzle_recompleted_dialog.dart';
 
 
 
@@ -301,7 +302,16 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
 
     // 1초 기다리기
     await Future.delayed(const Duration(seconds: 1));
-    Navigator.of(context).pushReplacementNamed('/puzzle/re-completed');
+
+    await showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.6), // 배경색 직접 처리할 거라 투명하게
+      barrierDismissible: true,
+      builder: (context) => PuzzleReCompleteDialog(
+        imageUrl: widget.puzzle.imageUrl,
+      ),
+    );
+    Navigator.of(context).pushReplacementNamed('/');
   }
 
   @override
