@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/flower.dart';
 
 /// 꽃 카드 위젯
 /// 소통을 통해 얻은 꽃을 표시하는 카드 컴포넌트
@@ -24,59 +25,62 @@ class FlowerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: Color(0xFFF7F7F7), // 단일 색상으로 변경
-      ),
-      child: Stack(
-        children: [
-          // 꽃 이미지 (카드 중앙에서 조금 위로)
-          Positioned(
-            top: 15, // 위쪽에서 15px 떨어진 위치
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Image.asset(
-                flowerImagePath,
-                width: 60, // 크기를 50에서 60으로 증가
-                height: 60, // 크기를 50에서 60으로 증가
-                fit: BoxFit.contain,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Color(0xFFF7F7F7), // 단일 색상으로 변경
+        ),
+        child: Stack(
+          children: [
+            // 꽃 이미지 (카드 중앙에서 조금 위로)
+            Positioned(
+              top: 15, // 위쪽에서 15px 떨어진 위치
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Image.asset(
+                  flowerImagePath,
+                  width: 60, // 크기를 50에서 60으로 증가
+                  height: 60, // 크기를 50에서 60으로 증가
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
-          ),
 
-          // 날짜
-          Positioned(
-            bottom: 24,
-            left: 0,
-            right: 0,
-            child: Text(
-              date,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.pretendard_medium.copyWith(
-                fontSize: 10,
-                color: Color(0xFF797979),
+            // 날짜
+            Positioned(
+              bottom: 24,
+              left: 0,
+              right: 0,
+              child: Text(
+                date,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.pretendard_medium.copyWith(
+                  fontSize: 10,
+                  color: Color(0xFF797979),
+                ),
               ),
             ),
-          ),
 
-          // 꽃 이름
-          Positioned(
-            bottom: 6,
-            left: 0,
-            right: 0,
-            child: Text(
-              flowerName,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.pretendard_bold.copyWith(
-                fontSize: 12,
-                color: AppColors.plumu_black,
+            // 꽃 이름
+            Positioned(
+              bottom: 6,
+              left: 0,
+              right: 0,
+              child: Text(
+                flowerMap[flowerName]?.koreanName ?? '꽃이름',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.pretendard_bold.copyWith(
+                  fontSize: 12,
+                  color: AppColors.plumu_black,
+                ),
               ),
             ),
-          ),
           ],
         ),
+      ),
     );
   }
 }

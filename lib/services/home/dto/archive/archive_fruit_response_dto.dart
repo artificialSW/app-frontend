@@ -24,4 +24,10 @@ class ArchiveFruitResponseDto {
       _$ArchiveFruitResponseDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$ArchiveFruitResponseDtoToJson(this);
+
+  static List<ArchiveFruitResponseDto> fromJsonList(List<dynamic> jsonList) {
+    return jsonList
+        .map((json) => ArchiveFruitResponseDto.fromJson(json))
+        .toList();
+  }
 }
