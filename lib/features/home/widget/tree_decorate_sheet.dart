@@ -195,22 +195,22 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
   String _getFruitImagePathByName(String fruitName) {
     // 과일 이름 매핑 (AppAssets와 일치하도록 수정)
     final fruitImageMap = {
-      '체리': AppAssets.fruit_cherry,
-      '딸기': AppAssets.fruit_strawberry,
-      '키위': AppAssets.fruit_kiwi,
-      '산딸기': AppAssets.fruit_raspberry,
-      '복숭아': AppAssets.fruit_peach,
-      '자두': AppAssets.fruit_plum,
-      '망고': AppAssets.fruit_mango,
-      '블루베리': AppAssets.fruit_blueberry,
-      '포도': AppAssets.fruit_grape,
-      '배': AppAssets.fruit_pear,
-      '감': AppAssets.fruit_persimmon,
-      '대추': AppAssets.fruit_jujube,
-      '사과': AppAssets.fruit_apple,
-      '귤': AppAssets.fruit_mandarin,
-      '석류': AppAssets.fruit_pomegranate,
-      '유자': AppAssets.fruit_yuja,
+      'cherry': AppAssets.fruit_cherry,
+      'strawberry': AppAssets.fruit_strawberry,
+      'kiwi': AppAssets.fruit_kiwi,
+      'raspberry': AppAssets.fruit_raspberry,
+      'peach': AppAssets.fruit_peach,
+      'plum': AppAssets.fruit_plum,
+      'mango': AppAssets.fruit_mango,
+      'blueberry': AppAssets.fruit_blueberry,
+      'grape': AppAssets.fruit_grape,
+      'pear': AppAssets.fruit_pear,
+      'persimmon': AppAssets.fruit_persimmon,
+      'jujube': AppAssets.fruit_jujube,
+      'apple': AppAssets.fruit_apple,
+      'mandarin': AppAssets.fruit_mandarin,
+      'pomegranate': AppAssets.fruit_pomegranate,
+      'yuja': AppAssets.fruit_yuja,
     };
     return fruitImageMap[fruitName] ?? AppAssets.fruit_cherry; // 기본값
   }
@@ -219,18 +219,18 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
   String _getFlowerImagePathByName(String flowerName) {
     // 꽃 이름 매핑 (도감에 있는 꽃들만 사용)
     final flowerImageMap = {
-      '동백꽃': AppAssets.flower_camellia,
-      '아카시아': AppAssets.flower_acacia,
-      '매화': AppAssets.flower_plum,
-      '팥배꽃': AppAssets.flower_patbae,
-      '벚꽃': AppAssets.flower_cherry,
-      '목련': AppAssets.flower_magnolia,
-      '장미': AppAssets.flower_rose,
-      '수국': AppAssets.flower_hydrangea,
-      '튤립': AppAssets.flower_tulip,
-      '제비꽃': AppAssets.flower_violet,
-      '코스모스': AppAssets.flower_cosmos,
-      '해바라기': AppAssets.flower_sunflower,
+      'camellia': AppAssets.flower_camellia,      // 동백꽃
+      'acacia': AppAssets.flower_acacia,      // 아카시아
+      'plum': AppAssets.flower_plum,          // 매화
+      'patbae': AppAssets.flower_patbae,       // 팥배꽃
+      'cherry': AppAssets.flower_cherry,        // 벚꽃
+      'magnolia': AppAssets.flower_magnolia,      // 목련
+      'rose': AppAssets.flower_rose,          // 장미
+      'hydrangea': AppAssets.flower_hydrangea,    // 수국
+      'tulip': AppAssets.flower_tulip,        // 튤립
+      'violet': AppAssets.flower_violet,      // 제비꽃
+      'cosmos': AppAssets.flower_cosmos,      // 코스모스
+      'sumflower': AppAssets.flower_sunflower,  // 해바라기
     };
     return flowerImageMap[flowerName] ?? AppAssets.flower_camellia; // 기본값
   }

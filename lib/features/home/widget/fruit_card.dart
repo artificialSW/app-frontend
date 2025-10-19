@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/fruit.dart';
 
 /// 과일 카드 위젯
 /// 퍼즐을 완성한 과일을 표시하는 카드 컴포넌트
@@ -94,7 +95,7 @@ class FruitCard extends StatelessWidget {
             left: 0,
             right: 0,
             child: Text(
-              fruitName,
+              fruitMap[fruitName]?.koreanName ?? '과일이름',
               textAlign: TextAlign.center,
               style: AppTextStyles.pretendard_bold.copyWith(
                 fontSize: 12,
