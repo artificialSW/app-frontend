@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
-import 'package:artificialsw_frontend/features/puzzle/newly_play_puzzle_logic/fruit.dart';
-
+import 'package:artificialsw_frontend/shared/fruit.dart';
 /// 과일 카드 위젯
 /// 퍼즐을 완성한 과일을 표시하는 카드 컴포넌트
 /// 계절별 색상과 체크 상태를 표시하며, 클릭 시 나무에 달기/해제 가능

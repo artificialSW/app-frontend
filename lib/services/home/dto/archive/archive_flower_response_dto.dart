@@ -24,4 +24,10 @@ class ArchiveFlowerResponseDto {
       _$ArchiveFlowerResponseDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$ArchiveFlowerResponseDtoToJson(this);
+
+  static List<ArchiveFlowerResponseDto> fromJsonList(List<dynamic> jsonList) {
+    return jsonList
+        .map((json) => ArchiveFlowerResponseDto.fromJson(json))
+        .toList();
+  }
 }

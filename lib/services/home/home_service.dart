@@ -105,12 +105,14 @@ class HomeService {
     required int treeIndex,
   }) async {
     try {
+      final _accessToken = StorageService.getAccessToken();
+      if(_accessToken == null){
+        print("access token is null!!!");
+      }
       // 실제 API 호출 시도
       final response = await _dio.get('$baseUrl/api/tree/$year/$month/$period/$treeIndex/flower');
-      
-      // 응답이 배열 형태로 오므로 List로 변환
-      final List<dynamic> dataList = response.data;
-      return dataList.map((json) => ArchiveFlowerResponseDto.fromJson(json)).toList();
+
+      return ArchiveFlowerResponseDto.fromJsonList(response.data);
     } catch (e) {
       print('❌ 아카이브 꽃 데이터 조회 오류: $e');
       print('🔄 목데이터로 폴백합니다.');
