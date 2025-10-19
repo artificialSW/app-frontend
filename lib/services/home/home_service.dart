@@ -11,6 +11,8 @@ import 'package:artificialsw_frontend/services/storage_service.dart';
 import 'package:artificialsw_frontend/shared/constants/constants.dart';
 import 'package:artificialsw_frontend/services/home/dto/archive/fruit_card_dialog_response_dto.dart';
 import 'dart:convert';
+import 'package:artificialsw_frontend/services/home/dto/archive/flower_card_dialog_response_dto/personal_dto.dart';
+import 'package:artificialsw_frontend/services/home/dto/archive/flower_card_dialog_response_dto/public_dto.dart';
 
 /// 홈 관련 서버 통신을 담당하는 서비스 클래스
 /// 퍼즐과 동일한 패턴으로 구현
@@ -189,6 +191,43 @@ class HomeService {
       }
 
       return FruitCardDialogResponseDto.fromJson(response.data);
+    } catch (e) {
+      print('❌ 열매 card dialog 조회 오류: $e');
+      return null;
+    }
+  }
+
+  Future<dynamic?> getFlowerCardInfo(String flowerId) async { //<PersonalDto> or <PublicDto>
+    final _accessToken = StorageService.getAccessToken();
+    if(_accessToken == null) {
+      print("access token is null!!!");
+    }
+
+    try{
+      final response = await _dio.get(
+        '$baseUrl/api/tree/flower/$flowerId',
+        options: Options(headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      if (response.statusCode == 200) {
+        print('✅ 성공');
+      } else {
+        print('⚠️ 실패: ${response.statusCode}');
+      }
+
+      ///여기서부터 Public인지 Personal인지 구별하기 위한 안전 로직
+      final data = response.data is String
+          ? jsonDecode(response.data)
+          : response.data;
+      final question = data['question'];
+      if (question != null && question['count'] != null) {
+        return PublicDto.fromJson(response.data);
+      } else {
+        return PersonalDto.fromJson(response.data);
+      }
+
+      print('Public, Personal 모두 아닌 이상한 DTO');
+      return null;
     } catch (e) {
       print('❌ 열매 card dialog 조회 오류: $e');
       return null;

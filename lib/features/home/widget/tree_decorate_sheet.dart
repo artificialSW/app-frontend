@@ -9,6 +9,7 @@ import 'package:artificialsw_frontend/services/home/dto/archive/archive_flower_r
 import 'package:artificialsw_frontend/services/home/dto/archive/archive_fruit_response_dto.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/features/home/widget/fruit_card_dialog.dart';
+import 'package:artificialsw_frontend/features/home/widget/flower_card_dialog.dart';
 
 class TreeDecorateSheet extends StatefulWidget {
   final String treeType; // 'flower-1', 'flower-2', 'fruit-1', 'fruit-2'
@@ -312,6 +313,22 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
     // ),
   }
 
+  Future<void> _onFlowerCardTapped(int flowerId) async {
+
+    print('함수 _onFlowerCardTapped가 호출됨.');
+
+    final flowerCardData = await _homeService.getFlowerCardInfo(flowerId.toString());
+
+    await showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.6), // 배경색 직접 처리할 거라 투명하게
+      barrierDismissible: true,
+      builder: (context) => FlowerCardDialog(
+        flowerCardData: flowerCardData,
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -417,7 +434,12 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
                           flowerImagePath: flowerCard.imagePath,
                           date: flowerCard.date,
                           order: flowerCard.order,
-                          onTap: null,
+                          onTap: (){
+                            final numericId = int.tryParse(
+                              flowerCard.id.replaceAll(RegExp(r'[^0-9]'), ''),
+                            ) ?? 0;
+                            _onFlowerCardTapped(numericId);
+                          },
                         );
                       }
                     },
