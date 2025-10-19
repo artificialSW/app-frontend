@@ -7,6 +7,8 @@ class AppAssets {
   static const logo_withTypo1 = 'assets/images/logo_withTypo1.png';
   static const logo_withTypo2 = 'assets/images/logo_withTypo2.png';
   static const account_background = 'assets/images/account_background.png';
+  static const logo_white = 'assets/images/logo/logo_white.png';
+  static const plumu_white = 'assets/images/logo/plumu_white.png';
 
   static const appicon_whiteBackground = 'assets/images/appicon_whiteBackground.png';
   static const appicon_greenBackground = 'assets/images/appicon_greenBackground.png';
@@ -110,5 +112,7 @@ class AppAssets {
   static const String person_circle = 'assets/icons/person_circle.png';
   static const String message = 'assets/icons/message.png';
   static const String show_replies = 'assets/icons/show_replies.png';
+
+  static const String check = 'assets/icons/check.png';
 
 }

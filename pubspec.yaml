@@ -73,6 +73,7 @@ flutter:
     - assets/images/fruit/winter/
     - assets/images/flower/
     - assets/icons/
+    - assets/images/logo/
 
   fonts:
     - family: plumu

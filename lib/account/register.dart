@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
+import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+import 'package:artificialsw_frontend/account/register_success_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -26,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: AppColors.plumu_white,
       body: Stack(
         children: [
           Center(
@@ -61,26 +65,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const SizedBox(height: 12),
 
                     // 성별 선택
-                    const Text('성별', style: TextStyle(fontSize: 14)),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildSelectableBox(
-                            label: '남성',
-                            isSelected: _selectedGender == 'M',
-                            onTap: () => setState(() => _selectedGender = 'M'),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: _buildSelectableBox(
-                            label: '여성',
-                            isSelected: _selectedGender == 'F',
-                            onTap: () => setState(() => _selectedGender = 'F'),
-                          ),
-                        ),
-                      ],
+                    SelectableToggleGroup(
+                      title: '성별',
+                      // UI에 보이는 옵션
+                      options: ['남성', '여성'],
+                      // selectedOption은 실제 UI 표시를 위한 매핑 처리
+                      selectedOption: _selectedGender == 'M' ? '남성' : '여성',
+                      onSelect: (value) {
+                        setState(() {
+                          // UI 선택값("남성"/"여성")을 서버용 코드("M"/"F")로 변환
+                          _selectedGender = value == '남성' ? 'M' : 'F';
+                        });
+                      },
                     ),
                     const SizedBox(height: 12),
 
@@ -92,31 +88,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const SizedBox(height: 12),
 
                     // 가족 선택
-                    const Text('가족 선택', style: TextStyle(fontSize: 14)),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildSelectableBox(
-                            label: '새로운 가족 생성',
-                            isSelected: _selectedFamilyType == '새로운 가족 생성',
-                            onTap: () => setState(() {
-                              _selectedFamilyType = '새로운 가족 생성';
-                              _familyCodeController.clear();
-                            }),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: _buildSelectableBox(
-                            label: '기존 가족 가입',
-                            isSelected: _selectedFamilyType == '기존 가족 가입',
-                            onTap: () => setState(() {
-                              _selectedFamilyType = '기존 가족 가입';
-                            }),
-                          ),
-                        ),
-                      ],
+                    SelectableToggleGroup(
+                      title: '가족 선택',
+                      options: ['새로운 가족 생성', '기존 가족 가입'],
+                      selectedOption: _selectedFamilyType ?? '', //null이라면 빈 문자열 전달
+                      onSelect: (value) {
+                        setState(() {
+                          _selectedFamilyType = value;
+                          _familyCodeController.clear();
+                        });
+                      },
                     ),
                     const SizedBox(height: 12),
 
@@ -135,36 +116,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     DropdownButtonFormField<String>(
                       value: _selectedMemberRole,
                       decoration: InputDecoration(
+                        labelStyle: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                         filled: true,
                         fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: const BorderSide(color: Color(0xFF335CB0), width: 1.2),
                         ),
                       ),
-                      hint: const Text('구성원을 선택하세요'),
+                      hint: const Text(
+                        '구성원을 선택하세요',
+                        style: TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+                      icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey),
+                      dropdownColor: Colors.white,
+                      style: const TextStyle(fontSize: 13, color: Colors.black87),
                       items: const [
-                        DropdownMenuItem(
-                          value: '아버지',
-                          child: Text('아버지'),
-                        ),
-                        DropdownMenuItem(
-                          value: '어머니',
-                          child: Text('어머니'),
-                        ),
-                        DropdownMenuItem(
-                          value: '자녀',
-                          child: Text('자녀'),
-                        ),
-                        DropdownMenuItem(
-                          value: '조부모',
-                          child: Text('조부모'),
-                        ),
-                        DropdownMenuItem(
-                          value: '기타',
-                          child: Text('기타'),
-                        ),
+                        DropdownMenuItem(value: '아빠', child: Text('아빠')),
+                        DropdownMenuItem(value: '엄마', child: Text('엄마')),
+                        DropdownMenuItem(value: '자녀', child: Text('자녀')),
+                        DropdownMenuItem(value: '할아버지', child: Text('할아버지')),
+                        DropdownMenuItem(value: '할머니', child: Text('할머니')),
+                        DropdownMenuItem(value: '기타', child: Text('기타')),
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -175,6 +161,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         });
                       },
                     ),
+
                     const SizedBox(height: 12),
 
                     // ✅ “기타” 선택 시만 상세 입력란 표시
@@ -185,22 +172,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 12),
                     ],
-
                     // 회원가입 버튼
-                    ElevatedButton(
-                      onPressed: _register,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF335CB0),
-                        minimumSize: const Size(double.infinity, 48),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        '회원가입',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                    ),
+                    CustomButton(text: '회원가입', onPressed: _register),
                   ],
                 ),
               ),
@@ -219,22 +192,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
         TextInputType keyboardType = TextInputType.text,
         String? hint,
       }) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      style: const TextStyle(fontSize: 14),
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        labelStyle: const TextStyle(fontSize: 13),
-        hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding:
-        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 상단 라벨
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+          ),
+        ),
+        const SizedBox(height: 6),
+        // 입력 필드
+        TextField(
+          controller: controller,
+          obscureText: obscureText,
+          keyboardType: keyboardType,
+          style: const TextStyle(fontSize: 14),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(
+              fontSize: 13,
+              color: Colors.grey,
+            ),
+            contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            filled: true,
+            fillColor: Colors.white,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6),
+              borderSide: const BorderSide(color: Colors.black12, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6),
+              borderSide: const BorderSide(color: Colors.black45, width: 1.2),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -243,17 +239,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
+    bool isLeft = false, // 왼쪽 / 오른쪽 구분용
+    bool isRight = false,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         height: 42,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF335CB0) : Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: isLeft ? const Radius.circular(6) : Radius.zero,
+            bottomLeft: isLeft ? const Radius.circular(6) : Radius.zero,
+            topRight: isRight ? const Radius.circular(6) : Radius.zero,
+            bottomRight: isRight ? const Radius.circular(6) : Radius.zero,
+          ),
           border: Border.all(
             color: isSelected ? const Color(0xFF335CB0) : Colors.grey.shade400,
             width: 1,
@@ -262,7 +264,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black87,
+            color: isSelected ? const Color(0xFF335CB0) : Colors.black87,
             fontSize: 13,
             fontWeight: FontWeight.w500,
           ),
@@ -271,7 +273,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void _register() {
+
+
+  void _register() async {
     // 필수 입력값 확인
     if (_nameController.text.trim().isEmpty ||
         _phoneController.text.trim().isEmpty ||
@@ -292,6 +296,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
+    final phone = _phoneController.text.trim();
+    final birthday = _birthdayController.text.trim();
+
+    // ✅ 정규식 패턴 추가
+    final phoneRegex = RegExp(r'^\d{3}-\d{4}-\d{4}$');     // 010-0000-0000
+    final birthdayRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$'); // 2025-10-20
+
+    // 기존 필수 입력값 확인 아래에 추가
+    if (!phoneRegex.hasMatch(phone)) {
+      _showErrorDialog("전화번호 형식이 올바르지 않습니다. (예: 010-0000-0000)");
+      return;
+    }
+
+    if (!birthdayRegex.hasMatch(birthday)) {
+      _showErrorDialog("생년월일 형식이 올바르지 않습니다. (예: 2000-01-01)");
+      return;
+    }
+
     // 유효성 검사를 통과한 경우만 데이터 전송
     final data = {
       "name": _nameController.text.trim(),
@@ -301,22 +323,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
       "birthday": _birthdayController.text.trim(),
       "gender": _selectedGender,
       "age": int.tryParse(_ageController.text.trim()) ?? 0,
-      "familyType": _selectedFamilyType,
-      "memberRole": _selectedMemberRole == '기타'
+      "familyType": _selectedMemberRole == '기타'
           ? _customMemberController.text.trim()
           : _selectedMemberRole,
     };
 
     // 기존 가족 가입인 경우에만 familyVerificationCode 추가
     if (_selectedFamilyType == '기존 가족 가입') {
-      data["familyVerificationCode"] = _familyCodeController.text.trim();
+      data["familyVerificationCode"] = int.tryParse(_familyCodeController.text.trim());
     } else {
-      data["familyVerificationCode"] = null; ///이거 백이랑 소통해서 null로할지 ""로할지
+      data["familyVerificationCode"] = null;
     }
 
     print('회원가입 데이터: $data');
     // TODO: Dio API 연동
-    Navigator.pushNamed(context, '/login');
+    showSignUpCompleteDialog(context);
   }
 
 // 에러 다이얼로그
@@ -354,5 +375,78 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _familyCodeController.dispose();
     _customMemberController.dispose();
     super.dispose();
+  }
+}
+
+class SelectableToggleGroup extends StatelessWidget {
+  final String title; // 상단 라벨 (예: "성별")
+  final List<String> options; // 선택 가능한 항목들
+  final String selectedOption; // 현재 선택된 항목
+  final ValueChanged<String> onSelect; // 선택 시 콜백
+
+  const SelectableToggleGroup({
+    super.key,
+    required this.title,
+    required this.options,
+    required this.selectedOption,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          height: 42,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(color: Colors.black12, width: 1.3),
+          ),
+          child: Row(
+            children: List.generate(options.length, (index) {
+              final label = options[index];
+              final isSelected = label == selectedOption;
+
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => onSelect(label),
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(
+                        right: index != options.length - 1
+                            ? BorderSide(color: Colors.grey.shade400, width: 1)
+                            : BorderSide.none,
+                      ),
+                    ),
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        color: isSelected
+                            ? AppColors.plumu_green_main
+                            : Colors.black87,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ],
+    );
   }
 }
