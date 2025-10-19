@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 
 class FruitCardDialog extends StatelessWidget {
   final String imageUrl;
@@ -86,6 +87,23 @@ class FruitCardDialog extends StatelessWidget {
                 ),
               ),
             ),
+            
+            // 돌아가기 버튼
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: CustomButton(
+                text: '돌아가기',
+                onPressed: () => Navigator.pop(context),
+                width: MediaQuery.of(context).size.width - 56, // 좌우 패딩 28씩 제외
+                height: 52,
+                fontSize: 16,
+                backgroundColor: const Color(0xFFF3F3F3),
+                textColor: const Color(0xFF5CBD56),
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            
+            const SizedBox(height: 28), // 하단 패딩
           ],
         ),
       ),
