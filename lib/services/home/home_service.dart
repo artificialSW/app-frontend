@@ -112,7 +112,7 @@ class HomeService {
         print("access token is null!!!");
       }
       // 실제 API 호출 시도
-      final response = await _dio.get('$baseUrl/api/tree/$year/$month/$period/$treeIndex/flower');
+      final response = await _dio.get('$baseUrl/api/tree/main/$year/$month/$period/$treeIndex/flower');
 
       return ArchiveFlowerResponseDto.fromJsonList(response.data);
     } catch (e) {

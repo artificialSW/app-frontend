@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
+import 'package:artificialsw_frontend/shared/flower.dart';
 
 /// 꽃 카드 위젯
 /// 소통을 통해 얻은 꽃을 표시하는 카드 컴포넌트
@@ -67,7 +68,7 @@ class FlowerCard extends StatelessWidget {
             left: 0,
             right: 0,
             child: Text(
-              flowerName,
+              flowerMap[flowerName]?.koreanName ?? '꽃이름',
               textAlign: TextAlign.center,
               style: AppTextStyles.pretendard_bold.copyWith(
                 fontSize: 12,

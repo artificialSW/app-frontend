@@ -13,8 +13,10 @@ class IslandSaveIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Dialog(
       backgroundColor: Colors.transparent,  // 다이얼로그 배경을 투명하게 설정
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
         width: 293,
         height: 179,
