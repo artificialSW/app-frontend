@@ -113,4 +113,6 @@ class AppAssets {
   static const String message = 'assets/icons/message.png';
   static const String show_replies = 'assets/icons/show_replies.png';
 
+  static const String check = 'assets/icons/check.png';
+
 }
