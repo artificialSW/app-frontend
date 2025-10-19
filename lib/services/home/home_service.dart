@@ -9,6 +9,8 @@ import 'dto/archive/archive_fruit_response_dto.dart';
 import 'mock_data_manager.dart';
 import 'package:artificialsw_frontend/services/storage_service.dart';
 import 'package:artificialsw_frontend/shared/constants/constants.dart';
+import 'package:artificialsw_frontend/services/home/dto/archive/fruit_card_dialog_response_dto.dart';
+import 'dart:convert';
 
 /// 홈 관련 서버 통신을 담당하는 서비스 클래스
 /// 퍼즐과 동일한 패턴으로 구현
@@ -157,6 +159,39 @@ class HomeService {
         period: period,
         treeIndex: treeIndex,
       );
+    }
+  }
+
+  Future<FruitCardDialogResponseDto?> getFruitCardInfo(String fruitId) async {
+    final _accessToken = StorageService.getAccessToken();
+    if(_accessToken == null) {
+      print("access token is null!!!");
+    }
+
+    try{
+      final body = {
+        'fruitId': int.parse(fruitId),
+      };
+      // const encoder = JsonEncoder.withIndent('  ');
+      // final prettyJson = encoder.convert(body);
+      // print('📦 Json: \n$prettyJson');
+
+      final response = await _dio.get(
+        '$baseUrl/api/tree/fruit',
+        data: body,
+        options: Options(headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      if (response.statusCode == 200) {
+        print('✅ 성공');
+      } else {
+        print('⚠️ 실패: ${response.statusCode}');
+      }
+
+      return FruitCardDialogResponseDto.fromJson(response.data);
+    } catch (e) {
+      print('❌ 열매 card dialog 조회 오류: $e');
+      return null;
     }
   }
 
