@@ -28,7 +28,7 @@ class _WeeklyQuestionBannerState extends State<WeeklyQuestionBanner>
   String? _myLocalAnswer; // 로컬에서 입력한 내 답변 (탭 닫아도 유지)
 
   static const double _collapsedHeight = 56;
-  static const double _expandedHeight = 348;
+  static const double _expandedHeight = 339;
   static const double _expandedWidth = 373;
 
   void _toggle() => setState(() => _expanded = !_expanded);
