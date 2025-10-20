@@ -100,8 +100,8 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     switch (treeType) {
       case 'flower-1':
         return {
-          'width': 258.0 * widthRatio,
-          'height': 453.0 * heightRatio,
+          'width': 138.0 * widthRatio,
+          'height': 253.0 * heightRatio,
           'topPadding': 197.0 * heightRatio,
         };
       case 'flower-2':
@@ -315,11 +315,11 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final scaleX = treeWidth / _baseTreeWidth;
     final scaleY = treeHeight / _baseTreeHeight;
     // 아이콘 크기: 55x55을 기준으로 너비 스케일에 맞춰 균등 스케일링
-    final size = 40.0 * scaleX;
+    final size = 55.0 * scaleX;
 
     final basePos = _baseFlowerPositions[index];
-    final left = basePos.dx * scaleX;
-    final top = basePos.dy * scaleY;
+    final left = basePos.dx * scaleX + 42;
+    final top = basePos.dy * scaleY + 293;
 
     return Positioned(
       left: left,
