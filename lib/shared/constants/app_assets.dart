@@ -114,5 +114,8 @@ class AppAssets {
   static const String show_replies = 'assets/icons/show_replies.png';
 
   static const String check = 'assets/icons/check.png';
+  static const String reply_logo = 'assets/icons/reply_logo.png';
+  static const String heart_logo = 'assets/icons/heart_logo.png';
+  static const String puzzle_logo = 'assets/icons/puzzle_logo.png';
 
 }
