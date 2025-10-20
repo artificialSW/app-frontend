@@ -342,6 +342,8 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final widthRatio = screenWidth / 412.0;
     final heightRatio = screenHeight / 917.0;
 
+    bool _showAttachments = true;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -462,11 +464,22 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
               width: 354 * widthRatio,
               height: 317 * heightRatio,
               child: PageView.builder(
-                onPageChanged: (index) {
+                onPageChanged: (index) async {
                   setState(() {
                     _currentPage = index;
-                    _fetchAttachmentsForMonth(_currentMonth, _selectedYear, _currentPage);
+                    _showAttachments = false; // 🌙 스와이프 중엔 숨김
                   });
+
+                  // 데이터 로드
+                  await _fetchAttachmentsForMonth(_currentMonth, _selectedYear, _currentPage);
+
+                  // 0.5초 후 다시 표시
+                  //await Future.delayed(const Duration(milliseconds: 200));
+                  if (mounted) {
+                    setState(() {
+                      _showAttachments = true; // 🌞 다시 표시
+                    });
+                  }
                 },
                 itemCount: 2, // 2개 페이지
                 itemBuilder: (context, index) {
@@ -536,9 +549,19 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
               ),
             ),
           ),
-
-          for (int i = 0; i < min(flowers1?.length ?? 0, 6); i++)
-            _buildOverlayFlower(i, _getTreeLayout('flower-1')['width']!, _getTreeLayout('flower-1')['height']!),
+          AnimatedOpacity(
+            opacity: _showAttachments ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 400),
+            child: Stack(
+              children: [
+                for (int i = 0; i < min(flowers1?.length ?? 0, 6); i++)
+                  _buildOverlayFlower(i, _getTreeLayout('flower-1')['width']!, _getTreeLayout('flower-1')['height']!),
+              ],
+            ),
+          ),
+          // if (_showAttachments)
+          //   for (int i = 0; i < min(flowers1?.length ?? 0, 6); i++)
+          //     _buildOverlayFlower(i, _getTreeLayout('flower-1')['width']!, _getTreeLayout('flower-1')['height']!),
           // for (int i = 0; i < _currentFlowerCards.length && i < 6; i++)
           //   _buildOverlayFlower(i, layout('flower-1')['width']!, layout('flower-1')['height']!),
           // for (int i = 0; i < _currentFlowerCards.length && i < 6; i++)
