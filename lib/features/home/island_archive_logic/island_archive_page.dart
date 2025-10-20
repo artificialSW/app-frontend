@@ -31,6 +31,7 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
   List<ArchiveFruitResponseDto>? fruits3; // 아카이브 메인화면에 미리보기처럼 뜰 부착물
   List<ArchiveFruitResponseDto>? fruits4; // 아카이브 메인화면에 미리보기처럼 뜰 부착물
   final homeService = HomeService();
+  bool _showAttachments = false;
 
   // 기준 나무 크기 (디자인 스펙)
   static const double _baseTreeWidth = 306.97;
@@ -204,8 +205,17 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
   }
 
   Future<void> _fetchAttachmentsForMonth(int month, int year, int page) async {
+    // 🌙 1️⃣ 기존 부착물 fade-out
+    if (mounted) {
+      setState(() {
+        _showAttachments = false;
+      });
+    }
 
-    // 🔹 비동기 작업은 setState 밖에서!
+    // ⏳ fade-out이 끝날 때까지 기다리기 (AnimatedOpacity duration과 동일)
+    await Future.delayed(const Duration(seconds: 3));
+
+    // 🧠 이제 완전히 투명 상태 → 새 데이터 로드
     final flowers1Data = await homeService.getArchiveFlowerData(
       year: year, month: month, period: page + 1, treeIndex: 1,
     );
@@ -219,14 +229,24 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
       year: year, month: month, period: page + 1, treeIndex: 4,
     );
 
-    // 🔹 받은 데이터를 UI 상태에 반영 (동기 처리)
-    setState(() {
-      flowers1 = flowers1Data;
-      flowers2 = flowers2Data;
-      fruits3 = fruits3Data;
-      fruits4 = fruits4Data;
-    });
+    // 🔹 받은 데이터 UI 반영
+    if (mounted) {
+      setState(() {
+        flowers1 = flowers1Data;
+        flowers2 = flowers2Data;
+        fruits3 = fruits3Data;
+        fruits4 = fruits4Data;
+      });
+    }
+
+    // 🌸 2️⃣ 새 데이터 fade-in
+    if (mounted) {
+      setState(() {
+        _showAttachments = true;
+      });
+    }
   }
+
 
 
   /// 필터 토글
@@ -341,8 +361,6 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     // 기준 화면 크기 (412x917)에 대한 비율 계산
     final widthRatio = screenWidth / 412.0;
     final heightRatio = screenHeight / 917.0;
-
-    bool _showAttachments = true;
 
     return Scaffold(
       body: Stack(
@@ -473,8 +491,6 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
                   // 데이터 로드
                   await _fetchAttachmentsForMonth(_currentMonth, _selectedYear, _currentPage);
 
-                  // 0.5초 후 다시 표시
-                  //await Future.delayed(const Duration(milliseconds: 200));
                   if (mounted) {
                     setState(() {
                       _showAttachments = true; // 🌞 다시 표시
@@ -551,11 +567,16 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
           ),
           AnimatedOpacity(
             opacity: _showAttachments ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 400),
+            duration: const Duration(seconds: 3), // 🌸 3초 동안 서서히 나타남
+            curve: Curves.easeInOut, // 💫 더 자연스럽게 (시작/끝 부드럽게)
             child: Stack(
               children: [
                 for (int i = 0; i < min(flowers1?.length ?? 0, 6); i++)
-                  _buildOverlayFlower(i, _getTreeLayout('flower-1')['width']!, _getTreeLayout('flower-1')['height']!),
+                  _buildOverlayFlower(
+                    i,
+                    _getTreeLayout('flower-1')['width']!,
+                    _getTreeLayout('flower-1')['height']!,
+                  ),
               ],
             ),
           ),
