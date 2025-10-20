@@ -309,7 +309,7 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     
     // 나무 타입 결정 (1,2: 꽃, 3,4: 열매)
     final treeType = treeIndex <= 2 ? 'flower-$treeIndex' : 'fruit-${treeIndex - 2}';
-    
+
     // 아카이브 로딩 페이지 표시
     showDialog(
       context: context,
@@ -318,7 +318,7 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
         treeType: treeType,
         year: _selectedYear,
         month: _currentMonth,
-        period: period,
+        period: _currentPage+1,
         treeIndex: treeIndex,
       ),
     );
