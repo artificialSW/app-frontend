@@ -117,7 +117,7 @@ class HomeBottomButtons extends StatelessWidget {
     final islandIconHeight = 120.0 * heightRatio; // 비율 유지하면서 증가
     
     // 폰트 크기 (반응형) - 디버깅을 위해 크게 설정
-    final fontSize = 14.0 * widthRatio; // 11.97에서 14로 임시 증가
+    final fontSize = 13.0 * widthRatio; // 11.97에서 14로 임시 증가
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -145,7 +145,7 @@ class HomeBottomButtons extends StatelessWidget {
             child: Column(
               children: [
                 // 상단 여백
-                SizedBox(height: 15 * heightRatio), // 상단에 여백 추가
+                SizedBox(height: 20 * heightRatio), // 상단에 여백 추가
                 // 아이콘과 텍스트를 함께 아래로 이동
                 Column(
                   children: [
@@ -214,7 +214,7 @@ class HomeBottomButtons extends StatelessWidget {
             child: Column(
               children: [
                 // 상단 여백
-                SizedBox(height: 15 * heightRatio), // 상단에 여백 추가
+                SizedBox(height: 20 * heightRatio), // 상단에 여백 추가
                 // 아이콘과 텍스트를 함께 아래로 이동
                 Column(
                   children: [
