@@ -24,6 +24,6 @@ final Map<String, Flower> flowerMap = {
 
   "tulip": Flower(koreanName: "튤립", imagePath: "assets/images/flower/tulip.png"),
   "violet": Flower(koreanName: "제비꽃", imagePath: "assets/images/flower/violet.png"),
-  "cosmos": Flower(koreanName: "코스모스", imagePath: "assets/images/flower/cosmos"),
-  "sunflower": Flower(koreanName: "해바라기", imagePath: "assets/images/flower/sunflower"),
+  "cosmos": Flower(koreanName: "코스모스", imagePath: "assets/images/flower/cosmos.png"),
+  "sunflower": Flower(koreanName: "해바라기", imagePath: "assets/images/flower/sunflower.png"),
 };

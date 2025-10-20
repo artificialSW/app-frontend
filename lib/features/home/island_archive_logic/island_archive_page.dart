@@ -9,6 +9,7 @@ import 'package:artificialsw_frontend/services/home/dto/archive/archive_flower_r
 import 'package:artificialsw_frontend/services/home/dto/archive/archive_fruit_response_dto.dart';
 import 'dart:math';
 import 'package:artificialsw_frontend/shared/flower.dart';
+import 'package:artificialsw_frontend/shared/fruit.dart';
 
 /// 섬 아카이브 페이지
 /// 
@@ -101,22 +102,22 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     switch (treeType) {
       case 'flower-1':
         return {
-          'width': 138.0 * widthRatio,
-          'height': 253.0 * heightRatio,
+          'width': 128.0 * widthRatio,
+          'height': 243.0 * heightRatio,
           'topPadding': 197.0 * heightRatio,
         };
       case 'flower-2':
       // fruit_tree_1 이미지 사용하므로 fruit-1의 크기/위치 적용
         return {
-          'width': 219.0 * widthRatio,
-          'height': 441.0 * heightRatio,
+          'width': 99.0 * widthRatio,
+          'height': 221.0 * heightRatio,
           'topPadding': 193.0 * heightRatio,
         };
       case 'fruit-1':
       // flower_tree_2 이미지 사용하므로 flower-2의 크기/위치 적용
         return {
-          'width': 252.0 * widthRatio,
-          'height': 418.0 * heightRatio,
+          'width': 99.0 * widthRatio,
+          'height': 221.0 * heightRatio,
           'topPadding': 232.0 * heightRatio,
         };
       case 'fruit-2':
@@ -247,8 +248,6 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     }
   }
 
-
-
   /// 필터 토글
   void _toggleFilter() {
     setState(() {
@@ -335,11 +334,14 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final scaleX = treeWidth / _baseTreeWidth;
     final scaleY = treeHeight / _baseTreeHeight;
     // 아이콘 크기: 55x55을 기준으로 너비 스케일에 맞춰 균등 스케일링
-    final size = 55.0 * scaleX;
+    double size = 55.0 * scaleX;
+    // 아카시아만 크기를 1.2배로 키움 (이름으로 확인)
+    final isAcacia = flowers1?[index].flowerName == 'acacia';
+    size = isAcacia ? size * 1.2 : size; // 아카시아만 크기 증가
 
     final basePos = _baseFlowerPositions[index];
-    final left = basePos.dx * scaleX + 42;
-    final top = basePos.dy * scaleY + 293;
+    final left = basePos.dx * scaleX + 47;
+    final top = basePos.dy * scaleY + 298;
 
     return Positioned(
       left: left,
@@ -348,6 +350,85 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
         flowerMap[flowers1?[index].flowerName]?.imagePath ?? "assets/images/flower/acacia.png", // 실제 카드의 이미지 사용
         width: size,
         height: size,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
+  // 나무 위 꽃 하나를 그리는 위젯 (적응형 좌표/크기) - 두 번째 나무용
+  Widget _buildOverlayFlower2(int index, double treeWidth, double treeHeight) {
+
+    // 스케일 계산 (두 번째 나무 기준 크기 대비)
+    final scaleX = treeWidth / _baseTree2Width;
+    final scaleY = treeHeight / _baseTree2Height;
+    double size = 55.0 * scaleX;
+    // 아이콘 크기: 60x60을 기준으로 너비 스케일에 맞춰 균등 스케일링
+    // 아카시아만 크기를 1.2배로 키움 (이름으로 확인)
+    final isAcacia = flowers1?[index].flowerName == 'acacia';
+    size = isAcacia ? size * 1.2 : size; // 아카시아만 크기 증가
+
+    final basePos = _baseFlower2Positions[index];
+    final left = basePos.dx * scaleX + 126;
+    final top = basePos.dy * scaleY + 287;
+
+    return Positioned(
+      left: left,
+      top: top,
+      child: Image.asset(
+        flowerMap[flowers2?[index].flowerName]?.imagePath ?? "assets/images/flower/acacia.png", // 실제 카드의 이미지 사용
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
+  // 나무 위 과일 하나를 그리는 위젯 (적응형 좌표/크기) - 세 번째 나무용
+  Widget _buildOverlayFruit1(int index, double treeWidth, double treeHeight) {
+    // 스케일 계산 (세 번째 나무 기준 크기 대비)
+    final scaleX = treeWidth / _baseTree3Width;
+    final scaleY = treeHeight / _baseTree3Height;
+    // 아이콘 크기: 60x65 (가로/세로 각각 스케일)
+    final width = 60.0 * scaleX;
+    final height = 65.0 * scaleY;
+
+    final basePos = _baseFruit1Positions[index];
+    final left = basePos.dx * scaleX + 186;
+    final top = basePos.dy * scaleY + 323;
+
+    return Positioned(
+      left: left,
+      top: top,
+      child: Image.asset(
+        fruitMap[fruits3?[index].fruitName]?.imagePath ?? "assets/images/fruit/spring/cherry.png", // 실제 카드의 이미지 사용
+        width: width,
+        height: height,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
+  // 나무 위 과일 하나를 그리는 위젯 (적응형 좌표/크기) - 네 번째 나무용
+  Widget _buildOverlayFruit2(int index, double treeWidth, double treeHeight) {
+
+    // 스케일 계산 (네 번째 나무 기준 크기 대비)
+    final scaleX = treeWidth / _baseTree4Width;
+    final scaleY = treeHeight / _baseTree4Height;
+    // 아이콘 크기: 60x65 (가로/세로 각각 스케일)
+    final width = 60.0 * scaleX;
+    final height = 65.0 * scaleY;
+
+    final basePos = _baseFruit2Positions[index];
+    final left = basePos.dx * scaleX;
+    final top = basePos.dy * scaleY;
+
+    return Positioned(
+      left: left,
+      top: top,
+      child: Image.asset(
+        fruitMap[fruits4?[index].fruitName]?.imagePath ?? "assets/images/fruit/spring/cherry.png", // 실제 카드의 이미지 사용
+        width: width,
+        height: height,
         fit: BoxFit.contain,
       ),
     );
@@ -487,10 +568,8 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
                     _currentPage = index;
                     _showAttachments = false; // 🌙 스와이프 중엔 숨김
                   });
-
                   // 데이터 로드
                   await _fetchAttachmentsForMonth(_currentMonth, _selectedYear, _currentPage);
-
                   if (mounted) {
                     setState(() {
                       _showAttachments = true; // 🌞 다시 표시
@@ -571,11 +650,36 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
             curve: Curves.easeInOut, // 💫 더 자연스럽게 (시작/끝 부드럽게)
             child: Stack(
               children: [
+                // 🌸 첫 번째 나무 (flowers1)
                 for (int i = 0; i < min(flowers1?.length ?? 0, 6); i++)
                   _buildOverlayFlower(
                     i,
                     _getTreeLayout('flower-1')['width']!,
                     _getTreeLayout('flower-1')['height']!,
+                  ),
+
+                // 🌺 두 번째 나무 (flowers2)
+                for (int i = 0; i < min(flowers2?.length ?? 0, 4); i++)
+                  _buildOverlayFlower2(
+                    i,
+                    _getTreeLayout('flower-2')['width']!,
+                    _getTreeLayout('flower-2')['height']!,
+                  ),
+
+                // 🍎 세 번째 나무 (fruits3)
+                for (int i = 0; i < min(fruits3?.length ?? 0, 4); i++)
+                  _buildOverlayFruit1(
+                    i,
+                    _getTreeLayout('fruit-1')['width']!,
+                    _getTreeLayout('fruit-1')['height']!,
+                  ),
+
+                // 🍇 네 번째 나무 (fruits4)
+                for (int i = 0; i < min(fruits4?.length ?? 0, 3); i++)
+                  _buildOverlayFruit2(
+                    i,
+                    _getTreeLayout('fruit-2')['width']!,
+                    _getTreeLayout('fruit-2')['height']!,
                   ),
               ],
             ),
