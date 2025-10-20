@@ -232,7 +232,7 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
       'tulip': AppAssets.flower_tulip,        // 튤립
       'violet': AppAssets.flower_violet,      // 제비꽃
       'cosmos': AppAssets.flower_cosmos,      // 코스모스
-      'sumflower': AppAssets.flower_sunflower,  // 해바라기
+      'sunflower': AppAssets.flower_sunflower,  // 해바라기
     };
     return flowerImageMap[flowerName] ?? AppAssets.flower_camellia; // 기본값
   }

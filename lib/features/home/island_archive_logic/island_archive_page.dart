@@ -23,7 +23,7 @@ class IslandArchivePage extends StatefulWidget {
 }
 
 class _IslandArchivePageState extends State<IslandArchivePage> {
-  int _currentMonth = 9; // 현재 월 (9월부터 시작)
+  int _currentMonth = 10; // 현재 월 (9월부터 시작)
   int _selectedYear = 2025; // 선택된 연도
   bool _isFilterVisible = false; // 필터 드롭다운 표시 여부
   int _currentPage = 0; // 현재 페이지 (인디케이터용)
@@ -86,6 +86,16 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     Offset(32, 133),  // 2번째 과일
     Offset(105, 167), // 3번째 과일
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ✅ 페이지 최초 진입 시 현재 월/연도/페이지 기준으로 데이터 로드
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchAttachmentsForMonth(_currentMonth, _selectedYear, _currentPage);
+    });
+  }
 
   /// 나무 타입에 따라 다른 크기와 위치 정보를 반환하는 함수
   ///
@@ -331,20 +341,20 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final scaleX = treeWidth / _baseTreeWidth;
     final scaleY = treeHeight / _baseTreeHeight;
     // 아이콘 크기: 55x55을 기준으로 너비 스케일에 맞춰 균등 스케일링
-    double size = 55.0 * scaleX;
+    double size = 75.0 * scaleX;
     // 아카시아만 크기를 1.2배로 키움 (이름으로 확인)
     final isAcacia = flowers1?[index].flowerName == 'acacia';
-    size = isAcacia ? size * 1.2 : size; // 아카시아만 크기 증가
+    size = isAcacia ? size * 1.4 : size; // 아카시아만 크기 증가
 
     final basePos = _baseFlowerPositions[index];
-    final left = basePos.dx * scaleX + 47;
-    final top = basePos.dy * scaleY + 298;
+    final left = basePos.dx * scaleX + 44;
+    final top = basePos.dy * scaleY + 295;
 
     return Positioned(
       left: left,
       top: top,
       child: Image.asset(
-        flowerMap[flowers1?[index].flowerName]?.imagePath ?? "assets/images/flower/acacia.png", // 실제 카드의 이미지 사용
+        flowerMap[flowers1?[index].flowerName]?.imagePath ?? "assets/images/flower/patbae_flower.png", // 실제 카드의 이미지 사용
         width: size,
         height: size,
         fit: BoxFit.contain,
@@ -358,21 +368,21 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     // 스케일 계산 (두 번째 나무 기준 크기 대비)
     final scaleX = treeWidth / _baseTree2Width;
     final scaleY = treeHeight / _baseTree2Height;
-    double size = 55.0 * scaleX;
+    double size = 75.0 * scaleX;
     // 아이콘 크기: 60x60을 기준으로 너비 스케일에 맞춰 균등 스케일링
     // 아카시아만 크기를 1.2배로 키움 (이름으로 확인)
     final isAcacia = flowers1?[index].flowerName == 'acacia';
-    size = isAcacia ? size * 1.2 : size; // 아카시아만 크기 증가
+    size = isAcacia ? size * 1.4 : size; // 아카시아만 크기 증가
 
     final basePos = _baseFlower2Positions[index];
-    final left = basePos.dx * scaleX + 126;
-    final top = basePos.dy * scaleY + 287;
+    final left = basePos.dx * scaleX + 123;
+    final top = basePos.dy * scaleY + 285;
 
     return Positioned(
       left: left,
       top: top,
       child: Image.asset(
-        flowerMap[flowers2?[index].flowerName]?.imagePath ?? "assets/images/flower/acacia.png", // 실제 카드의 이미지 사용
+        flowerMap[flowers2?[index].flowerName]?.imagePath ?? "assets/images/flower/hydrangea.png", // 실제 카드의 이미지 사용
         width: size,
         height: size,
         fit: BoxFit.contain,
@@ -386,11 +396,11 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final scaleX = treeWidth / _baseTree3Width;
     final scaleY = treeHeight / _baseTree3Height;
     // 아이콘 크기: 60x65 (가로/세로 각각 스케일)
-    final width = 60.0 * scaleX;
-    final height = 65.0 * scaleY;
+    final width = 75.0 * scaleX;
+    final height = 75.0 * scaleY;
 
     final basePos = _baseFruit1Positions[index];
-    final left = basePos.dx * scaleX + 186;
+    final left = basePos.dx * scaleX + 184;
     final top = basePos.dy * scaleY + 323;
 
     return Positioned(
@@ -412,8 +422,8 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final scaleX = treeWidth / _baseTree4Width;
     final scaleY = treeHeight / _baseTree4Height;
     // 아이콘 크기: 60x65 (가로/세로 각각 스케일)
-    final width = 60.0 * scaleX;
-    final height = 65.0 * scaleY;
+    final width = 75.0 * scaleX;
+    final height = 75.0 * scaleY;
 
     final basePos = _baseFruit2Positions[index];
     final left = basePos.dx * scaleX + 250;
@@ -423,7 +433,7 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
       left: left,
       top: top,
       child: Image.asset(
-        fruitMap[fruits4?[index].fruitName]?.imagePath ?? "assets/images/fruit/spring/cherry.png", // 실제 카드의 이미지 사용
+        fruitMap[fruits4?[index].fruitName]?.imagePath ?? "assets/images/fruit/spring/raspberry.png", // 실제 카드의 이미지 사용
         width: width,
         height: height,
         fit: BoxFit.contain,

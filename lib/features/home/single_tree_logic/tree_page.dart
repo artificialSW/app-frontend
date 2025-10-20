@@ -321,6 +321,8 @@ class _TreePageState extends State<TreePage> {
     final left = basePos.dx * scaleX;
     final top = basePos.dy * scaleY;
 
+    print('image path is : ${_currentFlowerCards[index].imagePath}');
+
     return Positioned(
       left: left,
       top: top,
