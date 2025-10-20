@@ -122,8 +122,8 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
         };
       case 'fruit-2':
         return {
-          'width': 169.0 * widthRatio,
-          'height': 392.0 * heightRatio,
+          'width': 49.0 * widthRatio,
+          'height': 102.0 * heightRatio,
           'topPadding': 242.0 * heightRatio,
         };
       default:
@@ -419,8 +419,8 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final height = 65.0 * scaleY;
 
     final basePos = _baseFruit2Positions[index];
-    final left = basePos.dx * scaleX;
-    final top = basePos.dy * scaleY;
+    final left = basePos.dx * scaleX + 250;
+    final top = basePos.dy * scaleY + 405;
 
     return Positioned(
       left: left,
