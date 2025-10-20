@@ -116,6 +116,8 @@ class HomeService {
       // 실제 API 호출 시도
       final response = await _dio.get('$baseUrl/api/tree/main/$year/$month/$period/$treeIndex/flower');
 
+      await Future.delayed(const Duration(milliseconds: 500));
+
       return ArchiveFlowerResponseDto.fromJsonList(response.data);
     } catch (e) {
       print('❌ 아카이브 꽃 데이터 조회 오류: $e');
@@ -148,6 +150,8 @@ class HomeService {
       }
       // 실제 API 호출 시도
       final response = await _dio.get('$baseUrl/api/tree/$year/$month/$period/$treeIndex/fruit');
+
+      await Future.delayed(const Duration(milliseconds: 500));
       
       return ArchiveFruitResponseDto.fromJsonList(response.data);
     } catch (e) {

@@ -213,9 +213,6 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
       });
     }
 
-    // ⏳ fade-out이 끝날 때까지 기다리기 (AnimatedOpacity duration과 동일)
-    await Future.delayed(const Duration(seconds: 3));
-
     // 🧠 이제 완전히 투명 상태 → 새 데이터 로드
     final flowers1Data = await homeService.getArchiveFlowerData(
       year: year, month: month, period: page + 1, treeIndex: 1,
@@ -646,7 +643,7 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
           ),
           AnimatedOpacity(
             opacity: _showAttachments ? 1.0 : 0.0,
-            duration: const Duration(seconds: 3), // 🌸 3초 동안 서서히 나타남
+            duration: const Duration(seconds: 1), // 🌸 1초 동안 서서히 나타남
             curve: Curves.easeInOut, // 💫 더 자연스럽게 (시작/끝 부드럽게)
             child: Stack(
               children: [
