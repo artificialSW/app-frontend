@@ -91,105 +91,128 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final _screenHeight = MediaQuery.of(context).size.height;
     final _screenWidth = MediaQuery.of(context).size.width;
-
-
+    
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              AppAssets.account_background, // 실제 파일 경로에 맞게 수정!
-              fit: BoxFit.cover, // 화면 꽉 채움
+      resizeToAvoidBottomInset: true, // ✅ 키보드에 맞게 화면 자동 조정
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        behavior: HitTestBehavior.translucent, // 투명 영역도 터치 감지
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                AppAssets.account_background, // 실제 파일 경로에 맞게 수정!
+                fit: BoxFit.cover, // 화면 꽉 채움
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: _screenHeight*0.15,),
-                Image.asset(AppAssets.logo_white, height: _screenHeight*0.15, width: _screenWidth*0.3,),
-                Image.asset(AppAssets.plumu_white, height: _screenHeight*0.037),
-                const SizedBox(height: 84),
-                KeepLoginRow(),
-                SizedBox(height: 10),
+            SingleChildScrollView( // ✅ 스크롤로 overflow 방지
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height, // 화면 최소 높이 유지
+                  ),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: _screenHeight * 0.15),
+                        Image.asset(
+                          AppAssets.logo_white,
+                          height: _screenHeight * 0.15,
+                          width: _screenWidth * 0.3,
+                        ),
+                        Image.asset(
+                          AppAssets.plumu_white,
+                          height: _screenHeight * 0.037,
+                        ),
+                        const SizedBox(height: 84),
+                        KeepLoginRow(),
+                        const SizedBox(height: 10),
 
-                ///전화번호(아이디) 입력 필드
-                TextField(
-                  controller: _idController,
-                  decoration: InputDecoration(
-                    hintText: '전화번호를 입력해주세요',
-                    hintStyle: const TextStyle(
-                      color: AppColors.plumu_gray_4,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
+                        /// 전화번호(아이디) 입력 필드
+                        TextField(
+                          controller: _idController,
+                          decoration: InputDecoration(
+                            hintText: '전화번호를 입력해주세요',
+                            hintStyle: const TextStyle(
+                              color: AppColors.plumu_gray_4,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        /// 비밀번호 입력 필드
+                        TextField(
+                          controller: _pwController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            hintText: '비밀번호를 입력해주세요',
+                            hintStyle: const TextStyle(
+                              color: AppColors.plumu_gray_4,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+
+                        CustomButton(text: '로그인', onPressed: _login),
+
+                        const Spacer(),
+
+                        CustomButton(
+                          text: '회원가입',
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/register');
+                          },
+                          backgroundColor: AppColors.plumu_gray_1,
+                          textColor: AppColors.plumu_gray_7,
+                        ),
+                        const SizedBox(height: 30),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
-
-                ///비밀번호 입력 필드
-                TextField(
-                  controller: _pwController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: '비밀번호를 입력해주세요',
-                    hintStyle: const TextStyle(
-                      color: AppColors.plumu_gray_4,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                CustomButton(text: '로그인', onPressed: _login),
-
-                Spacer(),
-
-                CustomButton(
-                  text: '회원가입',
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/register');
-                  },
-                  backgroundColor: AppColors.plumu_gray_1,
-                  textColor: AppColors.plumu_gray_7,
-                ),
-                SizedBox(height: 30,),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
