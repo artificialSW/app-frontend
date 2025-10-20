@@ -4,6 +4,11 @@ import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/features/home/widget/island_archive_filter_dropdown.dart';
 import 'package:artificialsw_frontend/features/home/single_tree_logic/archive_tree_loading_page.dart';
+import 'package:artificialsw_frontend/services/home/home_service.dart';
+import 'package:artificialsw_frontend/services/home/dto/archive/archive_flower_response_dto.dart';
+import 'package:artificialsw_frontend/services/home/dto/archive/archive_fruit_response_dto.dart';
+import 'dart:math';
+import 'package:artificialsw_frontend/shared/flower.dart';
 
 /// 섬 아카이브 페이지
 /// 
@@ -21,6 +26,112 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
   int _selectedYear = 2025; // 선택된 연도
   bool _isFilterVisible = false; // 필터 드롭다운 표시 여부
   int _currentPage = 0; // 현재 페이지 (인디케이터용)
+  List<ArchiveFlowerResponseDto>? flowers1; // 아카이브 메인화면에 미리보기처럼 뜰 부착물
+  List<ArchiveFlowerResponseDto>? flowers2; // 아카이브 메인화면에 미리보기처럼 뜰 부착물
+  List<ArchiveFruitResponseDto>? fruits3; // 아카이브 메인화면에 미리보기처럼 뜰 부착물
+  List<ArchiveFruitResponseDto>? fruits4; // 아카이브 메인화면에 미리보기처럼 뜰 부착물
+  final homeService = HomeService();
+
+  // 기준 나무 크기 (디자인 스펙)
+  static const double _baseTreeWidth = 306.97;
+  static const double _baseTreeHeight = 539.58;
+
+  // 두 번째 나무 기준 크기 (디자인 스펙)
+  static const double _baseTree2Width = 259.94;
+  static const double _baseTree2Height = 523.06;
+
+  // 세 번째(과일) 나무 기준 크기 (디자인 스펙)
+  static const double _baseTree3Width = 293.63;
+  static const double _baseTree3Height = 486.20;
+
+  // 네 번째(과일) 나무 기준 크기 (디자인 스펙)
+  static const double _baseTree4Width = 200.20;
+  static const double _baseTree4Height = 464.44;
+
+  // 기준 좌표계에서의 꽃 위치 (왼쪽/위쪽 패딩)
+  // 1~6번째 카드가 열릴 위치 (첫 번째 나무 내부 기준)
+  final List<Offset> _baseFlowerPositions = const [
+    Offset(132, 53),   // 1번째 꽃
+    Offset(86, 130),   // 2번째 꽃
+    Offset(164, 174),  // 3번째 꽃
+    Offset(91, 235),   // 4번째 꽃
+    Offset(37, 305),   // 5번째 꽃
+    Offset(196, 290),  // 6번째 꽃
+  ];
+
+  // 두 번째 나무 기준 좌표계에서의 꽃 위치 (왼쪽/위쪽 패딩)
+  // 1~4번째 카드가 열릴 위치 (두 번째 나무 내부 기준)
+  final List<Offset> _baseFlower2Positions = const [
+    Offset(105, 62),   // 1번째 꽃
+    Offset(57, 134),   // 2번째 꽃
+    Offset(152, 181),  // 3번째 꽃
+    Offset(57, 237),   // 4번째 꽃
+  ];
+
+  // 세 번째 나무(과일) 기준 좌표계에서의 과일 위치 (왼쪽/위쪽 패딩)
+  // 1~4번째 카드가 열릴 위치 (세 번째 나무 내부 기준)
+  final List<Offset> _baseFruit1Positions = const [
+    Offset(105, 59),  // 1번째 과일
+    Offset(162, 130), // 2번째 과일
+    Offset(74, 169),  // 3번째 과일
+    Offset(168, 232), // 4번째 과일
+  ];
+
+  // 네 번째 나무(과일) 기준 좌표계에서의 과일 위치 (왼쪽/위쪽 패딩)
+  // 1~3번째 카드가 열릴 위치 (네 번째 나무 내부 기준)
+  final List<Offset> _baseFruit2Positions = const [
+    Offset(71, 52),   // 1번째 과일
+    Offset(32, 133),  // 2번째 과일
+    Offset(105, 167), // 3번째 과일
+  ];
+
+  /// 나무 타입에 따라 다른 크기와 위치 정보를 반환하는 함수
+  ///
+  /// 각 나무마다 다른 크기와 화면에서의 위치를 가지고 있음
+  /// 반응형 레이아웃을 위해 화면 비율에 따라 크기가 조정됨
+  Map<String, double> _getTreeLayout(String treeType) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // 기준 화면 크기 (412x917)에 대한 비율 계산
+    final widthRatio = screenWidth / 412.0;
+    final heightRatio = screenHeight / 917.0;
+
+    switch (treeType) {
+      case 'flower-1':
+        return {
+          'width': 258.0 * widthRatio,
+          'height': 453.0 * heightRatio,
+          'topPadding': 197.0 * heightRatio,
+        };
+      case 'flower-2':
+      // fruit_tree_1 이미지 사용하므로 fruit-1의 크기/위치 적용
+        return {
+          'width': 219.0 * widthRatio,
+          'height': 441.0 * heightRatio,
+          'topPadding': 193.0 * heightRatio,
+        };
+      case 'fruit-1':
+      // flower_tree_2 이미지 사용하므로 flower-2의 크기/위치 적용
+        return {
+          'width': 252.0 * widthRatio,
+          'height': 418.0 * heightRatio,
+          'topPadding': 232.0 * heightRatio,
+        };
+      case 'fruit-2':
+        return {
+          'width': 169.0 * widthRatio,
+          'height': 392.0 * heightRatio,
+          'topPadding': 242.0 * heightRatio,
+        };
+      default:
+        return {
+          'width': 258.0 * widthRatio,
+          'height': 453.0 * heightRatio,
+          'topPadding': 197.0 * heightRatio,
+        };
+    }
+  }
 
   /// 현재 시간에 따라 배경 이미지를 선택하는 함수
   String _getTimeBasedBackground() {
@@ -48,6 +159,7 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     setState(() {
       if (_currentMonth > 1) {
         _currentMonth--;
+        _fetchAttachmentsForMonth(_currentMonth, _selectedYear, _currentPage);
       } else {
         // 1월에서는 더 이상 이동하지 않음
         return;
@@ -87,8 +199,35 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     
     setState(() {
       _currentMonth++;
+      _fetchAttachmentsForMonth(_currentMonth, _selectedYear, _currentPage);
     });
   }
+
+  Future<void> _fetchAttachmentsForMonth(int month, int year, int page) async {
+
+    // 🔹 비동기 작업은 setState 밖에서!
+    final flowers1Data = await homeService.getArchiveFlowerData(
+      year: year, month: month, period: page + 1, treeIndex: 1,
+    );
+    final flowers2Data = await homeService.getArchiveFlowerData(
+      year: year, month: month, period: page + 1, treeIndex: 2,
+    );
+    final fruits3Data = await homeService.getArchiveFruitData(
+      year: year, month: month, period: page + 1, treeIndex: 3,
+    );
+    final fruits4Data = await homeService.getArchiveFruitData(
+      year: year, month: month, period: page + 1, treeIndex: 4,
+    );
+
+    // 🔹 받은 데이터를 UI 상태에 반영 (동기 처리)
+    setState(() {
+      flowers1 = flowers1Data;
+      flowers2 = flowers2Data;
+      fruits3 = fruits3Data;
+      fruits4 = fruits4Data;
+    });
+  }
+
 
   /// 필터 토글
   void _toggleFilter() {
@@ -102,6 +241,7 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     setState(() {
       _selectedYear = year;
       _isFilterVisible = false;
+      _fetchAttachmentsForMonth(_currentMonth, _selectedYear, _currentPage);
     });
   }
 
@@ -164,6 +304,31 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
         month: _currentMonth,
         period: period,
         treeIndex: treeIndex,
+      ),
+    );
+  }
+
+  // 나무 위 꽃 하나를 그리는 위젯 (적응형 좌표/크기) - 첫 번째 나무용
+  Widget _buildOverlayFlower(int index, double treeWidth, double treeHeight) {
+
+    // 스케일 계산 (기준 나무 크기 대비)
+    final scaleX = treeWidth / _baseTreeWidth;
+    final scaleY = treeHeight / _baseTreeHeight;
+    // 아이콘 크기: 55x55을 기준으로 너비 스케일에 맞춰 균등 스케일링
+    final size = 40.0 * scaleX;
+
+    final basePos = _baseFlowerPositions[index];
+    final left = basePos.dx * scaleX;
+    final top = basePos.dy * scaleY;
+
+    return Positioned(
+      left: left,
+      top: top,
+      child: Image.asset(
+        flowerMap[flowers1?[index].flowerName]?.imagePath ?? "assets/images/flower/acacia.png", // 실제 카드의 이미지 사용
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
       ),
     );
   }
@@ -300,6 +465,7 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
                 onPageChanged: (index) {
                   setState(() {
                     _currentPage = index;
+                    _fetchAttachmentsForMonth(_currentMonth, _selectedYear, _currentPage);
                   });
                 },
                 itemCount: 2, // 2개 페이지
@@ -370,6 +536,15 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
               ),
             ),
           ),
+
+          for (int i = 0; i < min(flowers1?.length ?? 0, 6); i++)
+            _buildOverlayFlower(i, _getTreeLayout('flower-1')['width']!, _getTreeLayout('flower-1')['height']!),
+          // for (int i = 0; i < _currentFlowerCards.length && i < 6; i++)
+          //   _buildOverlayFlower(i, layout('flower-1')['width']!, layout('flower-1')['height']!),
+          // for (int i = 0; i < _currentFlowerCards.length && i < 6; i++)
+          //   _buildOverlayFlower(i, layout('flower-1')['width']!, layout('flower-1')['height']!),
+          // for (int i = 0; i < _currentFlowerCards.length && i < 6; i++)
+          //   _buildOverlayFlower(i, layout('flower-1')['width']!, layout('flower-1')['height']!),
 
           // 페이지 인디케이터
           Positioned(
