@@ -237,6 +237,28 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
       year: year, month: month, period: page + 1, treeIndex: 4,
     );
 
+    // 🕒 정렬: 최근(archivedAt이 큰 값) → 오래된 순
+    flowers1Data.sort((a, b) {
+      final dateA = DateTime.tryParse(a.archivedAt ?? '') ?? DateTime(0);
+      final dateB = DateTime.tryParse(b.archivedAt ?? '') ?? DateTime(0);
+      return dateB.compareTo(dateA);
+    });
+    flowers2Data.sort((a, b) {
+      final dateA = DateTime.tryParse(a.archivedAt ?? '') ?? DateTime(0);
+      final dateB = DateTime.tryParse(b.archivedAt ?? '') ?? DateTime(0);
+      return dateB.compareTo(dateA);
+    });
+    fruits3Data.sort((a, b) {
+      final dateA = DateTime.tryParse(a.archivedAt ?? '') ?? DateTime(0);
+      final dateB = DateTime.tryParse(b.archivedAt ?? '') ?? DateTime(0);
+      return dateB.compareTo(dateA);
+    });
+    fruits4Data.sort((a, b) {
+      final dateA = DateTime.tryParse(a.archivedAt ?? '') ?? DateTime(0);
+      final dateB = DateTime.tryParse(b.archivedAt ?? '') ?? DateTime(0);
+      return dateB.compareTo(dateA);
+    });
+
     // 🔹 받은 데이터 UI 반영
     if (mounted) {
       setState(() {

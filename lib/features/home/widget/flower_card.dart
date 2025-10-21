@@ -51,11 +51,11 @@ class FlowerCard extends StatelessWidget {
 
             // 날짜
             Positioned(
-              bottom: 24,
+              bottom: 18,
               left: 0,
               right: 0,
               child: Text(
-                date,
+                date.split('T')[0],
                 textAlign: TextAlign.center,
                 style: AppTextStyles.pretendard_medium.copyWith(
                   fontSize: 10,
@@ -66,7 +66,7 @@ class FlowerCard extends StatelessWidget {
 
             // 꽃 이름
             Positioned(
-              bottom: 6,
+              bottom: 3,
               left: 0,
               right: 0,
               child: Text(

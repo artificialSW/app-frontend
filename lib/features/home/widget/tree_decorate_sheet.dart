@@ -238,33 +238,78 @@ class _TreeDecorateSheetState extends State<TreeDecorateSheet> {
   }
 
   /// 아카이브 날짜를 포맷하는 메서드
+  // String _formatArchiveDate(String archivedAt) {
+  //   try {
+  //     // ISO 8601 형식에서 날짜 부분만 추출 (YYYY-MM-DD)
+  //     return archivedAt.split('T')[0];
+  //   } catch (e) {
+  //     print('❌ 날짜 포맷 오류: $e');
+  //     return '2024-01-01'; // 기본값
+  //   }
+  // }
+
   String _formatArchiveDate(String archivedAt) {
     try {
-      // ISO 8601 형식에서 날짜 부분만 추출 (YYYY-MM-DD)
-      return archivedAt.split('T')[0];
+      // 그대로 저장 (시간 포함)
+      return archivedAt;
     } catch (e) {
       print('❌ 날짜 포맷 오류: $e');
-      return '2024-01-01'; // 기본값
+      return '2024-01-01T00:00:00'; // 기본값
     }
   }
 
+
   /// 카드들을 날짜순으로 정렬하는 메서드 (최신순)
+  // List<T> _sortCardsByDate<T>(List<T> cards) {
+  //   if (cards.isEmpty) return cards;
+  //
+  //   // T가 FruitCardData인지 FlowerCardData인지 확인하고 정렬
+  //   if (cards.first is FruitCardData) {
+  //     final fruitCards = (cards as List<FruitCardData>).toList();
+  //     fruitCards.sort((a, b) => b.date.compareTo(a.date));
+  //     return fruitCards as List<T>;
+  //   } else if (cards.first is FlowerCardData) {
+  //     final flowerCards = (cards as List<FlowerCardData>).toList();
+  //     flowerCards.sort((a, b) => b.date.compareTo(a.date));
+  //     return flowerCards as List<T>;
+  //   }
+  //
+  //   return cards;
+  // }
+
   List<T> _sortCardsByDate<T>(List<T> cards) {
     if (cards.isEmpty) return cards;
-    
-    // T가 FruitCardData인지 FlowerCardData인지 확인하고 정렬
+
     if (cards.first is FruitCardData) {
       final fruitCards = (cards as List<FruitCardData>).toList();
-      fruitCards.sort((a, b) => b.date.compareTo(a.date));
+      fruitCards.sort((a, b) {
+        try {
+          final dateA = DateTime.parse(a.date);  // a.date가 '2025-10-21T13:06:53.051531' 형식일 경우
+          final dateB = DateTime.parse(b.date);
+          return dateB.compareTo(dateA); // 🔹 최신순 (최근이 앞으로)
+        } catch (_) {
+          // 혹시 형식이 'YYYY-MM-DD'만 있을 때 대비
+          return b.date.compareTo(a.date);
+        }
+      });
       return fruitCards as List<T>;
     } else if (cards.first is FlowerCardData) {
       final flowerCards = (cards as List<FlowerCardData>).toList();
-      flowerCards.sort((a, b) => b.date.compareTo(a.date));
+      flowerCards.sort((a, b) {
+        try {
+          final dateA = DateTime.parse(a.date);
+          final dateB = DateTime.parse(b.date);
+          return dateB.compareTo(dateA); // 🔹 최신순
+        } catch (_) {
+          return b.date.compareTo(a.date);
+        }
+      });
       return flowerCards as List<T>;
     }
-    
+
     return cards;
   }
+
 
   /// 다음 사용 가능한 order 값을 찾는 메서드 (순서대로 채우기)
   /// 1, 2, 3 중에서 사용되지 않은 첫 번째 값 반환
