@@ -270,7 +270,7 @@ class PuzzleService {
 
   //완료된 퍼즐 목록에서 퍼즐 풀기 (퍼즐 다시풀기) (GET)
   Future<PlayPuzzleCompletedDto> playCompletedPuzzle(String puzzleId) async {
-    final _accessToken = StorageService.getAccessToken();
+    final _accessToken = await StorageService.getAccessToken();
 
     if(_accessToken == null){
       print('access token is null!!!!');

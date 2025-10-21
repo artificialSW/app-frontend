@@ -294,6 +294,7 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
     };
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           '나에게 온 질문',

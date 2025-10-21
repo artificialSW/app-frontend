@@ -318,9 +318,10 @@ class PuzzleListItem extends StatelessWidget {
         Text('퍼즐 푼 사람: ${puzzleDto.contributors}',
             style: TextStyle(color: Colors.grey, fontSize: 12)),
         const SizedBox(height: 8),
-        Text('메세지: ~~',
-            style: TextStyle(color: Colors.grey, fontSize: 12)),
+        // Text('메세지: ~~',
+        //     style: TextStyle(color: Colors.grey, fontSize: 12)),
         const SizedBox(height: 12),
+        const SizedBox(height: 34),
         Row(
           children: [
             Expanded(

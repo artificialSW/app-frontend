@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../shared/constants/app_colors.dart';
 import '../../shared/constants/app_text_styles.dart';
 import '../../shared/widgets/custom_bottom_bar.dart';
-import 'package:artificialsw_frontend/features/profile/logout.dart';
+import 'package:artificialsw_frontend/features/profile/logout_dialog.dart';
+import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 
 class ProfileRoot extends StatelessWidget {
   const ProfileRoot({super.key});
@@ -13,8 +15,8 @@ class ProfileRoot extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: ProfileRootTopBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 22),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -25,10 +27,17 @@ class ProfileRoot extends StatelessWidget {
             _buildMenuList(context),
             const SizedBox(height: 24),
             _buildInviteCode(),
-            const SizedBox(height: 32),
+            Spacer(),
             Center(
               child: TextButton(
-                child: const Text('로그아웃', style: TextStyle(color: Colors.red)),
+                child: Text(
+                  '로그아웃',
+                  style: AppTextStyles.pretendard_regular.copyWith(
+                    color: AppColors.plumu_gray_5,
+                    fontSize: 12,
+                    decoration: TextDecoration.underline, // ✅ 밑줄 추가
+                  ),
+                ),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -47,16 +56,16 @@ class ProfileRoot extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.plumu_green_30per,
+        color: Color(0xFFEDF9ED),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.plumu_green_main),
+        border: Border.all(color: AppColors.plumu_green_main, width: 1.5),
       ),
       child: Row(
         children: [
           const CircleAvatar(
             radius: 30,
-            backgroundColor: Colors.grey,
-            child: Icon(Icons.edit, color: Colors.white),
+            backgroundColor: AppColors.plumu_green_main,
+            child: Icon(Icons.edit, color: Colors.white, size: 30,),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -65,29 +74,40 @@ class ProfileRoot extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('최수민님', style: AppTextStyles.pretendard_bold.copyWith(
+                    Text('허준혁님', style: AppTextStyles.pretendard_bold.copyWith(
                         color: AppColors.plumu_black,
-                        fontSize: 20
+                        fontSize: 18
                     )),
                     const SizedBox(width: 8),
                     Container(
                       padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                       decoration: BoxDecoration(
                         color: AppColors.plumu_green_main,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text('자녀',
-                          style: AppTextStyles.pretendard_regular.copyWith(color: Colors.white, fontSize: 14)),
+                      child: Text(
+                          '자녀',
+                          style: AppTextStyles.pretendard_regular.copyWith(
+                              color: Colors.white, fontSize: 12)
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
-                Text('2004.03.13', style: AppTextStyles.pretendard_regular.copyWith(color: AppColors.plumu_gray_5, fontSize: 14)),
+                Text(
+                    '2002.03.25',
+                    style: AppTextStyles.pretendard_regular.copyWith(
+                        color: AppColors.plumu_gray_5,
+                        fontSize: 12)
+                ),
               ],
             ),
           ),
-          const Icon(Icons.arrow_forward_ios, size: 16),
+          const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+            color: AppColors.plumu_gray_5,
+          ),
         ],
       ),
     );
@@ -96,27 +116,47 @@ class ProfileRoot extends StatelessWidget {
   Widget _buildActionButtons() {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.plumu_green_main),
+        border: Border.all(
+            color: AppColors.plumu_green_main,
+            width: 1.5
+        ),
         borderRadius: BorderRadius.circular(12),
+        color: Color(0xFFEDF9ED),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _iconTextButton(Icons.favorite, '좋아요'),
-          _iconTextButton(Icons.chat_bubble, '댓글'),
-          _iconTextButton(Icons.extension, '퍼즐/질문'),
-        ],
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: IntrinsicHeight(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _imageTextButton(AppAssets.heart_logo, '좋아요'),
+              VerticalDivider(color: Color(0xFFA9E2A5), thickness: 1),
+              _imageTextButton(AppAssets.reply_logo, '댓글'),
+              VerticalDivider(color: Color(0xFFA9E2A5), thickness: 1),
+              _imageTextButton(AppAssets.puzzle_logo, '퍼즐/질문'),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _iconTextButton(IconData icon, String label) {
+  Widget _imageTextButton(String imagePath, String label) {
     return Expanded(
       child: Column(
         children: [
-          Icon(icon, color: AppColors.plumu_gray_7, size: 30),
+          Image.asset(
+              imagePath,
+              width: 35,
+            height: 35,
+          ),
           const SizedBox(height: 4),
-          Text(label, style: AppTextStyles.pretendard_medium.copyWith(color: AppColors.plumu_gray_7, fontSize: 14)),
+          Text(
+              label,
+              style: AppTextStyles.pretendard_medium.copyWith(
+                  color: AppColors.plumu_gray_7,
+                  fontSize: 12)
+          ),
         ],
       ),
     );
@@ -139,11 +179,16 @@ class ProfileRoot extends StatelessWidget {
           children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(title, style: AppTextStyles.pretendard_bold.copyWith(color: AppColors.plumu_gray_7, fontSize: 16)),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              title: Text(
+                  title,
+                  style: AppTextStyles.pretendard_bold.copyWith(
+                      color: AppColors.plumu_gray_7,
+                      fontSize: 14)
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 15, color: AppColors.plumu_gray_5,),
               onTap: () {},
             ),
-            const Divider(height: 1),
+            const Divider(height: 1, color: Color(0x4DCECECE)),
           ],
         ),
       )
@@ -153,32 +198,46 @@ class ProfileRoot extends StatelessWidget {
 
 
   Widget _buildInviteCode() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.plumu_gray_3),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Text('가족 초대코드', style: AppTextStyles.pretendard_bold.copyWith(color: AppColors.plumu_gray_7, fontSize: 16)),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text('135642', style: AppTextStyles.pretendard_regular.copyWith(color: AppColors.plumu_gray_7, fontSize: 14)),
-          ),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.plumu_green_main,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
+    return Row(
+      children: [
+        Text(
+            '가족 초대코드',
+            style: AppTextStyles.pretendard_bold.copyWith(
+                color: AppColors.plumu_gray_7,
+                fontSize: 14
+            )
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Text(
+            '135642',
+            style: AppTextStyles.pretendard_regular.copyWith(
+              color: AppColors.plumu_gray_5,
+              fontSize: 12,
+              decoration: TextDecoration.underline, // ✅ 밑줄 추가
             ),
-            child: const Text('복사하기'),
           ),
-        ],
-      ),
+        ),
+        CustomButton(
+          text: '복사하기',
+          onPressed: (){},
+          width: 70,
+          height: 30,
+          fontSize: 11,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        // ElevatedButton(
+        //   onPressed: () {},
+        //   style: ElevatedButton.styleFrom(
+        //     backgroundColor: AppColors.plumu_green_main,
+        //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(20),
+        //     ),
+        //   ),
+        //   child: const Text('복사하기'),
+        // ),
+      ],
     );
   }
 }

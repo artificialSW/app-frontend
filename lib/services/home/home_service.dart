@@ -98,6 +98,15 @@ class HomeService {
     }
   }
 
+  // Future<> getScore() async {
+  //   final _accessToken = StorageService.getAccessToken();
+  //   if(_accessToken == null){
+  //     print('access token is null!!!');
+  //   }
+  //
+  //   final response = await _dio.get('$baseUrl/api/tree/')
+  // }
+
   // 📚 아카이브 꽃 데이터 조회 (GET)
   // /api/archives/main/{year}/{month}/{period}/{treeIndex}
   // period: 1(~15일), 2(16~말일)
@@ -109,12 +118,14 @@ class HomeService {
     required int treeIndex,
   }) async {
     try {
-      final _accessToken = StorageService.getAccessToken();
+      final _accessToken = await StorageService.getAccessToken();
       if(_accessToken == null){
         print("access token is null!!!");
       }
       // 실제 API 호출 시도
       final response = await _dio.get('$baseUrl/api/tree/main/$year/$month/$period/$treeIndex/flower');
+
+      await Future.delayed(const Duration(milliseconds: 500));
 
       return ArchiveFlowerResponseDto.fromJsonList(response.data);
     } catch (e) {
@@ -142,12 +153,14 @@ class HomeService {
     required int treeIndex,
   }) async {
     try {
-      final _accessToken = StorageService.getAccessToken();
+      final _accessToken = await StorageService.getAccessToken();
       if(_accessToken == null){
         print("access token is null!!!");
       }
       // 실제 API 호출 시도
       final response = await _dio.get('$baseUrl/api/tree/$year/$month/$period/$treeIndex/fruit');
+
+      await Future.delayed(const Duration(milliseconds: 100));
       
       return ArchiveFruitResponseDto.fromJsonList(response.data);
     } catch (e) {
@@ -165,22 +178,18 @@ class HomeService {
   }
 
   Future<FruitCardDialogResponseDto?> getFruitCardInfo(String fruitId) async {
-    final _accessToken = StorageService.getAccessToken();
+    final _accessToken = await StorageService.getAccessToken();
     if(_accessToken == null) {
       print("access token is null!!!");
     }
 
     try{
-      final body = {
-        'fruitId': int.parse(fruitId),
-      };
       // const encoder = JsonEncoder.withIndent('  ');
       // final prettyJson = encoder.convert(body);
       // print('📦 Json: \n$prettyJson');
 
       final response = await _dio.get(
-        '$baseUrl/api/tree/fruit',
-        data: body,
+        '$baseUrl/api/tree/fruit/$fruitId',
         options: Options(headers: {'Authorization': 'Bearer $_accessToken'}),
       );
 
@@ -198,7 +207,7 @@ class HomeService {
   }
 
   Future<dynamic?> getFlowerCardInfo(String flowerId) async { //<PersonalDto> or <PublicDto>
-    final _accessToken = StorageService.getAccessToken();
+    final _accessToken = await StorageService.getAccessToken();
     if(_accessToken == null) {
       print("access token is null!!!");
     }
@@ -233,5 +242,4 @@ class HomeService {
       return null;
     }
   }
-
 }

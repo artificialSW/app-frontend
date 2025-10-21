@@ -77,11 +77,11 @@ class FruitCard extends StatelessWidget {
 
             // 퍼즐 완성 날짜 (카드 하단)
             Positioned(
-              bottom: 24,
+              bottom: 20,
               left: 0,
               right: 0,
               child: Text(
-                date,
+                date.split('T')[0],
                 textAlign: TextAlign.center,
                 style: AppTextStyles.pretendard_medium.copyWith(
                   fontSize: 10,
@@ -92,7 +92,7 @@ class FruitCard extends StatelessWidget {
 
             // 과일 이름 (카드 최하단)
             Positioned(
-              bottom: 6,
+              bottom: 4,
               left: 0,
               right: 0,
               child: Text(

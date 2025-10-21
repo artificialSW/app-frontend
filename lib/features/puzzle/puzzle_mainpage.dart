@@ -49,6 +49,48 @@ class _PuzzleRootState extends State<PuzzleRoot> {
       print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
       throw Exception('에러!!${e}');
       // // ✅ 목데이터 리턴
+
+      return PuzzleHomeGetDto(
+          category: ["운동하는 모습", "학교 가는 길", "퇴근 후의 모습"],
+          inProgress: [
+            PuzzleHomeOngoingPreviewDto(
+                puzzleId: 171,
+                imageUrl: 'https://picsum.photos/400/400',
+                completedPiecesId: [1, 2]
+            ),
+            PuzzleHomeOngoingPreviewDto(
+                puzzleId: 172,
+                imageUrl: 'https://picsum.photos/400/400',
+                completedPiecesId: [1, 2, 3]
+            ),
+          ],
+          completedThisWeek: [
+            PuzzleHomeCompletedPreviewDto(
+                puzzleId: 173,
+                imageUrl: 'https://picsum.photos/400/400',
+                size: 9,
+                title: '우리 가족이 함께한 추억',
+                completedAt: "2025-09-28T04:44:00Z"
+            ),
+            PuzzleHomeCompletedPreviewDto(
+                puzzleId: 174,
+                imageUrl: 'https://picsum.photos/400/400',
+                size: 9,
+                title: '좋았던 자연 경관',
+                completedAt: "2025-09-29T04:44:00Z"
+            ),
+            PuzzleHomeCompletedPreviewDto(
+                puzzleId: 175,
+                imageUrl: 'https://picsum.photos/400/400',
+                size: 9,
+                title: '사랑스러운 사진 자랑',
+                completedAt: "2025-09-30T04:44:00Z"
+            ),
+          ],
+          empty: false,
+          full: false,
+      );
+
       // return PuzzleHomeGetDto(
       //   subject: ["운동하는 모습", "학교 가는 길", "퇴근 후의 모습"],
       //   inProgress: [PuzzleHomeOngoingPreviewDto(
