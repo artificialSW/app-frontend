@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artificialsw_frontend/services/home/home_service.dart';
 
 /// 새로운 꽃/과일 Progress Bar 위젯
 /// - 시간대별 아이콘과 색상
@@ -50,6 +51,16 @@ class ProgressBarWithIcon extends StatelessWidget {
       return Color(0x193A0D10);
     }
   }
+
+  // Future<dynamic> _getScore(){
+  //   final _accessToken = StorageService.getAccessToken();
+  //
+  //   if(_accessToken == null){
+  //     print('access token is null!!!');
+  //   }
+  //
+  //   final response =
+  // }
 
   @override
   Widget build(BuildContext context) {

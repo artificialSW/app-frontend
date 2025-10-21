@@ -74,7 +74,7 @@ class ProfileRoot extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('최수민님', style: AppTextStyles.pretendard_bold.copyWith(
+                    Text('허준혁님', style: AppTextStyles.pretendard_bold.copyWith(
                         color: AppColors.plumu_black,
                         fontSize: 18
                     )),
@@ -95,7 +95,7 @@ class ProfileRoot extends StatelessWidget {
                   ],
                 ),
                 Text(
-                    '2004.03.13',
+                    '2002.03.25',
                     style: AppTextStyles.pretendard_regular.copyWith(
                         color: AppColors.plumu_gray_5,
                         fontSize: 12)

@@ -98,6 +98,15 @@ class HomeService {
     }
   }
 
+  // Future<> getScore() async {
+  //   final _accessToken = StorageService.getAccessToken();
+  //   if(_accessToken == null){
+  //     print('access token is null!!!');
+  //   }
+  //
+  //   final response = await _dio.get('$baseUrl/api/tree/')
+  // }
+
   // 📚 아카이브 꽃 데이터 조회 (GET)
   // /api/archives/main/{year}/{month}/{period}/{treeIndex}
   // period: 1(~15일), 2(16~말일)
@@ -109,7 +118,7 @@ class HomeService {
     required int treeIndex,
   }) async {
     try {
-      final _accessToken = StorageService.getAccessToken();
+      final _accessToken = await StorageService.getAccessToken();
       if(_accessToken == null){
         print("access token is null!!!");
       }
@@ -144,7 +153,7 @@ class HomeService {
     required int treeIndex,
   }) async {
     try {
-      final _accessToken = StorageService.getAccessToken();
+      final _accessToken = await StorageService.getAccessToken();
       if(_accessToken == null){
         print("access token is null!!!");
       }

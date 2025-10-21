@@ -255,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
       //if (loginData['isSuccess'] == true) {
       if (true) {
         //final loginResult = loginData['result'];
-        final accessToken = loginResponse.data.toString();
+        final accessToken = loginResponse.data['token'].toString();
         //final userType = loginResult['userType'];
         //String? refreshToken;
         //final String? rawCookie = loginResponse.headers['set-cookie'];
@@ -281,6 +281,8 @@ class _LoginScreenState extends State<LoginScreen> {
         // 2. 토큰 저장
         //await StorageService.saveAccessToken(accessToken, refreshToken);
         await StorageService.saveAccessToken(accessToken);
+
+        print("🔥🔥🔥🔥my access token is: $accessToken");
 
         // 3. 유저 가치(Value) 정보 API 호출
         // final userInfoUri = Uri.parse('$baseUrl/users/value');
