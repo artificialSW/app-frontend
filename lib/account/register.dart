@@ -4,6 +4,9 @@ import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/account/register_success_screen.dart';
+import 'package:artificialsw_frontend/shared/constants/constants.dart';
+import 'package:dio/dio.dart';
+import 'package:artificialsw_frontend/services/api_client.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -22,6 +25,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _ageController = TextEditingController();
   final _familyCodeController = TextEditingController();
   final _customMemberController = TextEditingController(); // ← 기타 선택 시 상세 입력
+
+  final Dio _dio = ApiClient.dio;
 
   String? _selectedGender;
   String? _selectedFamilyType;
@@ -336,8 +341,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     print('회원가입 데이터: $data');
-    // TODO: Dio API 연동
-    showSignUpCompleteDialog(context);
+
+    ///서버에 회원가입 요청
+    try {
+      // 실제 API 호출 시도
+      final response = await _dio.post(
+        '$baseUrl/api/signup',
+        data: data,
+      );
+
+      if (response.statusCode == 200) {
+        print('✅ 회원가입 성공');
+        final result = response.data;
+        if (result is String) {
+          print("회원가입 성공: $result");
+        } else {
+          print("회원가입 성공: ${result['message']}");
+        }
+      } else {
+        print('⚠️ 실패: ${response.statusCode}');
+      }
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      showSignUpCompleteDialog(context);
+    } catch (e) {
+      print('❌ 회원가입 오류: $e');
+    }
   }
 
 // 에러 다이얼로그
