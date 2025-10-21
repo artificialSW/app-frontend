@@ -64,27 +64,27 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
   // 두 번째 나무 기준 좌표계에서의 꽃 위치 (왼쪽/위쪽 패딩)
   // 1~4번째 카드가 열릴 위치 (두 번째 나무 내부 기준)
   final List<Offset> _baseFlower2Positions = const [
-    Offset(105, 62),   // 1번째 꽃
-    Offset(57, 134),   // 2번째 꽃
-    Offset(152, 181),  // 3번째 꽃
-    Offset(57, 237),   // 4번째 꽃
+    Offset(65+12, 62+10),   // 1번째 꽃
+    Offset(152, 144),   // 2번째 꽃
+    Offset(57, 191),  // 3번째 꽃
+    Offset(152, 237),   // 4번째 꽃
   ];
 
   // 세 번째 나무(과일) 기준 좌표계에서의 과일 위치 (왼쪽/위쪽 패딩)
   // 1~4번째 카드가 열릴 위치 (세 번째 나무 내부 기준)
   final List<Offset> _baseFruit1Positions = const [
-    Offset(105, 59),  // 1번째 과일
-    Offset(162, 130), // 2번째 과일
+    Offset(125, 82),  // 1번째 과일
+    Offset(182, 145), // 2번째 과일
     Offset(74, 169),  // 3번째 과일
-    Offset(168, 232), // 4번째 과일
+    Offset(158, 232), // 4번째 과일
   ];
 
   // 네 번째 나무(과일) 기준 좌표계에서의 과일 위치 (왼쪽/위쪽 패딩)
   // 1~3번째 카드가 열릴 위치 (네 번째 나무 내부 기준)
   final List<Offset> _baseFruit2Positions = const [
-    Offset(71, 52),   // 1번째 과일
-    Offset(32, 133),  // 2번째 과일
-    Offset(105, 167), // 3번째 과일
+    Offset(71, 40),   // 1번째 과일
+    Offset(32, 157),  // 2번째 과일
+    Offset(132, 167), // 3번째 과일
   ];
 
   @override
@@ -112,28 +112,28 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     switch (treeType) {
       case 'flower-1':
         return {
-          'width': 128.0 * widthRatio,
-          'height': 243.0 * heightRatio,
+          'width': 108.0 * widthRatio,
+          'height': 213.0 * heightRatio,
           'topPadding': 197.0 * heightRatio,
         };
       case 'flower-2':
       // fruit_tree_1 이미지 사용하므로 fruit-1의 크기/위치 적용
         return {
-          'width': 99.0 * widthRatio,
-          'height': 221.0 * heightRatio,
+          'width': 85.0 * widthRatio,
+          'height': 200.0 * heightRatio,
           'topPadding': 193.0 * heightRatio,
         };
       case 'fruit-1':
       // flower_tree_2 이미지 사용하므로 flower-2의 크기/위치 적용
         return {
-          'width': 99.0 * widthRatio,
-          'height': 221.0 * heightRatio,
+          'width': 85.0 * widthRatio,
+          'height': 200.0 * heightRatio,
           'topPadding': 232.0 * heightRatio,
         };
       case 'fruit-2':
         return {
-          'width': 49.0 * widthRatio,
-          'height': 102.0 * heightRatio,
+          'width': 40.0 * widthRatio,
+          'height': 90.0 * heightRatio,
           'topPadding': 242.0 * heightRatio,
         };
       default:
@@ -341,14 +341,20 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final scaleX = treeWidth / _baseTreeWidth;
     final scaleY = treeHeight / _baseTreeHeight;
     // 아이콘 크기: 55x55을 기준으로 너비 스케일에 맞춰 균등 스케일링
-    double size = 75.0 * scaleX;
+    double size = 65.0 * scaleX;
     // 아카시아만 크기를 1.2배로 키움 (이름으로 확인)
     final isAcacia = flowers1?[index].flowerName == 'acacia';
-    size = isAcacia ? size * 1.4 : size; // 아카시아만 크기 증가
+    size = isAcacia ? size * 1.6 : size; // 아카시아만 크기 증가
 
     final basePos = _baseFlowerPositions[index];
-    final left = basePos.dx * scaleX + 44;
-    final top = basePos.dy * scaleY + 295;
+    double left = basePos.dx * scaleX + 55;
+    double top = basePos.dy * scaleY + 308;
+
+    //아카시아라면 위치를 살짝 위·왼쪽으로 이동 (-10, -10)
+    if (isAcacia) {
+      left -= 3;
+      top -= 3;
+    }
 
     return Positioned(
       left: left,
@@ -371,12 +377,18 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     double size = 75.0 * scaleX;
     // 아이콘 크기: 60x60을 기준으로 너비 스케일에 맞춰 균등 스케일링
     // 아카시아만 크기를 1.2배로 키움 (이름으로 확인)
-    final isAcacia = flowers1?[index].flowerName == 'acacia';
-    size = isAcacia ? size * 1.4 : size; // 아카시아만 크기 증가
+    final isAcacia = flowers2?[index].flowerName == 'acacia';
+    size = isAcacia ? size * 1.6 : size; // 아카시아만 크기 증가
 
     final basePos = _baseFlower2Positions[index];
-    final left = basePos.dx * scaleX + 123;
-    final top = basePos.dy * scaleY + 285;
+    double left = basePos.dx * scaleX + 124;
+    double top = basePos.dy * scaleY + 289;
+
+    // 아카시아라면 위치를 살짝 위·왼쪽으로 이동 (-10, -10)
+    if (isAcacia) {
+      left -= 3;
+      top -= 3;
+    }
 
     return Positioned(
       left: left,
@@ -396,12 +408,16 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final scaleX = treeWidth / _baseTree3Width;
     final scaleY = treeHeight / _baseTree3Height;
     // 아이콘 크기: 60x65 (가로/세로 각각 스케일)
-    final width = 75.0 * scaleX;
-    final height = 75.0 * scaleY;
+    double width = 65.0 * scaleX;
+    double height = 65.0 * scaleY;
+
+    final hasToShrink = ( fruits3?[index].fruitName == 'strawberry' ) || ( fruits3?[index].fruitName == 'raspberry' );
+    width = hasToShrink ? width * 0.85 : width; // 딸기, 산딸기 크기 축소
+    height = hasToShrink ? height * 0.85 : height;
 
     final basePos = _baseFruit1Positions[index];
-    final left = basePos.dx * scaleX + 184;
-    final top = basePos.dy * scaleY + 323;
+    final left = basePos.dx * scaleX + 189;
+    final top = basePos.dy * scaleY + 329;
 
     return Positioned(
       left: left,
@@ -422,12 +438,12 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final scaleX = treeWidth / _baseTree4Width;
     final scaleY = treeHeight / _baseTree4Height;
     // 아이콘 크기: 60x65 (가로/세로 각각 스케일)
-    final width = 75.0 * scaleX;
-    final height = 75.0 * scaleY;
+    final width = 95.0 * scaleX;
+    final height = 95.0 * scaleY;
 
     final basePos = _baseFruit2Positions[index];
     final left = basePos.dx * scaleX + 250;
-    final top = basePos.dy * scaleY + 405;
+    final top = basePos.dy * scaleY + 407;
 
     return Positioned(
       left: left,
