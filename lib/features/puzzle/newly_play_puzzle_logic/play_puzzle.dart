@@ -414,9 +414,10 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      width: boardWidth,
+                      width: boardWidth * 0.8,
                       child: CustomButton(
                         text: '저장하기',
+                        height: 40,
                         onPressed: () {
                           _captureAndSaveProgress(boardHeight);
                         },
@@ -430,9 +431,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
         ),
       ),
     );
-
   }
-
 }
 
 
