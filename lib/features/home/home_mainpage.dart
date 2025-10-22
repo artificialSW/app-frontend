@@ -7,6 +7,8 @@ import 'package:artificialsw_frontend/features/home/single_tree_logic/tree_loadi
 import 'package:artificialsw_frontend/features/home/single_tree_logic/archive_tree_loading_page.dart';
 import 'package:artificialsw_frontend/features/home/tutorial_logic/help_page.dart';
 import 'package:artificialsw_frontend/features/home/widget/island_save_indicator.dart';
+import 'package:artificialsw_frontend/services/home/home_service.dart';
+import 'package:artificialsw_frontend/services/home/dto/progress_scores/progress_scores_response_dto.dart';
 import 'package:flutter/material.dart';
 
 /// 홈 메인 화면 위젯
@@ -31,6 +33,11 @@ class _HomeRootState extends State<HomeRoot> {
   /// 섬 저장 인디케이터가 이미 표시되었는지 추적하는 정적 변수
   /// 앱 실행 중 한 번만 표시되도록 보장함
   static bool _hasShownSaveIndicator = false;
+  
+  // API 관련 변수들
+  final HomeService _homeService = HomeService();
+  ProgressScoresResponseDto? _progressScores;
+  bool _isLoadingScores = true;
   
   /// 현재 시간에 따라 배경 이미지를 선택하는 함수
   /// 
@@ -95,6 +102,7 @@ class _HomeRootState extends State<HomeRoot> {
   @override
   void initState() {
     super.initState();
+    _loadProgressScores();
     // 화면이 완전히 로드된 후 섬 저장 완료 인디케이터를 표시함
     // 단, 앱 실행 중 한 번만 표시됨
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -103,6 +111,31 @@ class _HomeRootState extends State<HomeRoot> {
         IslandSaveIndicator.show(context: context);
       }
     });
+  }
+
+  /// 프로그레스바 점수 조회
+  Future<void> _loadProgressScores() async {
+    try {
+      // TODO: archiveId를 실제 값으로 변경 (현재는 임시값)
+      const archiveId = "current"; // 또는 실제 archive ID
+      final scores = await _homeService.getProgressScores(archiveId: archiveId);
+      setState(() {
+        _progressScores = scores;
+        _isLoadingScores = false;
+      });
+    } catch (e) {
+      print('❌ 프로그레스바 점수 로드 실패: $e');
+      print('🔄 하드코딩된 기본값으로 폴백합니다.');
+      
+      // API 실패 시 하드코딩된 기본값으로 폴백
+      setState(() {
+        _progressScores = const ProgressScoresResponseDto(
+          puzzleScore: 4,      // 퍼즐 점수 기본값
+          communityScore: 7,   // 커뮤니티 점수 기본값
+        );
+        _isLoadingScores = false;
+      });
+    }
   }
 
   @override
@@ -158,17 +191,23 @@ class _HomeRootState extends State<HomeRoot> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 꽃 진행률 바 (왼쪽)
+                // 꽃 진행률 바 (왼쪽) - 커뮤니티 점수 (10개 세그먼트)
                 ProgressBarWithIcon(
                   isFlower: true,
-                  progress: 0.4, // 현재 4개 세그먼트가 채워진 상태
+                  progress: _isLoadingScores 
+                      ? 0.0 
+                      : (_progressScores?.communityScore ?? 0) / 10.0, // 커뮤니티 점수 / 10
+                  maxSegments: 10, // 꽃은 10개
                 ),
                 // 두 진행률 바 사이의 간격
                 SizedBox(width: 7.0 * widthRatio),
-                // 과일 진행률 바 (오른쪽)
+                // 과일 진행률 바 (오른쪽) - 퍼즐 점수 (8개 세그먼트)
                 ProgressBarWithIcon(
                   isFlower: false,
-                  progress: 0.5, // 현재 5개 세그먼트가 채워진 상태
+                  progress: _isLoadingScores 
+                      ? 0.0 
+                      : (_progressScores?.puzzleScore ?? 0) / 8.0, // 퍼즐 점수 / 8
+                  maxSegments: 8, // 열매는 8개
                 ),
               ],
             ),

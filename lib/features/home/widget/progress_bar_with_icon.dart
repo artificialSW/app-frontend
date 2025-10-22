@@ -7,12 +7,14 @@ import 'package:artificialsw_frontend/services/home/home_service.dart';
 /// - 반응형 크기 조정
 class ProgressBarWithIcon extends StatelessWidget {
   final bool isFlower; // true: 꽃 progress bar, false: 과일 progress bar
-  final double progress; // 0.0 ~ 1.0 (10개 세그먼트 기준)
+  final double progress; // 0.0 ~ 1.0 (세그먼트 기준)
+  final int maxSegments; // 최대 세그먼트 수 (기본값: 꽃 10개, 열매 8개)
 
   const ProgressBarWithIcon({
     super.key,
     required this.isFlower,
     required this.progress,
+    this.maxSegments = 10, // 기본값 10개
   });
 
   /// 현재 시간에 따른 아이콘 경로 반환
@@ -79,12 +81,14 @@ class ProgressBarWithIcon extends StatelessWidget {
     final barWidth = 153.81 * widthRatio;
     final barHeight = 28.92 * heightRatio;
     
-    // 세그먼트 크기 (반응형) - 정확한 디자인 크기
-    final segmentWidth = 7.98 * widthRatio;
+    // 세그먼트 크기 (반응형) - 열매는 더 뚱뚱하게
+    final segmentWidth = isFlower 
+        ? 7.98 * widthRatio  // 꽃: 기본 크기
+        : 9.5 * widthRatio;  // 열매: 더 넓게 (약 19% 증가)
     final segmentHeight = 19.95 * heightRatio;
     
-    // 진행된 세그먼트 개수 (10개 기준)
-    final filledSegments = (progress * 10).round().clamp(0, 10);
+    // 진행된 세그먼트 개수 (동적 기준)
+    final filledSegments = (progress * maxSegments).round().clamp(0, maxSegments);
 
     return Row(
       children: [
@@ -118,12 +122,14 @@ class ProgressBarWithIcon extends StatelessWidget {
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center, // 세그먼트들을 중앙 정렬
-            children: List.generate(10, (index) {
+            children: List.generate(maxSegments, (index) {
               final isFilled = index < filledSegments;
+              // 열매는 세그먼트 간격을 더 넓게
+              final segmentSpacing = isFlower ? 4.8 * widthRatio : 6.5 * widthRatio;
               return Container(
                 width: segmentWidth,
                 height: segmentHeight,
-                margin: EdgeInsets.only(right: index < 9 ? 4.8 * widthRatio : 0), // 세그먼트 간격 4.8px (반응형)
+                margin: EdgeInsets.only(right: index < maxSegments - 1 ? segmentSpacing : 0), // 세그먼트 간격 (반응형)
                 decoration: ShapeDecoration(
                   color: isFilled ? Colors.white : Colors.transparent,
                   shape: RoundedRectangleBorder(

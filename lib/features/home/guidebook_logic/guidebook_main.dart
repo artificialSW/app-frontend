@@ -217,7 +217,7 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
                                 title,
                                 style: AppTextStyles.pretendard_bold.copyWith(
                                   color: AppColors.plumu_black,
-                                  fontSize: 27,
+                                  fontSize: (27 * MediaQuery.of(context).size.width / 430).clamp(24, 30),
                                   height: 1.33,
                                   letterSpacing: -0.32,
                                 ),
@@ -230,7 +230,7 @@ class _GuidebookMainPageState extends State<GuidebookMainPage> {
                                   subtitle,
                                   style: AppTextStyles.pretendard_medium.copyWith(
                                     color: AppColors.plumu_gray_8,
-                                    fontSize: 15,
+                                    fontSize: (15 * MediaQuery.of(context).size.width / 430).clamp(13, 17),
                                     height: 1.50,
                                     letterSpacing: -0.46,
                                   ),

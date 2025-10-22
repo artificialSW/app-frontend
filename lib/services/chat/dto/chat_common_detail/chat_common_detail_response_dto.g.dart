@@ -27,7 +27,3 @@ Map<String, dynamic> _$ChatCommonDetailResponseDtoToJson(
   'question': instance.question,
   'comments': instance.comments,
 };
-
-
-
-

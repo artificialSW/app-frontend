@@ -39,7 +39,7 @@ class GuidebookTabBar extends StatelessWidget {
                     child: Text(
                       '꽃',
                       style: AppTextStyles.pretendard_medium.copyWith(
-                        fontSize: 14,
+                        fontSize: (14 * MediaQuery.of(context).size.width / 430).clamp(12, 16),
                         color: selectedTab == 0 ? AppColors.plumu_gray_1 : AppColors.plumu_gray_7,
                       ),
                     ),
@@ -60,7 +60,7 @@ class GuidebookTabBar extends StatelessWidget {
                     child: Text(
                       '열매',
                       style: AppTextStyles.pretendard_medium.copyWith(
-                        fontSize: 14,
+                        fontSize: (14 * MediaQuery.of(context).size.width / 430).clamp(12, 16),
                         color: selectedTab == 1 ? AppColors.plumu_gray_1 : AppColors.plumu_gray_7,
                       ),
                     ),

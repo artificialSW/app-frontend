@@ -13,6 +13,7 @@ import 'package:artificialsw_frontend/services/home/dto/archive/fruit_card_dialo
 import 'dart:convert';
 import 'package:artificialsw_frontend/services/home/dto/archive/flower_card_dialog_response_dto/personal_dto.dart';
 import 'package:artificialsw_frontend/services/home/dto/archive/flower_card_dialog_response_dto/public_dto.dart';
+import 'package:artificialsw_frontend/services/home/dto/progress_scores/progress_scores_response_dto.dart';
 
 /// 홈 관련 서버 통신을 담당하는 서비스 클래스
 /// 퍼즐과 동일한 패턴으로 구현
@@ -242,4 +243,34 @@ class HomeService {
       return null;
     }
   }
+
+  // 📊 프로그레스바 점수 조회 (GET)
+  // /api/tree/{archieve_id}/scores
+  Future<ProgressScoresResponseDto> getProgressScores({
+    required String archiveId,
+  }) async {
+    try {
+      final _accessToken = await StorageService.getAccessToken();
+      if(_accessToken == null) {
+        print("access token is null!!!");
+      }
+
+      final response = await _dio.get(
+        '$baseUrl/api/tree/$archiveId/scores',
+        options: Options(headers: {'Authorization': 'Bearer $_accessToken'}),
+      );
+
+      if (response.statusCode == 200) {
+        print('✅ 프로그레스바 점수 조회 성공');
+      } else {
+        print('⚠️ 프로그레스바 점수 조회 실패: ${response.statusCode}');
+      }
+
+      return ProgressScoresResponseDto.fromJson(response.data);
+    } catch (e) {
+      print('❌ 프로그레스바 점수 조회 오류: $e');
+      throw Exception('프로그레스바 점수 조회 실패: $e');
+    }
+  }
+
 }

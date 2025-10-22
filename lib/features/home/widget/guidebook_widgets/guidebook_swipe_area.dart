@@ -31,8 +31,9 @@ class GuidebookSwipeArea extends StatelessWidget {
         builder: (context, constraints) {
           final screenWidth = MediaQuery.of(context).size.width;
           final screenHeight = MediaQuery.of(context).size.height;
-          final widthRatio = screenWidth / 430;
-          final heightRatio = screenHeight / 932;
+          // 비율 제한으로 모든 기기에서 일관된 크기 유지
+          final widthRatio = (screenWidth / 430).clamp(0.8, 1.2);
+          final heightRatio = (screenHeight / 932).clamp(0.8, 1.2);
           
           return Align(
             alignment: Alignment.centerRight,
@@ -99,8 +100,9 @@ class GuidebookSwipeArea extends StatelessWidget {
         builder: (context, constraints) {
           final screenWidth = MediaQuery.of(context).size.width;
           final screenHeight = MediaQuery.of(context).size.height;
-          final widthRatio = screenWidth / 430;
-          final heightRatio = screenHeight / 932;
+          // 비율 제한으로 모든 기기에서 일관된 크기 유지
+          final widthRatio = (screenWidth / 430).clamp(0.8, 1.2);
+          final heightRatio = (screenHeight / 932).clamp(0.8, 1.2);
           
           return Stack(
             children: [
