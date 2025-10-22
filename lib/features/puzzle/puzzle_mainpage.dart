@@ -330,38 +330,46 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                       ),
                     ],
                   ),
-                  Row(
+                  puzzle.inProgress.isEmpty
+                      ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: Container(
+                      height: max(90, screenHeight*0.13),
+                      child: Center(
+                        child: Text(
+                          '진행 중인 퍼즐이 없습니다 🙂',
+                          style: AppTextStyles.pretendard_medium.copyWith(
+                            fontSize: 14,
+                            color: AppColors.plumu_gray_5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                      : Row(
                     children: [
                       SizedBox(width: screenWidth*0.06,),
                       PuzzleCardWidget(
-                        imageUrl: puzzle.inProgress.isNotEmpty
-                            ? puzzle.inProgress[0]?.imageUrl ?? 'https://picsum.photos/600/400'
-                            : 'https://picsum.photos/600/400',
-                        dateInfo: formatUtcToDateString(puzzle.inProgress.isNotEmpty
-                            ? puzzle.inProgress[0]?.lastSavedAt ?? '1111-11-11'
-                            : '2000-01-01'
-                        ),
+                        imageUrl: puzzle.inProgress[0]?.imageUrl ?? 'https://picsum.photos/600/400',
+                        dateInfo: formatUtcToDateString(puzzle.inProgress[0]?.lastSavedAt ?? '1111-11-11'),
                         imageSize: max(screenWidth*0.4, 150),
                         dateFontSize: 10,
                         text: '진행중인 퍼즐',
                         textFontSize: 14,
                         heightOffset: max(screenWidth*0.2, 100),
                       ),
-                      SizedBox(width: screenWidth*0.06,),
-                      PuzzleCardWidget(
-                        imageUrl: puzzle.inProgress.length > 1 //진행중인 데이터 2개 이상 넘어와야.
-                          ? puzzle.inProgress[1]?.imageUrl ?? 'https://picsum.photos/600/400'
-                          : 'https://picsum.photos/600/400',
-                        dateInfo: formatUtcToDateString(puzzle.inProgress.length > 1
-                          ? puzzle.inProgress[1]?.lastSavedAt ?? '0000-00-00'
-                          : '2000-01-01'
+                      if (puzzle.inProgress.length > 1) ...[
+                        SizedBox(width: screenWidth*0.06,),
+                        PuzzleCardWidget(
+                          imageUrl: puzzle.inProgress[1]?.imageUrl ?? 'https://picsum.photos/600/400',
+                          dateInfo: formatUtcToDateString(puzzle.inProgress[1]?.lastSavedAt ?? '1111-11-11'),
+                          imageSize: max(screenWidth*0.4, 150),
+                          dateFontSize: 10,
+                          textFontSize: 14,
+                          text: '진행중인 퍼즐',
+                          heightOffset: max(screenWidth*0.2, 100),
                         ),
-                        imageSize: max(screenWidth*0.4, 150),
-                        dateFontSize: 10,
-                        textFontSize: 14,
-                        text: '진행중인 퍼즐',
-                        heightOffset: max(screenWidth*0.2, 100),
-                      ),
+                      ],
                     ],
                   ),
                   SizedBox(height: screenHeight*0.02),
