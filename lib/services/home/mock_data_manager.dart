@@ -160,23 +160,23 @@ class MockDataManager {
     if (month == 9) {
       if (period == 1) {
         data.addAll([
-          ArchiveFlowerResponseDto(flowerId: 1, flowerName: 'cosmos', archivedAt: '2025-09-01T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 2, flowerName: 'cherry', archivedAt: '2025-09-03T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 3, flowerName: 'magnolia', archivedAt: '2025-09-05T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 4, flowerName: 'patbae', archivedAt: '2025-09-07T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 5, flowerName: 'cherry', archivedAt: '2025-09-09T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 6, flowerName: 'cosmos', archivedAt: '2025-09-11T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 7, flowerName: '장미', archivedAt: '2025-09-13T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 8, flowerName: '해바라기', archivedAt: '2025-09-15T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 1, flowerName: 'cosmos',   archivedAt: '2025-09-15T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 2, flowerName: 'cherry',   archivedAt: '2025-09-13T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 3, flowerName: 'magnolia', archivedAt: '2025-09-11T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 4, flowerName: 'patbae',   archivedAt: '2025-09-09T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 5, flowerName: 'cherry',   archivedAt: '2025-09-07T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 6, flowerName: 'cosmos',   archivedAt: '2025-09-05T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 7, flowerName: '장미',       archivedAt: '2025-09-03T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 8, flowerName: '해바라기',   archivedAt: '2025-09-01T00:00:00Z'),
         ]);
       } else {
         data.addAll([
-          ArchiveFlowerResponseDto(flowerId: 9, flowerName: 'cosmos', archivedAt: '2025-09-17T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 10, flowerName: 'magnolia', archivedAt: '2025-09-19T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 11, flowerName: 'acacia', archivedAt: '2025-09-21T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 12, flowerName: 'cosmos', archivedAt: '2025-09-23T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 13, flowerName: 'acacia', archivedAt: '2025-09-24T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 14, flowerName: 'magnolia', archivedAt: '2025-09-25T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 9,  flowerName: 'cosmos',   archivedAt: '2025-09-25T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 10, flowerName: 'magnolia', archivedAt: '2025-09-24T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 11, flowerName: 'acacia',   archivedAt: '2025-09-23T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 12, flowerName: 'cosmos',   archivedAt: '2025-09-21T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 13, flowerName: 'acacia',   archivedAt: '2025-09-19T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 14, flowerName: 'magnolia', archivedAt: '2025-09-17T00:00:00Z'),
         ]);
       }
     }
@@ -185,25 +185,27 @@ class MockDataManager {
     if (month == 10) {
       if (period == 1) {
         data.addAll([
-          ArchiveFlowerResponseDto(flowerId: 1, flowerName: '동백꽃', archivedAt: '2025-10-01T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 2, flowerName: '아카시아', archivedAt: '2025-10-03T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 3, flowerName: '매화', archivedAt: '2025-10-05T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 4, flowerName: '팥배꽃', archivedAt: '2025-10-07T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 5, flowerName: '벚꽃', archivedAt: '2025-10-09T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 6, flowerName: '목련', archivedAt: '2025-10-11T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 7, flowerName: '장미', archivedAt: '2025-10-13T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 8, flowerName: '해바라기', archivedAt: '2025-10-15T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 1, flowerName: 'cosmos',   archivedAt: '2025-10-15T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 2, flowerName: 'cherry',   archivedAt: '2025-10-13T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 3, flowerName: 'magnolia', archivedAt: '2025-10-11T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 4, flowerName: 'patbae',   archivedAt: '2025-10-09T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 5, flowerName: 'cherry',   archivedAt: '2025-10-07T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 6, flowerName: 'cosmos',   archivedAt: '2025-10-05T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 7, flowerName: '장미',       archivedAt: '2025-10-03T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 8, flowerName: '해바라기',   archivedAt: '2025-10-01T00:00:00Z'),
         ]);
       } else {
         data.addAll([
-          ArchiveFlowerResponseDto(flowerId: 9, flowerName: '수국', archivedAt: '2025-10-17T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 10, flowerName: '코스모스', archivedAt: '2025-10-19T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 11, flowerName: '제비꽃', archivedAt: '2025-10-21T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 12, flowerName: '튤립', archivedAt: '2025-10-23T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 9,  flowerName: 'cosmos',   archivedAt: '2025-10-25T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 10, flowerName: 'magnolia', archivedAt: '2025-10-24T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 11, flowerName: 'acacia',   archivedAt: '2025-10-23T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 12, flowerName: 'cosmos',   archivedAt: '2025-10-21T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 13, flowerName: 'acacia',   archivedAt: '2025-10-19T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 14, flowerName: 'magnolia', archivedAt: '2025-10-17T00:00:00Z'),
         ]);
       }
     }
-    
+
     return data;
   }
 
@@ -307,21 +309,21 @@ class MockDataManager {
     if (month == 9) {
       if (period == 1) {
         data.addAll([
-          ArchiveFlowerResponseDto(flowerId: 1, flowerName: 'acacia', archivedAt: '2025-09-02T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 2, flowerName: 'patbae', archivedAt: '2025-09-04T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 3, flowerName: 'patbae', archivedAt: '2025-09-06T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 4, flowerName: 'acacia', archivedAt: '2025-09-08T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 5, flowerName: '벚꽃', archivedAt: '2025-09-10T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 6, flowerName: '목련', archivedAt: '2025-09-12T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 7, flowerName: '장미', archivedAt: '2025-09-14T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 8, flowerName: '해바라기', archivedAt: '2025-09-16T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 1, flowerName: 'acacia',   archivedAt: '2025-09-16T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 2, flowerName: 'patbae',   archivedAt: '2025-09-14T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 3, flowerName: 'patbae',   archivedAt: '2025-09-12T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 4, flowerName: 'acacia',   archivedAt: '2025-09-10T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 5, flowerName: '벚꽃',      archivedAt: '2025-09-08T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 6, flowerName: '목련',      archivedAt: '2025-09-06T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 7, flowerName: '장미',      archivedAt: '2025-09-04T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 8, flowerName: '해바라기',  archivedAt: '2025-09-02T00:00:00Z'),
         ]);
       } else {
         data.addAll([
-          ArchiveFlowerResponseDto(flowerId: 9, flowerName: 'cosmos', archivedAt: '2025-09-18T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 10, flowerName: 'cosmos', archivedAt: '2025-09-20T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 11, flowerName: 'acacia', archivedAt: '2025-09-22T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 12, flowerName: 'acacia', archivedAt: '2025-09-24T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 9,  flowerName: 'cosmos', archivedAt: '2025-09-24T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 10, flowerName: 'cosmos', archivedAt: '2025-09-22T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 11, flowerName: 'acacia', archivedAt: '2025-09-20T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 12, flowerName: 'acacia', archivedAt: '2025-09-18T00:00:00Z'),
         ]);
       }
     }
@@ -330,25 +332,25 @@ class MockDataManager {
     if (month == 10) {
       if (period == 1) {
         data.addAll([
-          ArchiveFlowerResponseDto(flowerId: 1, flowerName: '동백꽃', archivedAt: '2025-10-02T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 2, flowerName: '아카시아', archivedAt: '2025-10-04T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 3, flowerName: '매화', archivedAt: '2025-10-06T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 4, flowerName: '팥배꽃', archivedAt: '2025-10-08T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 5, flowerName: '벚꽃', archivedAt: '2025-10-10T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 6, flowerName: '목련', archivedAt: '2025-10-12T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 7, flowerName: '장미', archivedAt: '2025-10-14T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 8, flowerName: '해바라기', archivedAt: '2025-10-16T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 1, flowerName: 'acacia',   archivedAt: '2025-10-16T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 2, flowerName: 'patbae',   archivedAt: '2025-10-14T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 3, flowerName: 'patbae',   archivedAt: '2025-10-12T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 4, flowerName: 'acacia',   archivedAt: '2025-10-10T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 5, flowerName: '벚꽃',      archivedAt: '2025-10-08T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 6, flowerName: '목련',      archivedAt: '2025-10-06T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 7, flowerName: '장미',      archivedAt: '2025-10-04T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 8, flowerName: '해바라기',  archivedAt: '2025-10-02T00:00:00Z'),
         ]);
       } else {
         data.addAll([
-          ArchiveFlowerResponseDto(flowerId: 9, flowerName: '수국', archivedAt: '2025-10-18T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 10, flowerName: '코스모스', archivedAt: '2025-10-20T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 11, flowerName: '제비꽃', archivedAt: '2025-10-22T00:00:00Z'),
-          ArchiveFlowerResponseDto(flowerId: 12, flowerName: '튤립', archivedAt: '2025-10-24T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 9,  flowerName: 'cosmos', archivedAt: '2025-10-24T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 10, flowerName: 'cosmos', archivedAt: '2025-10-22T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 11, flowerName: 'acacia', archivedAt: '2025-10-20T00:00:00Z'),
+          ArchiveFlowerResponseDto(flowerId: 12, flowerName: 'acacia', archivedAt: '2025-10-18T00:00:00Z'),
         ]);
       }
     }
-    
+
     return data;
   }
 
@@ -452,21 +454,21 @@ class MockDataManager {
     if (month == 9) {
       if (period == 1) {
         data.addAll([
-          ArchiveFruitResponseDto(fruitId: 1, fruitName: 'strawberry', archivedAt: '2025-09-01T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 2, fruitName: 'cherry', archivedAt: '2025-09-03T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 3, fruitName: 'peach', archivedAt: '2025-09-05T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 4, fruitName: 'raspberry', archivedAt: '2025-09-07T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 5, fruitName: '복숭아', archivedAt: '2025-09-09T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 6, fruitName: '자두', archivedAt: '2025-09-11T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 7, fruitName: '망고', archivedAt: '2025-09-13T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 8, fruitName: '블루베리', archivedAt: '2025-09-15T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 1, fruitName: 'strawberry', archivedAt: '2025-09-15T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 2, fruitName: 'cherry',     archivedAt: '2025-09-13T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 3, fruitName: 'peach',      archivedAt: '2025-09-11T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 4, fruitName: 'raspberry',  archivedAt: '2025-09-09T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 5, fruitName: '복숭아',       archivedAt: '2025-09-07T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 6, fruitName: '자두',        archivedAt: '2025-09-05T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 7, fruitName: '망고',        archivedAt: '2025-09-03T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 8, fruitName: '블루베리',     archivedAt: '2025-09-01T00:00:00Z'),
         ]);
       } else {
         data.addAll([
-          ArchiveFruitResponseDto(fruitId: 9, fruitName: 'grape', archivedAt: '2025-09-17T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 10, fruitName: 'pear', archivedAt: '2025-09-19T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 11, fruitName: 'persimmon', archivedAt: '2025-09-21T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 12, fruitName: 'pear', archivedAt: '2025-09-23T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 9,  fruitName: 'grape',      archivedAt: '2025-09-23T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 10, fruitName: 'pear',       archivedAt: '2025-09-21T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 11, fruitName: 'persimmon',  archivedAt: '2025-09-19T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 12, fruitName: 'pear',       archivedAt: '2025-09-17T00:00:00Z'),
         ]);
       }
     }
@@ -475,25 +477,25 @@ class MockDataManager {
     if (month == 10) {
       if (period == 1) {
         data.addAll([
-          ArchiveFruitResponseDto(fruitId: 1, fruitName: '체리', archivedAt: '2025-10-01T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 2, fruitName: '딸기', archivedAt: '2025-10-03T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 3, fruitName: '키위', archivedAt: '2025-10-05T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 4, fruitName: '산딸기', archivedAt: '2025-10-07T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 5, fruitName: '복숭아', archivedAt: '2025-10-09T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 6, fruitName: '자두', archivedAt: '2025-10-11T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 7, fruitName: '망고', archivedAt: '2025-10-13T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 8, fruitName: '블루베리', archivedAt: '2025-10-15T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 1, fruitName: 'strawberry', archivedAt: '2025-10-15T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 2, fruitName: 'cherry',     archivedAt: '2025-10-13T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 3, fruitName: 'peach',      archivedAt: '2025-10-11T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 4, fruitName: 'raspberry',  archivedAt: '2025-10-09T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 5, fruitName: '복숭아',       archivedAt: '2025-10-07T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 6, fruitName: '자두',        archivedAt: '2025-10-05T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 7, fruitName: '망고',        archivedAt: '2025-10-03T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 8, fruitName: '블루베리',     archivedAt: '2025-10-01T00:00:00Z'),
         ]);
       } else {
         data.addAll([
-          ArchiveFruitResponseDto(fruitId: 9, fruitName: '포도', archivedAt: '2025-10-17T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 10, fruitName: '포도', archivedAt: '2025-10-19T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 11, fruitName: '레몬', archivedAt: '2025-10-21T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 12, fruitName: '감', archivedAt: '2025-10-23T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 9,  fruitName: 'grape',      archivedAt: '2025-10-23T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 10, fruitName: 'pear',       archivedAt: '2025-10-21T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 11, fruitName: 'persimmon',  archivedAt: '2025-10-19T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 12, fruitName: 'pear',       archivedAt: '2025-10-17T00:00:00Z'),
         ]);
       }
     }
-    
+
     return data;
   }
 
@@ -597,21 +599,21 @@ class MockDataManager {
     if (month == 9) {
       if (period == 1) {
         data.addAll([
-          ArchiveFruitResponseDto(fruitId: 1, fruitName: 'peach', archivedAt: '2025-09-02T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 2, fruitName: 'strawberry', archivedAt: '2025-09-04T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 3, fruitName: 'cherry', archivedAt: '2025-09-06T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 4, fruitName: '산딸기', archivedAt: '2025-09-08T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 5, fruitName: '복숭아', archivedAt: '2025-09-10T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 6, fruitName: '자두', archivedAt: '2025-09-12T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 7, fruitName: '망고', archivedAt: '2025-09-14T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 8, fruitName: '블루베리', archivedAt: '2025-09-16T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 1, fruitName: 'peach',      archivedAt: '2025-09-16T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 2, fruitName: 'strawberry', archivedAt: '2025-09-14T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 3, fruitName: 'cherry',     archivedAt: '2025-09-12T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 4, fruitName: '산딸기',        archivedAt: '2025-09-10T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 5, fruitName: '복숭아',       archivedAt: '2025-09-08T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 6, fruitName: '자두',        archivedAt: '2025-09-06T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 7, fruitName: '망고',        archivedAt: '2025-09-04T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 8, fruitName: '블루베리',     archivedAt: '2025-09-02T00:00:00Z'),
         ]);
       } else {
         data.addAll([
-          ArchiveFruitResponseDto(fruitId: 9, fruitName: 'persimmon', archivedAt: '2025-09-18T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 10, fruitName: 'pear', archivedAt: '2025-09-20T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 11, fruitName: 'grape', archivedAt: '2025-09-22T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 12, fruitName: '감', archivedAt: '2025-09-24T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 9,  fruitName: 'persimmon', archivedAt: '2025-09-24T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 10, fruitName: 'pear',      archivedAt: '2025-09-22T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 11, fruitName: 'grape',     archivedAt: '2025-09-20T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 12, fruitName: '감',         archivedAt: '2025-09-18T00:00:00Z'),
         ]);
       }
     }
@@ -620,25 +622,25 @@ class MockDataManager {
     if (month == 10) {
       if (period == 1) {
         data.addAll([
-          ArchiveFruitResponseDto(fruitId: 1, fruitName: '체리', archivedAt: '2025-10-02T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 2, fruitName: '딸기', archivedAt: '2025-10-04T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 3, fruitName: '키위', archivedAt: '2025-10-06T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 4, fruitName: '산딸기', archivedAt: '2025-10-08T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 5, fruitName: '복숭아', archivedAt: '2025-10-10T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 6, fruitName: '자두', archivedAt: '2025-10-12T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 7, fruitName: '망고', archivedAt: '2025-10-14T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 8, fruitName: '블루베리', archivedAt: '2025-10-16T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 1, fruitName: 'peach',      archivedAt: '2025-10-16T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 2, fruitName: 'strawberry', archivedAt: '2025-10-14T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 3, fruitName: 'cherry',     archivedAt: '2025-10-12T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 4, fruitName: '산딸기',        archivedAt: '2025-10-10T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 5, fruitName: '복숭아',       archivedAt: '2025-10-08T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 6, fruitName: '자두',        archivedAt: '2025-10-06T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 7, fruitName: '망고',        archivedAt: '2025-10-04T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 8, fruitName: '블루베리',     archivedAt: '2025-10-02T00:00:00Z'),
         ]);
       } else {
         data.addAll([
-          ArchiveFruitResponseDto(fruitId: 9, fruitName: '포도', archivedAt: '2025-10-18T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 10, fruitName: '포도', archivedAt: '2025-10-20T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 11, fruitName: '레몬', archivedAt: '2025-10-22T00:00:00Z'),
-          ArchiveFruitResponseDto(fruitId: 12, fruitName: '감', archivedAt: '2025-10-24T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 9,  fruitName: 'persimmon', archivedAt: '2025-10-24T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 10, fruitName: 'pear',      archivedAt: '2025-10-22T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 11, fruitName: 'grape',     archivedAt: '2025-10-20T00:00:00Z'),
+          ArchiveFruitResponseDto(fruitId: 12, fruitName: '감',         archivedAt: '2025-10-18T00:00:00Z'),
         ]);
       }
     }
-    
+
     return data;
   }
 }
