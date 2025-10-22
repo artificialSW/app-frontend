@@ -17,7 +17,7 @@ class MockDataManager {
     required int treeIndex,
   }) async {
     // API 호출 시뮬레이션을 위한 지연
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 50));
 
     // 2025년 5월부터 10월까지의 데이터만 제공
     if (year != 2025 || month < 5 || month > 10) {
@@ -44,7 +44,7 @@ class MockDataManager {
     required int treeIndex,
   }) async {
     // API 호출 시뮬레이션을 위한 지연
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 50));
 
     // 2025년 5월부터 10월까지의 데이터만 제공
     if (year != 2025 || month < 5 || month > 10) {
