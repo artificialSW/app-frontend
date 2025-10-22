@@ -57,7 +57,7 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
             comment.content,
             likes: comment.likes,
             liked: comment.isLiked,
-            replies: comment.reply.map((r) => _Reply(r.writerRole, r.content)).toList(),
+            replies: comment.reply.map((r) => _Reply(r.commentId.toString(), r.writerRole, r.content, likes: r.likes, liked: r.isLiked)).toList(),
           );
         }).toList();
         _isLoading = false;
@@ -120,7 +120,7 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
         // 대댓글 추가
         final i = _answers.indexWhere((e) => e.id == replyToId);
         if (i != -1) {
-          _answers[i].replies.add(_Reply(tempAuthor, content));
+          _answers[i].replies.add(_Reply(tempId, tempAuthor, content));
           _answers[i].expanded = true;
         }
       }
@@ -353,11 +353,21 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
                                  _replyToId = a.id;
                                  _replyToAuthor = a.author;
                                }),
-                               onToggleReplyLike: (rIdx) => setState(() {
+                               onToggleReplyLike: (rIdx) {
                                  final r = a.replies[rIdx];
-                                 r.liked = !r.liked;
-                                 r.likes += r.liked ? 1 : (r.likes > 0 ? -1 : 0);
-                               }),
+                                 final newLikedState = !r.liked;
+                                 setState(() {
+                                   r.liked = newLikedState;
+                                   r.likes += newLikedState ? 1 : (r.likes > 0 ? -1 : 0);
+                                 });
+
+                                 // 오프라인 큐에 추가 (백그라운드에서 서버 동기화)
+                                 _likeQueue.addToQueue(
+                                   id: r.id,
+                                   type: ChatLikeType.comment,
+                                   action: newLikedState ? LikeAction.like : LikeAction.unlike,
+                                 );
+                               },
                              );
                            },
                          ),
@@ -384,7 +394,8 @@ class _ChatPersonalThreadPageState extends State<ChatPersonalThreadPage> {
 
 // 페이지 내부 전용 최소 모델 (화면 상태)
 class _Reply {
-  _Reply(this.author, this.text, {this.likes = 0, this.liked = false});
+  _Reply(this.id, this.author, this.text, {this.likes = 0, this.liked = false});
+  String id;        // 대댓글 ID 추가
   String author, text;
   int likes;
   bool liked;
