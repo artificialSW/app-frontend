@@ -5,6 +5,9 @@ import 'package:artificialsw_frontend/shared/fruit.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
+import 'package:artificialsw_frontend/features/home/home_mainpage.dart';
+import 'package:artificialsw_frontend/features/home/single_tree_logic/tree_page.dart';
+import 'package:artificialsw_frontend/shell.dart';
 
 class PuzzleCompleted extends StatelessWidget {
   final String message;
@@ -97,7 +100,32 @@ class PuzzleCompleted extends StatelessWidget {
                   CustomButton(
                     backgroundColor: fruitMap[fruitName]!.goFruitColor,
                     text: '열매 보러가기',
-                    onPressed: () => Navigator.of(context).pushNamed('/'),
+                    onPressed: () {
+
+                      // 1️⃣ ShellState를 찾아서 탭 인덱스를 홈(0)으로 변경
+                      final shellState = context.findAncestorStateOfType<ShellState>();
+                      if (shellState == null) return;
+
+                      // ✅ 퍼즐 탭(index = 1)의 스택을 루트(PuzzleRoot)만 남기기
+                      shellState.keys[1].currentState?.popUntil((r) => r.isFirst);
+
+                      // 홈 탭으로 전환
+                      shellState.setState(() => shellState.index = 0);
+
+                      // 2️⃣ 홈 탭의 Navigator 위에 TreePage를 push
+                      Future.microtask(() {
+                        shellState.keys[0].currentState?.push(
+                          MaterialPageRoute(builder: (_) => TreePage(
+                            treeType: 'fruit-2',
+                            isArchiveMode: true,
+                            archiveYear: 2025,
+                            archiveMonth: 10,
+                            archivePeriod: 2,
+                            archiveTreeIndex: 2,
+                          )),
+                        );
+                      });
+                    },
                     width: 150,
                     height: 45,
                     fontSize: 14,
