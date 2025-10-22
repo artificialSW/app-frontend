@@ -42,100 +42,125 @@ class _PuzzleRootState extends State<PuzzleRoot> {
     _puzzleFuture = _loadPuzzleData();
   }
 
+  // Future<PuzzleHomeGetDto> _loadPuzzleData() async {
+  //   try {
+  //     return await PuzzleService().getPuzzleHome(); // 실제 서버 호출
+  //   } catch (e) {
+  //     print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
+  //     throw Exception('에러!!${e}');
+  //     // // ✅ 목데이터 리턴
+  //
+  //     return PuzzleHomeGetDto(
+  //         category: ["운동하는 모습", "학교 가는 길", "퇴근 후의 모습"],
+  //         inProgress: [
+  //           PuzzleHomeOngoingPreviewDto(
+  //               puzzleId: 171,
+  //               imageUrl: 'https://picsum.photos/400/400',
+  //               completedPiecesId: [1, 2]
+  //           ),
+  //           PuzzleHomeOngoingPreviewDto(
+  //               puzzleId: 172,
+  //               imageUrl: 'https://picsum.photos/400/400',
+  //               completedPiecesId: [1, 2, 3]
+  //           ),
+  //         ],
+  //         completedThisWeek: [
+  //           PuzzleHomeCompletedPreviewDto(
+  //               puzzleId: 173,
+  //               imageUrl: 'https://picsum.photos/400/400',
+  //               size: 9,
+  //               title: '우리 가족이 함께한 추억',
+  //               completedAt: "2025-09-28T04:44:00Z"
+  //           ),
+  //           PuzzleHomeCompletedPreviewDto(
+  //               puzzleId: 174,
+  //               imageUrl: 'https://picsum.photos/400/400',
+  //               size: 9,
+  //               title: '좋았던 자연 경관',
+  //               completedAt: "2025-09-29T04:44:00Z"
+  //           ),
+  //           PuzzleHomeCompletedPreviewDto(
+  //               puzzleId: 175,
+  //               imageUrl: 'https://picsum.photos/400/400',
+  //               size: 9,
+  //               title: '사랑스러운 사진 자랑',
+  //               completedAt: "2025-09-30T04:44:00Z"
+  //           ),
+  //         ],
+  //         empty: false,
+  //         full: false,
+  //     );
+  //   }
+  // }
+
   Future<PuzzleHomeGetDto> _loadPuzzleData() async {
     try {
-      return await PuzzleService().getPuzzleHome(); // 실제 서버 호출
-    } catch (e) {
-      print('⚠️ 서버 응답 실패, 목데이터 사용: $e');
-      throw Exception('에러!!${e}');
-      // // ✅ 목데이터 리턴
+      final result = await PuzzleService().getPuzzleHome(); // 실제 서버 호출
 
-      return PuzzleHomeGetDto(
-          category: ["운동하는 모습", "학교 가는 길", "퇴근 후의 모습"],
-          inProgress: [
-            PuzzleHomeOngoingPreviewDto(
-                puzzleId: 171,
-                imageUrl: 'https://picsum.photos/400/400',
-                completedPiecesId: [1, 2]
-            ),
-            PuzzleHomeOngoingPreviewDto(
-                puzzleId: 172,
-                imageUrl: 'https://picsum.photos/400/400',
-                completedPiecesId: [1, 2, 3]
-            ),
-          ],
-          completedThisWeek: [
-            PuzzleHomeCompletedPreviewDto(
-                puzzleId: 173,
-                imageUrl: 'https://picsum.photos/400/400',
-                size: 9,
-                title: '우리 가족이 함께한 추억',
-                completedAt: "2025-09-28T04:44:00Z"
-            ),
-            PuzzleHomeCompletedPreviewDto(
-                puzzleId: 174,
-                imageUrl: 'https://picsum.photos/400/400',
-                size: 9,
-                title: '좋았던 자연 경관',
-                completedAt: "2025-09-29T04:44:00Z"
-            ),
-            PuzzleHomeCompletedPreviewDto(
-                puzzleId: 175,
-                imageUrl: 'https://picsum.photos/400/400',
-                size: 9,
-                title: '사랑스러운 사진 자랑',
-                completedAt: "2025-09-30T04:44:00Z"
-            ),
-          ],
-          empty: false,
-          full: false,
-      );
+      if (result == null) {
+        print('⚠️ 서버 응답이 비어있음. 목데이터로 대체합니다.');
+        return _getMockPuzzleData();
+      }
 
-      // return PuzzleHomeGetDto(
-      //   subject: ["운동하는 모습", "학교 가는 길", "퇴근 후의 모습"],
-      //   inProgress: [PuzzleHomeOngoingPreviewDto(
-      //     puzzleId: 1,
-      //     imageUrl:
-      //         'https://picsum.photos/400/400',
-      //     size: 4,
-      //     completedPiecesId: [1, 2],
-      //     lastSavedAt: "2025-09-29T04:44:00Z",
-      //   ),
-      //     PuzzleHomeOngoingPreviewDto(
-      //       puzzleId: 1,
-      //       imageUrl:
-      //       'https://picsum.photos/400/400',
-      //       size: 4,
-      //       completedPiecesId: [1, 2],
-      //       lastSavedAt: "2025-09-30T04:44:00Z",
-      //     ),
-      //   ],
-      //   completedThisWeek: [PuzzleHomeCompletedPreviewDto(
-      //     puzzleId: 1,
-      //     imageUrl:
-      //         'https://picsum.photos/400/400',
-      //     size: 9,
-      //     title: "목데이터 title",
-      //     completedAt: "2025-09-29T04:44:00Z",
-      //   ),
-      //     PuzzleHomeCompletedPreviewDto(
-      //       puzzleId: 1,
-      //       imageUrl:
-      //       'https://picsum.photos/400/400',
-      //       size: 9,
-      //       title: "목데이터 title",
-      //       completedAt: "2025-09-28T04:44:00Z",
-      //     ),
-      //   ],
-      //   isFull: false,
-      // );
+      return result;
+    } catch (e, stack) {
+      print('⚠️ 서버 응답 실패: $e');
+      print(stack); // 디버깅용 (개발 중엔 유용)
+
+      // ✅ 앱이 멈추지 않도록 목데이터 리턴
+      return _getMockPuzzleData();
     }
+  }
+
+  /// ✅ 서버 실패 시 사용할 목데이터 생성 메서드
+  PuzzleHomeGetDto _getMockPuzzleData() {
+    return PuzzleHomeGetDto(
+      category: ["운동하는 모습", "학교 가는 길", "퇴근 후의 모습"],
+      inProgress: [
+        PuzzleHomeOngoingPreviewDto(
+          puzzleId: 171,
+          imageUrl: "http://15.164.94.26/images/1761093145112.png",
+          completedPiecesId: [1, 2],
+        ),
+        PuzzleHomeOngoingPreviewDto(
+          puzzleId: 172,
+          imageUrl: "http://15.164.94.26/images/1761093145112.png",
+          completedPiecesId: [1, 2, 3],
+        ),
+      ],
+      completedThisWeek: [
+        PuzzleHomeCompletedPreviewDto(
+          puzzleId: 173,
+          imageUrl: "http://15.164.94.26/images/1761093145112.png",
+          size: 9,
+          title: '우리 가족이 함께한 추억',
+          completedAt: "2025-09-28T04:44:00Z",
+        ),
+        PuzzleHomeCompletedPreviewDto(
+          puzzleId: 174,
+          imageUrl: "http://15.164.94.26/images/1761093145112.png",
+          size: 9,
+          title: '좋았던 자연 경관',
+          completedAt: "2025-09-29T04:44:00Z",
+        ),
+        PuzzleHomeCompletedPreviewDto(
+          puzzleId: 175,
+          imageUrl: "http://15.164.94.26/images/1761093145112.png",
+          size: 9,
+          title: '사랑스러운 사진 자랑',
+          completedAt: "2025-09-30T04:44:00Z",
+        ),
+      ],
+      empty: false,
+      full: false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       // 이 Scaffold를 추가합니다.
@@ -247,16 +272,37 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                     ],
                   ),
 
-                  PuzzleCardCarousel(
-                    imageUrls: (puzzle.completedThisWeek.isNotEmpty) ? puzzle.completedThisWeek
+                  // PuzzleCardCarousel(
+                  //   imageUrls: (puzzle.completedThisWeek.isNotEmpty) ? puzzle.completedThisWeek
+                  //       .map((item) => item?.imageUrl ?? 'https://picsum.photos/600/400')
+                  //       .toList()
+                  //       : ['https://picsum.photos/600/400', 'https://picsum.photos/600/400', 'https://picsum.photos/600/400', 'https://picsum.photos/600/400'], // 기본 이미지 1장
+                  //   completedDates: (puzzle.completedThisWeek.isNotEmpty)
+                  //       ? puzzle.completedThisWeek
+                  //       .map((item) => formatUtcToDateString(item?.completedAt ?? '1111-11-11'))
+                  //       .toList()
+                  //       : ['1111-11-11', '1111-11-11', '1111-11-11', '1111-11-11'], // puzzle.completedThisWeek.isEmpty 일 때 1111-11-11
+                  // ),
+                  puzzle.completedThisWeek.isEmpty
+                      ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: Center(
+                      child: Text(
+                        '이번 주에 완성된 퍼즐이 없습니다 🧩',
+                        style: AppTextStyles.pretendard_medium.copyWith(
+                          fontSize: 14,
+                          color: AppColors.plumu_gray_5,
+                        ),
+                      ),
+                    ),
+                  )
+                      : PuzzleCardCarousel(
+                    imageUrls: puzzle.completedThisWeek
                         .map((item) => item?.imageUrl ?? 'https://picsum.photos/600/400')
-                        .toList()
-                        : ['https://picsum.photos/600/400', 'https://picsum.photos/600/400', 'https://picsum.photos/600/400', 'https://picsum.photos/600/400'], // 기본 이미지 1장
-                    completedDates: (puzzle.completedThisWeek.isNotEmpty)
-                        ? puzzle.completedThisWeek
-                        .map((item) => formatUtcToDateString(item?.completedAt ?? '0000-00-00'))
-                        .toList()
-                        : ['1111-11-11', '1111-11-11', '1111-11-11', '1111-11-11'], // puzzle.completedThisWeek.isEmpty 일 때 1111-11-11
+                        .toList(),
+                    completedDates: puzzle.completedThisWeek
+                        .map((item) => formatUtcToDateString(item?.completedAt ?? '1111-11-11'))
+                        .toList(),
                   ),
                   Row(
                     children: [

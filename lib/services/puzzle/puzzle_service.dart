@@ -22,33 +22,52 @@ class PuzzleService {
   final Dio _dio = ApiClient.dio;
 
   // 🟢 퍼즐 홈 화면 정보 가져오기 (GET)
-  Future<PuzzleHomeGetDto> getPuzzleHome() async {
-    final accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+  Future<PuzzleHomeGetDto?> getPuzzleHome() async {
+    final accessToken = await StorageService.getAccessToken();
 
     if (accessToken == null) {
-      //throw Exception('Access token not found. 로그인 상태를 확인하세요.');
-      print('Access token not found. 로그인 상태를 확인하세요.');
+      print('⚠️ Access token not found. 로그인 상태를 확인하세요.');
+      return null; // ✅ 안전하게 중단
     }
 
     Response? response;
 
-    try{
+    try {
       response = await _dio.get(
-        '${baseUrl}/api/puzzle/home',
+        '$baseUrl/api/puzzle/home',
         options: Options(
           headers: {
-            'Authorization': 'Bearer $accessToken', // 🔹 헤더에 토큰 추가
+            'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
         ),
       );
-    } catch(e) {
-      throw Exception("/api/puzzle/home 에러: $e");
+    } catch (e) {
+      print('❌ /api/puzzle/home 네트워크 에러: $e');
+      return null; // ✅ 앱 크래시 방지
     }
-    final prettyJson = const JsonEncoder.withIndent('  ').convert(response.data);
-    print('📦 Rㄱㄱㄱㄱesponse Data: $prettyJson');
 
-    return PuzzleHomeGetDto.fromJson(response.data);
+    // ✅ null 또는 비정상 응답 처리
+    if (response == null || response.data == null) {
+      print('⚠️ /api/puzzle/home 응답이 비어있습니다.');
+      return null;
+    }
+
+    // ✅ 디버깅용 예쁜 JSON 출력
+    try {
+      final prettyJson = const JsonEncoder.withIndent('  ').convert(response.data);
+      print('📦 PuzzleHome Response Data:\n$prettyJson');
+    } catch (_) {
+      print('⚠️ 응답 JSON 포맷 변환 실패');
+    }
+
+    // ✅ 안전한 파싱
+    try {
+      return PuzzleHomeGetDto.fromJson(response.data);
+    } catch (e) {
+      print('🧩 PuzzleHomeGetDto 파싱 실패: $e');
+      return null;
+    }
   }
 
   // 사진 업로드(POST)
@@ -90,7 +109,7 @@ class PuzzleService {
       final formData = dto.toJson();
 
       final response = await _dio.post(
-        'http://15.164.94.26:8080/api/puzzle/picture/uploaddddddddd',
+        'http://15.164.94.26:8080/api/puzzle/picture/upload',
         data: formData,
         options: Options(
           headers: {'Authorization': 'Bearer $_accessToken'},
