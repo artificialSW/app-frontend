@@ -286,12 +286,15 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                   puzzle.completedThisWeek.isEmpty
                       ? Padding(
                     padding: const EdgeInsets.symmetric(vertical: 24.0),
-                    child: Center(
-                      child: Text(
-                        '이번 주에 완성된 퍼즐이 없습니다 🧩',
-                        style: AppTextStyles.pretendard_medium.copyWith(
-                          fontSize: 14,
-                          color: AppColors.plumu_gray_5,
+                    child: Container(
+                      height: max(150, screenHeight*0.2),
+                      child: Center(
+                        child: Text(
+                          '이번 주에 완성된 퍼즐이 없습니다 🧩',
+                          style: AppTextStyles.pretendard_medium.copyWith(
+                            fontSize: 14,
+                            color: AppColors.plumu_gray_5,
+                          ),
                         ),
                       ),
                     ),
