@@ -26,61 +26,106 @@ class PuzzleService {
     final accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
 
     if (accessToken == null) {
-      throw Exception('Access token not found. 로그인 상태를 확인하세요.');
+      //throw Exception('Access token not found. 로그인 상태를 확인하세요.');
+      print('Access token not found. 로그인 상태를 확인하세요.');
     }
 
-    final response = await _dio.get(
-      '${baseUrl}/api/puzzle/home',
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken', // 🔹 헤더에 토큰 추가
-          'Content-Type': 'application/json',
-        },
-      ),
-    );
+    Response? response;
 
+    try{
+      response = await _dio.get(
+        '${baseUrl}/api/puzzle/home',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken', // 🔹 헤더에 토큰 추가
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+    } catch(e) {
+      throw Exception("/api/puzzle/home 에러: $e");
+    }
     final prettyJson = const JsonEncoder.withIndent('  ').convert(response.data);
     print('📦 Rㄱㄱㄱㄱesponse Data: $prettyJson');
-    print('len of inProgress Puzzle is: ${response.data['inProgress'].length}');
 
     return PuzzleHomeGetDto.fromJson(response.data);
   }
 
   // 사진 업로드(POST)
-  Future<void> uploadPuzzleImagesWithMetadata(ImageUploadDto dto) async {
+  // Future<void> uploadPuzzleImagesWithMetadata(ImageUploadDto dto) async {
+  //   try {
+  //     // DTO → JSON 변환
+  //     final formData = dto.toJson();
+  //
+  //     final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
+  //
+  //     final response = await _dio.post(
+  //       'http://15.164.94.26:8080/api/puzzle/picture/upload',
+  //       data: formData,
+  //       options: Options(
+  //         headers: {
+  //           'Authorization': 'Bearer $_accessToken', // ✅ 토큰 추가
+  //         },
+  //       ),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       print('✅ 여러 장 업로드 성공');
+  //     } else {
+  //       print('⚠️ 실패: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('❌ 오류 발생: $e');
+  //   }
+  // }
+  Future<bool> uploadPuzzleImagesWithMetadata(ImageUploadDto dto) async {
     try {
-      // DTO → JSON 변환
+      final _accessToken = await StorageService.getAccessToken();
+
+      if (_accessToken == null) {
+        print('⚠️ AccessToken이 없습니다. 로그인 필요');
+        return false; // ❗ 로그인 만료 시 그냥 실패로 처리 (UI에서 자동 로그아웃 등 처리 가능)
+      }
+
       final formData = dto.toJson();
 
-      // POST 요청
-      // final response = await _dio.post(
-      //   '/puzzle/images',
-      //   data: formData,
-      //   options: Options(contentType: 'application/json'),
-      // );
-
-      final _accessToken = await StorageService.getAccessToken(); // 🔹 저장된 토큰 불러오기
-
       final response = await _dio.post(
-        'http://15.164.94.26:8080/api/puzzle/picture/upload',
+        'http://15.164.94.26:8080/api/puzzle/picture/uploaddddddddd',
         data: formData,
         options: Options(
-          headers: {
-            'Authorization': 'Bearer $_accessToken', // ✅ 토큰 추가
-          },
+          headers: {'Authorization': 'Bearer $_accessToken'},
+          sendTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
         ),
       );
 
-
       if (response.statusCode == 200) {
-        print('✅ 여러 장 업로드 성공');
+        print('✅ 퍼즐 이미지 업로드 성공');
+        return true;
       } else {
-        print('⚠️ 실패: ${response.statusCode}');
+        print('⚠️ 퍼즐 업로드 실패 (status: ${response.statusCode})');
+        return false;
       }
-    } catch (e) {
-      print('❌ 오류 발생: $e');
+    } on DioException catch (dioError) {
+      // 네트워크 관련 에러 (서버 다운, 타임아웃 등)
+      print('🌐 네트워크 오류 발생: ${dioError.message}');
+      // ❗ 앱이 죽지 않도록 조용히 실패 처리
+      return false;
+    } on FormatException catch (formatError) {
+      // 데이터 파싱 실패 (서버 응답 이상 등)
+      print('🧩 응답 포맷 오류: ${formatError.message}');
+      return false;
+    } catch (e, stack) {
+      // 예상치 못한 예외 (null, 타입 오류 등)
+      print('❌ 알 수 없는 오류 발생: $e');
+      print(stack);
+      return false;
+    } finally {
+      // 요청 후 반드시 실행되는 구간 (로딩 종료 등)
+      print('📦 업로드 시도 완료');
     }
   }
+
 
 
   // 🟡 퍼즐 생성 : POST

@@ -192,21 +192,72 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
 
 
     // --- 기존 함수 유지: 업로드 제출 ---
+  // Future<void> _submitAll() async {
+  //   final List<Map<String, dynamic>> pictureDataList = [];
+  //
+  //   for (final item in _uploads) {
+  //     final base64String = base64Encode(await item.imageFile.readAsBytes());
+  //
+  //     pictureDataList.add({
+  //       "userId": 123,
+  //       "imageBase64": "${base64String.substring(0, 50)}...",
+  //       "comment": item.comment,
+  //       "category": item.category,
+  //     });
+  //
+  //     final dto = ImageUploadDto(
+  //       pictureData: [
+  //         PictureDataDto(
+  //           userId: "123",
+  //           imageBase64: base64String,
+  //           comment: item.comment,
+  //           category: item.category,
+  //         ),
+  //       ],
+  //     );
+  //
+  //     final success = await PuzzleService.uploadPuzzleImagesWithMetadata(dto);
+  //
+  //     if(!success){
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('이미지 업로드에 실패했습니다. 잠시 후 다시 시도해주세요.'),
+  //           duration: const Duration(seconds: 2),
+  //         ),
+  //       );
+  //     }
+  //   }
+  //
+  //   // 디버깅용 로그
+  //   const encoder = JsonEncoder.withIndent('  ');
+  //   // ignore: avoid_print
+  //   print('pictureData: ${encoder.convert(pictureDataList)}');
+  //
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     const SnackBar(content: Text('✅ 전체 업로드 완료!')),
+  //   );
+  //
+  //   // 퍼즐 메인으로 이동 (기존 동작 유지)
+  //   Navigator.of(context).pushNamed('/');
+  // }
   Future<void> _submitAll() async {
-    final List<Map<String, dynamic>> pictureDataList = [];
+    final puzzleService = PuzzleService(); // ✅ 인스턴스 생성
+    bool hasAnyFailure = false; // 실패 여부 추적
+    bool hasAnySuccess = false; // 일부 성공 시 flag
 
-    for (final item in _uploads) {
-      final base64String = base64Encode(await item.imageFile.readAsBytes());
+    // 업로드 진행 상태를 사용자에게 알려주기
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
 
-      pictureDataList.add({
-        "userId": 123,
-        "imageBase64": "${base64String.substring(0, 50)}...",
-        "comment": item.comment,
-        "category": item.category,
-      });
+    try {
+      for (final item in _uploads) {
+        // 이미지 파일을 Base64로 인코딩
+        final base64String = base64Encode(await item.imageFile.readAsBytes());
 
-      await PuzzleService().uploadPuzzleImagesWithMetadata(
-        ImageUploadDto(
+        final dto = ImageUploadDto(
           pictureData: [
             PictureDataDto(
               userId: "123",
@@ -215,22 +266,44 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
               category: item.category,
             ),
           ],
-        ),
-      );
+        );
+
+        final success = await puzzleService.uploadPuzzleImagesWithMetadata(dto);
+
+        if (success) {
+          hasAnySuccess = true;
+        } else {
+          hasAnyFailure = true;
+          print('⚠️ 이미지 업로드 실패 (카테고리: ${item.category})');
+        }
+      }
+    } catch (e) {
+      print('❌ 전체 업로드 중 예외 발생: $e');
+      hasAnyFailure = true;
+    } finally {
+      if (mounted && Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
     }
 
-    // 디버깅용 로그
-    const encoder = JsonEncoder.withIndent('  ');
-    // ignore: avoid_print
-    print('pictureData: ${encoder.convert(pictureDataList)}');
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('✅ 전체 업로드 완료!')),
-    );
-
-    // 퍼즐 메인으로 이동 (기존 동작 유지)
     Navigator.of(context).pushNamed('/');
+    // ✅ 결과에 따라 한 번만 메시지 표시
+    if (hasAnySuccess && !hasAnyFailure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('✅ 모든 이미지가 성공적으로 업로드되었습니다.')),
+      );
+    } else if (hasAnySuccess && hasAnyFailure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('⚠️ 일부 이미지는 업로드에 실패했습니다.')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('❌ 업로드에 실패했습니다. 잠시 후 다시 시도해주세요.')),
+      );
+    }
   }
+
+
 
   Widget _buildCategoryTile(int idx) {
     final screenWidth = MediaQuery.of(context).size.width;
