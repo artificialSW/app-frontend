@@ -119,12 +119,12 @@ class _PuzzleRootState extends State<PuzzleRoot> {
       inProgress: [
         PuzzleHomeOngoingPreviewDto(
           puzzleId: 171,
-          imageUrl: "http://15.164.94.26/images/1761093145112.png",
+          imageUrl: "http://15.164.94.26/images/capture/1761101944293.png",
           completedPiecesId: [1, 2],
         ),
         PuzzleHomeOngoingPreviewDto(
           puzzleId: 172,
-          imageUrl: "http://15.164.94.26/images/1761093145112.png",
+          imageUrl: "http://15.164.94.26/images/capture/1761101922451.png",
           completedPiecesId: [1, 2, 3],
         ),
       ],
@@ -134,21 +134,21 @@ class _PuzzleRootState extends State<PuzzleRoot> {
           imageUrl: "http://15.164.94.26/images/1761093145112.png",
           size: 9,
           title: '우리 가족이 함께한 추억',
-          completedAt: "2025-09-28T04:44:00Z",
+          completedAt: "2025-10-20T04:44:00Z",
         ),
         PuzzleHomeCompletedPreviewDto(
           puzzleId: 174,
-          imageUrl: "http://15.164.94.26/images/1761093145112.png",
+          imageUrl: "http://15.164.94.26/images/1760956067505.png",
           size: 9,
           title: '좋았던 자연 경관',
-          completedAt: "2025-09-29T04:44:00Z",
+          completedAt: "2025-10-20T04:44:00Z",
         ),
         PuzzleHomeCompletedPreviewDto(
           puzzleId: 175,
           imageUrl: "http://15.164.94.26/images/1761093145112.png",
           size: 9,
           title: '사랑스러운 사진 자랑',
-          completedAt: "2025-09-30T04:44:00Z",
+          completedAt: "2025-10-20T04:44:00Z",
         ),
       ],
       empty: false,
@@ -304,7 +304,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                         .map((item) => item?.imageUrl ?? 'https://picsum.photos/600/400')
                         .toList(),
                     completedDates: puzzle.completedThisWeek
-                        .map((item) => formatUtcToDateString(item?.completedAt ?? '1111-11-11'))
+                        .map((item) => formatUtcToDateString(item?.completedAt ?? '2025-10-20'))
                         .toList(),
                   ),
                   Row(
@@ -351,7 +351,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                       SizedBox(width: screenWidth*0.06,),
                       PuzzleCardWidget(
                         imageUrl: puzzle.inProgress[0]?.imageUrl ?? 'https://picsum.photos/600/400',
-                        dateInfo: formatUtcToDateString(puzzle.inProgress[0]?.lastSavedAt ?? '1111-11-11'),
+                        dateInfo: formatUtcToDateString(puzzle.inProgress[0]?.lastSavedAt ?? '2025-10-20'),
                         imageSize: max(screenWidth*0.4, 150),
                         dateFontSize: 10,
                         text: '진행중인 퍼즐',
@@ -362,7 +362,7 @@ class _PuzzleRootState extends State<PuzzleRoot> {
                         SizedBox(width: screenWidth*0.06,),
                         PuzzleCardWidget(
                           imageUrl: puzzle.inProgress[1]?.imageUrl ?? 'https://picsum.photos/600/400',
-                          dateInfo: formatUtcToDateString(puzzle.inProgress[1]?.lastSavedAt ?? '1111-11-11'),
+                          dateInfo: formatUtcToDateString(puzzle.inProgress[1]?.lastSavedAt ?? '2025-10-20'),
                           imageSize: max(screenWidth*0.4, 150),
                           dateFontSize: 10,
                           textFontSize: 14,
