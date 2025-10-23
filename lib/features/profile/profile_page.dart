@@ -9,6 +9,7 @@ import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/services/profile/profile_service.dart';
 import 'package:artificialsw_frontend/services/profile/dto/profile_response_dto.dart';
 import 'profile_edit_page.dart';
+import 'settings/settings_page.dart';
 
 class ProfileRoot extends StatefulWidget {
   const ProfileRoot({super.key});
@@ -211,28 +212,28 @@ class _ProfileRootState extends State<ProfileRoot> {
 
   Widget _buildMenuList(BuildContext context) {
     final menuItems = [
-      '환경 설정',
-      '가족 설정',
-      '약관 및 개인정보 처리방침',
-      '개인정보 수정',
+      {'title': '환경 설정', 'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()))},
+      {'title': '가족 설정', 'onTap': () {}},
+      {'title': '약관 및 개인정보 처리방침', 'onTap': () {}},
+      {'title': '개인정보 수정', 'onTap': () {}},
     ];
 
 
     return Column(
       children: menuItems
           .map(
-            (title) => Column(
+            (item) => Column(
           children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(
-                  title,
+                  item['title'] as String,
                   style: AppTextStyles.pretendard_bold.copyWith(
                       color: AppColors.plumu_gray_7,
                       fontSize: 14)
               ),
               trailing: const Icon(Icons.arrow_forward_ios, size: 15, color: AppColors.plumu_gray_5,),
-              onTap: () {},
+              onTap: item['onTap'] as VoidCallback,
             ),
             const Divider(height: 1, color: Color(0x4DCECECE)),
           ],
