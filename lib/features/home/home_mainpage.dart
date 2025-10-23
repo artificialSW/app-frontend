@@ -9,6 +9,7 @@ import 'package:artificialsw_frontend/features/home/tutorial_logic/help_page.dar
 import 'package:artificialsw_frontend/features/home/widget/island_save_indicator.dart';
 import 'package:artificialsw_frontend/services/home/home_service.dart';
 import 'package:artificialsw_frontend/services/home/dto/progress_scores/progress_scores_response_dto.dart';
+import 'package:artificialsw_frontend/services/storage_service.dart';
 import 'package:flutter/material.dart';
 
 /// 홈 메인 화면 위젯
@@ -116,8 +117,20 @@ class _HomeRootState extends State<HomeRoot> {
   /// 프로그레스바 점수 조회
   Future<void> _loadProgressScores() async {
     try {
-      // TODO: archiveId를 실제 값으로 변경 (현재는 임시값)
-      const archiveId = "current"; // 또는 실제 archive ID
+      // StorageService에서 archiveId 가져오기
+      final archiveId = await StorageService.getArchiveId();
+      if (archiveId == null) {
+        print('⚠️ archiveId가 저장되지 않았습니다. 로그인이 필요합니다.');
+        setState(() {
+          _progressScores = const ProgressScoresResponseDto(
+            puzzleScore: 0,
+            communityScore: 0,
+          );
+          _isLoadingScores = false;
+        });
+        return;
+      }
+      
       final scores = await _homeService.getProgressScores(archiveId: archiveId);
       setState(() {
         _progressScores = scores;
