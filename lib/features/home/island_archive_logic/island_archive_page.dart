@@ -691,7 +691,7 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
           ),
           AnimatedOpacity(
             opacity: _showAttachments ? 1.0 : 0.0,
-            duration: Duration(milliseconds: _showAttachments ? 1000 : 100),
+            duration: Duration(milliseconds: _showAttachments ? 500 : 100),
             curve: Curves.easeInOut, // 💫 더 자연스럽게 (시작/끝 부드럽게)
             child: Stack(
               children: [

@@ -256,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (true) {
         //final loginResult = loginData['result'];
         final accessToken = loginResponse.data['token'].toString();
-        debugprint('login response is!!!!!!!!!!!!!: $loginResponse');
+        debugPrint('login response is!!!!!!!!!!!!!: $loginResponse');
         final archiveId = loginResponse.data['archiveId'].toString();
         await StorageService.saveArchiveId(archiveId);
         //final userType = loginResult['userType'];
