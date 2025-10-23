@@ -364,7 +364,8 @@ class _ChatCommonThreadPageState extends State<ChatCommonThreadPage> {
                                 final newLikedState = !r.liked;
                                 setState(() {
                                   r.liked = newLikedState;
-                                  r.likes += newLikedState ? 1 : (r.likes > 0 ? -1 : 0);
+                                  // 댓글 로직과 동일: 좋아요 취소 시 likes > 0일 때만 감소
+                                  r.likes = newLikedState ? r.likes + 1 : (r.likes > 0 ? r.likes - 1 : 0);
                                 });
 
                                 // 오프라인 큐에 추가 (백그라운드에서 서버 동기화)
