@@ -8,6 +8,7 @@ import '../../shared/widgets/custom_top_bar.dart';
 import 'package:artificialsw_frontend/features/profile/widgets/profile_type_button.dart';
 import '../../services/profile/profile_service.dart';
 import '../../services/profile/dto/profile_response_dto.dart';
+import '../../services/profile/dto/profile_edit_request_dto.dart';
 
 class ProfileEditPage extends StatefulWidget {
   const ProfileEditPage({super.key});
@@ -286,14 +287,42 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     );
   }
 
-  void _saveProfile() {
-    // TODO: API 호출로 프로필 수정
-    print('프로필 수정:');
-    print('이름: ${_nameController.text}');
-    print('생년월일: ${_birthController.text}');
-    print('구성원: $_selectedFamilyType');
-    
-    // 임시로 이전 화면으로 돌아가기
-    Navigator.pop(context);
+  Future<void> _saveProfile() async {
+    try {
+      // 입력값 검증
+      if (_nameController.text.trim().isEmpty) {
+        print('❌ 이름을 입력해주세요.');
+        return;
+      }
+      
+      if (_birthController.text.trim().isEmpty) {
+        print('❌ 생년월일을 입력해주세요.');
+        return;
+      }
+
+      // API 요청 데이터 생성
+      final request = ProfileEditRequestDto(
+        name: _nameController.text.trim(),
+        birth: _birthController.text.trim(),
+        familyType: _selectedFamilyType,
+      );
+
+      print('📝 프로필 수정 요청:');
+      print('   - 이름: ${request.name}');
+      print('   - 생년월일: ${request.birth}');
+      print('   - 구성원: ${request.familyType}');
+
+      // API 호출
+      await _profileService.updateProfile(request);
+      
+      print('✅ 프로필 수정 완료!');
+      
+      // 성공 시 이전 화면으로 돌아가기
+      Navigator.pop(context);
+      
+    } catch (e) {
+      print('❌ 프로필 수정 실패: $e');
+      // TODO: 에러 메시지 표시 (스낵바 등)
+    }
   }
 }
