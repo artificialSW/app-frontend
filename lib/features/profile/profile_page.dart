@@ -6,9 +6,47 @@ import '../../shared/widgets/custom_bottom_bar.dart';
 import 'package:artificialsw_frontend/features/profile/logout_dialog.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
+import 'package:artificialsw_frontend/services/profile/profile_service.dart';
+import 'package:artificialsw_frontend/services/profile/dto/profile_response_dto.dart';
 
-class ProfileRoot extends StatelessWidget {
+class ProfileRoot extends StatefulWidget {
   const ProfileRoot({super.key});
+
+  @override
+  State<ProfileRoot> createState() => _ProfileRootState();
+}
+
+class _ProfileRootState extends State<ProfileRoot> {
+  final ProfileService _profileService = ProfileService();
+  ProfileResponseDto? _profileData;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final profileData = await _profileService.getProfile();
+      print('✅ 마이페이지 정보 로드 성공:');
+      print('   - 이름: ${profileData.name}');
+      print('   - 생일: ${profileData.birth}');
+      print('   - 구성원: ${profileData.familyType}');
+      print('   - 가족코드: ${profileData.familyCode}');
+      
+      setState(() {
+        _profileData = profileData;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('❌ 마이페이지 정보 로드 실패: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +112,7 @@ class ProfileRoot extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('허준혁님', style: AppTextStyles.pretendard_bold.copyWith(
+                    Text('${_profileData?.name ?? '로딩중'}님', style: AppTextStyles.pretendard_bold.copyWith(
                         color: AppColors.plumu_black,
                         fontSize: 18
                     )),
@@ -87,7 +125,7 @@ class ProfileRoot extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                          '자녀',
+                          _profileData?.familyType ?? '로딩중',
                           style: AppTextStyles.pretendard_regular.copyWith(
                               color: Colors.white, fontSize: 12)
                       ),
@@ -95,7 +133,7 @@ class ProfileRoot extends StatelessWidget {
                   ],
                 ),
                 Text(
-                    '2002.03.25',
+                    _profileData?.birth ?? '로딩중',
                     style: AppTextStyles.pretendard_regular.copyWith(
                         color: AppColors.plumu_gray_5,
                         fontSize: 12)
@@ -210,7 +248,7 @@ class ProfileRoot extends StatelessWidget {
         const SizedBox(width: 16),
         Expanded(
           child: Text(
-            '135642',
+            _profileData?.familyCode ?? '로딩중',
             style: AppTextStyles.pretendard_regular.copyWith(
               color: AppColors.plumu_gray_5,
               fontSize: 12,
