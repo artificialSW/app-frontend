@@ -23,4 +23,23 @@ class StorageService {
   static Future<void> clearAll() async {
     await _storage.deleteAll();
   }
+
+
+
+
+  static Future<void> saveArchiveId(String id) async {
+    await _storage.write(key: 'archiveId', value: id);
+  }
+
+  // 🔹 access token 읽기
+  static Future<String?> getArchiveId() async {
+    return await _storage.read(key: 'archiveId');
+  }
+
+  // 🔹 access token 삭제 (로그아웃 시 사용)
+  static Future<void> deleteArchiveId() async {
+    await _storage.delete(key: 'archiveId');
+  }
 }
+
+
