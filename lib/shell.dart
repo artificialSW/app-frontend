@@ -14,12 +14,12 @@ class Shell extends StatefulWidget {
   final int initialIndex; // 앱 진입 시 시작 탭 인덱스
 
   @override
-  State<Shell> createState() => _ShellState();
+  State<Shell> createState() => ShellState();
 }
 
-class _ShellState extends State<Shell> {
+class ShellState extends State<Shell> {
   late int index;
-  final _keys = List.generate(4, (_) => GlobalKey<NavigatorState>());
+  final keys = List.generate(4, (_) => GlobalKey<NavigatorState>());
 
   // 라우트 스택 변화 시 setState를 "다음 프레임"으로 지연 호출하기 위한 플래그
   bool _pendingRecalc = false;
@@ -43,7 +43,7 @@ class _ShellState extends State<Shell> {
     index = widget.initialIndex;
   }
 
-  bool get _branchCanPop => _keys[index].currentState?.canPop() ?? false;
+  bool get _branchCanPop => keys[index].currentState?.canPop() ?? false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class _ShellState extends State<Shell> {
         if (didPop) return;
 
         // 여기로 왔다는 건 Shell이 pop을 막았다는 뜻 → 현재 브랜치에서 pop 시도
-        final nav = _keys[index].currentState;
+        final nav = keys[index].currentState;
         if (nav != null && nav.canPop()) {
           nav.pop();
         }
@@ -69,22 +69,22 @@ class _ShellState extends State<Shell> {
           index: index,
           children: [
             Navigator(
-              key: _keys[0],
+              key: keys[0],
               observers: [_observers[0]],
               onGenerateRoute: homeRoutes,
             ),
             Navigator(
-              key: _keys[1],
+              key: keys[1],
               observers: [_observers[1]],
               onGenerateRoute: puzzleRoutes,
             ),
             Navigator(
-              key: _keys[2],
+              key: keys[2],
               observers: [_observers[2]],
               onGenerateRoute: chatRoutes,
             ),
             Navigator(
-              key: _keys[3],
+              key: keys[3],
               observers: [_observers[3]],
               onGenerateRoute: profileRoutes,
             ),
@@ -95,7 +95,7 @@ class _ShellState extends State<Shell> {
           onTap: (i) {
             if (i == index) {
               // 같은 탭 재탭 → 해당 브랜치 루트로 복귀
-              _keys[i].currentState?.popUntil((r) => r.isFirst);
+              keys[i].currentState?.popUntil((r) => r.isFirst);
               // popUntil에 따른 스택 변화는 옵저버가 감지해서 _scheduleRecalc 호출
             } else {
               setState(() => index = i);

@@ -63,7 +63,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
   @override
   void initState() {
     super.initState();
-    _completedPuzzlesFuture = _fetchCompletedPuzzles();
+    _completedPuzzlesFuture = _fetchCompletedPuzzles(); // ✅ 한 번만 호출
   }
 
   @override
@@ -72,7 +72,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
       backgroundColor: Colors.white,
       appBar: CanGoBackTopBar('완료된 퍼즐 목록', context),
       body: FutureBuilder<List<PuzzleGetCompletedListDto>>(
-        future: _fetchCompletedPuzzles(),
+        future: _completedPuzzlesFuture, // ✅ initState에서 만든 Future 재사용
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -126,7 +126,7 @@ class _CompletedPuzzlesPageState extends State<CompletedPuzzlesPage> {
                 onSave: () async {
                   await PuzzleService().archiveCompletedPuzzle(puzzleDto.puzzleId.toString());
                   setState(() {
-                    _completedPuzzlesFuture = _fetchCompletedPuzzles(); //새로운 future로 업데이트
+                    _completedPuzzlesFuture = _fetchCompletedPuzzles(); // ✅ 새 Future로 새로고침
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('아카이브로 이동 완료!')),

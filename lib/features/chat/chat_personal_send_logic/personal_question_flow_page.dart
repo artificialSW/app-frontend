@@ -164,6 +164,7 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false, // ✅ 키보드 올라올 때 화면 안올라감
       extendBody: true, // 하단바 영역까지 body 확장
       appBar: CreateQuestionTopBar(step),
       body: body,

@@ -45,21 +45,26 @@ class StepFamily extends StatelessWidget {
             ),
           ),
           
-          // 버튼들: 첫번째 버튼 기준 좌측패딩 31, 하단패딩 600 (화면 맨 아래부터)
+          // 버튼들: 가로 스크롤 가능하도록 수정
           Positioned(
             left: 31 * widthRatio,
             bottom: 600 * heightRatio,
-            child: Wrap(
-              spacing: 20 * widthRatio, // 좌우로는 20px
-              runSpacing: 29 * heightRatio, // 위아래로는 29px
-              children: members.map((m) {
-                final isSelected = selected?.id == m.id;
-                return _FamilyMemberButton(
-                  text: m.name,
-                  isSelected: isSelected,
-                  onTap: () => onSelect(m),
-                );
-              }).toList(),
+            right: 0, // 오른쪽 여백 고려
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: members.map((m) {
+                  final isSelected = selected?.id == m.id;
+                  return Padding(
+                    padding: EdgeInsets.only(right: 20 * widthRatio), // 버튼 간격
+                    child: _FamilyMemberButton(
+                      text: m.name,
+                      isSelected: isSelected,
+                      onTap: () => onSelect(m),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
         ],
