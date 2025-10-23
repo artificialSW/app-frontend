@@ -45,18 +45,18 @@ class StepFamily extends StatelessWidget {
             ),
           ),
           
-          // 버튼들: 가로 스크롤 가능하도록 수정
+          // 버튼들: 첫 번째 줄 (앞쪽 버튼들)
           Positioned(
             left: 31 * widthRatio,
             bottom: 600 * heightRatio,
-            right: 0, // 오른쪽 여백 고려
+            right: 0,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: members.map((m) {
+                children: members.take(3).map((m) { // 처음 3개만 첫 번째 줄에
                   final isSelected = selected?.id == m.id;
                   return Padding(
-                    padding: EdgeInsets.only(right: 20 * widthRatio), // 버튼 간격
+                    padding: EdgeInsets.only(right: 20 * widthRatio),
                     child: _FamilyMemberButton(
                       text: m.name,
                       isSelected: isSelected,
@@ -67,6 +67,30 @@ class StepFamily extends StatelessWidget {
               ),
             ),
           ),
+          
+          // 버튼들: 두 번째 줄 (밀리는 버튼들) - 위 박스에서 29px 아래
+          if (members.length > 3)
+            Positioned(
+              left: 31 * widthRatio,
+              bottom: 600 * heightRatio - 29 * heightRatio - 48 * heightRatio, // 위 박스에서 29px + 버튼 높이만큼 아래
+              right: 0,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: members.skip(3).map((m) { // 4번째부터는 두 번째 줄에
+                    final isSelected = selected?.id == m.id;
+                    return Padding(
+                      padding: EdgeInsets.only(right: 20 * widthRatio),
+                      child: _FamilyMemberButton(
+                        text: m.name,
+                        isSelected: isSelected,
+                        onTap: () => onSelect(m),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
         ],
       ),
     );

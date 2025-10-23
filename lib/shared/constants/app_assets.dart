@@ -117,5 +117,6 @@ class AppAssets {
   static const String reply_logo = 'assets/icons/reply_logo.png';
   static const String heart_logo = 'assets/icons/heart_logo.png';
   static const String puzzle_logo = 'assets/icons/puzzle_logo.png';
+  static const String profile_picture_change = 'assets/icons/profile_picture_change.png';
 
 }

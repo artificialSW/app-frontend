@@ -8,6 +8,7 @@ import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/services/profile/profile_service.dart';
 import 'package:artificialsw_frontend/services/profile/dto/profile_response_dto.dart';
+import 'profile_edit_page.dart';
 
 class ProfileRoot extends StatefulWidget {
   const ProfileRoot({super.key});
@@ -91,14 +92,20 @@ class _ProfileRootState extends State<ProfileRoot> {
   }
 
   Widget _buildProfileCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Color(0xFFEDF9ED),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.plumu_green_main, width: 1.5),
-      ),
-      child: Row(
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(builder: (context) => const ProfileEditPage()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Color(0xFFEDF9ED),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.plumu_green_main, width: 1.5),
+        ),
+        child: Row(
         children: [
           const CircleAvatar(
             radius: 30,
@@ -148,6 +155,7 @@ class _ProfileRootState extends State<ProfileRoot> {
           ),
         ],
       ),
+    ),
     );
   }
 
