@@ -8,6 +8,7 @@ import 'package:artificialsw_frontend/features/home/home_routes.dart';
 import 'package:artificialsw_frontend/features/puzzle/puzzle_routes.dart';
 import 'package:artificialsw_frontend/features/chat/chat_routes.dart';
 import 'package:artificialsw_frontend/features/profile/profile_routes.dart';
+import 'package:artificialsw_frontend/features/home/tutorial_logic/tutorial_page.dart';
 
 class Shell extends StatefulWidget {
   const Shell({super.key, this.initialIndex = 0});
@@ -20,6 +21,7 @@ class Shell extends StatefulWidget {
 class ShellState extends State<Shell> {
   late int index;
   final keys = List.generate(4, (_) => GlobalKey<NavigatorState>());
+  bool _helpShown = false;
 
   // 라우트 스택 변화 시 setState를 "다음 프레임"으로 지연 호출하기 위한 플래그
   bool _pendingRecalc = false;
@@ -36,6 +38,24 @@ class ShellState extends State<Shell> {
   // 각 브랜치 스택 변화를 관찰해서 위 스케줄러 호출
   late final List<_StackObserver> _observers =
   List.generate(4, (_) => _StackObserver(_scheduleRecalc));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_helpShown) return;
+
+    final args = ModalRoute.of(context)?.settings.arguments as Map?;
+    if (args?['goToHelp'] == true) {
+      _helpShown = true; // ✅ 한 번만 실행되게
+      // 한 프레임 뒤에 push (Navigator가 준비된 이후)
+      Future.microtask(() {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => TutorialPage()),
+        );
+      });
+    }
+  }
 
   @override
   void initState() {
