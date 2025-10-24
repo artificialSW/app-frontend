@@ -232,7 +232,6 @@ class _HomeRootState extends State<HomeRoot> {
             left: 0,
             right: 0,
             top: bottomButtonsTopPadding,
-            bottom: 0,
             child: HomeBottomButtons(),
           ),
           
