@@ -74,6 +74,7 @@ flutter:
     - assets/images/flower/
     - assets/icons/
     - assets/images/logo/
+    - assets/images/dogaam_and_archive_button/
 
   fonts:
     - family: plumu

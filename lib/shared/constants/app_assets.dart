@@ -92,7 +92,7 @@ class AppAssets {
   
   // 섬 이미지
   static const island_information = 'assets/images/island_information.png';
-  static const island_archive = 'assets/images/island_archive.png';
+  static const island_archive = 'assets/images/main_island_empty_big.png';
   
   // 튜토리얼 두 번째 페이지 이미지들
   static const information_flower_tree1 = 'assets/images/information_flower_tree1.png';
@@ -119,4 +119,16 @@ class AppAssets {
   static const String puzzle_logo = 'assets/icons/puzzle_logo.png';
   static const String profile_picture_change = 'assets/icons/profile_picture_change.png';
 
+
+  static const String lock_big = 'assets/images/lock_big.png';
+
+  static const String afternoon_archive = 'assets/images/dogaam_and_archive_button/afternoon_archive.png';
+  static const String dawn_archive = 'assets/images/dogaam_and_archive_button/dawn_archive.png';
+  static const String morning_archive = 'assets/images/dogaam_and_archive_button/morning_archive.png';
+  static const String night_archive = 'assets/images/dogaam_and_archive_button/night_archive.png';
+
+  static const String afternoon_dogaam = 'assets/images/dogaam_and_archive_button/afternoon_dogaam.png';
+  static const String dawn_dogaam = 'assets/images/dogaam_and_archive_button/dawn_dogaam.png';
+  static const String morning_dogaam = 'assets/images/dogaam_and_archive_button/morning_dogaam.png';
+  static const String night_dogaam = 'assets/images/dogaam_and_archive_button/night_dogaam.png';
 }
