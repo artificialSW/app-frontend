@@ -6,15 +6,16 @@ import 'package:artificialsw_frontend/features/puzzle/puzzlelist_provider.dart';
 import 'package:artificialsw_frontend/shell.dart';
 import 'package:artificialsw_frontend/account/login.dart';
 import 'package:artificialsw_frontend/account/register.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ImageStore()), // 이미지스토어 등록
-        ChangeNotifierProvider(create: (_) => PuzzleProvider()), // 이미 쓰고 있는 퍼즐 프로바이더
-        // 다른 provider도 여기에 추가 가능
+        ChangeNotifierProvider(create: (_) => ImageStore()),
+        ChangeNotifierProvider(create: (_) => PuzzleProvider()),
       ],
       child: const MyApp(),
     ),
@@ -23,18 +24,43 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final app = MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginScreen(), //나중에 스플래시 화면으로 바꾸기
+        '/': (context) => LoginScreen(),
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
         '/shell': (context) => Shell(),
       },
-      //home: Shell(),
     );
+
+    // ✅ 웹에서는 화면 크기를 제한해서 가운데 정렬
+    if (kIsWeb) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          backgroundColor: const Color(0xFFF2F2F2),
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 390, // iPhone width
+                maxHeight: 844, // iPhone height
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: app, // 기존 MaterialApp을 안에 렌더링
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // ✅ 모바일/데스크탑은 원래대로 전체 화면
+    return app;
   }
 }
