@@ -369,8 +369,10 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     size = isAcacia ? size * 1.6 : size; // 아카시아만 크기 증가
 
     final basePos = _baseFlowerPositions[index];
-    double left = basePos.dx * scaleX + 56;
-    double top = basePos.dy * scaleY + 316;
+    //double left = basePos.dx * scaleX + 56;
+    //double top = basePos.dy * scaleY + 316;
+    double left = basePos.dx * scaleX + 55;
+    double top = basePos.dy * scaleY + 308;
 
     //아카시아라면 위치를 살짝 위·왼쪽으로 이동 (-10, -10)
     if (isAcacia) {
@@ -403,8 +405,10 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     size = isAcacia ? size * 1.6 : size; // 아카시아만 크기 증가
 
     final basePos = _baseFlower2Positions[index];
-    double left = basePos.dx * scaleX + 129;
-    double top = basePos.dy * scaleY + 300;
+    // double left = basePos.dx * scaleX + 129;
+    // double top = basePos.dy * scaleY + 300;
+    double left = basePos.dx * scaleX + 124;
+    double top = basePos.dy * scaleY + 289;
 
     // 아카시아라면 위치를 살짝 위·왼쪽으로 이동 (-10, -10)
     if (isAcacia) {
@@ -438,8 +442,10 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     height = hasToShrink ? height * 0.85 : height;
 
     final basePos = _baseFruit1Positions[index];
-    final left = basePos.dx * scaleX + 195;
-    final top = basePos.dy * scaleY + 338;
+    // final left = basePos.dx * scaleX + 195;
+    // final top = basePos.dy * scaleY + 338;
+    final left = basePos.dx * scaleX + 189;
+    final top = basePos.dy * scaleY + 329;
 
     return Positioned(
       left: left,
@@ -464,8 +470,10 @@ class _IslandArchivePageState extends State<IslandArchivePage> {
     final height = 95.0 * scaleY;
 
     final basePos = _baseFruit2Positions[index];
-    final left = basePos.dx * scaleX + 258;
-    final top = basePos.dy * scaleY + 420;
+    // final left = basePos.dx * scaleX + 258;
+    // final top = basePos.dy * scaleY + 420;
+    final left = basePos.dx * scaleX + 250;
+    final top = basePos.dy * scaleY + 407;
 
     return Positioned(
       left: left,
