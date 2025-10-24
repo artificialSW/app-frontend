@@ -73,7 +73,7 @@ class _HomeRootState extends State<HomeRoot> {
     if (hour >= 8 && hour < 16) {
       return 'assets/images/main_island_morning.png';
     } else {
-      return 'assets/images/main_island.png';
+      return 'assets/images/main_island_big.png';
     }
   }
 
