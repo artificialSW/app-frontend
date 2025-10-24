@@ -389,7 +389,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final isDone = _uploads.length >= maxCount;
+    final isDone = _uploads.length >= 1;
 
     return Scaffold(
       appBar: CanGoBackTopBar('사진 업로드', context),
@@ -427,7 +427,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '이번주의 주제별로 사진을 제출해주세요!',
+                          '이번주의 주제별로 사진을 제출해주세요!\n모두 제출하지 않아도 괜찮습니다🙂',
                           style: AppTextStyles.pretendard_regular.copyWith(
                             fontSize: 14,
                             color: AppColors.plumu_gray_7,
