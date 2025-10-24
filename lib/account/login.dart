@@ -192,7 +192,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 24),
 
-                        CustomButton(text: '로그인', onPressed: _login),
+                        CustomButton(
+                            text: '로그인',
+                            onPressed: () {
+                              login(_idController.text.trim(), _pwController.text.trim());
+                            }
+                        ),
 
                         const Spacer(),
 
@@ -217,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _login() async {
+  void login(String id, String pw) async {
     final id = _idController.text.trim();
     final pw = _pwController.text.trim();
     debugPrint('Login Attempt: ID: $id, PW: $pw');

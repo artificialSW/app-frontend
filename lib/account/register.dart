@@ -364,7 +364,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       await Future.delayed(const Duration(milliseconds: 500));
 
-      showSignUpCompleteDialog(context);
+      showSignUpCompleteDialog(context, _phoneController.text.trim(), _pwController.text.trim());
     } catch (e) {
       print('❌ 회원가입 오류: $e');
     }
