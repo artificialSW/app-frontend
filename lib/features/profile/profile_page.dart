@@ -1,5 +1,6 @@
 import 'package:artificialsw_frontend/shared/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // 클립보드 기능을 위한 import
 import '../../shared/constants/app_colors.dart';
 import '../../shared/constants/app_text_styles.dart';
 import '../../shared/widgets/custom_bottom_bar.dart';
@@ -267,7 +268,18 @@ class _ProfileRootState extends State<ProfileRoot> {
         ),
         CustomButton(
           text: '복사하기',
-          onPressed: (){},
+          onPressed: () {
+            if (_profileData?.familyCode != null) {
+              Clipboard.setData(ClipboardData(text: _profileData!.familyCode));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('가족코드가 복사되었습니다: ${_profileData!.familyCode}'),
+                  duration: Duration(seconds: 2),
+                  backgroundColor: AppColors.plumu_green_main,
+                ),
+              );
+            }
+          },
           width: 70,
           height: 30,
           fontSize: 11,
