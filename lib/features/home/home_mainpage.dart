@@ -71,7 +71,7 @@ class _HomeRootState extends State<HomeRoot> {
     final hour = now.hour;
     
     if (hour >= 8 && hour < 16) {
-      return 'assets/images/main_island_morning.png';
+      return 'assets/images/main_island_morning_big.png';
     } else {
       return 'assets/images/main_island_big.png';
     }
@@ -232,6 +232,7 @@ class _HomeRootState extends State<HomeRoot> {
             left: 0,
             right: 0,
             top: bottomButtonsTopPadding,
+            bottom: 0,
             child: HomeBottomButtons(),
           ),
           

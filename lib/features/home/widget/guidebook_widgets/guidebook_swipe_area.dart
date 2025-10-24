@@ -388,7 +388,7 @@ class GuidebookSwipeArea extends StatelessWidget {
       child: Container(
         key: lockKey,
         child: Image.asset(
-          AppAssets.lock,
+          AppAssets.lock_big,
           width: 60 * widthRatio,
           height: 60 * widthRatio,
         ),
