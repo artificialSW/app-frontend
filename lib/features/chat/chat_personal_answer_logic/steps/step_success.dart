@@ -9,7 +9,7 @@ class StepAnswerSuccess extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnswerSuccessScreen(
-      message: "'$to'에게 답변을 보냈어요!",
+      message: "'$to'에게\n답변을 보냈어요!",
     );
   }
 }

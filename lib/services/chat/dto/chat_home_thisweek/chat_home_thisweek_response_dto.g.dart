@@ -29,3 +29,5 @@ Map<String, dynamic> _$ChatHomeThisweekResponseDtoToJson(
   'comments': instance.comments,
   'unsolved': instance.unsolved,
 };
+
+

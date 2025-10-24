@@ -77,8 +77,8 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
           ),
         );
         
-        // 1.5초 후 자동으로 Success 화면 닫고 채팅 메인으로 돌아가기
-        Future.delayed(const Duration(milliseconds: 1500), () {
+        // 2초 후 자동으로 Success 화면 닫고 채팅 메인으로 돌아가기
+        Future.delayed(const Duration(milliseconds: 2000), () {
           if (!mounted) return;
           
           try {
@@ -110,7 +110,7 @@ class _FlowState extends State<PersonalQuestionFlowPage> {
   }
 
   void _scheduleReturnToChat() {
-    Future.delayed(const Duration(milliseconds: 1200), () {
+    Future.delayed(const Duration(milliseconds: 2000), () {
       if (!mounted) return;
       Navigator.of(context).pop();
     });

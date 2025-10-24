@@ -143,9 +143,9 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
     }
   }
 
-  /// 성공 페이지에서 1.2초 후 자동으로 채팅 메인 페이지로 돌아가는 메서드
+  /// 성공 페이지에서 2초 후 자동으로 채팅 메인 페이지로 돌아가는 메서드
   void _scheduleReturnToChat() {
-    Future.delayed(const Duration(milliseconds: 1200), () {
+    Future.delayed(const Duration(milliseconds: 2000), () {
       if (!mounted) return; // 위젯이 아직 마운트되어 있는지 확인
       
       try {
@@ -209,8 +209,8 @@ class _PersonalAnswerFlowPageState extends State<PersonalAnswerFlowPage> with Wi
       ),
     );
     
-    // 1.5초 후 자동으로 Success 화면 닫고 채팅 메인으로 돌아가기
-    Future.delayed(const Duration(milliseconds: 1500), () {
+    // 2초 후 자동으로 Success 화면 닫고 채팅 메인으로 돌아가기
+    Future.delayed(const Duration(milliseconds: 2000), () {
       if (!mounted) return;
       
       try {

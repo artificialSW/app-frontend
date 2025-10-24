@@ -207,7 +207,9 @@ class AnswerSuccessScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: AppTextStyles.pretendard_bold.copyWith(
                     color: AppColors.plumu_white,
-                    fontSize: 16,
+                    fontSize: 27,
+                    height: 1.33,
+                    letterSpacing: -0.05,
                   ),
                 ),
               ],
