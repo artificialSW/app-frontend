@@ -74,16 +74,16 @@ class FruitCardDialog extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 56),
+            const SizedBox(height: 20), // 더 줄여서 병아리 위쪽 공간 최대한 확보
             ClipRect(
               child: Align(
                 alignment: Alignment.topCenter, // 위쪽 기준으로 맞춤
-                heightFactor: 0.6, // 👈 0.0~1.0 (1.0 = 전체, 0.5면 상단 절반만 보임)
+                heightFactor: 0.7, // 0.65에서 0.7로 더 늘려서 모자 위쪽이 완전히 보이도록
                 child: Image.asset(
                   'assets/images/app_character.png',
                   width: 280,
                   height: 280,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain, // cover에서 contain으로 변경하여 이미지 전체가 보이도록
                 ),
               ),
             ),

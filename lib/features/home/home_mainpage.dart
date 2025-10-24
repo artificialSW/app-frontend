@@ -106,12 +106,13 @@ class _HomeRootState extends State<HomeRoot> {
     _loadProgressScores();
     // 화면이 완전히 로드된 후 섬 저장 완료 인디케이터를 표시함
     // 단, 앱 실행 중 한 번만 표시됨
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_hasShownSaveIndicator) {
-        _hasShownSaveIndicator = true;
-        IslandSaveIndicator.show(context: context);
-      }
-    });
+    // TODO: 2주 후 섬 저장 다이얼로그 임시 비활성화
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (!_hasShownSaveIndicator) {
+    //     _hasShownSaveIndicator = true;
+    //     IslandSaveIndicator.show(context: context);
+    //   }
+    // });
   }
 
   /// 프로그레스바 점수 조회
