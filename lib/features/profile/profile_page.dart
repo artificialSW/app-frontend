@@ -11,6 +11,7 @@ import 'package:artificialsw_frontend/services/profile/profile_service.dart';
 import 'package:artificialsw_frontend/services/profile/dto/profile_response_dto.dart';
 import 'profile_edit_page.dart';
 import 'settings/settings_page.dart';
+import 'password_change_page.dart';
 
 class ProfileRoot extends StatefulWidget {
   const ProfileRoot({super.key});
@@ -216,7 +217,7 @@ class _ProfileRootState extends State<ProfileRoot> {
       {'title': '환경 설정', 'onTap': () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()))},
       {'title': '가족 설정', 'onTap': () {}},
       {'title': '약관 및 개인정보 처리방침', 'onTap': () {}},
-      {'title': '개인정보 수정', 'onTap': () {}},
+      {'title': '개인정보 수정', 'onTap': () => Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => const PasswordChangePage()))},
     ];
 
 
