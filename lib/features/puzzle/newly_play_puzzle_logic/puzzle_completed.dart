@@ -121,7 +121,7 @@ class PuzzleCompleted extends StatelessWidget {
                             archiveYear: 2025,
                             archiveMonth: 10,
                             archivePeriod: 2,
-                            archiveTreeIndex: 2,
+                            archiveTreeIndex: 4,
                           )),
                         );
                       });
