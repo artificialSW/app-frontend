@@ -90,14 +90,19 @@ class _SignUpCompleteContentState extends State<_SignUpCompleteContent>
 
         // 로그인 성공 후
         if (mounted) {
-          Navigator.pushReplacementNamed(context, '/shell').then((_) {
-            // Shell 진입이 끝난 뒤 HelpPage 열기
-            Future.delayed(Duration(milliseconds: 300), () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => HelpPage()),
-              );
-            });
-          });
+          // Navigator.pushReplacementNamed(context, '/shell').then((_) {
+          //   // Shell 진입이 끝난 뒤 HelpPage 열기
+          //   Future.delayed(Duration(milliseconds: 300), () {
+          //     Navigator.of(context).push(
+          //       MaterialPageRoute(builder: (_) => HelpPage()),
+          //     );
+          //   });
+          // });
+          Navigator.pushReplacementNamed(
+            context,
+            '/shell',
+            arguments: {'goToHelp': true}, // ✅ 전달
+          );
         }
 
         //Navigator.pushReplacementNamed(context, '/shell');
