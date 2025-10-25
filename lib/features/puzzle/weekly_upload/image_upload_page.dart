@@ -14,6 +14,8 @@ import 'package:exif/exif.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/features/puzzle/weekly_upload/image_upload_comment_page.dart';
+import 'dart:ui' as ui;
+
 class ImageUploadPage extends StatefulWidget {
   final List<String> category;
 
@@ -70,10 +72,90 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
 
       print('📸 촬영일자: ${isoDate}');
 
+      final originalFile = File(picked.path);
+      final croppedFile = await _cropIfTooTall(originalFile);
+
       setState(() {
-        _currentImage = File(picked.path);
+        _currentImage = croppedFile;
       });
     }
+  }
+
+  Future<File> _cropIfTooTall(File originalFile) async {
+    final bytes = await originalFile.readAsBytes();
+    final image = await decodeImageFromList(bytes); // Flutter built-in image decoder
+
+    final width = image.width;
+    final height = image.height;
+
+    // 세로가 가로의 1.8배 이상이면 (예시) 위아래 20% 잘라내기
+    if (height / width > 1.8) {
+      final cropTop = (height * 0.2).round();
+      final cropBottom = (height * 0.8).round();
+
+      final uiBytes = await originalFile.readAsBytes();
+      final codec = await ui.instantiateImageCodec(uiBytes);
+      final frame = await codec.getNextFrame();
+      final uiImage = frame.image;
+
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(recorder);
+      final paint = Paint();
+
+      final src = Rect.fromLTWH(
+        0,
+        cropTop.toDouble(),
+        width.toDouble(),
+        (cropBottom - cropTop).toDouble(),
+      );
+      final dst = Rect.fromLTWH(0, 0, width.toDouble(), (cropBottom - cropTop).toDouble());
+      canvas.drawImageRect(uiImage, src, dst, paint);
+      final picture = recorder.endRecording();
+      final croppedImage = await picture.toImage(width, cropBottom - cropTop);
+
+      final byteData = await croppedImage.toByteData(format: ui.ImageByteFormat.png);
+      final croppedBytes = byteData!.buffer.asUint8List();
+
+      final newPath = originalFile.path.replaceAll('.jpg', '_cropped.png');
+      final newFile = await File(newPath).writeAsBytes(croppedBytes);
+      return newFile;
+    }
+
+    // 세로가 가로의 1.5배 이상이면 (예시) 위아래 10% 잘라내기
+    if (height / width > 1.5) {
+      final cropTop = (height * 0.1).round();
+      final cropBottom = (height * 0.9).round();
+
+      final uiBytes = await originalFile.readAsBytes();
+      final codec = await ui.instantiateImageCodec(uiBytes);
+      final frame = await codec.getNextFrame();
+      final uiImage = frame.image;
+
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(recorder);
+      final paint = Paint();
+
+      final src = Rect.fromLTWH(
+        0,
+        cropTop.toDouble(),
+        width.toDouble(),
+        (cropBottom - cropTop).toDouble(),
+      );
+      final dst = Rect.fromLTWH(0, 0, width.toDouble(), (cropBottom - cropTop).toDouble());
+      canvas.drawImageRect(uiImage, src, dst, paint);
+      final picture = recorder.endRecording();
+      final croppedImage = await picture.toImage(width, cropBottom - cropTop);
+
+      final byteData = await croppedImage.toByteData(format: ui.ImageByteFormat.png);
+      final croppedBytes = byteData!.buffer.asUint8List();
+
+      final newPath = originalFile.path.replaceAll('.jpg', '_cropped.png');
+      final newFile = await File(newPath).writeAsBytes(croppedBytes);
+      return newFile;
+    }
+
+    // 그대로 반환
+    return originalFile;
   }
 
   // 카테고리 index로 이미 업로드된 항목 찾기
@@ -389,7 +471,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final isDone = _uploads.length >= maxCount;
+    final isDone = _uploads.length >= 1;
 
     return Scaffold(
       appBar: CanGoBackTopBar('사진 업로드', context),
@@ -427,7 +509,7 @@ class _ImageUploadPageState extends State<ImageUploadPage> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '이번주의 주제별로 사진을 제출해주세요!',
+                          '이번주의 주제별로 사진을 제출해주세요!\n모두 제출하지 않아도 괜찮습니다🙂',
                           style: AppTextStyles.pretendard_regular.copyWith(
                             fontSize: 14,
                             color: AppColors.plumu_gray_7,

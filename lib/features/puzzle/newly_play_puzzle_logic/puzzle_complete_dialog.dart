@@ -43,16 +43,16 @@ class PuzzleCompleteDialog extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(height: 56),
+            const SizedBox(height: 20),
             ClipRect(
               child: Align(
                 alignment: Alignment.topCenter, // 위쪽 기준으로 맞춤
                 heightFactor: 0.6, // 👈 0.0~1.0 (1.0 = 전체, 0.5면 상단 절반만 보임)
                 child: Image.asset(
-                  'assets/images/app_character.png',
+                  'assets/images/dogaam_and_archive_button/chick_big.png',
                   width: 280,
                   height: 280,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),

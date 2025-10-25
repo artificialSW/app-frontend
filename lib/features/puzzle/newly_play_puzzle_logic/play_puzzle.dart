@@ -414,7 +414,7 @@ class _PlayPuzzleState extends State<PlayPuzzle> {
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      width: boardWidth * 0.8,
+                      width: boardWidth,
                       child: CustomButton(
                         text: '저장하기',
                         height: 40,
