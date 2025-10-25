@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "595124543232",
+    "project_id": "plumu-28032",
+    "storage_bucket": "plumu-28032.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595124543232:android:21fdb67c7e12aaee28dde5",
+        "android_client_info": {
+          "package_name": "com.example.artificialsw_frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjg_KWYLttvykdT1z6T3mxr5kHcgmmue8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
