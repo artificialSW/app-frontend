@@ -170,13 +170,11 @@ class _SignUpCompleteContentState extends State<_SignUpCompleteContent>
               ),
               const SizedBox(height: 24),
 
-              // ignore: diagnostic_describe_all_properties, hardcoded_text
-              Text(
-                '회원가입이 완료됐어요!\n섬을 꾸미러 가볼까요?',
-                style: AppTextStyles.pretendard_bold.copyWith(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
+              Image.asset(
+                AppAssets.text_register,
+                width: MediaQuery.of(context).size.width * (248 / 412),
+                height: MediaQuery.of(context).size.height * (72 / 917),
+                fit: BoxFit.contain,
               ),
               const SizedBox(height: 40),
             ],

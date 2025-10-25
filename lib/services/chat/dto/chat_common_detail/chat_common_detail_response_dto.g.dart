@@ -29,3 +29,5 @@ Map<String, dynamic> _$ChatCommonDetailResponseDtoToJson(
 };
 
 
+
+
