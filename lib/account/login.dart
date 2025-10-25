@@ -223,9 +223,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login(String id, String pw) async {
+    final _fcmToken = await StorageService.getFCMToken();
     final id = _idController.text.trim();
     final pw = _pwController.text.trim();
-    debugPrint('Login Attempt: ID: $id, PW: $pw');
+    debugPrint('Login Attempt: ID: $id, PW: $pw, FCMToken: ${_fcmToken ?? ''}');
 
     if (id.isEmpty || pw.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -243,7 +244,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final loginResponse = await _dio.post(
         loginUri,
-        data: {'id': id, 'password': pw},
+        data: {
+          'id': id,
+          'password': pw,
+          'token': _fcmToken ?? ''
+        },
         options: Options(
           headers: {
             'Content-Type': 'application/json',

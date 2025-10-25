@@ -10,6 +10,7 @@ import 'dart:io' show Platform;
 import 'package:firebase_core/firebase_core.dart'; // ✅ Firebase 초기화용
 import 'package:firebase_messaging/firebase_messaging.dart'; // ✅ FCM 관련
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // ✅ 로컬 알림 관련
+import 'package:artificialsw_frontend/services/storage_service.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('[FCM - Background] Message: ${message.messageId}');
@@ -29,6 +30,10 @@ Future<void> main() async {
     vapidKey: "BGRA_GV..........keyvalue", // ← web용 vapidKey, Android에서는 생략 가능
   );
   print("🔥 FCM token: $fcmToken");
+
+  if(fcmToken != null){
+    StorageService.saveFCMToken(fcmToken);
+  }
 
   // ✅ 토큰 갱신 시 처리
   fbMsg.onTokenRefresh.listen((newToken) {

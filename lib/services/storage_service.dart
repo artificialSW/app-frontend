@@ -40,6 +40,22 @@ class StorageService {
   static Future<void> deleteArchiveId() async {
     await _storage.delete(key: 'archiveId');
   }
+
+
+  // 🔹 access token 저장
+  static Future<void> saveFCMToken(String token) async {
+    await _storage.write(key: 'fcm_token', value: token);
+  }
+
+  // 🔹 access token 읽기
+  static Future<String?> getFCMToken() async {
+    return await _storage.read(key: 'fcm_token');
+  }
+
+  // 🔹 access token 삭제 (로그아웃 시 사용)
+  static Future<void> deleteFCMToken() async {
+    await _storage.delete(key: 'fcm_token');
+  }
 }
 
 
