@@ -115,6 +115,15 @@ class AppAssets {
 
   static const String check = 'assets/icons/check.png';
   static const text_register = 'assets/images/text_register.png';
+  
+  // 가족 구성원 이미지들
+  static const son = 'assets/images/son.png';
+  static const daughter = 'assets/images/daughter.png';
+  static const mom = 'assets/images/mom.png';
+  static const dad = 'assets/images/dad.png';
+  static const grandmother = 'assets/images/grandmother.png';
+  static const grandfather = 'assets/images/grandfather.png';
+  
   static const String reply_logo = 'assets/icons/reply_logo.png';
   static const String heart_logo = 'assets/icons/heart_logo.png';
   static const String puzzle_logo = 'assets/icons/puzzle_logo.png';

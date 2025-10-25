@@ -95,6 +95,7 @@ class _PasswordChangePageState extends State<PasswordChangePage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,

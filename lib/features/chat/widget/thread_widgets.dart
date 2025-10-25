@@ -4,6 +4,7 @@ import 'package:characters/characters.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
+import 'package:artificialsw_frontend/shared/utils/family_utils.dart';
 
 /// 화면용 최소 대댓글 뷰모델
 class ThreadReplyView {
@@ -54,6 +55,31 @@ class ThreadCommentTile extends StatelessWidget {
     final widthRatio = screenWidth / 412.0;
     final heightRatio = screenHeight / 917.0;
     
+    // 텍스트 길이에 따른 동적 높이 계산
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: const TextStyle(
+          color: Color(0xFF282828),
+          fontSize: 14,
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w500,
+          height: 1.43,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    );
+    
+    // 텍스트가 들어갈 수 있는 최대 너비 (화면 폭의 2/3)
+    final maxTextWidth = (screenWidth * 2 / 3) - (55 * widthRatio) - (16 * widthRatio);
+    textPainter.layout(maxWidth: maxTextWidth);
+    
+    // 텍스트 높이에 따른 컨테이너 높이 계산
+    final textHeight = textPainter.height;
+    final baseHeight = 150 * heightRatio;
+    final dynamicHeight = baseHeight + (textHeight > 20 ? textHeight - 20 : 0);
+    
     return Container(
       width: 380 * widthRatio,
       margin: EdgeInsets.symmetric(horizontal: (screenWidth - 380 * widthRatio) / 2),
@@ -61,17 +87,23 @@ class ThreadCommentTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            height: 150 * heightRatio,
+            height: dynamicHeight,
             child: Stack(
         children: [
           // person circle: 좌측 16, 위쪽 16
           Positioned(
             left: 16 * widthRatio,
             top: 16 * heightRatio,
-            child: Image.asset(
-              AppAssets.person_circle, 
-              width: 33 * widthRatio, 
-              height: 33 * heightRatio
+            child: Container(
+              width: 33 * widthRatio,
+              height: 33 * heightRatio,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: AssetImage(FamilyUtils.getProfileImageByFamilyType(author)),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ),
           
@@ -79,49 +111,58 @@ class ThreadCommentTile extends StatelessWidget {
           Positioned(
             left: 56 * widthRatio,
             top: 22 * heightRatio,
-            child: Text(
-              author,
-              style: const TextStyle(
-                color: Color(0xFF282828),
-                fontSize: 17,
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w700,
-              ),
+            child: FutureBuilder<String>(
+              future: FamilyUtils.getDisplayNameByRole(author),
+              builder: (context, snapshot) {
+                final displayName = snapshot.data ?? author;
+                return Text(
+                  displayName,
+                  style: const TextStyle(
+                    color: Color(0xFF282828),
+                    fontSize: 17,
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w700,
+                  ),
+                );
+              },
             ),
           ),
           
-          // 댓글 내용: 좌측 55, 위쪽 59
+          // 댓글 내용: 좌측 55, 위쪽 59, 화면 폭의 2/3에서 줄바꿈
           Positioned(
             left: 55 * widthRatio,
             top: 59 * heightRatio,
             right: 16 * widthRatio,
-            child: Text(
-              text,
-              style: const TextStyle(
-                color: Color(0xFF282828),
-                fontSize: 14,
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w500,
-                height: 1.43,
+            child: SizedBox(
+              width: screenWidth * 2 / 3 - 55 * widthRatio,
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: Color(0xFF282828),
+                  fontSize: 14,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                  height: 1.43,
+                ),
               ),
             ),
           ),
           
-          // 세로선: 높이 59, plumu_gray_4, 좌측 32, 위쪽 53
+          // 세로선: 동적 높이로 조정
           Positioned(
             left: 32 * widthRatio,
             top: 53 * heightRatio,
             child: Container(
               width: 1,
-              height: 59 * heightRatio,
+              height: (59 * heightRatio) + (textHeight > 20 ? textHeight - 20 : 0),
               color: AppColors.plumu_gray_4,
             ),
           ),
           
-          // 하트 아이콘과 숫자
+          // 하트 아이콘과 숫자: 텍스트 높이에 따라 위치 조정
           Positioned(
             left: 55 * widthRatio,
-            top: 85 * heightRatio,
+            top: 85 * heightRatio + (textHeight > 20 ? textHeight - 20 : 0),
             child: GestureDetector(
               onTap: onToggleLike,
               child: Row(
@@ -145,10 +186,10 @@ class ThreadCommentTile extends StatelessWidget {
             ),
           ),
           
-           // 댓글 아이콘과 숫자
+           // 댓글 아이콘과 숫자: 텍스트 높이에 따라 위치 조정
            Positioned(
              left: 93 * widthRatio,
-             top: 85 * heightRatio,
+             top: 85 * heightRatio + (textHeight > 20 ? textHeight - 20 : 0),
             child: GestureDetector(
               onTap: onTapReply,
               child: Row(
@@ -173,11 +214,11 @@ class ThreadCommentTile extends StatelessWidget {
             ),
           ),
           
-          // show replies 아이콘과 텍스트: 좌측 44, 위쪽 116
+          // show replies 아이콘과 텍스트: 텍스트 높이에 따라 위치 조정
           if (replies.isNotEmpty)
             Positioned(
               left: 44 * widthRatio,
-              top: 116 * heightRatio,
+              top: 116 * heightRatio + (textHeight > 20 ? textHeight - 20 : 0),
               child: GestureDetector(
                 onTap: onToggleExpand,
                 child: Row(
@@ -233,10 +274,16 @@ class ThreadCommentTile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // 대댓글 아바타
-                            Image.asset(
-                              AppAssets.person_circle, 
-                              width: 20 * widthRatio, 
-                              height: 20 * heightRatio
+                            Container(
+                              width: 20 * widthRatio,
+                              height: 20 * heightRatio,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: AssetImage(FamilyUtils.getProfileImageByFamilyType(r.author)),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                             SizedBox(width: 8 * widthRatio),
                             // 대댓글 내용
