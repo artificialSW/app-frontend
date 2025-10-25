@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_text_styles.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
+import 'package:artificialsw_frontend/shared/utils/family_utils.dart';
 import 'package:artificialsw_frontend/services/chat/chat_service.dart';
 import 'package:artificialsw_frontend/services/chat/dto/chat_like/chat_like_request_dto.dart';
 import 'package:artificialsw_frontend/services/chat/mock_data_manager.dart';
@@ -143,11 +144,16 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
                 // 참여자 아이콘 그룹: X=23, Y=48, size ~35x36, 간격 10
                 Positioned(
                   left: 23, top: 48,
-                  child: Row(children: [
-                    _ParticipantIcon(pressed: _pressed, color: circleStroke),
-                    const SizedBox(width: 0),
-                    _ParticipantIcon(pressed: _pressed, color: circleStroke),
-                  ]),
+                  child: Builder(
+                    builder: (context) {
+                      final randomMembers = FamilyUtils.getRandomFamilyMembers();
+                      return Row(children: [
+                        _ParticipantIcon(pressed: _pressed, color: circleStroke, role: randomMembers[0]), // 보낸사람
+                        const SizedBox(width: 0),
+                        _ParticipantIcon(pressed: _pressed, color: circleStroke, role: randomMembers[1]), // 받는사람
+                      ]);
+                    },
+                  ),
                 ),
 
                 // 잠금: right=12, top=10, size=20x25, filled icon asset
@@ -209,7 +215,8 @@ class _PersonalQuestionCardState extends State<PersonalQuestionCard> {
 class _ParticipantIcon extends StatelessWidget {
   final bool pressed;
   final Color color;
-  const _ParticipantIcon({required this.pressed, required this.color});
+  final String role;
+  const _ParticipantIcon({required this.pressed, required this.color, required this.role});
 
   @override
   Widget build(BuildContext context) {
@@ -218,13 +225,31 @@ class _ParticipantIcon extends StatelessWidget {
         width: 35,
         height: 36,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.15),
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 2),
+          image: DecorationImage(
+            image: AssetImage(FamilyUtils.getProfileImageByFamilyType(role)),
+            fit: BoxFit.cover,
+          ),
         ),
-        child: Icon(Icons.person, size: 20, color: Colors.white),
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white.withOpacity(0.15),
+          ),
+        ),
       );
     }
-    return Image.asset(AppAssets.person_circle, width: 35, height: 36);
+    return Container(
+      width: 35,
+      height: 36,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        image: DecorationImage(
+          image: AssetImage(FamilyUtils.getProfileImageByFamilyType(role)),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
   }
 }

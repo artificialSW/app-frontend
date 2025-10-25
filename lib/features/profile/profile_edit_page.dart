@@ -74,6 +74,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,

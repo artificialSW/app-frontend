@@ -40,6 +40,21 @@ class StorageService {
   static Future<void> deleteArchiveId() async {
     await _storage.delete(key: 'archiveId');
   }
+
+  // 🔹 사용자 역할 저장
+  static Future<void> saveUserRole(String role) async {
+    await _storage.write(key: 'user_role', value: role);
+  }
+
+  // 🔹 사용자 역할 읽기
+  static Future<String?> getUserRole() async {
+    return await _storage.read(key: 'user_role');
+  }
+
+  // 🔹 사용자 역할 삭제 (로그아웃 시 사용)
+  static Future<void> deleteUserRole() async {
+    await _storage.delete(key: 'user_role');
+  }
 }
 
 

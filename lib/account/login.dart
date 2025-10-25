@@ -289,6 +289,9 @@ class _LoginScreenState extends State<LoginScreen> {
         // 2. 토큰 저장
         //await StorageService.saveAccessToken(accessToken, refreshToken);
         await StorageService.saveAccessToken(accessToken);
+        
+        // 3. 사용자 역할 저장 (테스트용으로 "아들"로 설정)
+        await StorageService.saveUserRole("아들");
 
         print("🔥🔥🔥🔥my access token is: $accessToken");
 

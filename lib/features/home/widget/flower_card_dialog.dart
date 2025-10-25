@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:artificialsw_frontend/shared/constants/app_colors.dart';
 import 'package:artificialsw_frontend/shared/constants/app_assets.dart';
 import 'package:artificialsw_frontend/shared/widgets/custom_button.dart';
+import 'package:artificialsw_frontend/shared/utils/family_utils.dart';
 import 'package:artificialsw_frontend/services/home/dto/archive/flower_card_dialog_response_dto/public_dto.dart';
 import 'package:artificialsw_frontend/services/home/dto/archive/flower_card_dialog_response_dto/personal_dto.dart';
 import 'package:artificialsw_frontend/services/home/dto/archive/flower_card_dialog_response_dto/comments_dto.dart';
@@ -166,6 +167,31 @@ class _FlowerCardDialogState extends State<FlowerCardDialog> {
     final widthRatio = screenWidth / 412.0;
     final heightRatio = screenHeight / 917.0;
     
+    // 텍스트 길이에 따른 동적 높이 계산
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: comment.content,
+        style: const TextStyle(
+          color: Color(0xFFF9F9F9),
+          fontSize: 14,
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w500,
+          height: 1.43,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    );
+    
+    // 텍스트가 들어갈 수 있는 최대 너비 (화면 폭의 2/3)
+    final maxTextWidth = (screenWidth * 2 / 3) - (55 * widthRatio) - (16 * widthRatio);
+    textPainter.layout(maxWidth: maxTextWidth);
+    
+    // 텍스트 높이에 따른 컨테이너 높이 계산
+    final textHeight = textPainter.height;
+    final baseHeight = 145 * heightRatio;
+    final dynamicHeight = baseHeight + (textHeight > 20 ? textHeight - 20 : 0);
+    
     return Container(
       width: 380 * widthRatio,
       margin: EdgeInsets.symmetric(horizontal: (screenWidth - 380 * widthRatio) / 2 - 10),
@@ -173,17 +199,23 @@ class _FlowerCardDialogState extends State<FlowerCardDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            height: 145 * heightRatio, // 댓글 컨테이너 높이 145로 줄임
+            height: dynamicHeight,
             child: Stack(
               children: [
                 // person circle: 좌측 16, 위쪽 16
                 Positioned(
                   left: 16 * widthRatio,
                   top: 16 * heightRatio,
-                  child: Image.asset(
-                    AppAssets.person_circle, 
-                    width: 33 * widthRatio, 
-                    height: 33 * heightRatio
+                  child: Container(
+                    width: 33 * widthRatio,
+                    height: 33 * heightRatio,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: AssetImage(FamilyUtils.getProfileImageByFamilyType(comment.writer_role)),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
                 
@@ -191,49 +223,58 @@ class _FlowerCardDialogState extends State<FlowerCardDialog> {
                 Positioned(
                   left: 56 * widthRatio,
                   top: 22 * heightRatio,
-                  child: Text(
-                    comment.writer_role,
-                    style: const TextStyle(
-                      color: Color(0xFFF9F9F9),
-                      fontSize: 17,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w700,
-                    ),
+                  child: FutureBuilder<String>(
+                    future: FamilyUtils.getDisplayNameByRole(comment.writer_role),
+                    builder: (context, snapshot) {
+                      final displayName = snapshot.data ?? comment.writer_role;
+                      return Text(
+                        displayName,
+                        style: const TextStyle(
+                          color: Color(0xFFF9F9F9),
+                          fontSize: 17,
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 
-                // 댓글 내용: 좌측 55, 위쪽 59
+                // 댓글 내용: 좌측 55, 위쪽 59, 화면 폭의 2/3에서 줄바꿈
                 Positioned(
                   left: 55 * widthRatio,
                   top: 59 * heightRatio,
                   right: 16 * widthRatio,
-                  child: Text(
-                    comment.content,
-                    style: const TextStyle(
-                      color: Color(0xFFF9F9F9),
-                      fontSize: 14,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w500,
-                      height: 1.43,
+                  child: SizedBox(
+                    width: screenWidth * 2 / 3 - 55 * widthRatio,
+                    child: Text(
+                      comment.content,
+                      style: const TextStyle(
+                        color: Color(0xFFF9F9F9),
+                        fontSize: 14,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        height: 1.43,
+                      ),
                     ),
                   ),
                 ),
                 
-                // 세로선: 높이 59, 하얀색, 좌측 32, 위쪽 53
+                // 세로선: 동적 높이로 조정
                 Positioned(
                   left: 32 * widthRatio,
                   top: 53 * heightRatio,
                   child: Container(
                     width: 1,
-                    height: 59 * heightRatio,
+                    height: (59 * heightRatio) + (textHeight > 20 ? textHeight - 20 : 0),
                     color: const Color(0xFFF9F9F9),
                   ),
                 ),
                 
-                // 하트 아이콘과 숫자 (비활성화)
+                // 하트 아이콘과 숫자 (비활성화): 텍스트 높이에 따라 위치 조정
                 Positioned(
                   left: 55 * widthRatio,
-                  top: 85 * heightRatio,
+                  top: 85 * heightRatio + (textHeight > 20 ? textHeight - 20 : 0),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -254,10 +295,10 @@ class _FlowerCardDialogState extends State<FlowerCardDialog> {
                   ),
                 ),
                 
-                // 댓글 아이콘과 숫자 (비활성화)
+                // 댓글 아이콘과 숫자 (비활성화): 텍스트 높이에 따라 위치 조정
                 Positioned(
                   left: 93 * widthRatio,
-                  top: 85 * heightRatio,
+                  top: 85 * heightRatio + (textHeight > 20 ? textHeight - 20 : 0),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -279,11 +320,11 @@ class _FlowerCardDialogState extends State<FlowerCardDialog> {
                   ),
                 ),
                 
-                // show replies 아이콘과 텍스트: 좌측 44, 위쪽 116
+                // show replies 아이콘과 텍스트: 텍스트 높이에 따라 위치 조정
                 if (comment.reply.isNotEmpty)
                   Positioned(
                     left: 44 * widthRatio,
-                    top: 116 * heightRatio,
+                    top: 116 * heightRatio + (textHeight > 20 ? textHeight - 20 : 0),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -353,21 +394,52 @@ class _FlowerCardDialogState extends State<FlowerCardDialog> {
     final widthRatio = screenWidth / 412.0;
     final heightRatio = screenHeight / 917.0;
     
+    // 텍스트 길이에 따른 동적 높이 계산
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: reply.content,
+        style: const TextStyle(
+          color: Color(0xFFF9F9F9),
+          fontSize: 14,
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w500,
+          height: 1.43,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    );
+    
+    // 텍스트가 들어갈 수 있는 최대 너비 (화면 폭의 2/3)
+    final maxTextWidth = (screenWidth * 2 / 3) - (55 * widthRatio) - (16 * widthRatio);
+    textPainter.layout(maxWidth: maxTextWidth);
+    
+    // 텍스트 높이에 따른 컨테이너 높이 계산
+    final textHeight = textPainter.height;
+    final baseHeight = 120 * heightRatio;
+    final dynamicHeight = baseHeight + (textHeight > 20 ? textHeight - 20 : 0);
+    
     return Container(
       width: 380 * widthRatio,
       margin: EdgeInsets.symmetric(horizontal: (screenWidth - 380 * widthRatio) / 2 - 10),
       child: Container(
-        height: 120 * heightRatio, // 대댓글 컨테이너 높이 줄임
+        height: dynamicHeight,
         child: Stack(
           children: [
             // person circle: 좌측 16, 위쪽 16
             Positioned(
               left: 16 * widthRatio,
               top: 16 * heightRatio,
-              child: Image.asset(
-                AppAssets.person_circle, 
-                width: 33 * widthRatio, 
-                height: 33 * heightRatio
+              child: Container(
+                width: 33 * widthRatio,
+                height: 33 * heightRatio,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage(FamilyUtils.getProfileImageByFamilyType(reply.writer_role)),
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
             
@@ -375,50 +447,58 @@ class _FlowerCardDialogState extends State<FlowerCardDialog> {
             Positioned(
               left: 56 * widthRatio,
               top: 22 * heightRatio,
-              child: Text(
-                reply.writer_role,
-                style: const TextStyle(
-                  color: Color(0xFFF9F9F9),
-                  fontSize: 17,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w700,
-                ),
+              child: FutureBuilder<String>(
+                future: FamilyUtils.getDisplayNameByRole(reply.writer_role),
+                builder: (context, snapshot) {
+                  final displayName = snapshot.data ?? reply.writer_role;
+                  return Text(
+                    displayName,
+                    style: const TextStyle(
+                      color: Color(0xFFF9F9F9),
+                      fontSize: 17,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  );
+                },
               ),
             ),
             
-            // 대댓글 내용: 좌측 55, 위쪽 59
+            // 대댓글 내용: 좌측 55, 위쪽 59, 화면 폭의 2/3에서 줄바꿈
             Positioned(
               left: 55 * widthRatio,
               top: 59 * heightRatio,
               right: 16 * widthRatio,
-              child: Text(
-                reply.content,
-                style: const TextStyle(
-                  color: Color(0xFFF9F9F9),
-                  fontSize: 14,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                  height: 1.43,
+              child: SizedBox(
+                width: screenWidth * 2 / 3 - 55 * widthRatio,
+                child: Text(
+                  reply.content,
+                  style: const TextStyle(
+                    color: Color(0xFFF9F9F9),
+                    fontSize: 14,
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    height: 1.43,
+                  ),
                 ),
               ),
             ),
             
-            // 세로선: 높이 59, 하얀색, 좌측 32, 위쪽 53
+            // 세로선: 동적 높이로 조정
             Positioned(
               left: 32 * widthRatio,
               top: 53 * heightRatio,
               child: Container(
                 width: 1,
-                height: 59 * heightRatio,
+                height: (59 * heightRatio) + (textHeight > 20 ? textHeight - 20 : 0),
                 color: const Color(0xFFF9F9F9),
               ),
             ),
             
-            // 하트 아이콘과 숫자 (비활성화)
+            // 하트 아이콘과 숫자 (비활성화): 텍스트 높이에 따라 위치 조정
             Positioned(
-
               left: 55 * widthRatio,
-              top: 85 * heightRatio,
+              top: 85 * heightRatio + (textHeight > 20 ? textHeight - 20 : 0),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -439,10 +519,10 @@ class _FlowerCardDialogState extends State<FlowerCardDialog> {
               ),
             ),
             
-            // 댓글 아이콘과 숫자 (대댓글은 0으로 표시)
+            // 댓글 아이콘과 숫자 (대댓글은 0으로 표시): 텍스트 높이에 따라 위치 조정
             Positioned(
               left: 93 * widthRatio,
-              top: 85 * heightRatio,
+              top: 85 * heightRatio + (textHeight > 20 ? textHeight - 20 : 0),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

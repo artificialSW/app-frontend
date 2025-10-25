@@ -57,38 +57,41 @@ class _ProfileRootState extends State<ProfileRoot> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: ProfileRootTopBar(),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 22),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProfileCard(),
-            const SizedBox(height: 16),
-            _buildActionButtons(),
-            const SizedBox(height: 24),
-            _buildMenuList(context),
-            const SizedBox(height: 24),
-            _buildInviteCode(),
-            Spacer(),
-            Center(
-              child: TextButton(
-                child: Text(
-                  '로그아웃',
-                  style: AppTextStyles.pretendard_regular.copyWith(
-                    color: AppColors.plumu_gray_5,
-                    fontSize: 12,
-                    decoration: TextDecoration.underline, // ✅ 밑줄 추가
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 22),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildProfileCard(),
+              const SizedBox(height: 16),
+              _buildActionButtons(),
+              const SizedBox(height: 24),
+              _buildMenuList(context),
+              const SizedBox(height: 24),
+              _buildInviteCode(),
+              const SizedBox(height: 40),
+              Center(
+                child: TextButton(
+                  child: Text(
+                    '로그아웃',
+                    style: AppTextStyles.pretendard_regular.copyWith(
+                      color: AppColors.plumu_gray_5,
+                      fontSize: 12,
+                      decoration: TextDecoration.underline, // ✅ 밑줄 추가
+                    ),
                   ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => LogoutConfirmDialog(),
+                    );
+                  },
                 ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => LogoutConfirmDialog(),
-                  );
-                },
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
