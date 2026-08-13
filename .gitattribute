@@ -1,0 +1,10 @@
+# C++ 언어 감지 제외 (확장자 기준)
+*.cpp linguist-detectable=false
+*.h linguist-detectable=false
+*.hpp linguist-detectable=false
+*.cc linguist-detectable=false
+
+# CMake 설정 파일 및 빌드 폴더 제외
+CMakeLists.txt linguist-detectable=false
+*.cmake linguist-detectable=false
+build/ linguist-vendored
